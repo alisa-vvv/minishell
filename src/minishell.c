@@ -23,10 +23,8 @@
 /*	signals		*/
 #include <signal.h>
 
-int	main(int argc, char **argv)
+int	main(void)
 {
-	(void) argc;
-	(void) argv;
 	char	*read_line;
 	int	is_open = 1;
 
