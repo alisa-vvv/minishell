@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include "minishell.h"
+#include "minishell.h"
 #include <stdio.h> /*	readline	*/
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -41,5 +41,5 @@ int	main(int argc, char **argv)
 			printf("We entered: %s\n", read_line);
 		add_history(read_line);
 	}
-	return (1);
+	return (0);
 }

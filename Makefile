@@ -25,8 +25,10 @@ OBJDIR = obj/
 SRCDIR = src/
 LIBDIR = lib/
 INCDIR = inc/
-SRCDIRS = $(addprefix $(SRCDIR), rendering controls init_exit\
-		  coordinate_manipulation map_manipulation) $(SRCDIR)
+#this is a template for when we have ultiple directories in src/
+#SRCDIRS = $(addprefix $(SRCDIR), rendering controls init_exit\
+#		  coordinate_manipulation map_manipulation) $(SRCDIR)
+SRCDIRS = $(SRCDIR)
 $(LIBDIR):
 	mkdir -p $@
 $(INCDIR):
@@ -41,6 +43,7 @@ INCLUDE = $(INCDIR) $(LIBFT_DIR)
 RM	= rm -rf
 CC	= cc
 CFLAGS	= -Wall -Wextra -Werror
+LDFLAGS = -lreadline
 INPUT	=
 
 #include $(OBJ:.o=.d)
@@ -48,20 +51,20 @@ INPUT	=
 #$(DEPDIR)/%.d	: %.c
 #	$(CC) $(CPPFLAG) $(INCLUDE) -MM -MF $@ -MT $(OBJDIR)/$(addsuffix .o,$(basename $<)) $<
 
-$(OBJDIR)/%.o: %.c $(INCLUDE) | $(OBJDIR)
+$(OBJDIR)%.o: %.c $(INCLUDE) | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@ $(addprefix -I,$(INCLUDE))
 
 $(LIBFT):
 	$(MAKE) all -C $(LIBFT_DIR)
 
 $(NAME): $(LIBFT) $(OFILES)
-	$(CC) $(CFLAGS) -o $@\
-		$(OFILES) $(LIBFT) $(addprefix -I,$(INCLUDE))
+	$(CC) $(CFLAGS) -o $@ $(OFILES) $(LIBFT) $(LDFLAGS) \
+		$(addprefix -I,$(INCLUDE))
 
 #Base/project requirements
 all: $(NAME)
 libs_clean:
-	$(RM) $(MAKE) fclean -C $(LIBFT_DIR)
+	$(MAKE) fclean -C $(LIBFT_DIR)
 clean:
 	$(RM) $(OFILES)
 fclean:	clean libs_clean
@@ -80,7 +83,7 @@ gdb: fclean debug
 	gdb ./$(NAME)
 test: clean $(NAME) run
 run:
-	./fdf $(INPUT)
+	./$(NAME) $(INPUT)
 leak:	debug
 	valgrind  --suppressions=minishell.supp -s --leak-check=full \
 	--show-leak-kinds=all --track-fds=yes ./$(NAME) $(INPUT)
