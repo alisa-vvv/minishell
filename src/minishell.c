@@ -6,22 +6,11 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:31:56 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/05/31 16:28:00 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/01 15:42:28 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdio.h> /*	readline	*/
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <unistd.h> /* isatty */
-/* for waits	*/
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <sys/wait.h>
-/*	signals		*/
-#include <signal.h>
 
 int	main(void)
 {

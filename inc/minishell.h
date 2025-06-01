@@ -13,6 +13,19 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+/*	readline	*/ 
 # include <stdio.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <unistd.h> /* isatty */
+/* for waits	*/
+# include <sys/types.h>
+# include <sys/time.h>
+# include <sys/resource.h>
+# include <sys/wait.h>
+/*	signals		*/
+# include <signal.h>
+
+# define TEST_MACRO 42
 
 #endif

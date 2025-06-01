@@ -4,6 +4,7 @@ main.c
 ./test_files/*
 test_files/
 *.swp
+*.d
 *.o
 *.a
 *.ods
