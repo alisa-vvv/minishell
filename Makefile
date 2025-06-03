@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/05/31 15:37:07 by avaliull     ########   odam.nl           #
+#    Updated: 2025/06/03 18:10:26 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,8 @@ MAKEFLAGS =
 NAME	=	minishell
 
 CFILES	=	minishell.c\
+			executor.c\
+			try_execve.c\
 			test_funcs.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))
@@ -26,7 +28,7 @@ BUILDDIR = build/
 SRCDIR = src/
 LIBDIR = lib/
 INCDIR = inc/
-SRCDIRS = $(addprefix $(SRCDIR), parsing) $(SRCDIR)
+SRCDIRS = $(addprefix $(SRCDIR), parsing executor) $(SRCDIR)
 $(SRCDIR):
 	mkdir -p $@
 $(LIBDIR):
