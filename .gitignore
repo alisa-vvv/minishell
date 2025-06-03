@@ -3,6 +3,8 @@ a.out
 main.c
 ./test_files/*
 test_files/
+src/pipex
+src/pipex/*
 *.swp
 *.d
 *.o
