@@ -50,6 +50,7 @@ https://en.wikipedia.org/wiki/Lexical_analysis \
 https://en.wikipedia.org/wiki/Abstract_syntax_tree \
 https://www.gnu.org/software/termutils/manual/termcap-1.3/html_mono/termcap.html  \
 https://aticleworld.com/implement-vector-in-c/  \
-https://github.com/codam-coding-college/spark-sessions/blob/main/spark-sessions/minishell/SparkSession%20-%20minishell.md
+https://github.com/codam-coding-college/spark-sessions/blob/main/spark-sessions/minishell/SparkSession%20-%20minishell.md  \
+https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=http://www.gnu.org/software///bash/manual/bash.html&ved=2ahUKEwiFucj8nNWNAxW23QIHHVxADhwQFnoECA0QAQ&usg=AOvVaw0-4n6yy4k-SEOV6LdfBf2H 
 
 More TBD
