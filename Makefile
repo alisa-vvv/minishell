@@ -26,8 +26,7 @@ BUILDDIR = build/
 SRCDIR = src/
 LIBDIR = lib/
 INCDIR = inc/
-SRCDIRS = $(SRCDIR)
-
+SRCDIRS = $(addprefix $(SRCDIR), parsing) $(SRCDIR)
 $(SRCDIR):
 	mkdir -p $@
 $(LIBDIR):
