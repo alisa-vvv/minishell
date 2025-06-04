@@ -21,7 +21,6 @@
 //      - redirections
 //      - $ sign
 
-
 // typedef struct sVectorList
 // {
 //     void **elements;
@@ -35,8 +34,6 @@
 // lookahead func for next token
 // match function
 // skip whitespace
-// enum {COMMAND, STRING, NUMBER}
-
 
 
 // int is_EoS(char *str, int i)
@@ -45,4 +42,3 @@
 //         return (1);
 //     return (0);
 // }
-
