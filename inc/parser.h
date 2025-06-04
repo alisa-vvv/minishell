@@ -17,6 +17,14 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+// typedef struct sVectorList
+// {
+//     void **elements;
+//     size_t size; (size in memory)
+//     size_t count; (number elements)
+// } sVectorList;
+
+
 enum 
 {
     COMMAND, 
@@ -40,10 +48,14 @@ enum
 
 }
 
+
 typedef struct s_token
 {
     int type;
-    char *str;
+    char *value;
+    void *next;
 } t_token;
+
+
 
 #endif

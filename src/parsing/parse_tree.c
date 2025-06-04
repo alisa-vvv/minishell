@@ -21,14 +21,6 @@
 //      - redirections
 //      - $ sign
 
-// typedef struct sVectorList
-// {
-//     void **elements;
-//     size_t size; (size in memory)
-//     size_t count; (number elements)
-// } sVectorList;
-
-
 // parsing table 
 // first() and follow() funcs
 // lookahead func for next token
@@ -36,9 +28,3 @@
 // skip whitespace
 
 
-// int is_EoS(char *str, int i)
-// {
-//     if (i == ft_strlen(str))
-//         return (1);
-//     return (0);
-// }
