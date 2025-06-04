@@ -31,11 +31,20 @@
 # define DUP2_ERR "Error! dup2()"
 
 /*		Executor - data structures		*/
+
+typedef enum	e_redirect_type
+{
+	none,
+	append,
+	trunc,
+}	t_redirect_type;
+
 typedef enum	e_io
 {
 	std_in,
 	std_err,
 	std_out,
+	heredoc,
 	pipe_read,
 	pipe_write,
 	custom_fd,
@@ -43,11 +52,13 @@ typedef enum	e_io
 
 typedef struct	s_exec_data
 {
-	char	**command;
-	t_io	input_type;
-	t_io	output_type;
-	char	*in_filename;
-	char	*out_filename;
+	char			**command;
+	t_io			input_type;
+	t_io			output_type;
+	t_redirect_type	redirect_type;
+	char			*in_filename;
+	char			*out_filename;
+	int				len;
 }	t_exec_data;
 
 #endif
