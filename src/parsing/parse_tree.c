@@ -35,19 +35,14 @@
 // lookahead func for next token
 // match function
 // skip whitespace
-enum {COMMAND, STRING, NUMBER}
+// enum {COMMAND, STRING, NUMBER}
 
-typedef struct s_token {
-    int type;
-    void *value;
-    
 
-} t_token;
 
-int is_EoS(char *str, int i)
-{
-    if (i == ft_strlen(str))
-        return (1);
-    return (0);
-}
+// int is_EoS(char *str, int i)
+// {
+//     if (i == ft_strlen(str))
+//         return (1);
+//     return (0);
+// }
 
