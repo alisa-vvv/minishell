@@ -53,12 +53,12 @@ typedef enum	e_io
 typedef struct	s_exec_data
 {
 	char			**argv;
+	int				len;
 	t_io			input_type;
 	t_io			output_type;
 	t_redirect_type	redirect_type;
 	char			*in_filename;
 	char			*out_filename;
-	int				len;
 }	t_exec_data;
 
 #endif
