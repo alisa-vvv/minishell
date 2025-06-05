@@ -93,7 +93,7 @@ debug: CFLAGS += -g
 debug: clean $(NAME)
 gdb: fclean debug
 	gdb ./$(NAME)
-test: clean $(NAME) run
+test: $(NAME) run
 run:
 	./$(NAME) $(INPUT)
 leak:	debug

@@ -18,3 +18,5 @@ imgui.ini
 .cache
 tester/.
 minishell
+infile
+outfile

@@ -15,6 +15,12 @@
 
 # include "minishell.h"
 
+typedef struct	s_command_io
+{
+	int	in_fd;
+	int	out_fd;
+}	t_command_io;
+
 /*		Executor - temporary functions!		*/
 t_exec_data	*test_get_dummy_exec_data();
 int	executor(t_exec_data *exec_data, int dummy_minishell_struct);

@@ -52,7 +52,7 @@ typedef enum	e_io
 
 typedef struct	s_exec_data
 {
-	char			**command;
+	char			**argv;
 	t_io			input_type;
 	t_io			output_type;
 	t_redirect_type	redirect_type;
