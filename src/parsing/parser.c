@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                         ::::::::           */
-/*   parse_tree.c                                        :+:    :+:           */
+/*   parser.c                                        :+:    :+:           */
 /*                                                      +:+                   */
 /*   By: adecheri <marvin@42.fr>                       +#+                    */
 /*                                                    +#+                     */
@@ -21,10 +21,19 @@
 //      - redirections
 //      - $ sign
 
-// parsing table 
+// construc parsing table 
 // first() and follow() funcs
-// lookahead func for next token
-// match function
-// skip whitespace
+// lookahead func for check next token
+// match function to check and expand on aliases 
+
+// Different expansions to think of: 
+//  - brace expansion
+//  - tilde expansion
+//  - parameter and variable expansion
+//  - command substitution
+//  - arithmetic expansion
+//  - word splitting
+//  - filename expansion 
+
 
 

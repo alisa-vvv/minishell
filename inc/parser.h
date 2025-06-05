@@ -32,22 +32,25 @@ enum
     NUMBER,
     FILE,
     DIR,
+    BLANK,
     
     SINGLE_Q_OPEN,
     SINGLE_Q_CLOSED,
     DOUBLE_Q_OPEN,
     DOUBLE_Q_CLOSED,
 
+    DOUBLE_DOT,
+    DOT,
     DASH,
     PIPE,
     OPEN_BRACKET,
     CLOSED_BRACKET,
     DOLLAR_SIGN,
     FORW_SLASH,
-    BACKW_SLASH
-
+    BACKW_SLASH,
+    QUESTION_MARK,
+    EXCLAM_MARK
 }
-
 
 typedef struct s_token
 {
