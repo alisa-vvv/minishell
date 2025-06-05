@@ -59,6 +59,7 @@ typedef struct	s_exec_data
 	t_redirect_type	redirect_type;
 	char			*in_filename;
 	char			*out_filename;
+	char			*heredoc_delim;
 }	t_exec_data;
 
 #endif

@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/06/03 18:10:26 by avaliull     ########   odam.nl           #
+#    Updated: 2025/06/05 20:15:09 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ NAME	=	minishell
 
 CFILES	=	minishell.c\
 			executor.c\
+			here-doc.c\
 			try_execve.c\
 			test_funcs.c
 
