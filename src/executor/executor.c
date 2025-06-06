@@ -41,9 +41,9 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].argv[1] = NULL;
 	exec_data[i].argv[2] = NULL;
 	exec_data[i].input_type = heredoc;
-	exec_data[i].heredoc_delim = "EOF";
+	exec_data[i].heredoc_delim = ft_strdup("EOF");
 	exec_data[i].output_type = pipe_write;
-	//exec_data[i].in_filename = ft_strdup("infile");
+	exec_data[i].in_filename = ft_strdup("infile");
 	i++;
 
 	exec_data[i].len = len;
@@ -54,6 +54,7 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].input_type = pipe_read;
 	exec_data[i].output_type = pipe_write;
 	exec_data[i].redirect_type = append;
+	exec_data[i].heredoc_delim = NULL;
 	exec_data[i].out_filename = ft_strdup("midfile");
 	i++;
 
@@ -65,6 +66,7 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].input_type = pipe_read;
 	exec_data[i].output_type = pipe_write;
 	exec_data[i].redirect_type = append;
+	exec_data[i].heredoc_delim = NULL;
 	exec_data[i].out_filename = ft_strdup("midfile");
 	i++;
 
@@ -74,8 +76,9 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].argv[1] = ft_strdup("-b");
 	exec_data[i].argv[2] = NULL;
 	exec_data[i].input_type = pipe_read;
-	exec_data[i].output_type = std_out;
+	exec_data[i].output_type = custom_fd;
 	exec_data[i].redirect_type = trunc;
+	exec_data[i].heredoc_delim = NULL;
 	exec_data[i].out_filename = ft_strdup("outfile");
 	i++;
 
@@ -94,8 +97,6 @@ int	set_in_fd(t_exec_data *command, int *in_fd, int heredoc_pipe[2])
 		err_check = create_here_doc(command, heredoc_pipe);
 		*in_fd = heredoc_pipe[0];
 	}
-	else if (command->input_type == std_in)
-		*in_fd = STDIN_FILENO;
 	return (err_check);
 }
 
@@ -158,15 +159,33 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 {
 	char	**path_var;
 	pid_t	process_id;
+	int		close_index;
 
 	path_var = find_env_path();
+	if (i > 0) // this is a crutch. closes previous fds. I should not have them openm in the first place.
+	{
+		close(command_io[i - 1].in_pipe[0]);
+		close(command_io[i - 1].in_pipe[1]);
+	}
 	process_id = fork();
 	if (process_id == 0)
 	{
+		close_index = i;
+		while (++close_index <= command->len) // this is also a crutch, same deal. need to refactor this crap so I dont; have to do this
+		{
+			if (close_index > i + 1)
+			{
+				close(command_io[close_index].in_pipe[0]);
+				close(command_io[close_index].in_pipe[1]);
+			}
+			close(command_io[close_index].out_pipe[0]);
+			close(command_io[close_index].out_pipe[1]);
+		}
 		if (command->input_type != std_in)
 		{
 			dup2(command_io[i].in_fd, STDIN_FILENO);
 			close(command_io[i].in_fd);
+		//	close(command_io[i].in_pipe[0]);
 		}
 		if (command->input_type == pipe_read || command->input_type == heredoc)
 			close(command_io[i].in_pipe[1]);
