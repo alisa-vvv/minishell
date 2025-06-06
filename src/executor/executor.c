@@ -37,18 +37,19 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data = ft_calloc(len, sizeof(t_exec_data));
 	exec_data[i].len = len;
 	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("sleep");
-	exec_data[i].argv[1] = ft_strdup("3");;
+	exec_data[i].argv[0] = ft_strdup("cat");
+	exec_data[i].argv[1] = NULL;
 	exec_data[i].argv[2] = NULL;
-	exec_data[i].input_type = custom_fd;
+	exec_data[i].input_type = heredoc;
+	exec_data[i].heredoc_delim = "EOF";
 	exec_data[i].output_type = pipe_write;
-	exec_data[i].in_filename = ft_strdup("infile");
+	//exec_data[i].in_filename = ft_strdup("infile");
 	i++;
 
 	exec_data[i].len = len;
 	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("ls");
-	exec_data[i].argv[1] = ft_strdup("-l");
+	exec_data[i].argv[0] = ft_strdup("cat");
+	exec_data[i].argv[1] = ft_strdup("-e");
 	exec_data[i].argv[2] = NULL;
 	exec_data[i].input_type = pipe_read;
 	exec_data[i].output_type = pipe_write;
@@ -82,16 +83,27 @@ t_exec_data	*test_get_dummy_exec_data(void)
 }
 
 // IO CHAIN
-void	set_in_fd(t_exec_data *command, int *in_fd)
+int	set_in_fd(t_exec_data *command, int *in_fd, int heredoc_pipe[2])
 {
+	int	err_check;
+
 	if (command->input_type == custom_fd)
 		*in_fd = open(command->in_filename, O_RDONLY);
+	else if (command->input_type == heredoc)
+	{
+		err_check = create_here_doc(command, heredoc_pipe);
+		*in_fd = heredoc_pipe[0];
+	}
 	else if (command->input_type == std_in)
 		*in_fd = STDIN_FILENO;
+	return (err_check);
 }
 
-void	set_out_fd(t_exec_data *command, int *out_fd)
+int	set_out_fd(t_exec_data *command, int *out_fd)
 {
+	int	err_check;
+
+	err_check = 0;
 	if (command->output_type == custom_fd
 		&& command->redirect_type == trunc)
 		*out_fd = open(command->out_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
@@ -100,6 +112,7 @@ void	set_out_fd(t_exec_data *command, int *out_fd)
 		*out_fd = open(command->out_filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
 	else if (command->output_type == std_err)
 		*out_fd = STDERR_FILENO;
+	return (err_check);
 }
 
 int	prepare_io_chain(t_exec_data *command, t_command_io *command_io, int i)
@@ -108,7 +121,7 @@ int	prepare_io_chain(t_exec_data *command, t_command_io *command_io, int i)
 
 	err_check = 0;
 	if (command->input_type != pipe_read)
-		set_in_fd(command, &command_io[i].in_fd);
+		set_in_fd(command, &command_io[i].in_fd, command_io[i].in_pipe);
 	if (command_io[i].in_fd < 0)
 	{
 		// ADD ERROR MANAGEMENT!!
@@ -145,6 +158,7 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 {
 	char	**path_var;
 	pid_t	process_id;
+
 	path_var = find_env_path();
 	process_id = fork();
 	if (process_id == 0)
@@ -154,7 +168,7 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 			dup2(command_io[i].in_fd, STDIN_FILENO);
 			close(command_io[i].in_fd);
 		}
-		if (command->input_type == pipe_read)
+		if (command->input_type == pipe_read || command->input_type == heredoc)
 			close(command_io[i].in_pipe[1]);
 
 		if (command->output_type != std_out)
@@ -173,6 +187,11 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 	{
 		if (command->input_type != std_in)
 			close(command_io[i].in_fd);
+		else if (command->input_type == heredoc)
+		{
+			close(command_io[i].in_pipe[0]);
+			close(command_io[i].in_pipe[1]);
+		}
 		if (command->output_type != std_out && command->output_type != std_err)
 			close(command_io[i].out_fd);
 		test_free_exec_data(command);

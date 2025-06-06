@@ -27,6 +27,9 @@ typedef struct	s_command_io
 t_exec_data	*test_get_dummy_exec_data();
 int	executor(t_exec_data *exec_data, int dummy_minishell_struct);
 
+/*		Here-doc		*/
+int	create_here_doc(t_exec_data *command, int here_doc[2]);
+
 /*		Try_execve		*/
 char	**find_env_path(void);
 int		try_execve(const char **path, char *const argv[]);
