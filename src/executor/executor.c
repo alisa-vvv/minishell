@@ -39,7 +39,7 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	t_exec_data	*exec_data;
 
 	int i = 0;
-	int len = 4;
+	int len = 5;
 	exec_data = ft_calloc(len, sizeof(t_exec_data));
 	exec_data[i].len = len;
 	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
@@ -94,6 +94,19 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].out_filename = ft_strdup("outfile");
 	i++;
 
+	exec_data[i].len = len;
+	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
+	exec_data[i].argv[0] = ft_strdup("cat");
+	exec_data[i].argv[1] = ft_strdup("-b");
+	exec_data[i].argv[2] = NULL;
+	exec_data[i].is_builtin = true;
+	exec_data[i].input_type = std_in;
+	exec_data[i].output_type = std_out;
+	exec_data[i].redirect_type = trunc;
+	exec_data[i].heredoc_delim = NULL;
+	exec_data[i].out_filename = ft_strdup("outfile");
+	i++;
+
 	return (exec_data);
 }
 
@@ -114,15 +127,17 @@ int	set_in_fd(t_exec_data *command, int *in_fd, int heredoc_pipe[2])
 
 int	set_out_fd(t_exec_data *command, int *out_fd)
 {
-	int	err_check;
+	int			err_check;
+	const int	truncate_flags = O_WRONLY | O_CREAT | O_TRUNC;
+	const int	append_flags = O_WRONLY | O_CREAT | O_APPEND;
 
 	err_check = 0;
 	if (command->output_type == custom_fd
 		&& command->redirect_type == trunc)
-		*out_fd = open(command->out_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+		*out_fd = open(command->out_filename, truncate_flags, 0664);
 	else if (command->output_type == custom_fd
 		&& command->redirect_type == append)
-		*out_fd = open(command->out_filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
+		*out_fd = open(command->out_filename, append_flags, 0664);
 	else if (command->output_type == std_err)
 		*out_fd = STDERR_FILENO;
 	return (err_check);
@@ -151,8 +166,6 @@ int	prepare_io_chain(t_exec_data *command, t_command_io *command_io)
 
 	if (command->output_type == pipe_write)
 	{
-		printf("out pipe prev[0]: %d\n", command_io->out_pipe[0]);
-		printf("out pipe prev[1]: %d\n", command_io->out_pipe[1]);
 		command_io->out_pipe[0] = 0;
 		command_io->out_pipe[1] = 0;
 		err_check = pipe(command_io->out_pipe);
@@ -162,8 +175,6 @@ int	prepare_io_chain(t_exec_data *command, t_command_io *command_io)
 			printf("PLACEHOLDER, THIS SHOULD ERROR\n");
 		}
 		command_io->out_fd = command_io->out_pipe[1];
-		printf("out pipe new[0]: %d\n", command_io->out_pipe[0]);
-		printf("out pipe new[1]: %d\n", command_io->out_pipe[1]);
 	}
 	else
 		set_out_fd(command, &command_io->out_fd);
@@ -179,9 +190,11 @@ int	prepare_io_chain(t_exec_data *command, t_command_io *command_io)
 
 int	spawn_children(t_exec_data *command, t_command_io *command_io)
 {
+	int		err_check;
 	char	**path_var;
 	pid_t	process_id;
 
+	err_check = 0;
 	path_var = find_env_path();
 	process_id = fork();
 	if (process_id == 0)
@@ -199,8 +212,10 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io)
 		if (command->output_type == pipe_write)
 			close(command_io->out_pipe[0]);
 
-		try_execve((const char **) path_var, command->argv);
-		exit(9999); // placeholder obv
+		if (command->is_builtin == false)
+			try_execve((const char **) path_var, command->argv);
+		err_check = test_dummy_builtin(command);
+		exit(err_check);
 	}
 
 	else if (process_id > 0)
