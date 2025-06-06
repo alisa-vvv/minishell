@@ -17,7 +17,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
-// TEST
+// TEST - function with test_ in name will be either deleted or modified later
 void	test_free_exec_data(t_exec_data	*exec_data)
 {
 	if (exec_data->argv)
@@ -208,7 +208,7 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 			close(command_io[i].out_pipe[0]);
 
 		try_execve((const char **) path_var, command->argv);
-		exit(9999);
+		exit(9999); // placeholder obv
 	}
 
 	else if (process_id > 0)
@@ -242,8 +242,8 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 //		c) next pipe, if it exists
 //		Outside the pipes, there is nothing they actually need to know about other members.
 //	3. So after each child spawn we should close all the created FDs in the parent process before proceeding.
-//	4. Also check if children can/need to close some. assumption is no (except pipe shenanigans maybe?) cause execve carries over.
-//	5. unless it's built-in which means we do have to close and free everything properly. so make a check for that.
+//	4. Also check if children can/need to close some. assumption is no (except pipe shenanigans maybe?) cause execve overtakes process.
+//	5. unless it's a built-in which means we do have to close and free everything properly. so make a check for that.
 //
 int	executor(t_exec_data *exec_data, int dummy_minishell_struct)
 {
@@ -264,7 +264,7 @@ int	executor(t_exec_data *exec_data, int dummy_minishell_struct)
 			printf("PLACEHOLDER, THIS SHOULD ERROR\n");
 		}
 	}
-	while (waitpid(-1, &process_status, 0) > 0)
+	while (waitpid(-1, &process_status, 0) > 0) // check if there's more exit signals we need to handle here
 	{
 		if (WIFEXITED(process_status))
 			if (WEXITSTATUS(process_status) != 0)
