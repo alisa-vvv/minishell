@@ -28,6 +28,12 @@ void	test_free_exec_data(t_exec_data	*exec_data)
 		free(exec_data->out_filename);
 }
 
+int	test_dummy_builtin(t_exec_data *exec_data)
+{
+	printf("Dummy built-in executed: %s\n", exec_data->argv[0]);
+	return (0);
+}
+
 t_exec_data	*test_get_dummy_exec_data(void)
 {
 	t_exec_data	*exec_data;
@@ -40,6 +46,7 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].argv[0] = ft_strdup("cat");
 	exec_data[i].argv[1] = NULL;
 	exec_data[i].argv[2] = NULL;
+	exec_data[i].is_builtin = false;
 	exec_data[i].input_type = heredoc;
 	exec_data[i].heredoc_delim = ft_strdup("EOF");
 	exec_data[i].output_type = pipe_write;
@@ -51,6 +58,7 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].argv[0] = ft_strdup("cat");
 	exec_data[i].argv[1] = ft_strdup("-e");
 	exec_data[i].argv[2] = NULL;
+	exec_data[i].is_builtin = false;
 	exec_data[i].input_type = pipe_read;
 	exec_data[i].output_type = pipe_write;
 	exec_data[i].redirect_type = append;
@@ -63,6 +71,7 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].argv[0] = ft_strdup("cat");
 	exec_data[i].argv[1] = ft_strdup("-T");
 	exec_data[i].argv[2] = NULL;
+	exec_data[i].is_builtin = false;
 	exec_data[i].input_type = pipe_read;
 	exec_data[i].output_type = pipe_write;
 	exec_data[i].redirect_type = append;
@@ -75,6 +84,7 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].argv[0] = ft_strdup("cat");
 	exec_data[i].argv[1] = ft_strdup("-b");
 	exec_data[i].argv[2] = NULL;
+	exec_data[i].is_builtin = false;
 	exec_data[i].input_type = pipe_read;
 	exec_data[i].output_type = custom_fd;
 	exec_data[i].redirect_type = trunc;
@@ -154,7 +164,6 @@ int	prepare_io_chain(t_exec_data *command, t_command_io *command_io, int i)
 
 // CHILDREN
 
-//from this one, probably remove the int i. at least currently not needed
 int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 {
 	char	**path_var;
@@ -225,6 +234,17 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 	return (0);
 }
 
+//	Refactor steps:
+//	1. single while loop for io preparation and actual execution, no reason to have them separate.
+//	2. each step needs to be aware of:
+//		a) it's own io fds
+//		b) previous pipe, if it exists
+//		c) next pipe, if it exists
+//		Outside the pipes, there is nothing they actually need to know about other members.
+//	3. So after each child spawn we should close all the created FDs in the parent process before proceeding.
+//	4. Also check if children can/need to close some. assumption is no (except pipe shenanigans maybe?) cause execve carries over.
+//	5. unless it's built-in which means we do have to close and free everything properly. so make a check for that.
+//
 int	executor(t_exec_data *exec_data, int dummy_minishell_struct)
 {
 	int				i;

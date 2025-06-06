@@ -25,6 +25,8 @@
 # include <sys/wait.h>
 /*	signals		*/
 # include <signal.h>
+/* for true/false macro (and bool if we need it) */
+# include <stdbool.h>
 
 # define MALLOC_ERR "Error! malloc()"
 # define DUP_ERR "Error! dup()"
@@ -54,6 +56,7 @@ typedef struct	s_exec_data
 {
 	char			**argv;
 	int				len;
+	int				is_builtin;
 	t_io			input_type;
 	t_io			output_type;
 	t_redirect_type	redirect_type;
