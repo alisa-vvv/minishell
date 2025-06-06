@@ -44,10 +44,12 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].len = len;
 	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
 	exec_data[i].argv[0] = ft_strdup("cat");
+	//exec_data[i].argv[1] = ft_strdup("-l");
 	exec_data[i].argv[1] = NULL;
 	exec_data[i].argv[2] = NULL;
 	exec_data[i].is_builtin = false;
-	exec_data[i].input_type = heredoc;
+	exec_data[i].input_type = custom_fd;
+	//exec_data[i].input_type = heredoc;
 	exec_data[i].heredoc_delim = ft_strdup("EOF");
 	exec_data[i].output_type = pipe_write;
 	exec_data[i].in_filename = ft_strdup("infile");
@@ -87,7 +89,7 @@ t_exec_data	*test_get_dummy_exec_data(void)
 	exec_data[i].is_builtin = false;
 	exec_data[i].input_type = pipe_read;
 	exec_data[i].output_type = custom_fd;
-	exec_data[i].redirect_type = trunc;
+	exec_data[i].redirect_type = append;
 	exec_data[i].heredoc_delim = NULL;
 	exec_data[i].out_filename = ft_strdup("outfile");
 	i++;
@@ -126,14 +128,22 @@ int	set_out_fd(t_exec_data *command, int *out_fd)
 	return (err_check);
 }
 
-int	prepare_io_chain(t_exec_data *command, t_command_io *command_io, int i)
+int	prepare_io_chain(t_exec_data *command, t_command_io *command_io)
 {
 	int	err_check;
 
 	err_check = 0;
-	if (command->input_type != pipe_read)
-		set_in_fd(command, &command_io[i].in_fd, command_io[i].in_pipe);
-	if (command_io[i].in_fd < 0)
+	if (command->input_type == pipe_read)
+	{
+		command_io->in_fd = command_io->out_pipe[0];
+		command_io->in_pipe[0] = command_io->out_pipe[0];
+		command_io->in_pipe[1] = command_io->out_pipe[1];
+	}
+	else
+	{
+		set_in_fd(command, &command_io->in_fd, command_io->in_pipe);
+	}
+	if (command_io->in_fd < 0)
 	{
 		// ADD ERROR MANAGEMENT!!
 		printf("PLACEHOLDER, THIS SHOULD ERROR\n");
@@ -141,20 +151,23 @@ int	prepare_io_chain(t_exec_data *command, t_command_io *command_io, int i)
 
 	if (command->output_type == pipe_write)
 	{
-		err_check = pipe(command_io[i].out_pipe);
+		printf("out pipe prev[0]: %d\n", command_io->out_pipe[0]);
+		printf("out pipe prev[1]: %d\n", command_io->out_pipe[1]);
+		command_io->out_pipe[0] = 0;
+		command_io->out_pipe[1] = 0;
+		err_check = pipe(command_io->out_pipe);
 		if (err_check < 0)
 		{
 			// ADD ERROR MANAGEMENT!!
 			printf("PLACEHOLDER, THIS SHOULD ERROR\n");
 		}
-		command_io[i].out_fd = command_io[i].out_pipe[1];
-		command_io[i + 1].in_fd = command_io[i].out_pipe[0];
-		command_io[i + 1].in_pipe[0] = command_io[i].out_pipe[0];
-		command_io[i + 1].in_pipe[1] = command_io[i].out_pipe[1];
+		command_io->out_fd = command_io->out_pipe[1];
+		printf("out pipe new[0]: %d\n", command_io->out_pipe[0]);
+		printf("out pipe new[1]: %d\n", command_io->out_pipe[1]);
 	}
 	else
-		set_out_fd(command, &command_io[i].out_fd);
-	if (command_io[i].in_fd < 0 || err_check < 0)
+		set_out_fd(command, &command_io->out_fd);
+	if (command_io->in_fd < 0 || err_check < 0)
 	{
 		// ADD ERROR MANAGEMENT!!
 		printf("PLACEHOLDER, THIS SHOULD ERROR\n");
@@ -164,48 +177,27 @@ int	prepare_io_chain(t_exec_data *command, t_command_io *command_io, int i)
 
 // CHILDREN
 
-int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
+int	spawn_children(t_exec_data *command, t_command_io *command_io)
 {
 	char	**path_var;
 	pid_t	process_id;
-	int		close_index;
 
 	path_var = find_env_path();
-	if (i > 0) // this is a crutch. closes previous fds. I should not have them openm in the first place.
-	{
-		close(command_io[i - 1].in_pipe[0]);
-		close(command_io[i - 1].in_pipe[1]);
-	}
 	process_id = fork();
 	if (process_id == 0)
 	{
-		close_index = i;
-		while (++close_index <= command->len) // this is also a crutch, same deal. need to refactor this crap so I dont; have to do this
-		{
-			if (close_index > i + 1)
-			{
-				close(command_io[close_index].in_pipe[0]);
-				close(command_io[close_index].in_pipe[1]);
-			}
-			close(command_io[close_index].out_pipe[0]);
-			close(command_io[close_index].out_pipe[1]);
-		}
 		if (command->input_type != std_in)
 		{
-			dup2(command_io[i].in_fd, STDIN_FILENO);
-			close(command_io[i].in_fd);
-		//	close(command_io[i].in_pipe[0]);
+			dup2(command_io->in_fd, STDIN_FILENO);
+			close(command_io->in_fd);
 		}
-		if (command->input_type == pipe_read || command->input_type == heredoc)
-			close(command_io[i].in_pipe[1]);
-
 		if (command->output_type != std_out)
 		{
-			dup2(command_io[i].out_fd, STDOUT_FILENO);
-			close(command_io[i].out_fd);
+			dup2(command_io->out_fd, STDOUT_FILENO);
+			close(command_io->out_fd);
 		}
 		if (command->output_type == pipe_write)
-			close(command_io[i].out_pipe[0]);
+			close(command_io->out_pipe[0]);
 
 		try_execve((const char **) path_var, command->argv);
 		exit(9999); // placeholder obv
@@ -214,14 +206,14 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 	else if (process_id > 0)
 	{
 		if (command->input_type != std_in)
-			close(command_io[i].in_fd);
-		else if (command->input_type == heredoc)
+			close(command_io->in_fd);
+		else if (command->input_type == heredoc || command->input_type == pipe_read)
 		{
-			close(command_io[i].in_pipe[0]);
-			close(command_io[i].in_pipe[1]);
+			close(command_io->in_pipe[0]);
+			close(command_io->in_pipe[1]);
 		}
 		if (command->output_type != std_out && command->output_type != std_err)
-			close(command_io[i].out_fd);
+			close(command_io->out_fd);
 		test_free_exec_data(command);
 		return (0);
 	}
@@ -234,31 +226,17 @@ int	spawn_children(t_exec_data *command, t_command_io *command_io, int i)
 	return (0);
 }
 
-//	Refactor steps:
-//	1. single while loop for io preparation and actual execution, no reason to have them separate.
-//	2. each step needs to be aware of:
-//		a) it's own io fds
-//		b) previous pipe, if it exists
-//		c) next pipe, if it exists
-//		Outside the pipes, there is nothing they actually need to know about other members.
-//	3. So after each child spawn we should close all the created FDs in the parent process before proceeding.
-//	4. Also check if children can/need to close some. assumption is no (except pipe shenanigans maybe?) cause execve overtakes process.
-//	5. unless it's a built-in which means we do have to close and free everything properly. so make a check for that.
-//
 int	executor(t_exec_data *exec_data, int dummy_minishell_struct)
 {
 	int				i;
 	int				process_status;
-	t_command_io	*io_chain;
+	t_command_io	command_io;
 
-	io_chain = ft_calloc(exec_data->len, sizeof(t_command_io));
-	i = -1;
-	while (++i < exec_data->len)
-		prepare_io_chain(&exec_data[i], io_chain, i);
 	i = -1;
 	while (++i < exec_data->len)
 	{
-		if (spawn_children(&exec_data[i], io_chain, i) != 0)
+		prepare_io_chain(&exec_data[i], &command_io);
+		if (spawn_children(&exec_data[i], &command_io) != 0)
 		{
 			// ADD ERROR MANAGEMENT!!
 			printf("PLACEHOLDER, THIS SHOULD ERROR\n");
@@ -274,6 +252,5 @@ int	executor(t_exec_data *exec_data, int dummy_minishell_struct)
 				perror("Child process error\n");
 			}
 	}
-	free(io_chain);
 	return (1);
 }

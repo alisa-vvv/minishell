@@ -47,5 +47,6 @@ int	create_here_doc(t_exec_data *command, int here_doc[2])
 			printf("PLACEHOLDER - THIS SHOULD ERROR\n");
 		}
 	}
+	close(here_doc[1]);
 	return (err_check);
 }
