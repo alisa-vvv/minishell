@@ -14,16 +14,39 @@
 # define PARSER_H
 
 # include <stdio.h>
+# include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
-// typedef struct sVectorList
-// {
-//     void **elements;
-//     size_t size; (size in memory)
-//     size_t count; (number elements)
-// } sVectorList;
+# define TOKEN_INIT(el) element el;\
+    element_init(&el)
 
+typedef struct s_elementlist
+{
+    void **tokens;
+    size_t size; //(size in memory)
+    size_t total; //(number elements)
+} t_elementlist;
+
+typedef struct s_token
+{
+    int type;
+    char *value;
+    void *next;
+} t_token;
+
+typedef struct s_element element;
+struct s_element
+{
+    t_elementlist elementList;
+    int (*pfElementTotal)(element *);
+    int (*pfElementResize)(element *, int);
+    int (*pfElementAdd)(element *, void *);
+    int (*pfElementSet)(element *, int, void *);
+    void (*pfElementGet)(element *, int);
+    int *(*pfElementDelete)(element *, int);
+    int (*pfElementFree)(element *);
+};
 
 enum 
 {
@@ -51,14 +74,5 @@ enum
     QUESTION_MARK,
     EXCLAM_MARK
 }
-
-typedef struct s_token
-{
-    int type;
-    char *value;
-    void *next;
-} t_token;
-
-
 
 #endif
