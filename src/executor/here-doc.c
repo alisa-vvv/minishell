@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/05 19:39:01 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/05 20:21:32 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/09 19:16:19 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,37 +16,29 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-int	create_here_doc(t_exec_data *command, int here_doc[2])
+int	create_here_doc(
+	const t_exec_data *command,
+	int here_doc[2]
+)
 {
-	int			err_check;
-	size_t		delim_len;
-	char		*input_str;
+	const size_t	delim_len = ft_strlen(command->heredoc_delim);
+	int				err_check;
+	char			*input_str;
 
 	err_check = 0;
-	delim_len = ft_strlen(command->heredoc_delim);
 	err_check = pipe(here_doc);
 	if (err_check < 0)
-	{
-		// ADD ERROR MANAGEMENT
-		printf("PLACEHOLDER - THIS SHOULD ERROR\n");
-	}
-
+		perror_and_return(PIPE_ERR, LIBFUNC_ERR);
 	input_str = readline("heredoc> ");
 	if (input_str == NULL)
-	{
-		// ADD ERROR MANAGEMENT
-		printf("PLACEHOLDER - THIS SHOULD ERROR\n");
-	}
+		perror_and_return(READLINE_ERR, LIBFUNC_ERR);
 	while (ft_strncmp(input_str, command->heredoc_delim, delim_len) != 0)
 	{
-		ft_putstr_fd(input_str, here_doc[1]);
+		ft_putstr_fd(input_str, here_doc[WRITE_END]);
 		input_str = readline("heredoc> ");
 		if (input_str == NULL)
-		{
-			// ADD ERROR MANAGEMENT
-			printf("PLACEHOLDER - THIS SHOULD ERROR\n");
-		}
+			perror_and_return(READLINE_ERR, LIBFUNC_ERR);
 	}
-	close(here_doc[1]);
+	close(here_doc[WRITE_END]);
 	return (err_check);
 }

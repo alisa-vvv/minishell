@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/03 18:04:08 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/09 19:23:04 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,23 @@
 /* for true/false macro (and bool if we need it) */
 # include <stdbool.h>
 
+/*		Error Management	*/
+
 # define MALLOC_ERR "Error! malloc()"
+# define PIPE_ERR "Error! pipe()"
+# define FORK_ERR "Error! fork()"
+# define READLINE_ERR "Error! readline()"
 # define DUP_ERR "Error! dup()"
 # define DUP2_ERR "Error! dup2()"
+# define FD_ERR "Error! Wrong file descriptor"
+
+# define LIBFUNC_ERR 0
+# define MINISHELL_ERR 1
+
+int	perror_and_return(
+	const char *error_msg,
+	int	msh_errno
+);
 
 /*		Executor - data structures		*/
 

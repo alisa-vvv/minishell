@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-char	**find_env_path(void)
+const char	**find_env_path(void)
 {
 	int		i;
 	char	**path_arr;
@@ -30,7 +30,7 @@ char	**find_env_path(void)
 	}
 	if (!path_arr)
 		return (NULL);
-	return (path_arr);
+	return ((const char **) path_arr);
 }
 
 static int	perror_return(char *err_msg)
