@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "parser.h"
 #include <stdio.h> /*	readline	*/
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -36,7 +37,10 @@ int	main(void)
 		else if (strcmp(read_line, "exit") == 0)
 			is_open = 0;
 		else
+		{
+			default_lexer(read_line);
 			printf("We entered: %s\n", read_line);
+		}
 		add_history(read_line);
 	}
 	return (0);

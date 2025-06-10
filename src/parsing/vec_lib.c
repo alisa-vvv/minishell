@@ -74,13 +74,13 @@ void *elementGet(element *e, int index)
     token_data = NULL;
     if (e)
     {
-        if ((index >= 0) && (index < e->elementList.tokens[index]))
+        if ((index >= 0) && ((size_t)index < e->elementList.total))
             token_data = e->elementList.tokens[index];
     }
     return (token_data);
 }
 
-void elementDelete(element *e, int index)
+int elementDelete(element *e, int index)
 {
     int i;
     int status; 
@@ -88,7 +88,7 @@ void elementDelete(element *e, int index)
     status = -1;
     if (e)
     {
-        if ((index < 0) || (index >= e->elementList.total))
+        if ((index < 0) || ((size_t)index >= e->elementList.total))
             return (-1);
         e->elementList.tokens[index] = NULL;
         i = index;
@@ -105,16 +105,20 @@ void elementDelete(element *e, int index)
     }
     return (status);
 }
+
 int elementFree(element *e)
 {
     if (e)
     {
-        ft_freearr(e->elementList.tokens);
+        ft_free_arr(e->elementList.tokens);
+        e->elementList.total = 0;
+        e->elementList.tokens = NULL;
         return (0);
     }
     return (-1);
 }
-void element_init(element *e)
+
+void element_init(element *e, int size)
 {
     e->pfElementTotal = elementTotal;
     e->pfElementResize = elementResize;
@@ -124,7 +128,7 @@ void element_init(element *e)
     e->pfElementFree = elementFree;
     e->pfElementDelete = elementDelete;
 
-    e->elementList.size = 6;
+    e->elementList.size = size;
     e->elementList.total = 0;
     e->elementList.tokens = malloc(sizeof(void *) * e->elementList.size);
     if (!e->elementList.tokens)

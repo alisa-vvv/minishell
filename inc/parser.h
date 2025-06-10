@@ -18,8 +18,9 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-# define TOKEN_INIT(el) element el;\
-    element_init(&el)
+# define MALLOC_ERR "Error! malloc()"
+# define TOKEN_INIT(el, size) element el;\
+    element_init(&el, size)
 
 typedef struct s_elementlist
 {
@@ -32,10 +33,10 @@ typedef struct s_token
 {
     int type;
     char *value;
-    void *next;
 } t_token;
 
 typedef struct s_element element;
+
 struct s_element
 {
     t_elementlist elementList;
@@ -53,8 +54,6 @@ enum
     COMMAND, 
     STRING, 
     NUMBER,
-    FILE,
-    DIR,
     BLANK,
     
     SINGLE_Q_OPEN,
@@ -73,6 +72,13 @@ enum
     BACKW_SLASH,
     QUESTION_MARK,
     EXCLAM_MARK
-}
+};
+
+int default_lexer(char *input_line);
+int fill_tokenlist(element *tokenlist, char *str);
+void	ft_safefree(void *ptr);
+void	ft_free_arr(void **array);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+
 
 #endif
