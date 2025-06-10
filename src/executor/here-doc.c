@@ -39,6 +39,6 @@ int	create_here_doc(
 		if (input_str == NULL)
 			perror_and_return(READLINE_ERR, LIBFUNC_ERR);
 	}
-	close(here_doc[WRITE_END]);
+	test_close(here_doc[WRITE_END]);
 	return (err_check);
 }

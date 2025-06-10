@@ -32,7 +32,7 @@ static int	set_in_fd(
 		*in_fd = heredoc_pipe[READ_END];
 	}
 	if (*in_fd < 0)
-		perror_and_return(FD_ERR, LIBFUNC_ERR);
+		perror_and_return(FD_ERR, MINISHELL_ERR);
 	return (err_check);
 }
 

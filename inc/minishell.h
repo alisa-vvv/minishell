@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/09 19:23:04 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/10 19:00:02 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,29 @@ typedef enum	e_io
 	pipe_write,
 	custom_fd,
 }	t_io;
+
+typedef enum	e_input_type
+{
+	default_in,
+	custom_in,
+	special_in,
+}	t_input_type;
+
+typedef struct	s_output_redir
+{
+	int	redirect_src;
+	int	redirect_dst;
+}	t_output_redir;
+
+
+typedef struct	new_s_exec_data
+{
+	char			**argv;
+	int				len;
+	int				is_builtin;
+	t_input_type	in_type;
+	t_output_redir	out_redir;
+}	new_t_exec_data;
 
 typedef struct	s_exec_data
 {

@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:25:20 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/09 18:15:14 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/10 17:37:28 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,9 @@ int			try_execve(
 	const char **path,
 	char *const argv[]
 );
+
+/*		Test Functions		*/
+void	test_close(int fd);
+void	test_dup2(int oldfd, int newfd);
 
 #endif

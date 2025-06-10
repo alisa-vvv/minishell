@@ -19,7 +19,7 @@ int	perror_and_return(
 	int	msh_errno
 )
 {
-	if (msh_errno != 0)
+	if (msh_errno == MINISHELL_ERR)
 	{
 		// PLACEHOLDER - FOR CUSTOM ERROR MESSSAGES NOT RELATED TO LIBRARY FUNCTIONS FAILING
 		printf("ADD A MINISHELL_PERROR\n");
