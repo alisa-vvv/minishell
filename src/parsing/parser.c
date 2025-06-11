@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 
-#include "minishell.h"
+#include "parser.h"
 
 // top-down parser ll1 parser?, without backtracking,
 // looking for elements to expand from 
@@ -36,4 +36,27 @@
 //  - filename expansion 
 
 
+//func to traverse list and find closing brackets or quotes
+int find_closing_symbol(element *tokenlist, char symbol)
+{
+    t_token *check_token;
+    size_t i;
 
+    i = 1;
+    while(i < tokenlist->elementList.total)
+    {
+        check_token = (t_token *)tokenlist->elementList.tokens[i];
+        if (ft_strchr(check_token->value, symbol) != NULL)
+            return (1);
+        i++;
+    }
+    return (0);
+}
+
+int lookahead(element *tokenlist, size_t index)
+{
+    t_token *check_token;
+    check_token = (t_token *)tokenlist->pfElementGet(&tokenlist, index);
+    if (check_token->type)
+
+}

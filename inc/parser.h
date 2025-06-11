@@ -25,14 +25,15 @@
 typedef struct s_elementlist
 {
     void **tokens;
-    size_t size; //(size in memory)
-    size_t total; //(number elements)
+    size_t size; // in mem
+    size_t total;
 } t_elementlist;
 
 typedef struct s_token
 {
     int type;
     char *value;
+    
 } t_token;
 
 typedef struct s_element element;
@@ -63,9 +64,10 @@ enum
 
     DOUBLE_DOT,
     DOT,
-    DASH,
+    HYPHEN,
     PIPE,
     REDIRECT,
+    HEREDOC, 
     OPEN_BRACKET,
     CLOSED_BRACKET,
     DOLLAR_SIGN,
@@ -74,6 +76,15 @@ enum
     QUESTION_MARK,
     EXCLAM_MARK
 };
+
+int elementTotal(element *e);
+int elementResize(element *e, int size);
+int elementPushBack(element *e, void *token);
+int elementSet(element *e, int index, void *token);
+void *elementGet(element *e, int index);
+int elementDelete(element *e, int index);
+int elementFree(element *e);
+void element_init(element *e, int size);
 
 int         default_lexer(char *input_line);
 int         token_count(char *str);

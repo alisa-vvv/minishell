@@ -135,6 +135,7 @@ int default_lexer(char *input_line)
     }
     return (0);
 }
+
 //set a value to the token so we can expand on those later
 int match_token(char *str_token)
 {
@@ -150,6 +151,8 @@ int match_token(char *str_token)
         return (BACKW_SLASH);
     else if ((str_token[0] == '>') && (str_token[1] == '>'))
         return (REDIRECT);
+    else if ((str_token[0] == '<') && (str_token[1] == '<'))
+        return (HEREDOC);
     else if ((str_token[0] == '.') && (str_token[1] == '.'))
         return (DOUBLE_DOT);
     else if (str_token[0] == '.')
@@ -157,5 +160,11 @@ int match_token(char *str_token)
     else if (str_token[0] == '|')
         return (PIPE);
     else 
-        return (STRING);
+        match_symbol(str_token);
+}
+
+int match_symbol(char *str_token)
+{
+    if ()
+    
 }
