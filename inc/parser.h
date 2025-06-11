@@ -44,8 +44,8 @@ struct s_element
     int (*pfElementResize)(element *, int);
     int (*pfElementAdd)(element *, void *);
     int (*pfElementSet)(element *, int, void *);
-    void (*pfElementGet)(element *, int);
-    int *(*pfElementDelete)(element *, int);
+    void *(*pfElementGet)(element *, int);
+    int (*pfElementDelete)(element *, int);
     int (*pfElementFree)(element *);
 };
 

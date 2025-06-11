@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 #include "parser.h"
+#include <string.h>
 #include <stdio.h> /*	readline	*/
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -33,7 +34,7 @@ int	main(void)
 	{
 		read_line = readline("minishell ");
 		if (strcmp(read_line, "clear") == 0)
-			rl_clear_history();
+			clear_history();
 		else if (strcmp(read_line, "exit") == 0)
 			is_open = 0;
 		else

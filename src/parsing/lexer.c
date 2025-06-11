@@ -96,7 +96,7 @@ int fill_tokenlist(element **tokenlist, char *str)
         }
         if (len > 0)
         {
-            token = new_token(str - len, len);
+            token = new_token(str - len, len + 1);
             if (!token)
             {
                 (*tokenlist)->pfElementFree(*tokenlist);
@@ -121,8 +121,10 @@ int default_lexer(char *input_line)
     TOKEN_INIT(token_list, token_c);
     fill_tokenlist(&token_list, input_line);
     if (!token_list.elementList.tokens)
-        return (NULL);
-    printf("%s\n", (char *)token_list.pfElementGet(&token_list, 0));
+        return (1);
+    t_token *token_test;
+    token_test = (t_token *)token_list.elementList.tokens[0];
+    printf("%s\n", token_test->value);
     return (0);
 }
 

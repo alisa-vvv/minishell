@@ -173,7 +173,7 @@ t_token *new_token(char *str, int len)
     if (!token)
         return (NULL);
     token->value = malloc((len + 1) * sizeof(char));
-    token->value = ft_strlcpy(token->value, str, len);
+    ft_strlcpy(token->value, str, len);
     if (!token->value)
         return (NULL);
 //    token->type = match(token->value);
@@ -218,7 +218,7 @@ int fill_tokenlist(element *tokenlist, char *str)
         }
         if (len > 0)
         {
-            token = new_token(str - len, len);
+            token = new_token(str - len, len + 1);
             if (!token)
             {
                 tokenlist->pfElementFree(tokenlist);
@@ -244,7 +244,11 @@ int default_lexer(char *input_line)
     fill_tokenlist(&token_list, input_line);
     if (!token_list.elementList.tokens)
         return (1);
-    printf("%s\n", (char*)token_list.elementList.tokens[0].value);
+    t_token *token_test;
+    token_test = (t_token *)token_list.elementList.tokens[0];
+    t_token *token_test2 = (t_token *)token_list.elementList.tokens[1];
+    printf("%s\n", token_test->value);
+    printf("%s\n", token_test2->value);
     return (0);
 }
 
