@@ -48,14 +48,7 @@ int	perror_and_return(
 
 /*		Executor - data structures		*/
 
-typedef enum	e_redirect_type
-{
-	none,
-	append,
-	trunc,
-}	t_redirect_type;
-
-typedef enum	e_io
+typedef enum	e_io // remove
 {
 	std_in,
 	std_err,
@@ -66,40 +59,45 @@ typedef enum	e_io
 	custom_fd,
 }	t_io;
 
-typedef enum	e_input_type
+typedef enum	e_input_type // remove
 {
 	default_in,
 	custom_in,
 	special_in,
 }	t_input_type;
 
-typedef struct	s_output_redir
-{
-	int	redirect_src;
-	int	redirect_dst;
-}	t_output_redir;
 
-
-typedef struct	new_s_exec_data
+typedef enum	e_redirect_type
 {
-	char			**argv;
-	int				len;
-	int				is_builtin;
-	t_input_type	in_type;
-	t_output_redir	out_redir;
-}	new_t_exec_data;
+	none,
+	append,
+	trunc,
+	//heredoc, // maybe?
+}	t_redirect_type;
+
+typedef struct	s_redir_list
+{
+	t_redirect_type		redirect_type;
+	char				*redir_src;		// if heredoc, then this null
+	char				*redir_dst;
+	char				*heredoc_delim; // null or delim, will be used to check if input is heredoc
+	struct s_redir_list	*next;
+}	t_redir_list;
 
 typedef struct	s_exec_data
 {
 	char			**argv;
-	int				len;
+	int				len;			// remove, pass the count separately
 	int				is_builtin;
-	t_io			input_type;
-	t_io			output_type;
-	t_redirect_type	redirect_type;
-	char			*in_filename;
-	char			*out_filename;
-	char			*heredoc_delim;
+	t_io			input_type;		// remove
+	t_io			output_type;	// remove
+	t_redirect_type	redirect_type;	// remove
+	char			*in_filename;	// remove
+	char			*out_filename;	// remove
+	char			*heredoc_delim; // remvoe
+	// add: int				input_is_pipe;
+	// add: int				output_is_pipe;
+	// add: t_redir_list	redirections;
 }	t_exec_data;
 
 #endif

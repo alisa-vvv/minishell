@@ -141,6 +141,7 @@ static int	run_child_process(
 {
 	int	err_check;
 
+	/*	replace all of this with a loop that performs redirectins	*/
 	if (command->input_type != std_in)
 	{
 		test_dup2(command_io->in_fd, STDIN_FILENO);
@@ -153,6 +154,7 @@ static int	run_child_process(
 	}
 	if (command->output_type == pipe_write)
 		test_close(command_io->out_pipe[READ_END]);
+	/*	end replace	*/
 
 	if (command->is_builtin == false)
 		try_execve(path, command->argv);
