@@ -244,11 +244,15 @@ int default_lexer(char *input_line)
     fill_tokenlist(&token_list, input_line);
     if (!token_list.elementList.tokens)
         return (1);
+    size_t i = 0;
     t_token *token_test;
-    token_test = (t_token *)token_list.elementList.tokens[0];
-    t_token *token_test2 = (t_token *)token_list.elementList.tokens[1];
-    printf("%s\n", token_test->value);
-    printf("%s\n", token_test2->value);
+  
+    while (i < token_list.elementList.total)
+    {
+        token_test = (t_token *)token_list.elementList.tokens[i];
+        printf("%s\n", token_test->value);
+        i++;
+    }
     return (0);
 }
 

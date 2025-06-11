@@ -74,11 +74,13 @@ enum
     EXCLAM_MARK
 };
 
-int default_lexer(char *input_line);
-int fill_tokenlist(element *tokenlist, char *str);
-void	ft_safefree(void *ptr);
-void	ft_free_arr(void **array);
-size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+int         default_lexer(char *input_line);
+int         token_count(char *str);
+t_token *   new_token(char *str, int len);
+int         fill_tokenlist(element *tokenlist, char *str);
+void	    ft_safefree(void *ptr);
+void	    ft_free_arr(void **array);
+size_t	    ft_strlcpy(char *dst, const char *src, size_t size);
 
 
 #endif

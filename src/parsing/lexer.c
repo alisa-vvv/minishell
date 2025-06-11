@@ -108,7 +108,7 @@ int fill_tokenlist(element **tokenlist, char *str)
     return (0);
 }
 
-
+//default option to put input as token into dyn array elementlist
 int default_lexer(char *input_line)
 {
     int token_c;
@@ -122,21 +122,26 @@ int default_lexer(char *input_line)
     fill_tokenlist(&token_list, input_line);
     if (!token_list.elementList.tokens)
         return (1);
+    size_t i = 0;
     t_token *token_test;
-    token_test = (t_token *)token_list.elementList.tokens[0];
-    printf("%s\n", token_test->value);
+  
+    while (i < token_list.elementList.total)
+    {
+        token_test = (t_token *)token_list.elementList.tokens[i];
+        printf("%s\n", token_test->value);
+        i++;
+    }
     return (0);
 }
 
 
+int match_token(char *str_read)
+{
+    int i;
+    i = 0; 
+    if (str_read[i] == '"')
+        return DOUBLE_Q_OPEN;
+    else if (str_read[i] == '')
+        return 
 
-// int match_token(char *str_read)
-// {
-//     int i;
-//     i = 0; 
-//     if (str_read[i] == '"')
-//         return DOUBLE_Q_OPEN;
-//     else if (str_read[i] == '')
-//         return 
-
-// }
+}
