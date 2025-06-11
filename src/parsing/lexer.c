@@ -58,6 +58,7 @@ t_token *new_token(char *str, int len)
     return (token);
 }
 
+//counts args to size up elementlist
 int token_count(char *str)
 {
     int tokencount;
@@ -79,6 +80,7 @@ int token_count(char *str)
     return (tokencount);
 }
 
+//pushes tokens in the elementlist from the back
 int fill_tokenlist(element **tokenlist, char *str)
 {
     size_t len;
@@ -124,7 +126,7 @@ int default_lexer(char *input_line)
         return (1);
     size_t i = 0;
     t_token *token_test;
-  
+
     while (i < token_list.elementList.total)
     {
         token_test = (t_token *)token_list.elementList.tokens[i];
@@ -133,15 +135,27 @@ int default_lexer(char *input_line)
     }
     return (0);
 }
-
-
-int match_token(char *str_read)
+//set a value to the token so we can expand on those later
+int match_token(char *str_token)
 {
-    int i;
-    i = 0; 
-    if (str_read[i] == '"')
+    if (str_token[0] == 34)
         return DOUBLE_Q_OPEN;
-    else if (str_read[i] == '')
-        return 
-
+    else if (str_token[0] == 39)
+        return (SINGLE_Q_OPEN);
+    else if (str_token[0] == '$')
+        return (DOLLAR_SIGN);
+    else if (str_token[0] == '!')
+        return (EXCLAM_MARK);
+    else if (str_token[0] == 92)
+        return (BACKW_SLASH);
+    else if ((str_token[0] == '>') && (str_token[1] == '>'))
+        return (REDIRECT);
+    else if ((str_token[0] == '.') && (str_token[1] == '.'))
+        return (DOUBLE_DOT);
+    else if (str_token[0] == '.')
+        return (DOT);
+    else if (str_token[0] == '|')
+        return (PIPE);
+    else 
+        return (STRING);
 }

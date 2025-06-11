@@ -65,6 +65,7 @@ enum
     DOT,
     DASH,
     PIPE,
+    REDIRECT,
     OPEN_BRACKET,
     CLOSED_BRACKET,
     DOLLAR_SIGN,

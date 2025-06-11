@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <stdbool.h>
 
@@ -230,7 +231,6 @@ int fill_tokenlist(element *tokenlist, char *str)
     return (0);
 }
 
-
 int default_lexer(char *input_line)
 {
     int token_c;
@@ -246,7 +246,7 @@ int default_lexer(char *input_line)
         return (1);
     size_t i = 0;
     t_token *token_test;
-  
+
     while (i < token_list.elementList.total)
     {
         token_test = (t_token *)token_list.elementList.tokens[i];
@@ -255,4 +255,3 @@ int default_lexer(char *input_line)
     }
     return (0);
 }
-
