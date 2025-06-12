@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/12 17:27:04 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 17:28:01 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 18:48:28 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	perform_input_redirection(
 	t_redir_list *redirection
 )
 {
-	int			fd;
+	int	fd;
 
 	fd = open(redirection->dest, O_RDONLY);
 	if (fd < 0)
@@ -28,6 +28,23 @@ static int	perform_input_redirection(
 		return (1);
 	}
 	dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
+}
+
+static int	perform_heredoc_redirection(
+	t_redir_list *redirection
+)
+{
+	int	fd;
+
+	fd = create_here_doc(redirection->heredoc_delim);
+	if (fd < 0)
+	{
+		printf("PLACEHOLDER ERROR\n");
+		return (1);
+	}
+	dup2(fd, redirection->src);
 	close(fd);
 	return (0);
 }
@@ -65,8 +82,7 @@ int	perform_redirections(
 		if (redirections->type == input)
 			perform_input_redirection(redirections);
 		else if (redirections->type == heredoc)
-		{
-		}
+			perform_heredoc_redirection(redirections);
 		else
 			perform_output_redirection(redirections);
 		redirections = redirections->next;

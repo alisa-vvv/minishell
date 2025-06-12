@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 14:41:06 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 18:11:12 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@
 
 int	perror_and_return(
 	const char *error_msg,
-	int	msh_errno
+	int	msh_errno,
+	int return_value
 );
 
 /*		Executor - data structures		*/

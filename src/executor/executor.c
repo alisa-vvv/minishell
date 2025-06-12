@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 17:28:53 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 18:23:18 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ t_redir_list	*test_add_redirection(
 	const t_redir_list *first,
 	const t_redirect_type type,
 	const int src,
-	const char *dest
+	const char *dest,
+	const char *heredoc_delim
 	)
 {
 	t_redir_list	*cur_node = (t_redir_list *) first;
@@ -43,7 +44,10 @@ t_redir_list	*test_add_redirection(
 
 	redir_list->type = type;
 	redir_list->src = src;
-	redir_list->dest = ft_strdup(dest);
+	if (dest)
+		redir_list->dest = ft_strdup(dest);
+	if (heredoc_delim)
+		redir_list->heredoc_delim = ft_strdup(heredoc_delim);
 	redir_list->next = NULL;
 	if (first != NULL)
 		{
@@ -70,7 +74,8 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	exec_data[i].is_builtin = false;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = true;
-	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile");
+	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
+	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
 	i++;
 
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
@@ -95,7 +100,7 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	exec_data[i].is_builtin = false;
 	exec_data[i].input_is_pipe = true;
 	exec_data[i].output_is_pipe = false;
-	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile");
+	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile", NULL);
 	i++;
 
 	//exec_data[i].len = len;
@@ -170,7 +175,7 @@ int	execute_command(
 	else if (process_id > 0)
 		cleanup_in_parent_process(command, command_io);
 	else if (process_id < 0)
-		perror_and_return(FORK_ERR, LIBFUNC_ERR);
+		perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 

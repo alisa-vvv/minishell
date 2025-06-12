@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/09 18:12:11 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 14:57:17 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 18:20:40 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,7 @@ int	prepare_command_io(
 	{
 		err_check = pipe(command_io->out_pipe);
 		if (err_check < 0)
-		{
 			return (1);
-		}
 	}
 	return (err_check);
 }
