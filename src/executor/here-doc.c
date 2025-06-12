@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/05 19:39:01 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 18:11:26 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 19:05:47 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "executor.h"
 #include <stdio.h>
 #include <fcntl.h>
+#include <curses.h>
+#include <term.h>
 
 int	create_here_doc(
 	const char *heredoc_delim
