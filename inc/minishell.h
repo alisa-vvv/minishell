@@ -50,11 +50,10 @@ int	perror_and_return(
 
 typedef enum	e_redirect_type
 {
-	none,
 	input,
 	append,
 	trunc,
-	heredoc, // maybe?
+	heredoc,
 }	t_redirect_type;
 
 typedef struct	s_redir_list

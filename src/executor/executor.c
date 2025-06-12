@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 15:07:06 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 17:28:53 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,12 @@ t_redir_list	*test_add_redirection(
 	redir_list->src = src;
 	redir_list->dest = ft_strdup(dest);
 	redir_list->next = NULL;
-
 	if (first != NULL)
-	{
-		while (cur_node->next != NULL)
-			cur_node = cur_node->next;
-		cur_node->next = redir_list;
-	}
+		{
+			while (cur_node->next != NULL)
+				cur_node = cur_node->next;
+			cur_node->next = redir_list;
+		}
 	else
 		first = redir_list;
 	return ((t_redir_list *) first);
@@ -96,7 +95,7 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	exec_data[i].is_builtin = false;
 	exec_data[i].input_is_pipe = true;
 	exec_data[i].output_is_pipe = false;
-	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, trunc, STDOUT_FILENO, "infile");
+	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile");
 	i++;
 
 	//exec_data[i].len = len;
@@ -117,59 +116,39 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 
 // CHILDREN
 
-static int	perform_redirections(
-	const t_redir_list *redirections,
-	t_command_io *const command_io
-)
-{
-	return (0);
-}
 
 static int	cleanup_in_parent_process(
 	const t_exec_data *command,
 	t_command_io *const command_io
 )
 {
-	if (command->input_type != std_in)
-		test_close(command_io->in_fd);
-	else if (command->input_type == heredoc || command->input_type == pipe_read)
-	{
-		test_close(command_io->in_pipe[READ_END]);
-		test_close(command_io->in_pipe[WRITE_END]);
-	}
-	if (command->output_type != std_out && command->output_type != std_err)
-		test_close(command_io->out_fd);
+	if (command->input_is_pipe == true)
+		close(command_io->in_pipe[READ_END]);
+	if (command->output_is_pipe == true)
+		close(command_io->out_pipe[WRITE_END]);
 	test_free_exec_data((t_exec_data *) command);
 	return (0);
 }
 
-// run command_io in child process
-// then run perform_redirections in child process
-// cleanup in parent should be unnecessary at that point
-//
 static int	run_child_process(
 	const t_exec_data *command,
-	t_command_io *const command_io,
+	const t_command_io *command_io,
 	const char **path
 )
 {
-	int	err_check;
+	int				err_check;
 
-	/*	replace all of this with a loop that performs redirectins	*/
-	if (command->input_type != std_in)
+	if (command->input_is_pipe == true)
 	{
-		test_dup2(command_io->in_fd, STDIN_FILENO);
-		test_close(command_io->in_fd);
+		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
+		test_close(command_io->in_pipe[READ_END]);
 	}
-	if (command->output_type != std_out)
+	if (command->output_is_pipe == true)
 	{
-		test_dup2(command_io->out_fd, STDOUT_FILENO);
-		test_close(command_io->out_fd);
+		test_dup2(command_io->out_pipe[WRITE_END], STDOUT_FILENO);
+		test_close(command_io->out_pipe[WRITE_END]);
 	}
-	if (command->output_type == pipe_write)
-		test_close(command_io->out_pipe[READ_END]);
-	/*	end replace	*/
-
+	perform_redirections(command->redirections, command_io);
 	if (command->is_builtin == false)
 		try_execve(path, command->argv);
 	else if (command->is_builtin == true)
@@ -190,7 +169,7 @@ int	execute_command(
 		run_child_process(command, command_io, path);
 	else if (process_id > 0)
 		cleanup_in_parent_process(command, command_io);
-	else
+	else if (process_id < 0)
 		perror_and_return(FORK_ERR, LIBFUNC_ERR);
 	return (EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:25:20 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 14:48:11 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 17:28:26 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 # define WRITE_END 1
 typedef struct	s_command_io
 {
-	int	in_fd;
-	int	out_fd;
 	int	in_pipe[2];
 	int	out_pipe[2];
 }	t_command_io;
@@ -35,7 +33,7 @@ int	executor(
 
 /*		Here-doc		*/
 int	create_here_doc(
-	const t_exec_data *command,
+	const char *heredoc_delim,
 	int here_doc[2]
 );
 
@@ -43,6 +41,11 @@ int	create_here_doc(
 int	prepare_command_io(
 	const t_exec_data *command,
 	t_command_io *const command_io
+);
+
+int	perform_redirections(
+	t_redir_list *redirections,
+	const t_command_io *command_io
 );
 
 /*		Try_execve		*/

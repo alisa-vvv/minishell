@@ -63,21 +63,17 @@ int	prepare_command_io(
 
 	if (command->input_is_pipe == true)
 	{
-		command_io->in_fd = command_io->out_pipe[READ_END];
 		command_io->in_pipe[READ_END] = command_io->out_pipe[READ_END];
 		command_io->in_pipe[WRITE_END] = command_io->out_pipe[WRITE_END];
 	}
-	if (command_io->in_fd < 0 || err_check < 0)
-		return (1);
 
 	if (command->output_is_pipe == true)
 	{
 		err_check = pipe(command_io->out_pipe);
 		if (err_check < 0)
+		{
 			return (1);
-		command_io->out_fd = command_io->out_pipe[WRITE_END];
+		}
 	}
-	if (command_io->out_fd < 0)
-		return (1);
 	return (err_check);
 }

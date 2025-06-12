@@ -17,11 +17,11 @@
 #include <fcntl.h>
 
 int	create_here_doc(
-	const t_exec_data *command,
+	const char *heredoc_delim,
 	int here_doc[2]
 )
 {
-	const size_t	delim_len = ft_strlen(command->heredoc_delim);
+	const size_t	delim_len = ft_strlen(heredoc_delim);
 	int				err_check;
 	char			*input_str;
 
@@ -32,7 +32,7 @@ int	create_here_doc(
 	input_str = readline("heredoc> ");
 	if (input_str == NULL)
 		perror_and_return(READLINE_ERR, LIBFUNC_ERR);
-	while (ft_strncmp(input_str, command->heredoc_delim, delim_len) != 0)
+	while (ft_strncmp(input_str, heredoc_delim, delim_len) != 0)
 	{
 		ft_putstr_fd(input_str, here_doc[WRITE_END]);
 		input_str = readline("heredoc> ");

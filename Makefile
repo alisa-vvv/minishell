@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/06/10 17:22:15 by avaliull     ########   odam.nl           #
+#    Updated: 2025/06/12 17:29:38 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +18,10 @@ NAME	=	minishell
 CFILES	=	minishell.c\
 			errors.c\
 			executor.c\
+			command_io_setup.c\
+			redirections.c\
 			here-doc.c\
 			try_execve.c\
-			command_io_setup.c\
 			executor_test.c\
 			test_funcs.c
 
