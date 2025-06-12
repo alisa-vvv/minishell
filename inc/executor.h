@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:25:20 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/10 17:37:28 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 14:48:11 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ typedef struct	s_command_io
 }	t_command_io;
 
 /*		Executor - temporary functions!		*/
-t_exec_data	*test_get_dummy_exec_data();
+t_exec_data	*test_get_dummy_exec_data(int len);
 int	executor(
 	const t_exec_data *exec_data,
+	int command_count,
 	int dummy_minishell_struct
 );
 

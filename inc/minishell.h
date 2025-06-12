@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/10 19:00:02 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 14:41:06 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,38 +48,20 @@ int	perror_and_return(
 
 /*		Executor - data structures		*/
 
-typedef enum	e_io // remove
-{
-	std_in,
-	std_err,
-	std_out,
-	heredoc,
-	pipe_read,
-	pipe_write,
-	custom_fd,
-}	t_io;
-
-typedef enum	e_input_type // remove
-{
-	default_in,
-	custom_in,
-	special_in,
-}	t_input_type;
-
-
 typedef enum	e_redirect_type
 {
 	none,
+	input,
 	append,
 	trunc,
-	//heredoc, // maybe?
+	heredoc, // maybe?
 }	t_redirect_type;
 
 typedef struct	s_redir_list
 {
-	t_redirect_type		redirect_type;
-	char				*redir_src;		// if heredoc, then this null
-	char				*redir_dst;
+	t_redirect_type		type;
+	char				src; // if heredoc, or not used
+	char				*dest;
 	char				*heredoc_delim; // null or delim, will be used to check if input is heredoc
 	struct s_redir_list	*next;
 }	t_redir_list;
@@ -87,17 +69,10 @@ typedef struct	s_redir_list
 typedef struct	s_exec_data
 {
 	char			**argv;
-	int				len;			// remove, pass the count separately
 	int				is_builtin;
-	t_io			input_type;		// remove
-	t_io			output_type;	// remove
-	t_redirect_type	redirect_type;	// remove
-	char			*in_filename;	// remove
-	char			*out_filename;	// remove
-	char			*heredoc_delim; // remvoe
-	// add: int				input_is_pipe;
-	// add: int				output_is_pipe;
-	// add: t_redir_list	redirections;
+	int				input_is_pipe;
+	int				output_is_pipe;
+	t_redir_list	*redirections;
 }	t_exec_data;
 
 #endif

@@ -20,5 +20,6 @@ tester/.
 minishell
 infile
 outfile
+outfile_bash
 bash_outfile
 file

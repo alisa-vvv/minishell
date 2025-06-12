@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/10 18:21:12 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 15:07:06 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,6 @@ void	test_free_exec_data(t_exec_data	*exec_data)
 {
 	if (exec_data->argv)
 		free_2d_arr((void **) exec_data->argv);
-	if (exec_data->in_filename)
-		free(exec_data->in_filename);
-	if (exec_data->out_filename)
-		free(exec_data->out_filename);
 }
 
 int	test_dummy_builtin(
@@ -35,66 +31,72 @@ int	test_dummy_builtin(
 	return (0);
 }
 
-t_exec_data	*test_get_dummy_exec_data(void)
+t_redir_list	*test_add_redirection(
+	const t_redir_list *first,
+	const t_redirect_type type,
+	const int src,
+	const char *dest
+	)
+{
+	t_redir_list	*cur_node = (t_redir_list *) first;
+	t_redir_list	*redir_list = ft_calloc(1, sizeof(*redir_list));
+
+	redir_list->type = type;
+	redir_list->src = src;
+	redir_list->dest = ft_strdup(dest);
+	redir_list->next = NULL;
+
+	if (first != NULL)
+	{
+		while (cur_node->next != NULL)
+			cur_node = cur_node->next;
+		cur_node->next = redir_list;
+	}
+	else
+		first = redir_list;
+	return ((t_redir_list *) first);
+}
+
+t_exec_data	*test_get_dummy_exec_data(int len)
 {
 	t_exec_data	*exec_data;
 
+	len = 4;
 	int i = 0;
-	int len = 4;
-	exec_data = ft_calloc(len, sizeof(t_exec_data));
-	exec_data[i].len = len;
-	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
+	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
 	exec_data[i].argv[0] = ft_strdup("cat");
+	//exec_data[i].argv[0] = ft_strdup("ls");
 	//exec_data[i].argv[1] = ft_strdup("-l");
-	exec_data[i].argv[1] = NULL;
-	exec_data[i].argv[2] = NULL;
 	exec_data[i].is_builtin = false;
-	exec_data[i].input_type = custom_fd;
-	//exec_data[i].input_type = heredoc;
-	exec_data[i].heredoc_delim = ft_strdup("EOF");
-	exec_data[i].output_type = custom_fd;
-	exec_data[i].in_filename = ft_strdup("infile");
-	exec_data[i].out_filename = ft_strdup("testfile");
+	exec_data[i].input_is_pipe = false;
+	exec_data[i].output_is_pipe = true;
+	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile");
 	i++;
 
-	exec_data[i].len = len;
-	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("ls");
-	//exec_data[i].argv[1] = ft_strdup("");
-	exec_data[i].argv[1] = NULL;
-	//exec_data[i].argv[2] = NULL;
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	exec_data[i].argv[0] = ft_strdup("cat");
+	exec_data[i].argv[1] = ft_strdup("-e");
 	exec_data[i].is_builtin = false;
-	exec_data[i].input_type = pipe_read;
-	exec_data[i].output_type = pipe_write;
-	exec_data[i].redirect_type = append;
-	exec_data[i].heredoc_delim = NULL;
-	exec_data[i].out_filename = ft_strdup("midfile");
+	exec_data[i].input_is_pipe = true;
+	exec_data[i].output_is_pipe = true;
 	i++;
 
-	exec_data[i].len = len;
-	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
 	exec_data[i].argv[0] = ft_strdup("cat");
 	exec_data[i].argv[1] = ft_strdup("-T");
-	exec_data[i].argv[2] = NULL;
 	exec_data[i].is_builtin = false;
-	exec_data[i].input_type = pipe_read;
-	exec_data[i].output_type = pipe_write;
-	exec_data[i].redirect_type = append;
-	exec_data[i].heredoc_delim = NULL;
-	exec_data[i].out_filename = ft_strdup("midfile");
+	exec_data[i].input_is_pipe = true;
+	exec_data[i].output_is_pipe = true;
 	i++;
 
-	exec_data[i].len = len;
-	exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
 	exec_data[i].argv[0] = ft_strdup("cat");
 	exec_data[i].argv[1] = ft_strdup("-b");
-	exec_data[i].argv[2] = NULL;
 	exec_data[i].is_builtin = false;
-	exec_data[i].input_type = pipe_read;
-	exec_data[i].output_type = custom_fd;
-	exec_data[i].redirect_type = trunc;
-	exec_data[i].heredoc_delim = NULL;
-	exec_data[i].out_filename = ft_strdup("outfile");
+	exec_data[i].input_is_pipe = true;
+	exec_data[i].output_is_pipe = false;
+	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, trunc, STDOUT_FILENO, "infile");
 	i++;
 
 	//exec_data[i].len = len;
@@ -115,6 +117,14 @@ t_exec_data	*test_get_dummy_exec_data(void)
 
 // CHILDREN
 
+static int	perform_redirections(
+	const t_redir_list *redirections,
+	t_command_io *const command_io
+)
+{
+	return (0);
+}
+
 static int	cleanup_in_parent_process(
 	const t_exec_data *command,
 	t_command_io *const command_io
@@ -133,6 +143,10 @@ static int	cleanup_in_parent_process(
 	return (0);
 }
 
+// run command_io in child process
+// then run perform_redirections in child process
+// cleanup in parent should be unnecessary at that point
+//
 static int	run_child_process(
 	const t_exec_data *command,
 	t_command_io *const command_io,
@@ -183,6 +197,7 @@ int	execute_command(
 
 int	executor(
 	const t_exec_data *exec_data,
+	int command_count,
 	int dummy_minishell_struct
 )
 {
@@ -192,7 +207,7 @@ int	executor(
 	const char		**path = find_env_path();
 
 	i = -1;
-	while (++i < exec_data->len)
+	while (++i < command_count)
 	{
 		prepare_command_io(&exec_data[i], &command_io);
 		if (execute_command(&exec_data[i], &command_io, path) != 0)
