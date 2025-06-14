@@ -157,13 +157,30 @@ int match_token(char *str_token)
         return (UNKNOWN);
 }
 
-int check_quotes(element **tokenlist)
+int check_quotes(element **tokenlist, int pos, char quote)
 {
     t_token *check_token;
-    check_token = (t_token *)(*tokenlist)->elementList.tokens[0];
-    if (check_token->type == SINGLE_Q_OPEN)
-        find_closing_symbol(tokenlist, 39);
-    else if (check_token->type == DOUBLE_Q_OPEN)
-        find_closing_symbol(tokenlist, 34);
+    int fpos;
 
+    pos = -1; 
+    check_token = (t_token *)(*tokenlist)->elementList.tokens[pos];
+    if (check_token->type == DOUBLE_Q_OPEN)
+    {
+        if (ft_strrchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
+            check_token->type = STRING;
+        else
+        {
+            fpos = find_symbol(tokenlist, pos, 34);
+            while (fpos > 0)
+            {
+                if (find_symbol(tokenlist, fpos, '$') > 0)
+                    (*tokenlist)->elementList.tokens[fpos].type = DOLLAR_SIGN;
+                else 
+                    (*tokenlist)->elementList.tokens[fpos].type = STRING;
+                fpos--;
+            }
+        }
+    }
+    else if (check_token->type == SINGLE_Q_OPEN)
+        find_symbol(tokenlist, pos, 39);
 }
