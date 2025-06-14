@@ -55,28 +55,41 @@ enum
     COMMAND, 
     STRING, 
     NUMBER,
-    BLANK,
+    VARIABLE,
+    PARAMETER,
+    FILENAME,
+    UNKNOWN,
     NON_TERMINAL,
     
     SINGLE_Q_OPEN,
     SINGLE_Q_CLOSED,
     DOUBLE_Q_OPEN,
     DOUBLE_Q_CLOSED,
+    OPEN_BRACKET,
+    CLOSED_BRACKET,
 
     DOUBLE_DOT,
     DOT,
     HYPHEN,
     PIPE,
     REDIRECT_OUT,
+    REDIRECT_OUT_APP,
     REDIRECT_IN,
     HEREDOC, 
-    OPEN_BRACKET,
-    CLOSED_BRACKET,
+ 
     DOLLAR_SIGN,
     FORW_SLASH,
-    BACKW_SLASH,
     QUESTION_MARK,
-    EXCLAM_MARK
+    EXCLAM_MARK,
+
+    ECHO,
+    CAT,
+    CD,
+    ENV,
+    PWD,
+    UNSET,
+    EXPORT
+
 };
 
 int elementTotal(element *e);
@@ -91,7 +104,7 @@ void element_init(element *e, int size);
 int         default_lexer(char *input_line);
 int         token_count(char *str);
 t_token *   new_token(char *str, int len);
-int         fill_tokenlist(element *tokenlist, char *str);
+int         fill_tokenlist(element **tokenlist, char *str);
 void	    ft_safefree(void *ptr);
 void	    ft_free_arr(void **array);
 size_t	    ft_strlcpy(char *dst, const char *src, size_t size);

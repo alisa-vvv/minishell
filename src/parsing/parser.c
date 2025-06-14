@@ -45,20 +45,31 @@
 //     - exit with no options
 
 
+
 //func to traverse list and find closing brackets or quotes
-int find_closing_symbol(element *tokenlist, char symbol)
+int find_closing_symbol(element *tokenlist, int pos, char symbol)
 {
     t_token *check_token;
-    size_t i;
+    int count;
+    int bracket;
 
-    i = 1;
-    while(i < tokenlist->elementList.total)
+    count = 0;
+    if (symbol == '{')
     {
-        check_token = (t_token *)tokenlist->elementList.tokens[i];
-        if (ft_strchr(check_token->value, symbol) != NULL)
-            return (1);
-        i++;
+        bracket = 1;
+        symbol = '}';
     }
+    while (pos < tokenlist->elementList.total)
+    {
+        check_token = (t_token *)tokenlist->elementList.tokens[pos];
+        if (ft_strchr(check_token->value, symbol) != NULL)
+            count++;
+        pos++;
+    }
+    if (count % 2 == 0 && bracket == 0)
+        return (1);
+    else if (count % 2 != 0 && bracket == 1)
+        return (1);
     return (0);
 }
 
@@ -67,6 +78,5 @@ int lookahead(element *tokenlist, size_t index)
     t_token *check_token;
     check_token = (t_token *)tokenlist->pfElementGet(&tokenlist, index);
     if (check_token->type)
-
 
 }

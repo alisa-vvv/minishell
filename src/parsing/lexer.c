@@ -12,12 +12,12 @@
 
 #include "parser.h"
 
-int is_EOS(char *str, int i)
-{
-    if (i == ft_strlen(str))
-        return (1);
-    return (0);
-}
+// int is_EOS(char *str, int i)
+// {
+//     if (i == ft_strlen(str))
+//         return (1);
+//     return (0);
+// }
 
 void	ft_safefree(void *ptr)
 {
@@ -54,7 +54,7 @@ t_token *new_token(char *str, int len)
     token->value = ft_strlcpy(token->value, str, len);
     if (!token->value)
         return (MALLOC_ERR);
-//    token->type = match(token->value);
+    token->type = match(token->value);
     return (token);
 }
 
@@ -143,37 +143,27 @@ int match_token(char *str_token)
         return DOUBLE_Q_OPEN;
     else if (str_token[0] == 39)
         return (SINGLE_Q_OPEN);
-    else if (str_token[0] == '!')
-        return (EXCLAM_MARK);
-    else if (str_token[0] == 92)
-        return (BACKW_SLASH);
-    else if ((str_token[0] == '>') || (str_token[0] == '<') || (str_token[0] == '$'))
+    else if (str_token[0] == '(' || str_token[0] == '{')
+        return (OPEN_BRACKET);
+    else if (str_token[0] == '-')
+        return (HYPHEN);
+    else if ((str_token[0] == '>') || (str_token[0] == '<') || (str_token[0] == '$') || (str_token[0] == '|') || (str_token[0] == '.') || (str_token[0] == '!'))
         return (NON_TERMINAL);
-    else if ((str_token[0] == '.') && (str_token[1] == '.'))
-        return (DOUBLE_DOT);
-    else if (str_token[0] == '.')
-        return (DOT);
-    else if (str_token[0] == '|')
-        return (PIPE);
+    else if (ft_isdigit(str_token[0]))
+        return (NUMBER);
+    else if (ft_isalpha(str_token[0]))
+        match_string(str_token);
     else 
-        match_symbol(str_token);
+        return (UNKNOWN);
 }
 
-int expand_nonterminal(char *str_token)
+int check_quotes(element **tokenlist)
 {
-    if ()
-    else if ((str_token[0] == '<') && (str_token[1] == '<'))
-        return (HEREDOC);
-}
-
-
-int match_symbol(char *str_token)
-{
-    if ()
-    
-}
-
-int match_command(char * str_token)
-{
+    t_token *check_token;
+    check_token = (t_token *)(*tokenlist)->elementList.tokens[0];
+    if (check_token->type == SINGLE_Q_OPEN)
+        find_closing_symbol(tokenlist, 39);
+    else if (check_token->type == DOUBLE_Q_OPEN)
+        find_closing_symbol(tokenlist, 34);
 
 }
