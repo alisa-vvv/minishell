@@ -19,33 +19,15 @@ static int	perform_input_redirection(
 	t_redir_list *redirection
 )
 {
-	int	fd;
-
-	fd = open(redirection->dest, O_RDONLY);
-	if (fd < 0)
+	if (redirection->dest_filename != NULL)
+		redirection->dest_fd = open(redirection->dest_filename, O_RDONLY);
+	if (redirection->dest_fd < 0)
 	{
 		printf("PLACEHOLDER ERROR\n");
 		return (1);
 	}
-	dup2(fd, STDIN_FILENO);
-	close(fd);
-	return (0);
-}
-
-static int	perform_heredoc_redirection(
-	t_redir_list *redirection
-)
-{
-	int	fd;
-
-	fd = create_here_doc(redirection->heredoc_delim);
-	if (fd < 0)
-	{
-		printf("PLACEHOLDER ERROR\n");
-		return (1);
-	}
-	dup2(fd, redirection->src);
-	close(fd);
+	dup2(redirection->dest_fd, STDIN_FILENO);
+	close(redirection->dest_fd);
 	return (0);
 }
 
@@ -53,21 +35,33 @@ static int	perform_output_redirection(
 	t_redir_list *redirection
 )
 {
-	const int	truncate_flags = O_WRONLY | O_CREAT | O_TRUNC;
-	const int	append_flags = O_WRONLY | O_CREAT | O_APPEND;
-	int			fd;
+	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
+	const int	app_f = O_WRONLY | O_CREAT | O_APPEND;
 
-	if (redirection->type == trunc)
-		fd = open(redirection->dest, truncate_flags, 0664);
-	else if (redirection->type == append)
-		fd = open(redirection->dest, append_flags, 0664);
-	if (fd < 0)
+	if (redirection->dest_filename != NULL)
+	{
+		if (redirection->type == trunc)
+			redirection->dest_fd = open(redirection->dest_filename, trunc_f, 0664);
+		else if (redirection->type == append)
+			redirection->dest_fd = open(redirection->dest_filename, app_f, 0664);
+	}
+	if (redirection->dest_fd < 0)
 	{
 		printf("PLACEHOLDER ERROR\n");
 		return (1);
 	}
-	dup2(fd, redirection->src);
-	close(fd);
+	if (redirection->src_filename != NULL)
+	{
+		//this is for special cases only, refer to bash manual
+		//redirection->src_fd = open(redirection->src_filename, O_RDONLY);
+	}
+	if (redirection->src_fd < 0)
+	{
+		printf("PLACEHOLDER ERROR\n");
+		return (1);
+	}
+	dup2(redirection->dest_fd, redirection->src_fd);
+	close(redirection->dest_fd);
 	return (0);
 }
 
@@ -79,10 +73,8 @@ int	perform_redirections(
 	int	err_check; // make sure to return here to see what kind of errros need to be tracked
 	while (redirections != NULL)
 	{
-		if (redirections->type == input)
+		if (redirections->type == input || redirections->type == heredoc)
 			perform_input_redirection(redirections);
-		else if (redirections->type == heredoc)
-			perform_heredoc_redirection(redirections);
 		else
 			perform_output_redirection(redirections);
 		redirections = redirections->next;

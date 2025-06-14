@@ -43,18 +43,18 @@ t_redir_list	*test_add_redirection(
 	t_redir_list	*redir_list = ft_calloc(1, sizeof(*redir_list));
 
 	redir_list->type = type;
-	redir_list->src = src;
+	redir_list->src_fd = src;
 	if (dest)
-		redir_list->dest = ft_strdup(dest);
+		redir_list->dest_filename = ft_strdup(dest);
 	if (heredoc_delim)
 		redir_list->heredoc_delim = ft_strdup(heredoc_delim);
 	redir_list->next = NULL;
 	if (first != NULL)
-		{
-			while (cur_node->next != NULL)
-				cur_node = cur_node->next;
-			cur_node->next = redir_list;
-		}
+	{
+		while (cur_node->next != NULL)
+			cur_node = cur_node->next;
+		cur_node->next = redir_list;
+	}
 	else
 		first = redir_list;
 	return ((t_redir_list *) first);
@@ -76,6 +76,7 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	exec_data[i].output_is_pipe = true;
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
 	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
+	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF2");
 	i++;
 
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
@@ -127,10 +128,19 @@ static int	cleanup_in_parent_process(
 	t_command_io *const command_io
 )
 {
+	t_redir_list	*redirection;
+
+	redirection = command->redirections;
 	if (command->input_is_pipe == true)
 		close(command_io->in_pipe[READ_END]);
 	if (command->output_is_pipe == true)
 		close(command_io->out_pipe[WRITE_END]);
+	while (redirection != NULL)
+	{
+		if (redirection->type == heredoc)
+			close(redirection->dest_fd);
+		redirection = redirection->next;
+	}
 	test_free_exec_data((t_exec_data *) command);
 	return (0);
 }

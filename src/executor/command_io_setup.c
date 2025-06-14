@@ -13,46 +13,22 @@
 #include "executor.h"
 #include <fcntl.h>
 
-//static int	set_in_fd(
-//	const t_exec_data *command,
-//	int *const in_fd,
-//	int heredoc_pipe[2]
-//)
-//{
-//	int	err_check;
-//
-//	err_check = 0;
-//	if (command->input_type == custom_fd)
-//		*in_fd = open(command->in_filename, O_RDONLY);
-//	else if (command->input_type == heredoc)
-//	{
-//		err_check = create_here_doc(command, heredoc_pipe);
-//		if (err_check != 0)
-//			return (err_check);
-//		*in_fd = heredoc_pipe[READ_END];
-//	}
-//	if (*in_fd < 0)
-//		perror_and_return(FD_ERR, MINISHELL_ERR);
-//	return (err_check);
-//}
-
-//static void	set_out_fd(
-//	const t_exec_data *command,
-//	int *const out_fd
-//)
-//{
-//	const int	truncate_flags = O_WRONLY | O_CREAT | O_TRUNC;
-//	const int	append_flags = O_WRONLY | O_CREAT | O_APPEND;
-//
-//	if (command->output_type == custom_fd
-//		&& command->redirect_type == trunc)
-//		*out_fd = open(command->out_filename, truncate_flags, 0664);
-//	else if (command->output_type == custom_fd
-//		&& command->redirect_type == append)
-//		*out_fd = open(command->out_filename, append_flags, 0664);
-//	else if (command->output_type == std_err)
-//		*out_fd = STDERR_FILENO;
-//}
+static int	find_and_create_heredocs(
+	t_redir_list *redirection
+)	
+{
+	while (redirection != NULL)
+	{
+		if (redirection->type == heredoc)
+			redirection->dest_fd = create_here_doc(redirection->heredoc_delim);
+		if (redirection->dest_fd < 0)
+		{
+			printf("PLACEHOLDER ERROR\n");
+		}
+		redirection = redirection->next;
+	}
+	return (0);
+}
 
 int	prepare_command_io(
 	const t_exec_data *command,
@@ -66,12 +42,12 @@ int	prepare_command_io(
 		command_io->in_pipe[READ_END] = command_io->out_pipe[READ_END];
 		command_io->in_pipe[WRITE_END] = command_io->out_pipe[WRITE_END];
 	}
-
 	if (command->output_is_pipe == true)
 	{
 		err_check = pipe(command_io->out_pipe);
 		if (err_check < 0)
 			return (1);
 	}
+	err_check = find_and_create_heredocs(command->redirections);
 	return (err_check);
 }

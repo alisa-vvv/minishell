@@ -37,6 +37,7 @@ int	create_here_doc(
 	while (ft_strncmp(input_str, heredoc_delim, delim_len) != 0)
 	{
 		ft_putstr_fd(input_str, here_doc[WRITE_END]);
+		free(input_str);
 		input_str = readline("heredoc> ");
 		if (input_str == NULL)
 			perror_and_return(READLINE_ERR, LIBFUNC_ERR, -1);

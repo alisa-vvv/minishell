@@ -52,16 +52,27 @@ int	perror_and_return(
 typedef enum	e_redirect_type
 {
 	input,
+	heredoc,
 	append,
 	trunc,
-	heredoc,
 }	t_redirect_type;
 
+// this list assumes that the source of a redirection is either unspecified,
+// specified as an integer, or opened from an env/direct path during parsing
+// here are examples of what is a source and what is a destionation:
+// [source] > [dest]
+// [dest] < [source]
+// [dest] << [heredoc as source]
+// > [dest] - source unspecified, so defaults to source = stdout
+// < [src] - dest unspecified, so defaults to dest = stdin
+// << [heredoc as source] - dest unspecified, so defaults to dest = stdin
 typedef struct	s_redir_list
 {
 	t_redirect_type		type;
-	char				src; // if heredoc, or not used
-	char				*dest;
+	int					src_fd; // equal to -1 if fd not provided/not default
+	int					dest_fd; // equal to -1 if fd not provided/not default
+	char				*dest_filename; // equal to NULL if filename wasn't provided
+	char				*src_filename; // equal to NULL if filename wasn't provided
 	char				*heredoc_delim; // null or delim, will be used to check if input is heredoc
 	struct s_redir_list	*next;
 }	t_redir_list;

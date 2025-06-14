@@ -17,8 +17,10 @@
 
 # define READ_END 0
 # define WRITE_END 1
+
 typedef struct	s_command_io
 {
+	int	here_docs;
 	int	in_pipe[2];
 	int	out_pipe[2];
 }	t_command_io;
