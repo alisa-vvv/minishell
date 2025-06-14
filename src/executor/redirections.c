@@ -13,6 +13,7 @@
 #include "minishell.h"
 #include "executor.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <fcntl.h>
 
 static int	perform_input_redirection(
@@ -22,12 +23,9 @@ static int	perform_input_redirection(
 	if (redirection->dest_filename != NULL)
 		redirection->dest_fd = open(redirection->dest_filename, O_RDONLY);
 	if (redirection->dest_fd < 0)
-	{
-		printf("PLACEHOLDER ERROR\n");
-		return (1);
-	}
-	dup2(redirection->dest_fd, STDIN_FILENO);
-	close(redirection->dest_fd);
+		perror_and_return(FD_ERR, LIBFUNC_ERR, EXIT_FAILURE);
+	test_dup2(redirection->dest_fd, STDIN_FILENO);
+	test_close(redirection->dest_fd);
 	return (0);
 }
 
@@ -46,10 +44,7 @@ static int	perform_output_redirection(
 			redirection->dest_fd = open(redirection->dest_filename, app_f, 0664);
 	}
 	if (redirection->dest_fd < 0)
-	{
-		printf("PLACEHOLDER ERROR\n");
-		return (1);
-	}
+		perror_and_return(FD_ERR, LIBFUNC_ERR, EXIT_FAILURE);
 	if (redirection->src_filename != NULL)
 	{
 		//this is for special cases only, refer to bash manual
@@ -57,20 +52,20 @@ static int	perform_output_redirection(
 	}
 	if (redirection->src_fd < 0)
 	{
-		printf("PLACEHOLDER ERROR\n");
-		return (1);
+		test_close(redirection->dest_fd);
+		perror_and_return(FD_ERR, LIBFUNC_ERR, EXIT_FAILURE);
 	}
-	dup2(redirection->dest_fd, redirection->src_fd);
-	close(redirection->dest_fd);
+	test_dup2(redirection->dest_fd, redirection->src_fd);
+	test_close(redirection->dest_fd);
 	return (0);
 }
 
+// QUESTION: DO WE NEED TO EXIT ON REDIRECTION FAIL? (I ASSUME NO)
 int	perform_redirections(
 	t_redir_list *redirections,
 	const t_command_io *command_io
 )
 {
-	int	err_check; // make sure to return here to see what kind of errros need to be tracked
 	while (redirections != NULL)
 	{
 		if (redirections->type == input || redirections->type == heredoc)

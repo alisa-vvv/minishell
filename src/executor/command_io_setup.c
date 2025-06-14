@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "executor.h"
+#include <stdlib.h>
 #include <fcntl.h>
 
 static int	find_and_create_heredocs(
@@ -22,9 +23,7 @@ static int	find_and_create_heredocs(
 		if (redirection->type == heredoc)
 			redirection->dest_fd = create_here_doc(redirection->heredoc_delim);
 		if (redirection->dest_fd < 0)
-		{
-			printf("PLACEHOLDER ERROR\n");
-		}
+			return (-1);
 		redirection = redirection->next;
 	}
 	return (0);
@@ -46,7 +45,7 @@ int	prepare_command_io(
 	{
 		err_check = pipe(command_io->out_pipe);
 		if (err_check < 0)
-			return (1);
+			perror_and_return(PIPE_ERR, LIBFUNC_ERR, EXIT_FAILURE);
 	}
 	err_check = find_and_create_heredocs(command->redirections);
 	return (err_check);

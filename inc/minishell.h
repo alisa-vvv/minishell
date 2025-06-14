@@ -34,6 +34,7 @@
 # define PIPE_ERR "Error! pipe()"
 # define FORK_ERR "Error! fork()"
 # define READLINE_ERR "Error! readline()"
+# define PATH_ERR "Error! PATH not found"
 # define DUP_ERR "Error! dup()"
 # define DUP2_ERR "Error! dup2()"
 # define FD_ERR "Error! Wrong file descriptor"
