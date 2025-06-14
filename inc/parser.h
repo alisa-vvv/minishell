@@ -56,6 +56,7 @@ enum
     STRING, 
     NUMBER,
     BLANK,
+    NON_TERMINAL,
     
     SINGLE_Q_OPEN,
     SINGLE_Q_CLOSED,
@@ -66,7 +67,8 @@ enum
     DOT,
     HYPHEN,
     PIPE,
-    REDIRECT,
+    REDIRECT_OUT,
+    REDIRECT_IN,
     HEREDOC, 
     OPEN_BRACKET,
     CLOSED_BRACKET,

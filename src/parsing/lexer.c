@@ -143,16 +143,12 @@ int match_token(char *str_token)
         return DOUBLE_Q_OPEN;
     else if (str_token[0] == 39)
         return (SINGLE_Q_OPEN);
-    else if (str_token[0] == '$')
-        return (DOLLAR_SIGN);
     else if (str_token[0] == '!')
         return (EXCLAM_MARK);
     else if (str_token[0] == 92)
         return (BACKW_SLASH);
-    else if ((str_token[0] == '>') && (str_token[1] == '>'))
-        return (REDIRECT);
-    else if ((str_token[0] == '<') && (str_token[1] == '<'))
-        return (HEREDOC);
+    else if ((str_token[0] == '>') || (str_token[0] == '<') || (str_token[0] == '$'))
+        return (NON_TERMINAL);
     else if ((str_token[0] == '.') && (str_token[1] == '.'))
         return (DOUBLE_DOT);
     else if (str_token[0] == '.')
@@ -163,8 +159,21 @@ int match_token(char *str_token)
         match_symbol(str_token);
 }
 
+int expand_nonterminal(char *str_token)
+{
+    if ()
+    else if ((str_token[0] == '<') && (str_token[1] == '<'))
+        return (HEREDOC);
+}
+
+
 int match_symbol(char *str_token)
 {
     if ()
     
+}
+
+int match_command(char * str_token)
+{
+
 }

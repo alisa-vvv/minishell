@@ -35,6 +35,15 @@
 //  - word splitting
 //  - filename expansion 
 
+// Your shell must implement the following built-in commands:
+//     - echo with option -n
+//     - cd with only a relative or absolute path
+//     - pwd with no options
+//     - export with no options
+//     - unset with no options
+//     - env with no options or arguments
+//     - exit with no options
+
 
 //func to traverse list and find closing brackets or quotes
 int find_closing_symbol(element *tokenlist, char symbol)
@@ -58,5 +67,6 @@ int lookahead(element *tokenlist, size_t index)
     t_token *check_token;
     check_token = (t_token *)tokenlist->pfElementGet(&tokenlist, index);
     if (check_token->type)
+
 
 }
