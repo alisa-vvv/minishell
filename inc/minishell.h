@@ -26,6 +26,28 @@
 /*	signals		*/
 # include <signal.h>
 
-# define TEST_MACRO 42
+# define MALLOC_ERR "Error! malloc()"
+# define DUP_ERR "Error! dup()"
+# define DUP2_ERR "Error! dup2()"
+
+/*		Executor - data structures		*/
+typedef enum	e_io
+{
+	std_in,
+	std_err,
+	std_out,
+	pipe_read,
+	pipe_write,
+	custom_fd,
+}	t_io;
+
+typedef struct	s_exec_data
+{
+	char	**command;
+	t_io	input_type;
+	t_io	output_type;
+	char	*in_filename;
+	char	*out_filename;
+}	t_exec_data;
 
 #endif
