@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-// not tested yet, also have to check if
+// not tested yet, also have to check what to do when resizing to smaller size
 void	**ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 {
 	int		i;
@@ -135,7 +135,7 @@ int	elementDelete(element *e, int index)
 		e->elementList.total--;
 		if ((e->elementList.total > 0)
 			&& ((e->elementList.total) == (e->elementList.size / 4)))
-			elementResize(e, e->elementList.size / 2);
+			elementResize(e, e->elementList.size, e->elementList.size / 2);
 		status = 0;
 	}
 	return (status);
