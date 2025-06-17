@@ -46,11 +46,11 @@ int	main(void)
 			executor(test_get_dummy_exec_data(TEST_len), TEST_len, 1);
 		else if (!read_line)
 			printf("what happens?\n");
-		else
-		{
-			default_lexer(read_line);
-			printf("We entered: %s\n", read_line);
-		}
+		//else
+		//{
+		//	default_lexer(read_line);
+		//	printf("We entered: %s\n", read_line);
+		//}
 		add_history(read_line);
 	}
 	return (0);
