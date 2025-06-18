@@ -124,6 +124,7 @@ int default_lexer(char *input_line)
     fill_tokenlist(&token_list, input_line);
     if (!token_list.elementList.tokens)
         return (1);
+    
     size_t i = 0;
     t_token *token_test;
 
@@ -152,35 +153,9 @@ int match_token(char *str_token)
     else if (ft_isdigit(str_token[0]))
         return (NUMBER);
     else if (ft_isalpha(str_token[0]))
-        match_string(str_token);
+        return (STRING);
+        // match_string(str_token);
     else 
         return (UNKNOWN);
 }
 
-int check_quotes(element **tokenlist, int pos, char quote)
-{
-    t_token *check_token;
-    int fpos;
-
-    pos = -1; 
-    check_token = (t_token *)(*tokenlist)->elementList.tokens[pos];
-    if (check_token->type == DOUBLE_Q_OPEN)
-    {
-        if (ft_strrchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
-            check_token->type = STRING;
-        else
-        {
-            fpos = find_symbol(tokenlist, pos, 34);
-            while (fpos > 0)
-            {
-                if (find_symbol(tokenlist, fpos, '$') > 0)
-                    (*tokenlist)->elementList.tokens[fpos].type = DOLLAR_SIGN;
-                else 
-                    (*tokenlist)->elementList.tokens[fpos].type = STRING;
-                fpos--;
-            }
-        }
-    }
-    else if (check_token->type == SINGLE_Q_OPEN)
-        find_symbol(tokenlist, pos, 39);
-}

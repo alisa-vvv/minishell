@@ -51,14 +51,7 @@
 int find_symbol(element *tokenlist, int pos, char symbol)
 {
     t_token *check_token;
-    // int bracket;
 
-    // count = 0;
-    // if (symbol == '{')
-    // {
-    //     bracket = 1;
-    //     symbol = '}';
-    // }
     while (pos < tokenlist->elementList.total)
     {
         check_token = (t_token *)tokenlist->elementList.tokens[pos];
@@ -66,10 +59,6 @@ int find_symbol(element *tokenlist, int pos, char symbol)
             return(pos);
         pos++;
     }
-    // if (count % 2 == 0 && bracket == 0)
-    //     return (1);
-    // else if (count % 2 != 0 && bracket == 1)
-    //     return (1);
     return (0);
 }
 

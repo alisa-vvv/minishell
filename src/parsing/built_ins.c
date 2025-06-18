@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                         ::::::::           */
-/*   expansions.c                                        :+:    :+:           */
+/*   built_ins.c                                         :+:    :+:           */
 /*                                                      +:+                   */
 /*   By: adecheri <marvin@42.fr>                       +#+                    */
 /*                                                    +#+                     */
-/*   Created: 2025/06/17 14:24:03 by adecheri       #+#    #+#                */
-/*   Updated: 2025/06/17 14:24:05 by adecheri       ########   odam.nl        */
+/*   Created: 2025/06/18 17:54:14 by adecheri       #+#    #+#                */
+/*   Updated: 2025/06/18 17:54:16 by adecheri       ########   odam.nl        */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+#include <unistd.h>
 
+int ft_cd(element **tokenlist, int pos)
+{
+    if ((*tokenlist)->elementList.tokens[pos +1].value[0] == '/')
+    {
+        (*tokenlist)->elementList.tokens[pos +1].type = PARAMETER;
+        return (chdir( (const char *)(*tokenlist)->elementList.tokens[pos +1].value));
+    }
+    return(-1);
+}
 
-// element *param_expansion(element **tokenlist)
-// {
-//     t_token *check_token;
-//     check_token = (t_token *) (*tokenlist)->elementList.tokens[i];
-//     if (ft_strchr(check_token->value, '$'))
-
-    
-// }
+int 

@@ -37,7 +37,7 @@ int match_nonterminal(char *str_token)
 }
 
 //check what commands are given
-int match_string(char *str_token)
+int match_string(char *str_token, int pos)
 {
     if (ft_strncmp(str_token, "cd", 3) == 0)
         return (CD);
