@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 19:30:26 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/19 16:52:40 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,9 @@ int	test_dummy_builtin(
 	const t_exec_data *exec_data
 )
 {
-	printf("Dummy built-in executed: %s\n", exec_data->argv[0]);
-	return (0);
+	// error management here or withibn buitin?
+	// this function will probably not exist at all cause it's just exec_builtin caller lol
+	return (exec_builtin(exec_data->argv[0], &exec_data->argv[1]));
 }
 
 t_redir_list	*test_add_redirection(
@@ -89,10 +90,11 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	int i = 0;
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("ca");
-	//exec_data[i].argv[0] = ft_strdup("ls");
-	//exec_data[i].argv[1] = ft_strdup("-l");
-	exec_data[i].is_builtin = false;
+	exec_data[i].argv[0] = ft_strdup("echo");
+	exec_data[i].argv[1] = ft_strdup("-n");
+	exec_data[i].argv[2] = ft_strdup("one");
+	exec_data[i].argv[3] = ft_strdup("two");
+	exec_data[i].is_builtin = true;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = true;
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");

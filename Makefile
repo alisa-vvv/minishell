@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/06/12 17:29:38 by avaliull     ########   odam.nl           #
+#    Updated: 2025/06/19 16:38:59 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,12 +15,16 @@ MAKEFLAGS =
 
 NAME	=	minishell
 
+# make separate variables for different groups of cfiles
 CFILES	=	minishell.c\
 			errors.c\
 			executor.c\
 			command_io_setup.c\
 			redirections.c\
 			here-doc.c\
+			exec_builtin.c\
+			pwd.c\
+			echo.c\
 			try_execve.c\
 			executor_test.c\
 			test_funcs.c
@@ -33,7 +37,7 @@ BUILDDIR = build/
 SRCDIR = src/
 LIBDIR = lib/
 INCDIR = inc/
-SRCDIRS = $(addprefix $(SRCDIR), parsing executor) $(SRCDIR)
+SRCDIRS = $(addprefix $(SRCDIR), parsing executor builtins) $(SRCDIR)
 $(SRCDIR):
 	mkdir -p $@
 $(LIBDIR):
