@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/06/19 17:03:21 by avaliull     ########   odam.nl           #
+#    Updated: 2025/06/19 17:17:32 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@
 
 NAME	=	minishell
 
-# make separate variables for different groups of cfiles
 CFILES	=	minishell.c\
 			errors.c\
 			$(EXECUTOR_CFILES)\
