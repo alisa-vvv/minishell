@@ -80,7 +80,7 @@ int token_count(char *str)
     return (tokencount);
 }
 
-//pushes tokens in the elementlist from the back
+//pushes tokens in the elementlist from the back, immediately indexing -> have to shorten 
 int fill_tokenlist(element **tokenlist, char *str)
 {
     size_t len;
@@ -100,10 +100,8 @@ int fill_tokenlist(element **tokenlist, char *str)
         {
             token = new_token(str - len, len + 1);
             if (!token)
-            {
-                (*tokenlist)->pfElementFree(*tokenlist);
-                return (MALLOC_ERR);
-            }
+                return ((*tokenlist)->pfElementFree(*tokenlist), MALLOC_ERR);
+            token->pos = (*tokenlist)->elementList.total;
             (*tokenlist)->pfElementAdd(*tokenlist, token);
         }
     }
@@ -119,11 +117,12 @@ int default_lexer(char *input_line)
         return (1);
     token_c = token_count(input_line);
     if (!token_c)
-        return (1);
+        return (write(1, "Failed to count tokens\n", 23));
     TOKEN_INIT(token_list, token_c);
     fill_tokenlist(&token_list, input_line);
     if (!token_list.elementList.tokens)
-        return (1);
+        return (write(1, "Failed to init tokenlist\n", 25));
+    check_lexer(&token_list);
     
     size_t i = 0;
     t_token *token_test;
@@ -154,7 +153,6 @@ int match_token(char *str_token)
         return (NUMBER);
     else if (ft_isalpha(str_token[0]))
         return (STRING);
-        // match_string(str_token);
     else 
         return (UNKNOWN);
 }

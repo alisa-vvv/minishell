@@ -12,34 +12,32 @@
 
 #include "parser.h"
 
-// not tested yet, also have to check what to do when resizing to smaller size
-void	**ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
+// realloc for shrink and expand size 
+void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 {
 	int		i;
-	void	*new_ptr;
+	unsigned int copy_size;
+	void *n_ptr;
 
-	if (!ptr)
-		return (write(2, "Memory Allocation Failed\n", 25));
-	new_ptr = ptr + oldsize;
-	i = newsize - oldsize;
-	while (i <= newsize)
+	if (newsize == 0)
+		return(ft_safe_free(n_ptr), NULL);
+	if (oldsize > newsize)
+		copy_size = oldsize;
+	else 
+		copy_size = newsize;
+	while (ptr && i < copy_size)
 	{
-		if (new_ptr + i != NULL)
-		{
-			new_ptr += i + 1;
-			i = -1;
-		}
+		((char *)n_ptr)[i] = ((char *)ptr)[i];
 		i++;
 	}
-	if (new_ptr == (ptr + oldsize))
+	while (i < newsize)
 	{
-		new_ptr = malloc(newsize - oldsize);
-		return (free(new_ptr), &ptr);
+		((char *)ptr)[i] = '\0';
+		i++;
 	}
-	new_ptr = malloc(newsize);
-	ft_memmove(new_ptr, ptr, oldsize);
-	return (free(ptr), &new_ptr);
+	return (free(ptr), n_ptr);
 }
+
 
 int	elementTotal(element *e)
 {
@@ -112,6 +110,7 @@ void	*elementGet(element *e, int index)
 	}
 	return (token_data);
 }
+
 
 int	elementDelete(element *e, int index)
 {

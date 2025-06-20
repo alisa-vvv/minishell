@@ -33,6 +33,7 @@ typedef struct s_token
 {
     int type;
     char *value;
+    size_t pos;
     
 } t_token;
 
@@ -42,7 +43,7 @@ struct s_element
 {
     t_elementlist elementList;
     int (*pfElementTotal)(element *);
-    int (*pfElementResize)(element *, int);
+    int (*pfElementResize)(element *, int, int);
     int (*pfElementAdd)(element *, void *);
     int (*pfElementSet)(element *, int, void *);
     void *(*pfElementGet)(element *, int);
@@ -71,7 +72,7 @@ enum
     DOT,
     HYPHEN,
     PIPE,
-    REDIRECT_OUT,
+    REDIRECT_OUT,        // match_string(str_token);
     REDIRECT_OUT_APP,
     REDIRECT_IN,
     HEREDOC, 
@@ -81,7 +82,7 @@ enum
     QUESTION_MARK,
     EXCLAM_MARK,
 
-    ECHO,
+    ECHO,        // match_string(str_token);
     CAT,
     CD,
     ENV,
@@ -92,7 +93,7 @@ enum
 };
 
 int elementTotal(element *e);
-int elementResize(element *e, int size);
+int elementResize(element *e, int oldsize, int newsize);
 int elementPushBack(element *e, void *token);
 int elementSet(element *e, int index, void *token);
 void *elementGet(element *e, int index);

@@ -28,7 +28,7 @@ int match_nonterminal(char *str_token)
         return (REDIRECT_IN);
     else if (str_token[0] == '>')
         return (REDIRECT_OUT);
-    else if (str_token[0] == '$')
+    else if (ft_strchr(str_token, '$') != NULL)
         return (DOLLAR_SIGN); 
     else if (str_token[0] == '|')
         return (PIPE);
@@ -54,8 +54,7 @@ int match_string(char *str_token, int pos)
     else if (ft_strncmp(str_token, "unset", 6) == 0)
         return (UNSET);
     else if (ft_strncmp(str_token, "exit", 5) == 0)
-        exit(EXIT_SUCCESS);
+        exit(0);
     else 
         return (STRING);
 }
-

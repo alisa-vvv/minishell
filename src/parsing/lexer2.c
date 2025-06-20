@@ -30,11 +30,26 @@ void rm_quotes(element *tokenlist, int pos, char symbol)
         {
             while (check_token->value[i])
             {
-                check_token->value[i] = check_token->value[i +1];
+                check_token->value[i] = check_token->value[i + 1];
                 i++;
             }
         }
     }
+}
+
+//func to traverse list and find closing quotes
+int find_symbol(element *tokenlist, int pos, char symbol)
+{
+    t_token *check_token;
+
+    while (pos < tokenlist->elementList.total)
+    {
+        check_token = (t_token *)tokenlist->elementList.tokens[pos];
+        if (ft_strchr(check_token->value, symbol) != NULL)
+            return(pos);
+        pos++;
+    }
+    return (0);
 }
 
 //check quotes to rm later
@@ -42,10 +57,15 @@ int check_quotes(element **tokenlist, int pos, char quote)
 {
     t_token *check_token;
     int fpos;
+    int type;
 
-    pos = -1; 
+    fpos = -1;
     check_token = (t_token *)(*tokenlist)->elementList.tokens[pos];
-    if (check_token->type == DOUBLE_Q_OPEN)
+    if (quote == DOUBLE_Q_OPEN)
+        type = 34;
+    else 
+        type = 39;
+    if (check_token->type == quote)
     {
         if (ft_strrchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
             check_token->type = STRING;
@@ -54,19 +74,43 @@ int check_quotes(element **tokenlist, int pos, char quote)
             fpos = find_symbol(tokenlist, pos, 34);
             while (fpos > 0)
             {
-                if (find_symbol(tokenlist, fpos, '$') > 0)
-                    (*tokenlist)->elementList.tokens[fpos].type = DOLLAR_SIGN;
-                else 
+                if ((*tokenlist)->elementList.tokens[fpos].type != DOLLAR_SIGN)
                     (*tokenlist)->elementList.tokens[fpos].type = STRING;
                 fpos--;
             }
         }
     }
-    else if (check_token->type == SINGLE_Q_OPEN)
-        find_symbol(tokenlist, pos, 39);
+    return (0);
 }
+
+// //index lexer by traversing - not needed anymore
+// int index_lexer(element **tokenlist)
+// {
+//     int i;
+//     i = 0;
+
+//     while (i < (size_t)(*tokenlist)->elementList.total)
+//     {
+//         (*tokenlist)->elementList.tokens[i].pos = i;
+//         i++;
+//     }
+//     return (0);
+// }
 
 int check_lexer(element **tokenlist)
 {
-    while
+    size_t i;
+    t_token *check_token;
+    
+    i = 0;
+    check_token = (t_token *)(*tokenlist)->elementList.tokens[i];
+    while (i < (size_t)(*tokenlist)->elementList.total)
+    {
+        if (check_token->type == DOUBLE_Q_OPEN)
+        {
+            check_quotes(tokenlist, i, DOUBLE_Q_OPEN);
+            rm_quotes(tokenlist, i, DOUBLE_Q_OPEN);
+        }
+        i++;
+    }
 }
