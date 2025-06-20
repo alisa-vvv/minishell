@@ -42,7 +42,7 @@ int find_symbol(element *tokenlist, int pos, char symbol)
 {
     t_token *check_token;
 
-    while (pos < tokenlist->elementList.total)
+    while ((size_t)pos < tokenlist->elementList.total)
     {
         check_token = (t_token *)tokenlist->elementList.tokens[pos];
         if (ft_strchr(check_token->value, symbol) != NULL)
@@ -52,36 +52,73 @@ int find_symbol(element *tokenlist, int pos, char symbol)
     return (0);
 }
 
-//check quotes to rm later
-int check_quotes(element **tokenlist, int pos, char quote)
+// //check quotes to rm later
+// int check_quotes(element **tokenlist, int pos, char quote)
+// {
+//     t_token *check_token;
+//     int fpos;
+//     int type;
+
+//     fpos = -1;
+//     check_token = (t_token *)(*tokenlist)->elementList.tokens[pos];
+//     if (quote == DOUBLE_Q_OPEN)
+//         type = 34;
+//     else 
+//         type = 39;
+//     if (check_token->type == quote)
+//     {
+//         if (ft_strrchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
+//             check_token->type = STRING;
+//         else
+//         {
+//             fpos = find_symbol(tokenlist, pos, 34);
+//             while (fpos > 0)
+//             {
+//                 if ((*tokenlist)->elementList.tokens[fpos].type != DOLLAR_SIGN)
+//                     (*tokenlist)->elementList.tokens[fpos].type = STRING;
+//                 fpos--;
+//             }
+//         }
+//     }
+//     return (0);
+// }
+
+int check_dquotes(element **tokenlist, int pos)
 {
     t_token *check_token;
     int fpos;
-    int type;
+    size_t total;
 
     fpos = -1;
-    check_token = (t_token *)(*tokenlist)->elementList.tokens[pos];
-    if (quote == DOUBLE_Q_OPEN)
-        type = 34;
-    else 
-        type = 39;
-    if (check_token->type == quote)
+    total = (*tokenlist)->pfElementTotal;
+    check_token = (t_token *)(*tokenlist)->pfElementGet(tokenlist, pos);
+    if (ft_strchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
+        check_token->type = DOUBLE_Q_CLOSED;
+    else if (check_token->type == DOUBLE_Q_OPEN && (t_token *)(*tokenlist)->elementList.tokens[total]->type == DOUBLE_Q_OPEN)
     {
-        if (ft_strrchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
-            check_token->type = STRING;
-        else
+
+    }
+    else 
+    {
+        fpos = find_symbol(tokenlist, pos, 34);
+        if (fpos != 0)
         {
-            fpos = find_symbol(tokenlist, pos, 34);
-            while (fpos > 0)
+            while (fpos > pos)
             {
-                if ((*tokenlist)->elementList.tokens[fpos].type != DOLLAR_SIGN)
-                    (*tokenlist)->elementList.tokens[fpos].type = STRING;
+                if ((*tokenlist)->elementList.tokens[fpos] != DOLLAR_SIGN)
+                    (*tokenlist)->elementList.tokens[fpos].type = DOUBLE_Q_CLOSED;
                 fpos--;
             }
         }
     }
     return (0);
 }
+
+
+
+
+
+
 
 // //index lexer by traversing - not needed anymore
 // int index_lexer(element **tokenlist)
