@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:25:20 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/19 16:37:59 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/21 16:41:36 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,9 @@ int	minishell_echo(
 );
 int	minishell_pwd(
 	void
+);
+int	minishell_cd(
+const char *path
 );
 /**/
 
