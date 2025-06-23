@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/21 17:47:17 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/19 16:52:40 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,15 @@ void	test_free_and_close_exec_data(
 	free_and_close_redir_list(exec_data->redirections);
 	if (exec_data->argv)
 		free_2d_arr((void **) exec_data->argv);
+}
+
+int	test_dummy_builtin(
+	const t_exec_data *exec_data
+)
+{
+	// error management here or withibn buitin?
+	// this function will probably not exist at all cause it's just exec_builtin caller lol
+	return (exec_builtin(exec_data->argv[0], &exec_data->argv[1]));
 }
 
 t_redir_list	*test_add_redirection(
@@ -81,8 +90,10 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	int i = 0;
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("pwd");
-	//exec_data[i].argv[1] = ft_strdup("-l");
+	exec_data[i].argv[0] = ft_strdup("echo");
+	exec_data[i].argv[1] = ft_strdup("-n");
+	exec_data[i].argv[2] = ft_strdup("one");
+	exec_data[i].argv[3] = ft_strdup("two");
 	exec_data[i].is_builtin = true;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = true;
@@ -93,8 +104,7 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
 	exec_data[i].argv[0] = ft_strdup("cat");
-	//exec_data[i].argv[0] = ft_strdup("pwd");
-	//exec_data[i].argv[1] = ft_strdup("");
+	exec_data[i].argv[1] = ft_strdup("-e");
 	exec_data[i].is_builtin = false;
 	exec_data[i].input_is_pipe = true;
 	exec_data[i].output_is_pipe = true;
@@ -117,6 +127,19 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile", NULL);
 	i++;
 
+	//exec_data[i].len = len;
+	//exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
+	//exec_data[i].argv[0] = ft_strdup("cat");
+	//exec_data[i].argv[1] = ft_strdup("-b");
+	//exec_data[i].argv[2] = NULL;
+	//exec_data[i].is_builtin = true;
+	//exec_data[i].input_type = std_in;
+	//exec_data[i].output_type = std_out;
+	//exec_data[i].redirect_type = trunc;
+	//exec_data[i].heredoc_delim = NULL;
+	//exec_data[i].out_filename = ft_strdup("outfile");
+	//i++;
+
 	return (exec_data);
 }
 
@@ -128,52 +151,15 @@ static int	cleanup_in_parent_process(
 	t_command_io *const command_io
 )
 {
+	t_redir_list	*redirection;
+
+	redirection = command->redirections;
 	if (command->input_is_pipe == true)
 		test_close(command_io->in_pipe[READ_END]);
 	if (command->output_is_pipe == true)
 		test_close(command_io->out_pipe[WRITE_END]);
 	test_free_and_close_exec_data((t_exec_data *) command);
 	return (0);
-}
-
-int	test_dummy_builtin(
-	const t_exec_data *command,
-	const t_command_io *command_io,
-	const char **path
-)
-{
-	int	stdin_clone;
-	int	stdout_clone;
-	int	err_check;
-
-	if (command->input_is_pipe == true)
-	{
-		stdin_clone = dup(STDIN_FILENO);
-		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
-		test_close(command_io->in_pipe[READ_END]);
-	}
-	if (command->output_is_pipe == true)
-	{
-		stdout_clone = dup(STDOUT_FILENO);
-		test_dup2(command_io->out_pipe[WRITE_END], STDOUT_FILENO);
-		test_close(command_io->out_pipe[WRITE_END]);
-	}
-	perform_redirections(command->redirections, command_io);
-	// error management here or withibn buitin?
-	// this function will probably not exist at all cause it's just exec_builtin caller lol
-	//pipe_and_redirect(command, command_io, path);
-	err_check = exec_builtin(command->argv[0], &command->argv[1]);
-	if (command->input_is_pipe == true)
-	{
-		test_dup2(stdin_clone, STDIN_FILENO);
-		test_close(stdin_clone);
-	}
-	if (command->output_is_pipe == true)
-	{
-		test_dup2(stdout_clone, STDOUT_FILENO);
-		test_close(stdout_clone);
-	}
-	return (err_check);
 }
 
 static int	run_child_process(
@@ -191,14 +177,14 @@ static int	run_child_process(
 	}
 	if (command->output_is_pipe == true)
 	{
-		printf("is it here1?\n");
 		test_dup2(command_io->out_pipe[WRITE_END], STDOUT_FILENO);
 		test_close(command_io->out_pipe[WRITE_END]);
-		printf("is it here2?\n");
 	}
 	perform_redirections(command->redirections, command_io);
-	//pipe_and_redirect(command, command_io, path);
-	try_execve(path, command->argv);
+	if (command->is_builtin == false)
+		try_execve(path, command->argv);
+	else if (command->is_builtin == true)
+		err_check = test_dummy_builtin(command);
 	exit(err_check);
 }
 
@@ -208,26 +194,16 @@ int	execute_command(
 	const char **path
 )
 {
-	int		err_check;
 	pid_t	process_id;
 
-	err_check = 0;
-	if (command->is_builtin == true)
-	{
-		err_check = test_dummy_builtin(command, command_io, path);
+	process_id = fork();
+	if (process_id == 0)
+		run_child_process(command, command_io, path);
+	else if (process_id > 0)
 		cleanup_in_parent_process(command, command_io);
-	}
-	else
-	{
-		process_id = fork();
-		if (process_id == 0)
-			run_child_process(command, command_io, path);
-		else if (process_id > 0)
-			cleanup_in_parent_process(command, command_io);
-		else if (process_id < 0)
-			perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
-	}
-	return (err_check);
+	else if (process_id < 0)
+		perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 int	executor(

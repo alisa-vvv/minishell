@@ -6,12 +6,12 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/06/21 16:33:34 by avaliull     ########   odam.nl           #
+#    Updated: 2025/06/19 17:17:32 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
 .DEFAULT_GOAL := all
-:
+
 NAME	=	minishell
 
 CFILES	=	minishell.c\
@@ -27,7 +27,6 @@ EXECUTOR_CFILES	=	executor.c\
 					executor_test.c
 BULTINS_CFILES	=	exec_builtin.c\
 					pwd.c\
-					cd.c\
 					echo.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))

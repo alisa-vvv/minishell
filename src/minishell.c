@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:31:56 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/21 17:34:43 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/12 14:49:06 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ int	main(void)
 	while (is_open != 0)
 	{
 		read_line = readline("minishell ");
-		//if (!read_line)
-		//	printf("!readline\n");
-		if (strcmp(read_line, "clear") == 0)
+		if (!read_line)
+			printf("what happens?\n");
+		else if (strcmp(read_line, "clear") == 0)
 			rl_clear_history();
 		else if (strcmp(read_line, "exit") == 0)
 			is_open = false;
