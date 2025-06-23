@@ -12,20 +12,23 @@
 
 #include "libft.h"
 #include "minishell.h"
+#include "executor.h"
 #include <stdio.h>
 
 int	minishell_pwd(
 	void
 )
 {
-	// maybe declare this variable once during execution and pass it down to buitins? to avoid reallocing it every time
-	// maybe doesn't make a difference since forking creates a new process anyway so memory is cipy. if anything should 
-	// actually no, don't move it outside the functions unless something comes ip that would require it
-//	char *const	dir_buf = ft_calloc(BUFFER_SIZE, sizeof(char));
-//	
-//	if (!dir_buf)
-//		perror_and_return(MALLOC_ERR, MINISHELL_ERR, 1);
-//
-//	getcwd(dir_buf, BUFFER_SIZE);
-	return (printf("%s\n", getenv("PWD")));
+	// alloc this variable in advance?
+	char *const	dir = ft_calloc(PATH_MAX, sizeof(char));
+	int			err_check;
+	
+	getcwd(dir, PATH_MAX);
+	if (!dir)
+	{
+		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+	}
+	printf("%s\n", dir);
+	free(dir);
+	return (err_check);
 }

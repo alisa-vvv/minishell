@@ -96,7 +96,7 @@ re:	fclean all
 #LSP connection for neovim
 clangd:
 	$(MAKE) fclean
-	intercept-build-14 make all
+	intercept-build-14 $(MAKE)
 
 #debugging
 debug: CFLAGS += -g
