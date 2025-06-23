@@ -34,6 +34,8 @@ int	exec_builtin(
 	err_check = 0;
 	if (ft_strncmp(builtin_name, "echo", 5) == 0)
 		err_check = minishell_echo(arguments);
+	else if (ft_strncmp(builtin_name, "cd", 3) == 0)
+		err_check = minishell_cd(arguments[0]);
 	else if (ft_strncmp(builtin_name, "pwd", 4) == 0)
 		err_check = minishell_pwd();
 	return (err_check);

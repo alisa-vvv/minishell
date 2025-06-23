@@ -63,10 +63,7 @@ t_redir_list	*test_add_redirection(
 {
 	t_redir_list	*cur_node = (t_redir_list *) first;
 	t_redir_list	*redir_list = ft_calloc(1, sizeof(*redir_list));
-
-	redir_list->type = type;
-	redir_list->src_fd = src;
-	if (dest)
+redir_list->type = type; redir_list->src_fd = src; if (dest)
 		redir_list->dest_filename = ft_strdup(dest);
 	if (heredoc_delim)
 		redir_list->heredoc_delim = ft_strdup(heredoc_delim);
@@ -90,55 +87,42 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	int i = 0;
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("echo");
-	exec_data[i].argv[1] = ft_strdup("-n");
-	exec_data[i].argv[2] = ft_strdup("one");
-	exec_data[i].argv[3] = ft_strdup("two");
+	exec_data[i].argv[0] = ft_strdup("cd");
+	exec_data[i].argv[1] = ft_strdup("src");
+	//exec_data[i].argv[2] = ft_strdup("one");
+	//exec_data[i].argv[3] = ft_strdup("two");
 	exec_data[i].is_builtin = true;
 	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = true;
+	exec_data[i].output_is_pipe = false;
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
 	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF2");
 	i++;
 
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].argv[1] = ft_strdup("-e");
-	exec_data[i].is_builtin = false;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = true;
-	i++;
-
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].argv[1] = ft_strdup("-T");
-	exec_data[i].is_builtin = false;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = true;
-	i++;
-
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].argv[1] = ft_strdup("-b");
-	exec_data[i].is_builtin = false;
-	exec_data[i].input_is_pipe = true;
+	exec_data[i].argv[0] = ft_strdup("pwd");
+	//exec_data[i].argv[1] = ft_strdup("-e");
+	exec_data[i].is_builtin = true;
+	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = false;
-	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile", NULL);
 	i++;
 
-	//exec_data[i].len = len;
-	//exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
-	//exec_data[i].argv[0] = ft_strdup("cat");
-	//exec_data[i].argv[1] = ft_strdup("-b");
-	//exec_data[i].argv[2] = NULL;
-	//exec_data[i].is_builtin = true;
-	//exec_data[i].input_type = std_in;
-	//exec_data[i].output_type = std_out;
-	//exec_data[i].redirect_type = trunc;
-	//exec_data[i].heredoc_delim = NULL;
-	//exec_data[i].out_filename = ft_strdup("outfile");
-	//i++;
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("cat");
+//	exec_data[i].argv[1] = ft_strdup("-T");
+//	exec_data[i].is_builtin = false;
+//	exec_data[i].input_is_pipe = true;
+//	exec_data[i].output_is_pipe = true;
+//	i++;
+//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("cat");
+//	exec_data[i].argv[1] = ft_strdup("-b");
+//	exec_data[i].is_builtin = false;
+//	exec_data[i].input_is_pipe = true;
+//	exec_data[i].output_is_pipe = false;
+//	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile", NULL);
+//	i++;
 
 	return (exec_data);
 }
@@ -195,15 +179,23 @@ int	execute_command(
 )
 {
 	pid_t	process_id;
+	int		err_check;
 
-	process_id = fork();
-	if (process_id == 0)
-		run_child_process(command, command_io, path);
-	else if (process_id > 0)
-		cleanup_in_parent_process(command, command_io);
-	else if (process_id < 0)
-		perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+	err_check = 0;
+	if (command->input_is_pipe == true || command->output_is_pipe == true ||
+		command->is_builtin == false)
+	{
+		process_id = fork();
+		if (process_id == 0)
+			run_child_process(command, command_io, path);
+		else if (process_id > 0)
+			cleanup_in_parent_process(command, command_io);
+		else if (process_id < 0)
+			perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
+	}
+	else if (command->is_builtin == true)
+		err_check = test_dummy_builtin(command);
+	return (err_check);
 }
 
 int	executor(

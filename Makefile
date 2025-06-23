@@ -27,6 +27,7 @@ EXECUTOR_CFILES	=	executor.c\
 					executor_test.c
 BULTINS_CFILES	=	exec_builtin.c\
 					pwd.c\
+					cd.c\
 					echo.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))

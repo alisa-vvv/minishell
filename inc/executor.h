@@ -62,6 +62,9 @@ int	exec_builtin(
 int	minishell_echo(
 	char **arguments
 );
+int	minishell_cd(
+	const char *path
+);
 int	minishell_pwd(
 	void
 );
