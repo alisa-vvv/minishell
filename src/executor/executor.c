@@ -65,7 +65,10 @@ t_redir_list	*test_add_redirection(
 {
 	t_redir_list	*cur_node = (t_redir_list *) first;
 	t_redir_list	*redir_list = ft_calloc(1, sizeof(*redir_list));
-redir_list->type = type; redir_list->src_fd = src; if (dest)
+	
+	redir_list->type = type;
+	redir_list->src_fd = src;
+	if (dest)
 		redir_list->dest_filename = ft_strdup(dest);
 	if (heredoc_delim)
 		redir_list->heredoc_delim = ft_strdup(heredoc_delim);
