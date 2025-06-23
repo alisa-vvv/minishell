@@ -32,6 +32,7 @@ int	exec_builtin(
 	int	err_check;
 
 	err_check = 0;
+	printf("arguments[0]: %s\n", arguments[0]);
 	if (ft_strncmp(builtin_name, "echo", 5) == 0)
 		err_check = minishell_echo(arguments);
 	else if (ft_strncmp(builtin_name, "cd", 3) == 0)

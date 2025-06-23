@@ -50,6 +50,8 @@ int	test_dummy_builtin(
 {
 	// error management here or withibn buitin?
 	// this function will probably not exist at all cause it's just exec_builtin caller lol
+	printf("exec_data->argv[0] %s\n", exec_data->argv[0]);
+	printf("exec_data->argv[1] %s\n", exec_data->argv[1]);
 	return (exec_builtin(exec_data->argv[0], &exec_data->argv[1]));
 }
 

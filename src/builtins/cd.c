@@ -13,12 +13,15 @@
 #include <minishell.h>
 #include <unistd.h>
 
+#include <stdio.h>
+
 int	minishell_cd(
 	const char *path
 )
 {
 	int	err_check;
 
+	printf("checking path: %s\n", path);
 	err_check = chdir(path);
 	if (err_check < 0)
 		perror_and_return("cd", MINISHELL_ERR, 1);
