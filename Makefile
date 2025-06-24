@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/06/19 17:17:32 by avaliull     ########   odam.nl           #
+#    Updated: 2025/06/24 17:23:02 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,8 @@ EXECUTOR_CFILES	=	executor.c\
 BULTINS_CFILES	=	exec_builtin.c\
 					pwd.c\
 					cd.c\
-					echo.c
+					echo.c\
+					env.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))
 DEPFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.d))

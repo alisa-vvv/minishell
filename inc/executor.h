@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:25:20 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/19 16:37:59 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/24 17:44:45 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_exec_data	*test_get_dummy_exec_data(int len);
 int	executor(
 	const t_exec_data *exec_data,
 	int command_count,
-	int dummy_minishell_struct
+	t_minishell_data *const minishell_data
 );
 /**/
 
@@ -56,7 +56,8 @@ int	perform_redirections(
 /*		Builtins		*/
 int	exec_builtin(
 	char *builtin_name,
-	char **arguments
+	char **arguments,
+	t_minishell_data *const minishell_data
 );
 
 int	minishell_echo(
@@ -67,6 +68,9 @@ int	minishell_cd(
 );
 int	minishell_pwd(
 	void
+);
+int	minishell_env(
+	t_minishell_data *const minishell_data
 );
 /**/
 

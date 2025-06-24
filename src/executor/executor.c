@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/19 16:52:40 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/24 17:49:51 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,13 @@ void	test_free_and_close_exec_data(
 }
 
 int	test_dummy_builtin(
-	const t_exec_data *exec_data
+	const t_exec_data *exec_data,
+	t_minishell_data *const minishell_data
 )
 {
 	// error management here or withibn buitin?
 	// this function will probably not exist at all cause it's just exec_builtin caller lol
-	printf("exec_data->argv[0] %s\n", exec_data->argv[0]);
-	printf("exec_data->argv[1] %s\n", exec_data->argv[1]);
-	return (exec_builtin(exec_data->argv[0], &exec_data->argv[1]));
+	return (exec_builtin(exec_data->argv[0], &exec_data->argv[1], minishell_data));
 }
 
 t_redir_list	*test_add_redirection(
@@ -92,7 +91,7 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	int i = 0;
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cd");
+	exec_data[i].argv[0] = ft_strdup("env");
 	exec_data[i].argv[1] = ft_strdup("src");
 	//exec_data[i].argv[2] = ft_strdup("one");
 	//exec_data[i].argv[3] = ft_strdup("two");
@@ -104,13 +103,13 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF2");
 	i++;
 
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("pwd");
-	//exec_data[i].argv[1] = ft_strdup("-e");
-	exec_data[i].is_builtin = true;
-	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = false;
-	i++;
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("pwd");
+//	//exec_data[i].argv[1] = ft_strdup("-e");
+//	exec_data[i].is_builtin = true;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	i++;
 
 //	exec_data[i].argv = ft_calloc(10, sizeof(char *));
 //	exec_data[i].argv[0] = ft_strdup("cat");
@@ -154,7 +153,8 @@ static int	cleanup_in_parent_process(
 static int	run_child_process(
 	const t_exec_data *command,
 	const t_command_io *command_io,
-	const char **path
+	const char **path,
+	t_minishell_data *const minishell_data
 )
 {
 	int				err_check;
@@ -173,14 +173,15 @@ static int	run_child_process(
 	if (command->is_builtin == false)
 		try_execve(path, command->argv);
 	else if (command->is_builtin == true)
-		err_check = test_dummy_builtin(command);
+		err_check = test_dummy_builtin(command, minishell_data);
 	exit(err_check);
 }
 
 int	execute_command(
 	const t_exec_data *command,
 	t_command_io *const command_io,
-	const char **path
+	const char **path,
+	t_minishell_data *const minishell_data
 )
 {
 	pid_t	process_id;
@@ -192,21 +193,21 @@ int	execute_command(
 	{
 		process_id = fork();
 		if (process_id == 0)
-			run_child_process(command, command_io, path);
+			run_child_process(command, command_io, path, minishell_data);
 		else if (process_id > 0)
 			cleanup_in_parent_process(command, command_io);
 		else if (process_id < 0)
 			perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
 	}
 	else if (command->is_builtin == true)
-		err_check = test_dummy_builtin(command);
+		err_check = test_dummy_builtin(command, minishell_data);
 	return (err_check);
 }
 
 int	executor(
 	const t_exec_data *exec_data,
 	int command_count,
-	int dummy_minishell_struct
+	t_minishell_data *const minishell_data
 )
 {
 	int				i;
@@ -226,7 +227,7 @@ int	executor(
 			printf("PLACEHOLDER ERROR\n");
 			return (EXIT_FAILURE);
 		}
-		execute_command(&exec_data[i], &command_io, path);
+		execute_command(&exec_data[i], &command_io, path, minishell_data);
 	}
 	while (waitpid(-1, &process_status, 0) > 0) // check if there's some exit signals or codes we need to handle here
 	{

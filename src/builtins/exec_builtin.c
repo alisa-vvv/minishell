@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/19 15:47:26 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/19 16:53:18 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/06/24 17:42:21 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@
 //
 int	exec_builtin(
 	char *builtin_name,
-	char **arguments
+	char **arguments,
+	t_minishell_data *const minishell_data
 )
 {
 	int	err_check;
@@ -39,5 +40,7 @@ int	exec_builtin(
 		err_check = minishell_cd(arguments[0]);
 	else if (ft_strncmp(builtin_name, "pwd", 4) == 0)
 		err_check = minishell_pwd();
+	else if (ft_strncmp(builtin_name, "env", 4) == 0)
+		err_check = minishell_env(minishell_data);
 	return (err_check);
 }
