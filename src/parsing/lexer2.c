@@ -94,9 +94,9 @@ int check_dquotes(element **tokenlist, int pos)
     check_token = (t_token *)(*tokenlist)->pfElementGet(tokenlist, pos);
     if (ft_strchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
         check_token->type = DOUBLE_Q_CLOSED;
-    else if (check_token->type == DOUBLE_Q_OPEN && (t_token *)(*tokenlist)->elementList.tokens[total]->type == DOUBLE_Q_OPEN)
+    else if (check_token->type == DOUBLE_Q_OPEN && (int)(*tokenlist)->elementList.tokens[total]->type == DOUBLE_Q_OPEN)
     {
-
+        
     }
     else 
     {
@@ -106,7 +106,7 @@ int check_dquotes(element **tokenlist, int pos)
             while (fpos > pos)
             {
                 if ((*tokenlist)->elementList.tokens[fpos] != DOLLAR_SIGN)
-                    (*tokenlist)->elementList.tokens[fpos].type = DOUBLE_Q_CLOSED;
+                    (int)(*tokenlist)->elementList.tokens[fpos].type = DOUBLE_Q_CLOSED;
                 fpos--;
             }
         }
