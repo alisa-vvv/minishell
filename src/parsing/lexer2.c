@@ -37,7 +37,7 @@ void rm_quotes(element *tokenlist, int pos, char symbol)
     }
 }
 
-//func to traverse list and find closing quotes
+//func to traverse list and find a spec symbol
 int find_symbol(element *tokenlist, int pos, char symbol)
 {
     t_token *check_token;
@@ -49,56 +49,51 @@ int find_symbol(element *tokenlist, int pos, char symbol)
             return(pos);
         pos++;
     }
-    return (0);
+    return (-1);
 }
 
-// //check quotes to rm later
-// int check_quotes(element **tokenlist, int pos, char quote)
-// {
-//     t_token *check_token;
-//     int fpos;
-//     int type;
+// count occurrence of spec symbol in array
+int count_symbol(element *tokenlist, int pos, char symbol)
+{
+    int count;
+    int i;
+    t_token* check_token;
+    
+    check_token = tokenlist->pfElementGet(tokenlist, pos);
+    count = 0;
+    i = 0;
+    while ((size_t)pos < tokenlist->elementList.total)
+    {
+        if (find_symbol(tokenlist, pos, symbol) > -1)
+        {
+            while(check_token->value[i])
+            {
+                if (check_token->value[i] == symbol)
+                    count++;
+                i++;
+            }
+        }
+        pos++;
+    }
+    return (count); 
+}
 
-//     fpos = -1;
-//     check_token = (t_token *)(*tokenlist)->elementList.tokens[pos];
-//     if (quote == DOUBLE_Q_OPEN)
-//         type = 34;
-//     else 
-//         type = 39;
-//     if (check_token->type == quote)
-//     {
-//         if (ft_strrchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
-//             check_token->type = STRING;
-//         else
-//         {
-//             fpos = find_symbol(tokenlist, pos, 34);
-//             while (fpos > 0)
-//             {
-//                 if ((*tokenlist)->elementList.tokens[fpos].type != DOLLAR_SIGN)
-//                     (*tokenlist)->elementList.tokens[fpos].type = STRING;
-//                 fpos--;
-//             }
-//         }
-//     }
-//     return (0);
-// }
-
+//check if quotes are valid
 int check_dquotes(element **tokenlist, int pos)
 {
     t_token *check_token;
     int fpos;
     size_t total;
 
+    if (count_symbol(tokenlist, pos, 34) % 2 != 0)
+        return (write(1, "unclosed quotes", 15));
+
     fpos = -1;
     total = (*tokenlist)->pfElementTotal;
     check_token = (t_token *)(*tokenlist)->pfElementGet(tokenlist, pos);
     if (ft_strchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
         check_token->type = DOUBLE_Q_CLOSED;
-    else if (check_token->type == DOUBLE_Q_OPEN && (int)(*tokenlist)->elementList.tokens[total]->type == DOUBLE_Q_OPEN)
-    {
-        
-    }
-    else 
+    else if 
     {
         fpos = find_symbol(tokenlist, pos, 34);
         if (fpos != 0)
@@ -114,10 +109,35 @@ int check_dquotes(element **tokenlist, int pos)
     return (0);
 }
 
+//check if single quotes are closed and set types in arr to closed.
+int check_squotes(element **tokenlist, int pos)
+{
+    t_token *check_token;
+    int fpos;
+    size_t total;
 
-
-
-
+    total = (*tokenlist)->pfElementTotal;
+    while (pos < total)
+    {
+        fpos = find_symbol(tokenlist, pos + 1, 39);
+        check_token = (t_token *)(*tokenlist)->pfElementGet(tokenlist, pos);
+        if (check_token->value[0] && check_token->value[ft_strlen(check_token->value)-1])
+            check_token->type = SINGLE_Q_CLOSED;
+        else if (!fpos == -1)
+        {
+            check_token = (t_token *)(*tokenlist)->pfElementGet(tokenlist, fpos);
+            if (check_token->value[ft_strlen(check_token->value) - 1] == 39)
+                check_token->type = SINGLE_Q_CLOSED;
+            while (fpos > pos)
+            {
+                (*tokenlist)->elementList.tokens[fpos] = SINGLE_Q_CLOSED;
+                fpos--;
+            }
+        }
+        pos++;
+    }
+    return (-1);
+}
 
 
 // //index lexer by traversing - not needed anymore

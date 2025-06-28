@@ -45,8 +45,6 @@
 //     - exit with no options
 
 
-
-
 //func returning next token type in the array
 int lookahead(element **tokenlist, size_t index)
 {
