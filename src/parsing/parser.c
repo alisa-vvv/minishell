@@ -49,7 +49,7 @@
 int lookahead(element **tokenlist, size_t index)
 {
     t_token *check_token;
-    check_token = (t_token *)(*tokenlist)->pfElementGet(&tokenlist, index + 1);
+    check_token = (t_token *)(*tokenlist)->pf_element_get(&tokenlist, index + 1);
     if (!check_token)
         return (-1);
     return (check_token->type);

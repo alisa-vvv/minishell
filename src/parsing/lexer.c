@@ -12,12 +12,12 @@
 
 #include "parser.h"
 
-// int is_EOS(char *str, int i)
-// {
-//     if (i == ft_strlen(str))
-//         return (1);
-//     return (0);
-// }
+int is_EOS(char *str, int i)
+{
+    if (i == ft_strlen(str))
+        return (1);
+    return (0);
+}
 
 int skip_blanks(char *str)
 {
@@ -31,6 +31,7 @@ int skip_blanks(char *str)
     return (count);
 }
 
+// trims input to have one space between tokens to ease validation
 char *trim_string(char *str)
 {
     int i;
@@ -39,7 +40,7 @@ char *trim_string(char *str)
     j = 0;
     while (str[j])
     {
-        if (i == 0 && (skip_blanks(str + j) > 1))
+        if ((i == 0 && skip_blanks(str + j) > 1) || is_EOS(str, j + skip_blanks(str + j)))
             j += skip_blanks(str + j);
         else if (skip_blanks(str + j) > 1)
             j += skip_blanks(str + j + 1);
@@ -47,11 +48,10 @@ char *trim_string(char *str)
         i++;
         j++;
     }
-    
     str[i] = '\0';
     return (str);
 }
-
+//make a new token in the array
 t_token *new_token(char *str, int len)
 {
     if (!*str)
@@ -110,9 +110,9 @@ int fill_tokenlist(element **tokenlist, char *str)
         {
             token = new_token(str - len, len + 1);
             if (!token)
-                return ((*tokenlist)->pfElementFree(*tokenlist), MALLOC_ERR);
-            token->pos = (*tokenlist)->elementList.total;
-            (*tokenlist)->pfElementAdd(*tokenlist, token);
+                return ((*tokenlist)->pf_element_free(*tokenlist), MALLOC_ERR);
+            token->pos = (*tokenlist)->element_list.total;
+            (*tokenlist)->pf_element_add(*tokenlist, token);
         }
     }
     return (0);
@@ -125,23 +125,24 @@ int default_lexer(char *input_line)
     token_c = 0;
     if (!input_line)
         return (1);
-    if (check_d_quote_in(input_line) || check_s_quote_in(input_line, check_quote_c(input_line)))
-        return (1);
+    input_line = trim_string(input_line);
+    if (check_quote_c(input_line, '"') % 2 != 0 || check_quote_c(input_line, '\'') % 2 != 0)
+        return (write(1, "command not found\n", 18));
     token_c = token_count(input_line);
     if (!token_c)
         return (write(1, "Failed to count tokens\n", 23));
     TOKEN_INIT(token_list, token_c);
     fill_tokenlist(&token_list, input_line);
-    if (!token_list.elementList.tokens)
+    if (!token_list.element_list.tokens)
         return (write(1, "Failed to init tokenlist\n", 25));
     check_lexer(&token_list);
     
     size_t i = 0;
     t_token *token_test;
 
-    while (i < token_list.elementList.total)
+    while (i < token_list.element_list.total)
     {
-        token_test = (t_token *)token_list.elementList.tokens[i];
+        token_test = (t_token *)token_list.element_list.tokens[i];
         printf("%s\n", token_test->value);
         i++;
     }

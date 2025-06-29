@@ -61,7 +61,7 @@ enum
     QUESTION_MARK,
     EXCLAM_MARK,
 
-    ECHO,        // match_string(str_token);
+    ECHO,      
     CAT,
     CD,
     ENV,
