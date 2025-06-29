@@ -3,7 +3,10 @@ a.out
 main.c
 ./test_files/*
 test_files/
+src/pipex
+src/pipex/*
 *.swp
+*.d
 *.o
 *.a
 *.ods
@@ -15,3 +18,8 @@ imgui.ini
 .cache
 tester/.
 minishell
+infile
+outfile
+outfile_bash
+bash_outfile
+file
