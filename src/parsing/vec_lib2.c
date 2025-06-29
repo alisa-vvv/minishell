@@ -36,7 +36,7 @@ void	ft_free_arr(void **array)
 }
 
 
-int	elementDelete(element *e, int index)
+int	element_delete(element *e, int index)
 {
 	int	i;
 	int	status;
@@ -45,32 +45,32 @@ int	elementDelete(element *e, int index)
 	status = -1;
 	if (e)
 	{
-		if ((index < 0) || ((size_t)index >= e->elementList.total))
+		if ((index < 0) || ((size_t)index >= e->element_list.total))
 			return (-1);
-		e->elementList.tokens[index] = NULL;
+		e->element_list.tokens[index] = NULL;
 		i = index;
-		while (i < e->elementList.total - 1)
+		while (i < e->element_list.total - 1)
 		{
-			e->elementList.tokens[i] = e->elementList.tokens[i + 1];
-			e->elementList.tokens[i + 1] = NULL;
+			e->element_list.tokens[i] = e->element_list.tokens[i + 1];
+			e->element_list.tokens[i + 1] = NULL;
 			i++;
 		}
-		e->elementList.total--;
-		if ((e->elementList.total > 0)
-			&& ((e->elementList.total) == (e->elementList.size / 4)))
-			elementResize(e, e->elementList.size, e->elementList.size / 2);
+		e->element_list.total--;
+		if ((e->element_list.total > 0)
+			&& ((e->element_list.total) == (e->element_list.size / 4)))
+			element_resize(e, e->element_list.size, e->element_list.size / 2);
 		status = 0;
 	}
 	return (status);
 }
 
-int	elementFree(element *e)
+int	element_free(element *e)
 {
 	if (e)
 	{
-		ft_free_arr(e->elementList.tokens);
-		e->elementList.total = 0;
-		e->elementList.tokens = NULL;
+		ft_free_arr(e->element_list.tokens);
+		e->element_list.total = 0;
+		e->element_list.tokens = NULL;
 		return (0);
 	}
 	return (-1);
@@ -78,17 +78,17 @@ int	elementFree(element *e)
 
 void	element_init(element *e, int size)
 {
-	e->pfElementTotal = elementTotal;
-	e->pfElementResize = elementResize;
-	e->pfElementAdd = elementPushBack;
-	e->pfElementSet = elementSet;
-	e->pfElementGet = elementGet;
-	e->pfElementFree = elementFree;
-	e->pfElementDelete = elementDelete;
-	e->elementList.size = size;
-	e->elementList.total = 0;
-	e->elementList.tokens = malloc(sizeof(void *) * e->elementList.size);
-	if (!e->elementList.tokens)
+	e->pf_element_total = element_total;
+	e->pf_element_resize = element_resize;
+	e->pf_element_add = element_push_back;
+	e->pf_element_set = element_set;
+	e->pf_element_get = element_get;
+	e->pf_element_free = element_free;
+	e->pf_element_delete = element_delete;
+	e->element_list.size = size;
+	e->element_list.total = 0;
+	e->element_list.tokens = malloc(sizeof(void *) * e->element_list.size);
+	if (!e->element_list.tokens)
 	{
 		fprintf(stderr, "Memory alloc failed in init tokenlist\n");
 		exit(EXIT_FAILURE);

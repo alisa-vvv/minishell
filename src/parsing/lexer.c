@@ -19,6 +19,39 @@
 //     return (0);
 // }
 
+int skip_blanks(char *str)
+{
+    int count;
+    count = 0;
+    while (ft_isspace(*str))
+    {
+        count++;
+        str++;
+    }
+    return (count);
+}
+
+char *trim_string(char *str)
+{
+    int i;
+    int j;
+    i = 0;
+    j = 0;
+    while (str[j])
+    {
+        if (i == 0 && (skip_blanks(str + j) > 1))
+            j += skip_blanks(str + j);
+        else if (skip_blanks(str + j) > 1)
+            j += skip_blanks(str + j + 1);
+        str[i] = str[j];
+        i++;
+        j++;
+    }
+    
+    str[i] = '\0';
+    return (str);
+}
+
 t_token *new_token(char *str, int len)
 {
     if (!*str)
@@ -92,7 +125,7 @@ int default_lexer(char *input_line)
     token_c = 0;
     if (!input_line)
         return (1);
-    if (check_d_quote_in(input_line) || check_s_quote_in(input_line))
+    if (check_d_quote_in(input_line) || check_s_quote_in(input_line, check_quote_c(input_line)))
         return (1);
     token_c = token_count(input_line);
     if (!token_c)

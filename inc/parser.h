@@ -17,17 +17,9 @@
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "vec_lib.h"
 
 # define MALLOC_ERR "Error! malloc()"
-# define TOKEN_INIT(el, size) element el;\
-    element_init(&el, size)
-
-typedef struct s_elementlist
-{
-    void **tokens;
-    size_t size; // in mem
-    size_t total;
-} t_elementlist;
 
 typedef struct s_token
 {
@@ -36,20 +28,6 @@ typedef struct s_token
     size_t pos;
     
 } t_token;
-
-typedef struct s_element element;
-
-struct s_element
-{
-    t_elementlist elementList;
-    int (*pfElementTotal)(element *);
-    int (*pfElementResize)(element *, int, int);
-    int (*pfElementAdd)(element *, void *);
-    int (*pfElementSet)(element *, int, void *);
-    void *(*pfElementGet)(element *, int);
-    int (*pfElementDelete)(element *, int);
-    int (*pfElementFree)(element *);
-};
 
 enum 
 {
@@ -93,14 +71,7 @@ enum
 
 };
 
-int elementTotal(element *e);
-int elementResize(element *e, int oldsize, int newsize);
-int elementPushBack(element *e, void *token);
-int elementSet(element *e, int index, void *token);
-void *elementGet(element *e, int index);
-int elementDelete(element *e, int index);
-int elementFree(element *e);
-void element_init(element *e, int size);
+
 
 int         default_lexer(char *input_line);
 int         token_count(char *str);

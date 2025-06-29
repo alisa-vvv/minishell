@@ -35,25 +35,35 @@ int check_d_quote_in(char *str)
     return (0);
 }
 
-int check_s_quote_in(char *str)
+
+int check_s_quote_in(char *str, int count)
 {
     int i;
+    int in_quote;
+
     i = 0;
-    if (check_quote_c(str, 39) == 1)
+    in_quote = -1;
+    if (count == 1)
         return (write(1, "Command not found\n", 18));
-    
-    while (str[i])
+    while(str[i])
     {
+        if (ft_isspace(str[i]))
+            i += skip_blanks(str + i);
         if (str[i] == 39)
         {
-            if (str[i] != ft_isalpha(str[i]))
-            {
-                while()
-            }
+            in_quote *= -1;
+            if (i - skip_blanks(str + i) == 0)
+                count--;
+            else if (in_quote == 1 && (ft_isalpha(str[i+1]) && ft_isalpha(str[i-1])))
+                count--;
+            else if (in_quote == 1 && )
+                count--;
         }
-
-        i++; 
+        i++;
     }
+    if (count != 0)
+        return (1);
+    return (0);
 }
 
 

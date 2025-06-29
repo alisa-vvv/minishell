@@ -39,74 +39,74 @@ void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 }
 
 
-int	elementTotal(element *e)
+int	element_total(element *e)
 {
 	if (e)
-		return (e->elementList.total);
+		return (e->element_list.total);
 	return (-1);
 }
 
-int	elementResize(element *e, int oldsize, int newsize)
+int	element_resize(element *e, int oldsize, int newsize)
 {
 	void	**tokens;
 
 	if (e)
 	{
-		tokens = ft_realloc(e->elementList.tokens, sizeof(void *) * oldsize, sizeof(void *) * newsize);
+		tokens = ft_realloc(e->element_list.tokens, sizeof(void *) * oldsize, sizeof(void *) * newsize);
 		if (tokens)
 		{
-			e->elementList.tokens = tokens;
-			e->elementList.size = newsize;
+			e->element_list.tokens = tokens;
+			e->element_list.size = newsize;
 			return (0);
 		}
 	}
 	return (-1);
 }
 
-int	elementPushBack(element *e, void *token)
+int	element_push_back(element *e, void *token)
 {
 	int	status;
 
 	status = -1;
 	if (e)
 	{
-		if (e->elementList.size == e->elementList.total)
+		if (e->element_list.size == e->element_list.total)
 		{
-			status = elementResize(e, e->elementList.size, e->elementList.size * 2);
+			status = elementResize(e, e->element_list.size, e->element_list.size * 2);
 			if (status == -1)
-				e->elementList.tokens[e->elementList.total++] = token;
+				e->element_list.tokens[e->element_list.total++] = token;
 		}
 		else
 		{
-			e->elementList.tokens[e->elementList.total++] = token;
+			e->element_list.tokens[e->element_list.total++] = token;
 			status = 0;
 		}
 	}
 	return (status);
 }
 
-int	elementSet(element *e, int index, void *token)
+int	element_set(element *e, int index, void *token)
 {
 	if (e)
 	{
-		if ((index >= 0) && (index < e->elementList.total))
+		if ((index >= 0) && (index < e->element_list.total))
 		{
-			e->elementList.tokens[index] = token;
+			e->element_list.tokens[index] = token;
 			return (0);
 		}
 	}
 	return (-1);
 }
 
-void	*elementGet(element *e, int index)
+void	*element_get(element *e, int index)
 {
 	void	*token_data;
 
 	token_data = NULL;
 	if (e)
 	{
-		if ((index >= 0) && ((size_t)index < e->elementList.total))
-			token_data = e->elementList.tokens[index];
+		if ((index >= 0) && ((size_t)index < e->element_list.total))
+			token_data = e->element_list.tokens[index];
 	}
 	return (token_data);
 }
