@@ -54,3 +54,12 @@ https://aticleworld.com/implement-vector-in-c/
 More TBD
 
 
+Edge cases
+
+- 'export empty= ""' -> 'echo hi > $EMPTY'
+- '<<<eof' -> cntrl+D -> 'echo $?'
+- '>ls' -> 'ls' -> './les'
+- '>haha | ls'
+- 'export empty=" "' -> 'echo hi > $EMPTY' -> '$EMPTY echo hi'
+
+
