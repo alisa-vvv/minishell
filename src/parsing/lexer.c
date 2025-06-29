@@ -80,7 +80,7 @@ int token_count(char *str)
     return (tokencount);
 }
 
-//pushes tokens in the elementlist from the back, immediately indexing -> have to shorten 
+//pushes tokens in the elementlist from the back, immediately indexing 
 int fill_tokenlist(element **tokenlist, char *str)
 {
     size_t len;

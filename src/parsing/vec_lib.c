@@ -166,7 +166,7 @@ void	element_init(element *e, int size)
 	e->elementList.tokens = malloc(sizeof(void *) * e->elementList.size);
 	if (!e->elementList.tokens)
 	{
-		fprintf(stderr, "Memory allocation failed in vector_init\n");
+		fprintf(stderr, "Memory alloc failed in init tokenlist\n");
 		exit(EXIT_FAILURE);
 	}
 }

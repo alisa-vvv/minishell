@@ -86,7 +86,7 @@ int check_dquotes(element **tokenlist, int pos)
     size_t total;
 
     if (count_symbol(tokenlist, pos, 34) % 2 != 0)
-        return (write(1, "unclosed quotes", 15));
+        return (write(1, "Unclosed quotes", 15));
 
     fpos = -1;
     total = (*tokenlist)->pfElementTotal;
