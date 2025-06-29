@@ -76,7 +76,7 @@ int	minishell_env(
 
 /*		Try_execve		*/
 const char	**find_env_path(
-	void
+	const char **environment
 );
 int	try_execve(
 	const char **path,

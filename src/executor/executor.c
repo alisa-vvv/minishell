@@ -91,11 +91,16 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	int i = 0;
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("env");
-	exec_data[i].argv[1] = ft_strdup("src");
+	exec_data[i].argv[0] = ft_strdup("cat");
+	exec_data[i].argv[1] = ft_strdup("-e");
+	exec_data[i].argv[2] = ft_strdup("outfile");
+	exec_data[i].argv[3] = ft_strdup("-T");
+	exec_data[i].argv[4] = ft_strdup("infile");
+//	exec_data[i].argv[0] = ft_strdup("env");
+//	exec_data[i].argv[1] = ft_strdup("src");
 	//exec_data[i].argv[2] = ft_strdup("one");
 	//exec_data[i].argv[3] = ft_strdup("two");
-	exec_data[i].is_builtin = true;
+	exec_data[i].is_builtin = false;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = false;
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
@@ -159,6 +164,8 @@ static int	run_child_process(
 {
 	int				err_check;
 
+	// path var should be found here since it can change potentially?
+	(void) path; // REMOVE THIS. KEPT FOR TESTING
 	if (command->input_is_pipe == true)
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
@@ -213,7 +220,7 @@ int	executor(
 	int				i;
 	int				process_status;
 	t_command_io	command_io;
-	const char		**path = find_env_path();
+	const char		**path = find_env_path((const char **) minishell_data->environment); // make this shorter somehow
 
 	if (!path)
 		return (EXIT_FAILURE);
