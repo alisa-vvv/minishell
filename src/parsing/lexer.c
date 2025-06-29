@@ -19,29 +19,6 @@
 //     return (0);
 // }
 
-void	ft_safefree(void *ptr)
-{
-	if (ptr)
-	{
-		free(ptr);
-		ptr = NULL;
-	}
-	return ;
-}
-
-void	ft_free_arr(void **array)
-{
-	int	i;
-
-	if (array)
-	{
-		i = -1;
-		while (array[++i])
-			ft_safefree(array[i]);
-		ft_safefree(array);
-	}
-}
-
 t_token *new_token(char *str, int len)
 {
     if (!*str)
@@ -114,6 +91,8 @@ int default_lexer(char *input_line)
     int token_c;
     token_c = 0;
     if (!input_line)
+        return (1);
+    if (check_d_quote_in(input_line) || check_s_quote_in(input_line))
         return (1);
     token_c = token_count(input_line);
     if (!token_c)
