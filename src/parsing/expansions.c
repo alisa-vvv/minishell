@@ -13,6 +13,15 @@
 #include "parser.h"
 
 
+// $ expansion, environment
+// tilde expansion?
+// $0 name of the shell script or command
+// $1-9 indicated postiional arg 
+// $# number of shell args
+// $@ value of each shell arg 
+// $* value of all shell arg
+ 
+
 // element *param_expansion(element **tokenlist)
 // {
 //     t_token *check_token;

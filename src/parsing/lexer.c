@@ -32,7 +32,7 @@ int skip_blanks(char *str)
 }
 
 // trims input to have one space between tokens to ease validation
-char *trim_string(char *str)
+char *trim_str_space(char *str)
 {
     int i;
     int j;
@@ -51,6 +51,7 @@ char *trim_string(char *str)
     str[i] = '\0';
     return (str);
 }
+
 //make a new token in the array
 t_token *new_token(char *str, int len)
 {
@@ -118,16 +119,16 @@ int fill_tokenlist(element **tokenlist, char *str)
     return (0);
 }
 
-//default option to put input as token into dyn array elementlist
+//default option to put trimmed input in tokenlist
 int default_lexer(char *input_line)
 {
     int token_c;
     token_c = 0;
     if (!input_line)
         return (1);
-    input_line = trim_string(input_line);
-    if (check_quote_c(input_line, '"') % 2 != 0 || check_quote_c(input_line, '\'') % 2 != 0)
-        return (write(1, "command not found\n", 18));
+    input_line = trim_str_space(input_line);
+    val_inputline(input_line);
+    
     token_c = token_count(input_line);
     if (!token_c)
         return (write(1, "Failed to count tokens\n", 23));
@@ -137,15 +138,15 @@ int default_lexer(char *input_line)
         return (write(1, "Failed to init tokenlist\n", 25));
     check_lexer(&token_list);
     
-    size_t i = 0;
-    t_token *token_test;
+    // size_t i = 0;
+    // t_token *token_test;
 
-    while (i < token_list.element_list.total)
-    {
-        token_test = (t_token *)token_list.element_list.tokens[i];
-        printf("%s\n", token_test->value);
-        i++;
-    }
+    // while (i < token_list.element_list.total)
+    // {
+    //     token_test = (t_token *)token_list.element_list.tokens[i];
+    //     printf("%s\n", token_test->value);
+    //     i++;
+    // }
     return (0);
 }
 

@@ -41,7 +41,26 @@ int check_quote_c(char *str, int symbol)
     return (count_s);
 }
 
+char *trim_str_quote(char *str, int symbol, int count)
+{
+    int in_quote;
 
+    in_quote = 0;
+    while (*str)
+    {
+        if (*str == symbol)
+        {
+            in_quote++;
+            count--;
+        }
+        if (count && (in_quote % 2 == 0))
+        {
+            if (str
+        }
+        str++;
+    }
+    return (str);
+}
 
 // //check if quotes are valid
 // int check_dquotes(element **tokenlist, int pos)
@@ -75,35 +94,35 @@ int check_quote_c(char *str, int symbol)
 // }
 
 
-//check if single quotes are closed and set types in arr to closed.
-int check_squotes(element **tokenlist, int pos)
-{
-    t_token *check_token;
-    int fpos;
-    size_t total;
+// //check if single quotes are closed and set types in arr to closed.
+// int check_squotes(element **tokenlist, int pos)
+// {
+//     t_token *check_token;
+//     int fpos;
+//     size_t total;
 
-    total = (*tokenlist)->pf_element_total;
-    while (pos < total)
-    {
-        fpos = find_symbol(tokenlist, pos + 1, '\'');
-        check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, pos);
-        if (check_token->value[0] && check_token->value[ft_strlen(check_token->value)-1])
-            check_token->type = SINGLE_Q_CLOSED;
-        else if (!fpos == -1)
-        {
-            check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, fpos);
-            if (check_token->value[ft_strlen(check_token->value) - 1] == '\'')
-                check_token->type = SINGLE_Q_CLOSED;
-            while (fpos > pos)
-            {
-                (*tokenlist)->element_list.tokens[fpos] = SINGLE_Q_CLOSED;
-                fpos--;
-            }
-        }
-        pos++;
-    }
-    return (-1);
-}
+//     total = (*tokenlist)->pf_element_total;
+//     while (pos < total)
+//     {
+//         fpos = find_symbol(tokenlist, pos + 1, '\'');
+//         check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, pos);
+//         if (check_token->value[0] && check_token->value[ft_strlen(check_token->value)-1])
+//             check_token->type = SINGLE_Q_CLOSED;
+//         else if (!fpos == -1)
+//         {
+//             check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, fpos);
+//             if (check_token->value[ft_strlen(check_token->value) - 1] == '\'')
+//                 check_token->type = SINGLE_Q_CLOSED;
+//             while (fpos > pos)
+//             {
+//                 (*tokenlist)->element_list.tokens[fpos] = SINGLE_Q_CLOSED;
+//                 fpos--;
+//             }
+//         }
+//         pos++;
+//     }
+//     return (-1);
+// }
 
 //rm quotes for certain pos in tokenlist
 void rm_quotes(element *tokenlist, int pos, char symbol)

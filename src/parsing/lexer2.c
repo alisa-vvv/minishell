@@ -70,6 +70,21 @@ int count_symbol(element *tokenlist, int pos, char symbol)
 //     return (0);
 // }
 
+
+//validate input on quotes, correct
+int val_inputline(char *str)
+{
+    while (*str)
+    {
+
+        if (check_quote_c(str, '"') % 2 != 0 || check_quote_c(str, '\'') % 2 != 0)
+            return (write(1, "command not found\n", 18));
+        str++;
+    }
+    
+    
+}
+
 int check_lexer(element **tokenlist)
 {
     size_t i;
