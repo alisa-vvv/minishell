@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/24 18:08:07 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/01 15:56:16 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	perror_and_return(
 	int	msh_errno,
 	int return_value
 );
+
+# define MAX_ENV 4096
 
 /*		Executor - data structures		*/
 

@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/19 15:47:26 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/24 17:42:21 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/01 16:17:55 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,7 @@ int	exec_builtin(
 		err_check = minishell_pwd();
 	else if (ft_strncmp(builtin_name, "env", 4) == 0)
 		err_check = minishell_env(minishell_data);
+	else if (ft_strncmp(builtin_name, "export", 7) == 0)
+		err_check = minishell_export(arguments[0], arguments[1], minishell_data);
 	return (err_check);
 }

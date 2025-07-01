@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:25:20 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/24 17:44:45 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/01 16:16:53 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,11 @@ int	minishell_pwd(
 );
 int	minishell_env(
 	t_minishell_data *const minishell_data
+);
+int	minishell_export(
+	char *var_name,
+	char *var_val,
+	t_minishell_data *minishell_data
 );
 /**/
 
