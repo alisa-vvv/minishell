@@ -101,28 +101,31 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	exec_data[i].is_builtin = true;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = false;
+	exec_data[i].redirections = NULL;
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF2");
 	i++;
 
-	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("export");
-	exec_data[i].argv[1] = ft_strdup("new_var2");
-	exec_data[i].argv[2] = ft_strdup("value2");
-	exec_data[i].is_builtin = true;
-	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = false;
-	i++;
-
-	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("env");
-	exec_data[i].is_builtin = true;
-	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = false;
-	i++;
+//	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("export");
+//	exec_data[i].argv[1] = ft_strdup("new_var2");
+//	exec_data[i].argv[2] = ft_strdup("value2");
+//	exec_data[i].is_builtin = true;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	exec_data[i].redirections = NULL;
+//	i++;
+//
+//	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("env");
+//	exec_data[i].is_builtin = true;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	exec_data[i].redirections = NULL;
+//	i++;
 
 //	exec_data[i].argv = ft_calloc(10, sizeof(char *));
 //	exec_data[i].argv[0] = ft_strdup("pwd");
@@ -223,7 +226,10 @@ int	execute_command(
 			perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
 	}
 	else if (command->is_builtin == true)
+	{
+		printf("this should happen 3 times\n");
 		err_check = test_dummy_builtin(command, minishell_data);
+	}
 	return (err_check);
 }
 

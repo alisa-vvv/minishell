@@ -60,7 +60,7 @@ int	main(void)
 	int					is_open = true;
 	t_minishell_data	minishell_data;
 
-	int	TEST_len = 4;
+	int	TEST_len = 3;
 	minishell_data.environment = clone_environment(&minishell_data.env_var_count, &minishell_data.env_mem);
 	if (!minishell_data.environment)
 	{
