@@ -45,18 +45,19 @@ static int	realloc_env_var(
 	return (0);
 }
 
-static int	find_var_index_if_exists(
+static int	search_env(
 	char **environment,
-	char *var_name
+	char *name,
+	char *identifier
 )
 {
-	int	i;
-	const int	name_len = ft_strlen(var_name);
+	int			i;
+	const int	name_len = identifier - name;
 
 	i = 0;
 	while (environment[i])
 	{
-		if (ft_strncmp(environment[i], var_name, name_len) != 0)
+		if (ft_strncmp(environment[i], name, name_len) != 0)
 			i++;
 		else
 			return (i);
@@ -64,40 +65,57 @@ static int	find_var_index_if_exists(
 	return (i);
 }
 
+static char	*find_identifier(
+	char *arg
+)
+{
+	while (*arg)
+	{
+		if (*arg == '=')
+			return (arg);
+		else if (!ft_isalnum(*arg))
+		{
+			// REPLACE ERROR TEXT WITH A VAR?
+			perror_and_return("not a valid identifier", MINISHELL_ERR, 0);
+			break ;
+		}
+		arg++;
+	}
+	return (arg);
+}
+
 int	minishell_export(
-	char *var_name,
-	char *var_val,
+	char **argv,
 	t_minishell_data *minishell_data
 )
 {
 	int		var_index;
-	char	*name_equal;
-	char	*var_string;
-
-	name_equal = ft_strjoin(var_name, "=");
-	if (!name_equal)
-		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
-	var_string = ft_strjoin(name_equal, var_val);
-	if (!var_string)
-	{
-		free(name_equal);
-		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
-	}
+	char	*identifier;
 
 	printf("\n\n\nPRE EXPORT\n\n\n");
 	minishell_env(minishell_data);
 	printf("\n\n\nENDPRE\n\n\n");
 
-	var_index = find_var_index_if_exists(minishell_data->environment, var_name);
-	assert(var_index <= minishell_data->env_var_count); // REMOVE ASSERT
+	while (*argv)
+	{
+		identifier = find_identifier(*argv);
+		if (!identifier)
+			return (1);
+		var_index = search_env(minishell_data->environment, *argv, identifier);
 
-	if (var_index == minishell_data->env_mem - 1)
-		realloc_env_var(minishell_data, var_string);
-	if (var_index == minishell_data->env_var_count)
-		minishell_data->env_var_count += 1; 
-	else if (var_index < minishell_data->env_var_count)
-		free(minishell_data->environment[var_index]);
-	minishell_data->environment[var_index] = var_string;
+		assert(var_index <= minishell_data->env_var_count); // REMOVE ASSERT
+    	
+		if (var_index == minishell_data->env_mem - 1)
+			realloc_env_var(minishell_data, *argv);
+		if (var_index == minishell_data->env_var_count)
+			minishell_data->env_var_count += 1; 
+		else if (var_index < minishell_data->env_var_count)
+			free(minishell_data->environment[var_index]);
+		minishell_data->environment[var_index] = ft_strdup(*argv);
+		if (!minishell_data->environment[var_index])
+			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+		argv++;
+	}
 
 	printf("\n\n\nPOST EXPORT\n\n\n");
 	minishell_env(minishell_data);

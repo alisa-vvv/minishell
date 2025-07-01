@@ -73,8 +73,7 @@ int	minishell_env(
 	t_minishell_data *const minishell_data
 );
 int	minishell_export(
-	char *var_name,
-	char *var_val,
+	char **argv,
 	t_minishell_data *minishell_data
 );
 /**/
