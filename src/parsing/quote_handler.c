@@ -40,26 +40,30 @@ int check_quote_c(char *str, int symbol)
         return (count_d);
     return (count_s);
 }
+//not needed anymore
+// char *trim_str_quote(char *str, int symbol, int count)
+// {
+//     int in_quote;
+//     int skip;
 
-char *trim_str_quote(char *str, int symbol, int count)
-{
-    int in_quote;
-
-    in_quote = 0;
-    while (*str)
-    {
-        if (*str == symbol)
-        {
-            in_quote++;
-            count--;
-        }
-        if (count && (in_quote % 2 == 0))
-        {
-            if (str
-        }
-        str++;
-    }
-    return (str);
+//     in_quote = 0;
+//     skip = 0;
+//     while (*str)
+//     {
+//         if (*str == symbol)
+//         {
+//             in_quote++;
+//             count--;
+//         }
+//         if (count && (in_quote % 2 == 0))
+//         {
+//             str += skip_blanks(str);
+//             while (*str != symbol || *str != '|')
+//                 skip++;
+//         }
+//         str++;
+//     }
+//     return (str);
 }
 
 // //check if quotes are valid

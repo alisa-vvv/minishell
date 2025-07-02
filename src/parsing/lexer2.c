@@ -71,16 +71,39 @@ int count_symbol(element *tokenlist, int pos, char symbol)
 // }
 
 
+// check if left and right are args for pipe
+int check_pipe(char *str)
+{
+    int command;
+    command = 0;
+ 
+    if (ft_strchr(str,'|') != '\0')
+    {
+        while(*str <= ft_strchr(str, '|'))
+        {
+            if (ft_isalpha(*str))
+                command++;
+            str++;
+        }
+        if (!command)
+            return (1);
+        //check for single pipe
+        if (*str == '|' && (*str + 2 == '\0' || *str + 2 == '"'))
+            return (1);
+    }
+}
+
+
+
+
 //validate input on quotes, correct
 int val_inputline(char *str)
 {
-    while (*str)
-    {
 
-        if (check_quote_c(str, '"') % 2 != 0 || check_quote_c(str, '\'') % 2 != 0)
-            return (write(1, "command not found\n", 18));
-        str++;
-    }
+    if (check_quote_c(str, '"') % 2 != 0 || check_quote_c(str, '\'') % 2 != 0)
+        return (write(1, "command not found\n", 18));
+    if (check_pipe(str))
+        return (write(1, "command not found\n", 18));
     
     
 }
