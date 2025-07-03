@@ -12,8 +12,8 @@
 
 #include "parser.h"
 
-
-int check_quote_c(char *str, int symbol)
+//check if a certain pos is inside quotes 
+int check_in_quote(char *str, int pos)
 {
     int count_s;
     int count_d;
@@ -22,7 +22,7 @@ int check_quote_c(char *str, int symbol)
     count_s = 0;
     count_d = 0;
     in_quote = -1;
-    while (*str)
+    while (*str != str[pos])
     {
         if (count_d > 0 && count_d % 2 != 0)
             in_quote = 2;
@@ -36,35 +36,12 @@ int check_quote_c(char *str, int symbol)
             count_s++;
         str++;
     }
-    if (symbol == '"')
-        return (count_d);
-    return (count_s);
+    return ((count_d + count_s) % 2);
 }
-//not needed anymore
-// char *trim_str_quote(char *str, int symbol, int count)
-// {
-//     int in_quote;
-//     int skip;
 
-//     in_quote = 0;
-//     skip = 0;
-//     while (*str)
-//     {
-//         if (*str == symbol)
-//         {
-//             in_quote++;
-//             count--;
-//         }
-//         if (count && (in_quote % 2 == 0))
-//         {
-//             str += skip_blanks(str);
-//             while (*str != symbol || *str != '|')
-//                 skip++;
-//         }
-//         str++;
-//     }
-//     return (str);
-}
+int lex_quoted(char *str, )
+
+
 
 // //check if quotes are valid
 // int check_dquotes(element **tokenlist, int pos)

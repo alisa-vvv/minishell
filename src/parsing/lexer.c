@@ -40,6 +40,8 @@ char *trim_str_space(char *str)
     j = 0;
     while (str[j])
     {
+        while (check_in_quote(str, j))
+            j++;
         if ((i == 0 && skip_blanks(str + j) > 1) || is_EOS(str, j + skip_blanks(str + j)))
             j += skip_blanks(str + j);
         else if (skip_blanks(str + j) > 1)

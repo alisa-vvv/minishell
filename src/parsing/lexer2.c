@@ -88,7 +88,7 @@ int check_pipe(char *str)
         if (!command)
             return (1);
         //check for single pipe
-        if (*str == '|' && (*str + 2 == '\0' || *str + 2 == '"'))
+        if (*str == '|' && (*str + 1 == '\0' || *str + 2 == '"'))
             return (1);
     }
 }
@@ -96,11 +96,11 @@ int check_pipe(char *str)
 
 
 
-//validate input on quotes, correct
+//validate input on quotes, pipes
 int val_inputline(char *str)
 {
 
-    if (check_quote_c(str, '"') % 2 != 0 || check_quote_c(str, '\'') % 2 != 0)
+    if (check_in_quote(str, ft_strlen(str)));
         return (write(1, "command not found\n", 18));
     if (check_pipe(str))
         return (write(1, "command not found\n", 18));
