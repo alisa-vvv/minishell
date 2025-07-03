@@ -32,6 +32,7 @@ int skip_blanks(char *str)
 }
 
 // trims input to have one space between tokens to ease validation
+// unless the input is quoted
 char *trim_str_space(char *str)
 {
     int i;
@@ -40,12 +41,12 @@ char *trim_str_space(char *str)
     j = 0;
     while (str[j])
     {
-        while (check_in_quote(str, j))
-            j++;
-        if ((i == 0 && skip_blanks(str + j) > 1) || is_EOS(str, j + skip_blanks(str + j)))
+        if (!check_in_quote(str, j) && ((i == 0 && skip_blanks(str + j) > 1) || is_EOS(str, j + skip_blanks(str + j))))
             j += skip_blanks(str + j);
-        else if (skip_blanks(str + j) > 1)
+        else if (!check_in_quote(str, j) && (skip_blanks(str + j) > 1))
             j += skip_blanks(str + j + 1);
+        else if (!check_in_quote(str, j) && ft_isspace(str[j]))
+            j += 1;
         str[i] = str[j];
         i++;
         j++;
@@ -75,19 +76,20 @@ t_token *new_token(char *str, int len)
 int token_count(char *str)
 {
     int tokencount;
+    int i;
+
+    i = 0;
     tokencount = 0;
 
-    while (*str)
+    while (str[i])
     {
-        if (ft_isspace(*str))
-            str++;
+        if (!check_in_quote(str, i) && ft_isspace(str[i]))
+            i++;
         else
         {
             tokencount++;
-            while (!ft_isspace(*str) && *str)
-            {
-                str++;
-            }
+            while (check_in_quote(str, i) || (!check_in_quote(str, i) && !ft_isspace(str[i]) && str[i]))
+                i++;
         }
     }
     return (tokencount);
@@ -96,22 +98,24 @@ int token_count(char *str)
 //pushes tokens in the elementlist from the back, immediately indexing 
 int fill_tokenlist(element **tokenlist, char *str)
 {
+    int i; 
     size_t len;
     t_token *token;
 
-    while (*str)
+    i = 0;
+    while (str[i])
     {
         len = 0;
-        while (*str && ft_isspace(*str))
-            str++;
-        while (*str && !ft_isspace(*str))
+        while (!check_in_quote(str, i) && str[i] && ft_isspace(str[i]))
+            i++;
+        while (check_in_quote(str, i) || (str[i] && !ft_isspace(str[i])))
         {
             len++;
-            str++;
+            i++;
         }
         if (len > 0)
         {
-            token = new_token(str - len, len + 1);
+            token = new_token(str + i - len, len + 1);
             if (!token)
                 return ((*tokenlist)->pf_element_free(*tokenlist), MALLOC_ERR);
             token->pos = (*tokenlist)->element_list.total;
@@ -138,17 +142,16 @@ int default_lexer(char *input_line)
     fill_tokenlist(&token_list, input_line);
     if (!token_list.element_list.tokens)
         return (write(1, "Failed to init tokenlist\n", 25));
-    check_lexer(&token_list);
-    
-    // size_t i = 0;
-    // t_token *token_test;
 
-    // while (i < token_list.element_list.total)
-    // {
-    //     token_test = (t_token *)token_list.element_list.tokens[i];
-    //     printf("%s\n", token_test->value);
-    //     i++;
-    // }
+    size_t i = 0;
+    t_token *token_test;
+
+    while (i < token_list.element_list.total)
+    {
+        token_test = (t_token *)token_list.element_list.tokens[i];
+        printf("%s\n", token_test->value);
+        i++;
+    }
     return (0);
 }
 

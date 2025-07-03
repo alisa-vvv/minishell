@@ -24,55 +24,20 @@ int check_in_quote(char *str, int pos)
     in_quote = -1;
     while (*str != str[pos])
     {
+        if (*str == '"' && (in_quote == 2 || in_quote == -1))
+            count_d++;
+        else if (*str == '\'' && (in_quote == 1 || in_quote == -1))
+            count_s++;
         if (count_d > 0 && count_d % 2 != 0)
             in_quote = 2;
         else if (count_s > 0 && count_s % 2 != 0)
             in_quote = 1;
         else
             in_quote = -1;
-        if ((*str == '"' && in_quote == 2) || (*str == '"' && in_quote == -1))
-            count_d++;
-        else if ((*str == '\'' && in_quote == 1) || (*str == '\'' && in_quote == -1))
-            count_s++;
         str++;
     }
     return ((count_d + count_s) % 2);
 }
-
-int lex_quoted(char *str, )
-
-
-
-// //check if quotes are valid
-// int check_dquotes(element **tokenlist, int pos)
-// {
-//     t_token *check_token;
-//     int fpos;
-//     size_t total;
-
-//     if (count_symbol(tokenlist, pos, '"') % 2 != 0)
-//         return (write(1, "Command not found\n", 18));
-
-//     fpos = -1;
-//     total = (*tokenlist)->pf_element_total;
-//     check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, pos);
-//     if (ft_strchr(check_token->value) != '\0' && ft_strrchr(check_token->value) != check_token->value[0])
-//         check_token->type = DOUBLE_Q_CLOSED;
-//     else if 
-//     {
-//         fpos = find_symbol(tokenlist, pos, '"');
-//         if (fpos != 0)
-//         {
-//             while (fpos > pos)
-//             {
-//                 if ((*tokenlist)->element_list.tokens[fpos] != DOLLAR_SIGN)
-//                     (int)(*tokenlist)->element_list.tokens[fpos].type = DOUBLE_Q_CLOSED;
-//                 fpos--;
-//             }
-//         }
-//     }
-//     return (0);
-// }
 
 
 // //check if single quotes are closed and set types in arr to closed.
