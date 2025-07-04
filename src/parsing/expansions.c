@@ -21,12 +21,3 @@
 // $@ value of each shell arg 
 // $* value of all shell arg
  
-
-// element *param_expansion(element **tokenlist)
-// {
-//     t_token *check_token;
-//     check_token = (t_token *) (*tokenlist)->elementList.tokens[i];
-//     if (ft_strchr(check_token->value, '$'))
-
-    
-// }

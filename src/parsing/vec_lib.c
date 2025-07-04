@@ -12,18 +12,18 @@
 
 #include "parser.h"
 
-// realloc for shrink and expand size 
+// realloc for shrink and expand size
 void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 {
-	int		i;
-	unsigned int copy_size;
-	void *n_ptr;
+	int				i;
+	unsigned int	copy_size;
+	void			*n_ptr;
 
 	if (newsize == 0)
-		return(ft_safe_free(n_ptr), NULL);
+		return (ft_safe_free(n_ptr), NULL);
 	if (oldsize > newsize)
 		copy_size = oldsize;
-	else 
+	else
 		copy_size = newsize;
 	while (ptr && i < copy_size)
 	{
@@ -38,7 +38,6 @@ void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 	return (free(ptr), n_ptr);
 }
 
-
 int	element_total(element *e)
 {
 	if (e)
@@ -52,7 +51,8 @@ int	element_resize(element *e, int oldsize, int newsize)
 
 	if (e)
 	{
-		tokens = ft_realloc(e->element_list.tokens, sizeof(void *) * oldsize, sizeof(void *) * newsize);
+		tokens = ft_realloc(e->element_list.tokens, sizeof(void *) * oldsize,
+				sizeof(void *) * newsize);
 		if (tokens)
 		{
 			e->element_list.tokens = tokens;
@@ -72,7 +72,8 @@ int	element_push_back(element *e, void *token)
 	{
 		if (e->element_list.size == e->element_list.total)
 		{
-			status = elementResize(e, e->element_list.size, e->element_list.size * 2);
+			status = elementResize(e, e->element_list.size, e->element_list.size
+					* 2);
 			if (status == -1)
 				e->element_list.tokens[e->element_list.total++] = token;
 		}
@@ -110,4 +111,3 @@ void	*element_get(element *e, int index)
 	}
 	return (token_data);
 }
-

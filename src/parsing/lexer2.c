@@ -10,51 +10,48 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "parser.h"
 
-
-//func to traverse list and find a spec symbol
-int find_symbol(element *tokenlist, int pos, char symbol)
+// func to traverse list and find a spec symbol
+int	find_symbol(element *tokenlist, int pos, char symbol)
 {
-    t_token *check_token;
+	t_token	*check_token;
 
-    while ((size_t)pos < tokenlist->element_list.total)
-    {
-        check_token = (t_token *)tokenlist->element_list.tokens[pos];
-        if (ft_strchr(check_token->value, symbol) != NULL)
-            return(pos);
-        pos++;
-    }
-    return (-1);
+	while ((size_t)pos < tokenlist->element_list.total)
+	{
+		check_token = (t_token *)tokenlist->element_list.tokens[pos];
+		if (ft_strchr(check_token->value, symbol) != NULL)
+			return (pos);
+		pos++;
+	}
+	return (-1);
 }
 
 // count occurrence of spec symbol in array
-int count_symbol(element *tokenlist, int pos, char symbol)
+int	count_symbol(element *tokenlist, int pos, char symbol)
 {
-    int count;
-    int i;
-    t_token* check_token;
-    
-    check_token = tokenlist->pf_element_get(tokenlist, pos);
-    count = 0;
-    i = 0;
-    while ((size_t)pos < tokenlist->element_list.total)
-    {
-        if (find_symbol(tokenlist, pos, symbol) > -1)
-        {
-            while(check_token->value[i])
-            {
-                if (check_token->value[i] == symbol)
-                    count++;
-                i++;
-            }
-        }
-        pos++;
-    }
-    return (count); 
-}
+	int		count;
+	int		i;
+	t_token	*check_token;
 
+	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	count = 0;
+	i = 0;
+	while ((size_t)pos < tokenlist->element_list.total)
+	{
+		if (find_symbol(tokenlist, pos, symbol) > -1)
+		{
+			while (check_token->value[i])
+			{
+				if (check_token->value[i] == symbol)
+					count++;
+				i++;
+			}
+		}
+		pos++;
+	}
+	return (count);
+}
 
 // //index lexer by traversing - not needed anymore
 // int index_lexer(element **tokenlist)
@@ -70,57 +67,51 @@ int count_symbol(element *tokenlist, int pos, char symbol)
 //     return (0);
 // }
 
-
 // check if left and right are args for pipe
-int check_pipe(char *str)
+int	check_pipe(char *str)
 {
-    int command;
-    command = 0;
- 
-    if (ft_strchr(str,'|') != '\0')
-    {
-        while(*str <= ft_strchr(str, '|'))
-        {
-            if (ft_isalpha(*str))
-                command++;
-            str++;
-        }
-        if (!command)
-            return (1);
-        //check for single pipe
-        if (*str == '|' && (*str + 1 == '\0' || *str + 2 == '"'))
-            return (1);
-    }
+	int	command;
+
+	command = 0;
+	if (ft_strchr(str, '|') != '\0')
+	{
+		while (*str <= ft_strchr(str, '|'))
+		{
+			if (ft_isalpha(*str))
+				command++;
+			str++;
+		}
+		if (!command)
+			return (1);
+		// check for single pipe
+		if (*str == '|' && (*str + 1 == '\0' || *str + 2 == '"'))
+			return (1);
+	}
 }
 
-
-
-
-//validate input on quotes, pipes
-int val_inputline(char *str)
+// validate input on quotes, pipes
+int	val_inputline(char *str)
 {
-
-    if (check_in_quote(str, ft_strlen(str)));
-        return (write(1, "command not found\n", 18));
-    if (check_pipe(str))
-        return (write(1, "command not found\n", 18));
-    
+	if (check_in_quote(str, ft_strlen(str)))
+	    return (write(1, "command not found\n", 18));
+	if (check_pipe(str))
+		return (write(1, "command not found\n", 18));
     
 }
 
-int check_lexer(element **tokenlist)
+int	check_lexer(element **tokenlist)
 {
-    size_t i;
-    t_token *check_token;
-    
-    i = 0;
-    check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
-    while (i < (size_t)(*tokenlist)->element_list.total)
-    {
-        if (check_token->type == DOUBLE_Q_OPEN)
-        {
-            check_quotes(tokenlist, i, DOUBLE_Q_OPEN);
-        }
-        i++;
-    }
+	size_t	i;
+	t_token	*check_token;
+
+	i = 0;
+	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
+	while (i < (size_t)(*tokenlist)->element_list.total)
+	{
+		if (check_token->type == DOUBLE_Q_OPEN)
+		{
+			check_quotes(tokenlist, i, DOUBLE_Q_OPEN);
+		}
+		i++;
+	}
 }
