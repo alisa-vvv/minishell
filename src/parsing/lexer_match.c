@@ -34,6 +34,7 @@ int match_nonterminal(char *str_token)
         return (PIPE);
     else if (str_token[0] == '.')
             return (DOT);
+    return(UNKNOWN);
 }
 
 //check what commands are given

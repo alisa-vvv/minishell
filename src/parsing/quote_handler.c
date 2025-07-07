@@ -22,12 +22,12 @@ int	check_in_quote(char *str, int pos)
 	count_s = 0;
 	count_d = 0;
 	in_quote = -1;
-	while (*str != str[pos])
+	while (*str != str[pos -1])
 	{
 		if (*str == '"' && (in_quote == 2 || in_quote == -1))
-			count_d++;
+			count_d = !count_d;
 		else if (*str == '\'' && (in_quote == 1 || in_quote == -1))
-			count_s++;
+			count_s = !count_s;
 		if (count_d > 0 && count_d % 2 != 0)
 			in_quote = 2;
 		else if (count_s > 0 && count_s % 2 != 0)
@@ -36,7 +36,7 @@ int	check_in_quote(char *str, int pos)
 			in_quote = -1;
 		str++;
 	}
-	return ((count_d + count_s) % 2);
+	return (count_d || count_s);
 }
 
 // //check if single quotes are closed and set types in arr to closed.
@@ -74,26 +74,26 @@ int	check_in_quote(char *str, int pos)
 // }
 
 // rm quotes for certain pos in tokenlist
-void	rm_quotes(element *tokenlist, int pos, char symbol)
-{
-	t_token	*check_token;
-	int		i;
+// void	rm_quotes(element *tokenlist, int pos, char symbol)
+// {
+// 	t_token	*check_token;
+// 	int		i;
 
-	i = 0;
-	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	if (check_token->value[ft_strlen(check_token->value)] == symbol)
-		(*tokenlist)->elementList.tokens[pos].value[ft_strlen(check_token->value)] = '\0';
-	while (check_token->value[i])
-	{
-		if (check_token->value[i] != symbol)
-			i++;
-		else
-		{
-			while (check_token->value[i])
-			{
-				check_token->value[i] = check_token->value[i + 1];
-				i++;
-			}
-		}
-	}
-}
+// 	i = 0;
+// 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+// 	if (check_token->value[ft_strlen(check_token->value)] == symbol)
+// 		(*tokenlist)->elementList.tokens[pos].value[ft_strlen(check_token->value)] = '\0';
+// 	while (check_token->value[i])
+// 	{
+// 		if (check_token->value[i] != symbol)
+// 			i++;
+// 		else
+// 		{
+// 			while (check_token->value[i])
+// 			{
+// 				check_token->value[i] = check_token->value[i + 1];
+// 				i++;
+// 			}
+// 		}
+// 	}
+// }

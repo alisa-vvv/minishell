@@ -16,14 +16,20 @@ MAKEFLAGS =
 NAME	=	minishell
 
 CFILES	=	minishell.c\
-			errors.c\
-			executor.c\
-			command_io_setup.c\
-			redirections.c\
-			here-doc.c\
-			try_execve.c\
-			executor_test.c\
-			test_funcs.c
+			lexer_match.c\
+			lexer.c\
+			lexer2.c\
+			quote_handler.c\
+			vec_lib.c\
+			vec_lib2.c\
+			errors.c
+			# executor.c\
+			# command_io_setup.c\
+			# redirections.c\
+			# here-doc.c\
+			# try_execve.c\
+			# executor_test.c\
+			# test_funcs.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))
 DEPFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.d))

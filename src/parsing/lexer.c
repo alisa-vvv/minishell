@@ -70,12 +70,12 @@ t_token	*new_token(char *str, int len)
 		return (NULL);
 	token = malloc(1 * sizeof(t_token));
 	if (!token)
-		return (MALLOC_ERR);
+		return (NULL);
 	token->value = malloc((len + 1) * sizeof(char));
-	token->value = ft_strlcpy(token->value, str, len);
+	ft_strlcpy(token->value, str, len);
 	if (!token->value)
-		return (MALLOC_ERR);
-	token->type = match(token->value);
+		return (NULL);
+	token->type = match_token(token->value);
 	return (token);
 }
 
@@ -84,7 +84,6 @@ int	token_count(char *str)
 {
 	int	tokencount;
 	int	i;
-
 	i = 0;
 	tokencount = 0;
 	while (str[i])
@@ -92,8 +91,12 @@ int	token_count(char *str)
 		i += skip_blanks(str, i);
 		if (str[i] == '"' || str[i] == '\'')
 		{
+			char quote = str[i];
 			tokencount++;
-			while (str[i] != '"' || str[i] != '\'')
+			i++;
+			while (str[i] && str[i] != quote)
+				i++;
+			if (str[i] == quote)
 				i++;
 		}
 		else if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && str[i]))
@@ -107,7 +110,7 @@ int	token_count(char *str)
 }
 
 // pushes tokens in the elementlist from the back, immediately indexing
-int	fill_tokenlist(element **tokenlist, char *str)
+int	fill_tokenlist(element *tokenlist, char *str)
 {
 	int		i;
 	size_t	len;
@@ -128,9 +131,9 @@ int	fill_tokenlist(element **tokenlist, char *str)
 		{
 			token = new_token(str + i - len, len + 1);
 			if (!token)
-				return ((*tokenlist)->pf_element_free(*tokenlist), MALLOC_ERR);
-			token->pos = (*tokenlist)->element_list.total;
-			(*tokenlist)->pf_element_add(*tokenlist, token);
+				return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
+			token->pos = tokenlist->element_list.total;
+			tokenlist->pf_element_add(tokenlist, token);
 		}
 	}
 	return (0);
@@ -147,7 +150,8 @@ int	default_lexer(char *input_line)
 	if (!input_line)
 		return (1);
 	input_line = trim_str_space(input_line);
-	val_inputline(input_line);
+	if (val_inputline(input_line))
+        return (1);
 	token_c = token_count(input_line);
 	if (!token_c)
 		return (write(1, "Failed to count tokens\n", 23));

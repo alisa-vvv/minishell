@@ -71,47 +71,49 @@ int	count_symbol(element *tokenlist, int pos, char symbol)
 int	check_pipe(char *str)
 {
 	int	command;
-
+    int i; 
+    i = 0;
 	command = 0;
-	if (ft_strchr(str, '|') != '\0')
+	if (ft_strchr(str, '|') != (void *)0)
 	{
-		while (*str <= ft_strchr(str, '|'))
+		while (&str[i] <= ft_strchr(str, '|'))
 		{
-			if (ft_isalpha(*str))
+			if (ft_isalpha(str[i]))
 				command++;
-			str++;
+			i++;
 		}
 		if (!command)
 			return (1);
 		// check for single pipe
-		if (*str == '|' && (*str + 1 == '\0' || *str + 2 == '"'))
+		if (str[i] == '|' && (str + i + 1 == (void *)0 || *str + i + 2 == '"'))
 			return (1);
 	}
+    return (0);
 }
 
 // validate input on quotes, pipes
 int	val_inputline(char *str)
 {
-	if (check_in_quote(str, ft_strlen(str)))
+	if (check_in_quote(str, ft_strlen(str) -1))
 	    return (write(1, "command not found\n", 18));
 	if (check_pipe(str))
 		return (write(1, "command not found\n", 18));
-    
+    return(0);
 }
 
-int	check_lexer(element **tokenlist)
-{
-	size_t	i;
-	t_token	*check_token;
+// int	check_lexer(element **tokenlist)
+// {
+// 	size_t	i;
+// 	t_token	*check_token;
 
-	i = 0;
-	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
-	while (i < (size_t)(*tokenlist)->element_list.total)
-	{
-		if (check_token->type == DOUBLE_Q_OPEN)
-		{
-			check_quotes(tokenlist, i, DOUBLE_Q_OPEN);
-		}
-		i++;
-	}
-}
+// 	i = 0;
+// 	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
+// 	while (i < (size_t)(*tokenlist)->element_list.total)
+// 	{
+// 		if (check_token->type == DOUBLE_Q_OPEN)
+// 		{
+// 			check_in_quote(tokenlist, i, DOUBLE_Q_OPEN);
+// 		}
+// 		i++;
+// 	}
+// }

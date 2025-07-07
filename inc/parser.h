@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "libft.h"
 # include "vec_lib.h"
 
 # define MALLOC_ERR "Error! malloc()"
@@ -72,14 +73,24 @@ enum
 };
 
 
-
 int         default_lexer(char *input_line);
 int         token_count(char *str);
 t_token *   new_token(char *str, int len);
-int         fill_tokenlist(element **tokenlist, char *str);
+int         fill_tokenlist(element *tokenlist, char *str);
 void	    ft_safefree(void *ptr);
+char	*   ft_strchr(const char *s, int c);
 void	    ft_free_arr(void **array);
 size_t	    ft_strlcpy(char *dst, const char *src, size_t size);
+int 	    ft_strncmp(const char *s1, const char *s2, size_t n);
+int	        skip_blanks(char *str, int pos);
+char	    *trim_str_space(char *str);
+int	        match_token(char *str_token);
+int	        check_pipe(char *str);
+int     	check_in_quote(char *str, int pos);
+int	        val_inputline(char *str);
+int     	find_symbol(element *tokenlist, int pos, char symbol);
+int	        count_symbol(element *tokenlist, int pos, char symbol);
+
 
 
 #endif

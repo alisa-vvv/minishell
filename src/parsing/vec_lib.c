@@ -20,7 +20,7 @@ void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 	void			*n_ptr;
 
 	if (newsize == 0)
-		return (ft_safe_free(n_ptr), NULL);
+		return (ft_safefree(n_ptr), NULL);
 	if (oldsize > newsize)
 		copy_size = oldsize;
 	else
@@ -72,7 +72,7 @@ int	element_push_back(element *e, void *token)
 	{
 		if (e->element_list.size == e->element_list.total)
 		{
-			status = elementResize(e, e->element_list.size, e->element_list.size
+			status = element_resize(e, e->element_list.size, e->element_list.size
 					* 2);
 			if (status == -1)
 				e->element_list.tokens[e->element_list.total++] = token;

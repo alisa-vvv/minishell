@@ -39,18 +39,20 @@ int	main(void)
 		if (strcmp(read_line, "clear") == 0)
 			clear_history();
 		else if (strcmp(read_line, "clear") == 0)
-			rl_clear_history();
+			clear_history();
 		else if (strcmp(read_line, "exit") == 0)
 			is_open = false;
-		else if (strcmp(read_line, "executor") == 0)
-			executor(test_get_dummy_exec_data(TEST_len), TEST_len, 1);
+		// else if (strcmp(read_line, "executor") == 0)
+		// 	executor(test_get_dummy_exec_data(TEST_len), TEST_len, 1);
 		else if (!read_line)
 			printf("what happens?\n");
-		//else
-		//{
-		//	default_lexer(read_line);
-		//	printf("We entered: %s\n", read_line);
-		//}
+		else
+		{
+			if (default_lexer(read_line))
+				is_open = false;
+			else 
+				printf("We entered: %s\n", read_line);
+		}
 		add_history(read_line);
 	}
 	return (0);
