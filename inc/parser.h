@@ -19,6 +19,7 @@
 # include <readline/history.h>
 # include "libft.h"
 # include "vec_lib.h"
+# include "debug.h"
 
 # define MALLOC_ERR "Error! malloc()"
 
@@ -41,10 +42,8 @@ enum
     UNKNOWN,
     NON_TERMINAL,
     
-    SINGLE_Q_OPEN,
-    SINGLE_Q_CLOSED,
-    DOUBLE_Q_OPEN,
-    DOUBLE_Q_CLOSED,
+    SINGLE_Q,
+    DOUBLE_Q,
     OPEN_BRACKET,
     CLOSED_BRACKET,
 
@@ -90,7 +89,8 @@ int     	check_in_quote(char *str, int pos);
 int	        val_inputline(char *str);
 int     	find_symbol(element *tokenlist, int pos, char symbol);
 int	        count_symbol(element *tokenlist, int pos, char symbol);
-
+int         match_nonterminal(char *str_token);
+int         match_string(char *str_token);
 
 
 #endif

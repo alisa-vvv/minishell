@@ -34,11 +34,15 @@ int match_nonterminal(char *str_token)
         return (PIPE);
     else if (str_token[0] == '.')
             return (DOT);
+    else if (str_token[0] == '?')
+        return (QUESTION_MARK);
+    else if (str_token[0] == '!')
+        return (EXCLAM_MARK);
     return(UNKNOWN);
 }
 
 //check what commands are given
-int match_string(char *str_token, int pos)
+int match_string(char *str_token)
 {
     if (ft_strncmp(str_token, "cd", 3) == 0)
         return (CD);

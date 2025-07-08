@@ -29,7 +29,7 @@ int	skip_blanks(char *str, int pos)
 		count++;
 		str++;
 	}
-    // printf("%d\n", count);
+    // t_printf("%d\n", count);
 	return (count);
 }
 
@@ -59,7 +59,7 @@ char	*trim_str_space(char *str)
 		j++;
 	}
 	str[i] = '\0';
-    printf("%s\n", str);
+    t_printf("trimmed str = %s\n", str);
 	return (str);
 }
 
@@ -126,10 +126,23 @@ int	token_count(char *str)
         else 
             i++;
 	}
-    printf("tokencount = %d\n", tokencount);
+    t_printf("tokencount = %d\n", tokencount);
 	return (tokencount);
 }
 
+//add token to the list, if failed, release whole list
+int add_token(element *tokenlist, char *str, int i, size_t len)
+{
+	t_token	*token;
+	t_printf("len = %zu ", len);
+	
+	token = new_token(str + i - len, len + 1);
+	if (!token)
+		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
+	token->pos = tokenlist->element_list.total;
+	tokenlist->pf_element_add(tokenlist, token);
+	return (0);
+}
 
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(element *tokenlist, char *str)
@@ -150,25 +163,19 @@ int	fill_tokenlist(element *tokenlist, char *str)
 		else if ((len == 0 && str[i]) && !ft_isspace(str[i]))
         {
             while (str[i] && !ft_isspace(str[i]))
-            {
+			{
                 len++;
-                i++;
-            }
+				i++;
+			}
         }
 		if (len > 0)
 		{
-			printf("len = %zu ", len);
-            token = new_token(str + i - len, len + 1);
-			if (!token)
-				return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
-			token->pos = tokenlist->element_list.total;
-			tokenlist->pf_element_add(tokenlist, token);
+			if (add_token(tokenlist, str, i, len))
+				return (1);
 		}
         else 
             i++;
-        // if (!check_in_quote(str, i) && str[i] && ft_isspace(str[i]))
-        //     i++;
-        printf("i = %d\n", i);
+        t_printf("i = %d\n", i);
 	}
 	return (0);
 }
@@ -197,7 +204,8 @@ int	default_lexer(char *input_line)
 	while (i < token_list.element_list.total)
 	{
 		token_test = (t_token *)token_list.element_list.tokens[i];
-		printf("%s\n", token_test->value);
+		t_printf("Token value = %s$\n", token_test->value);
+		t_printf("Token type = %d$\n", token_test->type);
 		i++;
 	}
 	return (0);
@@ -207,21 +215,22 @@ int	default_lexer(char *input_line)
 int	match_token(char *str_token)
 {
 	if (str_token[0] == 34)
-		return (DOUBLE_Q_OPEN);
+		return (DOUBLE_Q);
 	else if (str_token[0] == 39)
-		return (SINGLE_Q_OPEN);
+		return (SINGLE_Q);
 	else if (str_token[0] == '(' || str_token[0] == '{')
 		return (OPEN_BRACKET);
 	else if (str_token[0] == '-')
 		return (HYPHEN);
 	else if ((str_token[0] == '>') || (str_token[0] == '<')
 		|| (str_token[0] == '$') || (str_token[0] == '|')
-		|| (str_token[0] == '.') || (str_token[0] == '!'))
-		return (NON_TERMINAL);
+		|| (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
+		return (match_nonterminal(str_token));
 	else if (ft_isdigit(str_token[0]))
 		return (NUMBER);
 	else if (ft_isalpha(str_token[0]))
-		return (STRING);
+		return (match_string(str_token));
 	else
 		return (UNKNOWN);
 }
+

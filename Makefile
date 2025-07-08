@@ -22,6 +22,7 @@ CFILES	=	minishell.c\
 			quote_handler.c\
 			vec_lib.c\
 			vec_lib2.c\
+			debug.c\
 			errors.c
 			# executor.c\
 			# command_io_setup.c\
