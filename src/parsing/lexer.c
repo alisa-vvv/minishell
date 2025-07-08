@@ -59,7 +59,7 @@ char	*trim_str_space(char *str)
 		j++;
 	}
 	str[i] = '\0';
-    // printf("%s\n", str);
+    printf("%s\n", str);
 	return (str);
 }
 
@@ -147,7 +147,7 @@ int	fill_tokenlist(element *tokenlist, char *str)
             len = move_over_quote(str, i);
             i += len;
         }
-		else if (len == 0)
+		else if ((len == 0 && str[i]) && !ft_isspace(str[i]))
         {
             while (str[i] && !ft_isspace(str[i]))
             {
@@ -164,8 +164,10 @@ int	fill_tokenlist(element *tokenlist, char *str)
 			token->pos = tokenlist->element_list.total;
 			tokenlist->pf_element_add(tokenlist, token);
 		}
-        if (!check_in_quote(str, i) && str[i] && ft_isspace(str[i]))
+        else 
             i++;
+        // if (!check_in_quote(str, i) && str[i] && ft_isspace(str[i]))
+        //     i++;
         printf("i = %d\n", i);
 	}
 	return (0);
@@ -223,5 +225,3 @@ int	match_token(char *str_token)
 	else
 		return (UNKNOWN);
 }
-
-"et" "tu" "Brutu"
