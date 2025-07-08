@@ -29,6 +29,7 @@ int	skip_blanks(char *str, int pos)
 		count++;
 		str++;
 	}
+    // printf("%d\n", count);
 	return (count);
 }
 
@@ -41,7 +42,7 @@ char	*trim_str_space(char *str)
 
 	i = 0;
 	j = ft_strlen(str) - 1;
-	while (ft_isspace(str[j]))
+	while (ft_isspace(str[j] && (str[j] != '\'' || str[j] != '"')))
 	{
 		str[j] = '\0';
 		j--;
@@ -58,6 +59,7 @@ char	*trim_str_space(char *str)
 		j++;
 	}
 	str[i] = '\0';
+    // printf("%s\n", str);
 	return (str);
 }
 
@@ -79,6 +81,27 @@ t_token	*new_token(char *str, int len)
 	return (token);
 }
 
+int move_over_quote(char *str, int pos)
+{
+    int i;
+    i = 0; 
+    if (str[pos] == '"' || str[pos] == '\'')
+	{
+        char quote = str[pos];
+        pos++;
+        while (str[pos] && str[pos] != quote)
+        {
+            i++;
+            pos++;
+        }
+        if (str[pos] == quote)
+            pos++;
+    }
+    if (i > 0)
+        i += 2;
+    return(i);
+}
+
 // counts args to size up elementlist
 int	token_count(char *str)
 {
@@ -88,16 +111,11 @@ int	token_count(char *str)
 	tokencount = 0;
 	while (str[i])
 	{
-		i += skip_blanks(str, i);
-		if (str[i] == '"' || str[i] == '\'')
+		//i += skip_blanks(str, i);
+		if ((str[i] == '"' || str[i] == '\'') && str[i])
 		{
-			char quote = str[i];
 			tokencount++;
-			i++;
-			while (str[i] && str[i] != quote)
-				i++;
-			if (str[i] == quote)
-				i++;
+            i += move_over_quote(str, i);
 		}
 		else if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && str[i]))
 		{
@@ -105,9 +123,13 @@ int	token_count(char *str)
 			while (!ft_isspace(str[i]) && str[i])
 				i++;
 		}
+        else 
+            i++;
 	}
+    printf("tokencount = %d\n", tokencount);
 	return (tokencount);
 }
+
 
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(element *tokenlist, char *str)
@@ -120,21 +142,31 @@ int	fill_tokenlist(element *tokenlist, char *str)
 	while (str[i])
 	{
 		len = 0;
-		while (!check_in_quote(str, i) && str[i] && ft_isspace(str[i]))
-			i++;
-		while (check_in_quote(str, i) || (str[i] && !ft_isspace(str[i])))
-		{
-			len++;
-			i++;
-		}
+        if ((str[i] == '\'' || str[i] == '"') && str[i])
+        {
+            len = move_over_quote(str, i);
+            i += len;
+        }
+		else if (len == 0)
+        {
+            while (str[i] && !ft_isspace(str[i]))
+            {
+                len++;
+                i++;
+            }
+        }
 		if (len > 0)
 		{
-			token = new_token(str + i - len, len + 1);
+			printf("len = %zu ", len);
+            token = new_token(str + i - len, len + 1);
 			if (!token)
 				return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
 			token->pos = tokenlist->element_list.total;
 			tokenlist->pf_element_add(tokenlist, token);
 		}
+        if (!check_in_quote(str, i) && str[i] && ft_isspace(str[i]))
+            i++;
+        printf("i = %d\n", i);
 	}
 	return (0);
 }
@@ -191,3 +223,5 @@ int	match_token(char *str_token)
 	else
 		return (UNKNOWN);
 }
+
+"et" "tu" "Brutu"

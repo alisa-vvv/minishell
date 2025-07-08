@@ -22,7 +22,8 @@ int	check_in_quote(char *str, int pos)
 	count_s = 0;
 	count_d = 0;
 	in_quote = -1;
-	while (*str != str[pos -1])
+
+	while (*str && *str != str[pos +1])
 	{
 		if (*str == '"' && (in_quote == 2 || in_quote == -1))
 			count_d = !count_d;
@@ -36,8 +37,11 @@ int	check_in_quote(char *str, int pos)
 			in_quote = -1;
 		str++;
 	}
+	//printf("count_d = %d & count_s = %d\n", count_d, count_s);
 	return (count_d || count_s);
 }
+
+
 
 // //check if single quotes are closed and set types in arr to closed.
 // int check_squotes(element **tokenlist, int pos)
