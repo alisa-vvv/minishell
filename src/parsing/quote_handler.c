@@ -37,7 +37,7 @@ int	check_in_quote(char *str, int pos)
 			in_quote = -1;
 		str++;
 	}
-	//printf("count_d = %d & count_s = %d\n", count_d, count_s);
+	//t_printf("count_d = %d & count_s = %d\n", count_d, count_s);
 	return (count_d || count_s);
 }
 
@@ -77,7 +77,7 @@ int	check_in_quote(char *str, int pos)
 //     return (-1);
 // }
 
-// rm quotes for certain pos in tokenlist
+// //rm quotes for certain pos in tokenlist
 // void	rm_quotes(element *tokenlist, int pos, char symbol)
 // {
 // 	t_token	*check_token;
@@ -85,15 +85,13 @@ int	check_in_quote(char *str, int pos)
 
 // 	i = 0;
 // 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-// 	if (check_token->value[ft_strlen(check_token->value)] == symbol)
-// 		(*tokenlist)->elementList.tokens[pos].value[ft_strlen(check_token->value)] = '\0';
+// 	if (check_token->value[ft_strlen(check_token->value)-1] == symbol)
+// 		check_token->value[ft_strlen(check_token->value)-1] = '\0';
 // 	while (check_token->value[i])
 // 	{
-// 		if (check_token->value[i] != symbol)
-// 			i++;
-// 		else
+// 		if (check_token->value[i] == symbol)
 // 		{
-// 			while (check_token->value[i])
+// 			while (check_token->value[i+1])
 // 			{
 // 				check_token->value[i] = check_token->value[i + 1];
 // 				i++;

@@ -39,7 +39,6 @@ enum
     VARIABLE,
     PARAMETER,
     FILENAME,
-    UNKNOWN,
     NON_TERMINAL,
     
     SINGLE_Q,
@@ -51,7 +50,7 @@ enum
     DOT,
     HYPHEN,
     PIPE,
-    REDIRECT_OUT,        // match_string(str_token);
+    REDIRECT_OUT,       
     REDIRECT_OUT_APP,
     REDIRECT_IN,
     HEREDOC, 
@@ -67,7 +66,9 @@ enum
     ENV,
     PWD,
     UNSET,
-    EXPORT
+    EXPORT,
+
+    UNKNOWN
 
 };
 

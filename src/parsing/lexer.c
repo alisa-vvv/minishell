@@ -111,7 +111,6 @@ int	token_count(char *str)
 	tokencount = 0;
 	while (str[i])
 	{
-		//i += skip_blanks(str, i);
 		if ((str[i] == '"' || str[i] == '\'') && str[i])
 		{
 			tokencount++;
@@ -149,7 +148,6 @@ int	fill_tokenlist(element *tokenlist, char *str)
 {
 	int		i;
 	size_t	len;
-	t_token	*token;
 
 	i = 0;
 	while (str[i])
@@ -208,6 +206,15 @@ int	default_lexer(char *input_line)
 		t_printf("Token type = %d$\n", token_test->type);
 		i++;
 	}
+	// check_lexer(&token_list);
+	// i = 0;
+	// while (i < token_list.element_list.total)
+	// {
+	// 	token_test = (t_token *)token_list.element_list.tokens[i];
+	// 	t_printf("Token value = %s$\n", token_test->value);
+	// 	t_printf("Token type = %d$\n", token_test->type);
+	// 	i++;
+	// }
 	return (0);
 }
 

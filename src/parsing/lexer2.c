@@ -110,10 +110,12 @@ int	val_inputline(char *str)
 // 	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
 // 	while (i < (size_t)(*tokenlist)->element_list.total)
 // 	{
-// 		if (check_token->type == DOUBLE_Q_OPEN)
+// 		if (check_token->type == SINGLE_Q)
 // 		{
-// 			check_in_quote(tokenlist, i, DOUBLE_Q_OPEN);
+// 			rm_quotes(tokenlist, i, SINGLE_Q);
+// 			check_token->type = STRING;
 // 		}
 // 		i++;
 // 	}
+// 	return (0);
 // }
