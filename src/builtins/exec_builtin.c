@@ -43,6 +43,6 @@ int	exec_builtin(
 	else if (ft_strncmp(builtin_name, "env", 4) == 0)
 		err_check = minishell_env(minishell_data);
 	else if (ft_strncmp(builtin_name, "export", 7) == 0)
-		err_check = minishell_export(arguments[0], arguments[1], minishell_data);
+		err_check = minishell_export(arguments, minishell_data);
 	return (err_check);
 }

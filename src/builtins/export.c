@@ -52,7 +52,7 @@ static int	search_env(
 )
 {
 	int			i;
-	const int	name_len = identifier - name;
+	const int	name_len = identifier - name + 1;
 
 	i = 0;
 	while (environment[i])
@@ -73,7 +73,7 @@ static char	*find_identifier(
 	{
 		if (*arg == '=')
 			return (arg);
-		else if (!ft_isalnum(*arg))
+		else if (!ft_isalnum(*arg) && *arg != '_')
 		{
 			// REPLACE ERROR TEXT WITH A VAR?
 			perror_and_return("not a valid identifier", MINISHELL_ERR, 0);
@@ -92,10 +92,12 @@ int	minishell_export(
 	int		var_index;
 	char	*identifier;
 
-	printf("\n\n\nPRE EXPORT\n\n\n");
-	minishell_env(minishell_data);
-	printf("\n\n\nENDPRE\n\n\n");
+//	printf("\n\n\nPRE EXPORT\n\n\n");
+//	minishell_env(minishell_data);
+//	printf("\n\n\nENDPRE\n\n\n");
 
+	if (!*argv)
+		minishell_env(minishell_data);
 	while (*argv)
 	{
 		identifier = find_identifier(*argv);
@@ -117,8 +119,8 @@ int	minishell_export(
 		argv++;
 	}
 
-	printf("\n\n\nPOST EXPORT\n\n\n");
-	minishell_env(minishell_data);
+//	printf("\n\n\nPOST EXPORT\n\n\n");
+//	minishell_env(minishell_data);
 
 	return (0);
 }
