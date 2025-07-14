@@ -171,7 +171,7 @@ int	fill_tokenlist(element *tokenlist, char *str)
 			if (add_token(tokenlist, str, i, len))
 				return (1);
 		}
-        else 
+        else if (str[i])
             i++;
         t_printf("i = %d\n", i);
 	}

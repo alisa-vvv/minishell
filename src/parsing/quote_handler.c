@@ -18,29 +18,31 @@ int	check_in_quote(char *str, int pos)
 	int	count_s;
 	int	count_d;
 	int	in_quote;
+	int i;
 
 	count_s = 0;
 	count_d = 0;
 	in_quote = -1;
+	i = -1;
 
-	while (*str && *str != str[pos +1])
+	while (str[++i] && i <= pos)
 	{
-		if (*str == '"' && (in_quote == 2 || in_quote == -1))
-			count_d = !count_d;
-		else if (*str == '\'' && (in_quote == 1 || in_quote == -1))
-			count_s = !count_s;
+		if (str[i] == '"' && (in_quote == 2 || in_quote == -1))
+			count_d++;
+		else if (str[i] == '\'' && (in_quote == 1 || in_quote == -1))
+			count_s++;
 		if (count_d > 0 && count_d % 2 != 0)
 			in_quote = 2;
 		else if (count_s > 0 && count_s % 2 != 0)
 			in_quote = 1;
 		else
 			in_quote = -1;
-		str++;
 	}
+	count_d %= 2;
+	count_s %= 2;
 	//t_printf("count_d = %d & count_s = %d\n", count_d, count_s);
 	return (count_d || count_s);
 }
-
 
 
 // //check if single quotes are closed and set types in arr to closed.
