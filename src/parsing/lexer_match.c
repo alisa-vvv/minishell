@@ -41,6 +41,7 @@ int match_nonterminal(char *str_token)
     return(UNKNOWN);
 }
 
+
 //check what commands are given
 int match_string(char *str_token)
 {
@@ -62,4 +63,33 @@ int match_string(char *str_token)
         exit(0);
     else 
         return (STRING);
+}
+
+// set a value to the token so we can expand on those later
+int	match_token(char *str_token)
+{
+	if (str_token[0] == 34)
+		return (DOUBLE_Q);
+	else if (str_token[0] == 39)
+		return (SINGLE_Q);
+	else if (str_token[0] == '(' || str_token[0] == '{')
+		return (OPEN_BRACKET);
+	else if (str_token[0] == '-')
+		return (HYPHEN);
+	else if ((str_token[0] == '>') || (str_token[0] == '<')
+		|| (str_token[0] == '$') || (str_token[0] == '|')
+		|| (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
+		return (match_nonterminal(str_token));
+	else if ((ft_strchr(str_token, '=') != NULL))
+		return (OPERATOR);
+	else if (str_token[0] == '/')
+		return (FORW_SLASH);
+	else if (str_token[0] == '\\')
+		return (BACKW_SLASH);
+	else if (ft_isdigit(str_token[0]))
+		return (NUMBER);
+	else if (ft_isalpha(str_token[0]))
+		return (match_string(str_token));
+	else
+		return(UNKNOWN);
 }

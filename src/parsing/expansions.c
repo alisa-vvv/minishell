@@ -20,4 +20,8 @@
 // $# number of shell args
 // $@ value of each shell arg 
 // $* value of all shell arg
+
+//var expansion: $sign, $@sign 
+//path expansion
  
+// char *expand_var(element **tokenlist, pos)

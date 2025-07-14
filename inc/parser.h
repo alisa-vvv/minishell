@@ -36,7 +36,7 @@ enum
     COMMAND, 
     STRING, 
     NUMBER,
-    VARIABLE,
+    OPERATOR,
     PARAMETER,
     FILENAME,
     NON_TERMINAL,
@@ -57,6 +57,7 @@ enum
  
     DOLLAR_SIGN,
     FORW_SLASH,
+    BACKW_SLASH,
     QUESTION_MARK,
     EXCLAM_MARK,
 

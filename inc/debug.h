@@ -15,10 +15,12 @@
 # define DEBUG_H
 
 # define DEBUG_ON 1
+# define QUOTE_ON 0
 
 # include <stdlib.h>
 # include <stdio.h>
 
 void    t_printf(const char *str, ...);
+void    q_printf(const char *str, ...);
 
 #endif

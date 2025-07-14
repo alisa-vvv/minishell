@@ -23,3 +23,14 @@ void t_printf(const char *str, ...)
     vfprintf(stderr, str, args);
     va_end(args);
 }
+
+void q_printf(const char *str, ...)
+{
+    if (!QUOTE_ON)
+        return;
+    va_list args;
+    va_start(args, str);
+    vfprintf(stderr, str, args);
+    va_end(args);
+}
+

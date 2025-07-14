@@ -101,21 +101,21 @@ int	val_inputline(char *str)
     return(0);
 }
 
-// int	check_lexer(element **tokenlist)
-// {
-// 	size_t	i;
-// 	t_token	*check_token;
+int	check_redirects(element **tokenlist)
+{
+	size_t	i;
+	t_token	*check_token;
 
-// 	i = 0;
-// 	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
-// 	while (i < (size_t)(*tokenlist)->element_list.total)
-// 	{
-// 		if (check_token->type == SINGLE_Q)
-// 		{
-// 			rm_quotes(tokenlist, i, SINGLE_Q);
-// 			check_token->type = STRING;
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }
+	i = 0;
+	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
+	while (i < (size_t)(*tokenlist)->element_list.total)
+	{
+		if (check_token->type == REDIRECT_IN)
+		{
+			if (lookahead(tokenlist, i) == STRING || lookahead(tokenlist, i) == PARAMETER)
+			
+		}
+		i++;
+	}
+	return (0);
+}
