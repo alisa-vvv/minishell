@@ -24,4 +24,6 @@
 //var expansion: $sign, $@sign 
 //path expansion
  
-// char *expand_var(element **tokenlist, pos)
+// char *expand_var(element **tokenlist, pos){}
+
+//val_var
