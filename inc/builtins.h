@@ -6,13 +6,15 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/07/15 19:19:54 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 19:32:02 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/15 20:19:07 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef BUILTINS_H
+# define BUILTINS_H
+
 #include "minishell.h"
 
-/*		Builtins		*/
 int	exec_builtin(
 	char *builtin_name,
 	char **arguments,
@@ -36,5 +38,6 @@ int	minishell_export(
 	char **argv,
 	t_minishell_data *minishell_data
 );
-/**/
+
+#endif
 
