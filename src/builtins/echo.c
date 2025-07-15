@@ -12,23 +12,29 @@
 
 #include "libft.h"
 #include <stddef.h>
+#include <stdbool.h>
 
-//for now, arguments[0] is the option, which can be either '-n' or anything else (never NULL)
-//will figure out a better way to implement this
 int	minishell_echo(
 	char **arguments
 )
 {
-	int	i;
+	int		i;
+	bool	put_nl;
 
 	i = 0;
+	put_nl = true;
 	while (arguments[++i])
 	{
-		ft_putstr_fd(arguments[i], STDOUT_FILENO);
-		if (arguments[i + 1])
-			ft_putchar_fd(' ', STDOUT_FILENO);
+		if (ft_strncmp(arguments[i], "-n", 3) != 0)
+			put_nl = false;
+		else
+		{
+			ft_putstr_fd(arguments[i], STDOUT_FILENO);
+			if (arguments[i + 1])
+				ft_putchar_fd(' ', STDOUT_FILENO);
+		}
 	}
-	if (ft_strncmp(arguments[0], "-n", 3) != 0)
+	if (put_nl == true)
 		ft_putchar_fd('\n', STDOUT_FILENO);
 	return (0);
 }

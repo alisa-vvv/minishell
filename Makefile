@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/07/13 18:52:58 by avaliull     ########   odam.nl           #
+#    Updated: 2025/07/15 19:52:50 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ NAME	=	minishell
 
 CFILES	=	minishell.c\
 			errors.c\
+			env_operations.c\
 			$(EXECUTOR_CFILES)\
 			$(BULTINS_CFILES)\
 			test_funcs.c
@@ -40,7 +41,8 @@ BUILDDIR = build/
 SRCDIR = src/
 LIBDIR = lib/
 INCDIR = inc/
-SRCDIRS = $(addprefix $(SRCDIR), parsing executor builtins) $(SRCDIR)
+SRCDIRS = $(addprefix $(SRCDIR), parsing executor builtins env_lib) \
+		  $(SRCDIR)
 $(SRCDIR):
 	mkdir -p $@
 $(LIBDIR):

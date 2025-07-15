@@ -6,12 +6,11 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/19 15:31:28 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/19 16:36:43 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/15 19:21:40 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "minishell.h"
 #include "executor.h"
 #include <stdio.h>
 

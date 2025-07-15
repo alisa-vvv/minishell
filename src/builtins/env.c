@@ -6,11 +6,11 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/24 17:17:16 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/24 17:43:30 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/15 19:21:59 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <executor.h>
+#include <minishell.h>
 #include <unistd.h>
 #include <stdio.h>
 

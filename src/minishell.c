@@ -6,53 +6,15 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:31:56 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/24 18:09:08 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/15 20:14:36 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
 #include "executor.h"
+#include "minishell_env.h"
 #include <unistd.h>
-
-char	**clone_environment(
-	int *env_var_count,
-	int *env_mem
-)
-{
-	// SET A MAX VALUE FOR ALLOC SIZE
-	char		**environment;
-	int			i;
-	int			len;
-	int			alloc_size;
-
-	alloc_size = 128;
-	environment = ft_calloc(alloc_size, sizeof(char *));
-	if (!environment)
-		return (NULL);
-	i = -1;
-	while(__environ[++i])
-	{
-		if (i == alloc_size)
-		{
-			alloc_size += alloc_size;
-			free_2d_arr((void **) environment);
-			environment = ft_calloc(alloc_size, sizeof(char *));
-			if (!environment)
-				return (NULL);
-			i = 0;
-		}
-		environment[i] = ft_strdup(__environ[i]);
-		if (!environment[i])
-		{
-			free_2d_arr((void **) environment);
-			return (NULL);
-		}
-	}
-	*env_var_count = i;
-	*env_mem = alloc_size;
-	return (environment);
-}
 
 int	main(void)
 {

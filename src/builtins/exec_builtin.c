@@ -6,11 +6,11 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/19 15:47:26 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/01 16:17:55 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/15 19:29:59 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "builtins.h"
 #include "libft.h"
 
 // replace strncmps enum later based on what parsing does
@@ -37,7 +37,7 @@ int	exec_builtin(
 	if (ft_strncmp(builtin_name, "echo", 5) == 0)
 		err_check = minishell_echo(arguments);
 	else if (ft_strncmp(builtin_name, "cd", 3) == 0)
-		err_check = minishell_cd(arguments[0]);
+		err_check = minishell_cd(arguments[0], minishell_data);
 	else if (ft_strncmp(builtin_name, "pwd", 4) == 0)
 		err_check = minishell_pwd();
 	else if (ft_strncmp(builtin_name, "env", 4) == 0)
