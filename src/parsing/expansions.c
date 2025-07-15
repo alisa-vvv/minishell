@@ -23,7 +23,9 @@
 
 //var expansion: $sign, $@sign 
 //path expansion
+//--> make expansion first, remove quotes later
+// expand $EMPTY to nothing
+// look for return value in minishell struct when accessing $?
+// 
  
 // char *expand_var(element **tokenlist, pos){}
-
-//val_var
