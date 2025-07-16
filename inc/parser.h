@@ -55,7 +55,6 @@ enum
     REDIRECT_IN,
     HEREDOC, 
  
-    DOLLAR_SIGN,
     FORW_SLASH,
     BACKW_SLASH,
     QUESTION_MARK,

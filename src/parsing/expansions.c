@@ -28,4 +28,13 @@
 // look for return value in minishell struct when accessing $?
 // 
  
-// char *expand_var(element **tokenlist, pos){}
+char *check_var(element **tokenlist, int pos)
+{
+    t_token *check_token;
+
+    check_token = (t_token *)(*tokenlist)->element_list.tokens[pos];
+    if (check_token->type == PARAMETER)
+    {
+        
+    }
+}

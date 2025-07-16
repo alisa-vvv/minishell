@@ -29,7 +29,7 @@ int match_nonterminal(char *str_token)
     else if (str_token[0] == '>')
         return (REDIRECT_OUT);
     else if (ft_strchr(str_token, '$') != NULL)
-        return (DOLLAR_SIGN); 
+        return (PARAMETER); 
     else if (str_token[0] == '|')
         return (PIPE);
     else if (str_token[0] == '.')
