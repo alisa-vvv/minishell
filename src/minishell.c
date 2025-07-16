@@ -13,8 +13,19 @@
 #include "libft.h"
 #include "minishell.h"
 #include "executor.h"
-#include "minishell_env.h"
-#include <unistd.h>
+#include "parser.h"
+#include <string.h>
+#include <stdio.h> /*	readline	*/
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <unistd.h> /* isatty */
+/* for waits	*/
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <sys/wait.h>
+/*	signals		*/
+#include <signal.h>
 
 int	main(void)
 {
@@ -32,16 +43,21 @@ int	main(void)
 	while (is_open != 0)
 	{
 		read_line = readline("minishell ");
-		if (!read_line)
-			printf("what happens?\n");
+		if (strcmp(read_line, "clear") == 0)
+			clear_history();
 		else if (strcmp(read_line, "clear") == 0)
 			rl_clear_history();
 		else if (strcmp(read_line, "exit") == 0)
 			is_open = false;
 		else if (strcmp(read_line, "executor") == 0)
 			executor(test_get_dummy_exec_data(TEST_len), TEST_len, &minishell_data);
-		else
-			printf("We entered: %s\n", read_line);
+		else if (!read_line)
+			printf("what happens?\n");
+		//else
+		//{
+		//	default_lexer(read_line);
+		//	printf("We entered: %s\n", read_line);
+		//}
 		add_history(read_line);
 	}
 	free_2d_arr((void **) minishell_data.environment);

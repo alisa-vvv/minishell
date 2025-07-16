@@ -54,3 +54,14 @@ https://github.com/codam-coding-college/spark-sessions/blob/main/spark-sessions/
 https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=http://www.gnu.org/software///bash/manual/bash.html&ved=2ahUKEwiFucj8nNWNAxW23QIHHVxADhwQFnoECA0QAQ&usg=AOvVaw0-4n6yy4k-SEOV6LdfBf2H 
 
 More TBD
+
+
+Edge cases
+
+- 'export empty= ""' -> 'echo hi > $EMPTY'
+- '<<<eof' -> cntrl+D -> 'echo $?'
+- '>ls' -> 'ls' -> './les'
+- '>haha | ls'
+- 'export empty=" "' -> 'echo hi > $EMPTY' -> '$EMPTY echo hi'
+
+
