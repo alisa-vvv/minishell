@@ -65,4 +65,5 @@ void	rm_quotes(element *tokenlist, int pos, char symbol)
 			}
 		}
 	}
+	check_token->type = STRING;
 }

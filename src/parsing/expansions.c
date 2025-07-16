@@ -28,13 +28,18 @@
 // look for return value in minishell struct when accessing $?
 // 
  
-char *check_var(element **tokenlist, int pos)
+int expand_var(element **tokenlist, int pos)
 {
     t_token *check_token;
+    int i;
 
-    check_token = (t_token *)(*tokenlist)->element_list.tokens[pos];
-    if (check_token->type == PARAMETER)
+    i = 0; 
+    check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, pos);
+    while (check_token->value[i])
     {
-        
+        if ()
+        i++;
     }
+    return (0);
 }
+ 

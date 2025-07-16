@@ -125,3 +125,20 @@ int	val_redirects(element **tokenlist)
 	return (0);
 }
 
+int check_lexer(element **tokenlist)
+{
+	size_t i;
+	t_token *check_token;
+    i = 0;
+
+	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
+    while (i < (size_t)(*tokenlist)->element_list.total)
+    {
+        if (check_token->type == PARAMETER)
+			expand_var(tokenlist, i);
+
+        i++;
+    }
+
+}
+
