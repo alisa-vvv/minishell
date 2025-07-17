@@ -101,6 +101,8 @@ char	*env_var_find_identifier(
 	return (arg);
 }
 
+// compares the string name vs the variable in environment.
+// if finds match, checks if next symbol in environment is '='
 int	env_var_find_index(
 	char **environment,
 	char *name,
@@ -108,15 +110,20 @@ int	env_var_find_index(
 )
 {
 	int			i;
-	const int	name_len = identifier - name + 1;
+	const int	name_len = identifier - name;
 
 	i = 0;
 	while (environment[i])
 	{
 		if (ft_strncmp(environment[i], name, name_len) != 0)
-			i++;
+				i++;
 		else
-			return (i);
+		{
+			if (environment[i][name_len] == '=')
+				return (i);
+			else
+				i++;
+		}
 	}
 	return (i);
 }
@@ -138,11 +145,16 @@ char	*env_var_get_value(
 			i++;
 		else
 		{
-			value = ft_strdup(&environment[i][name_len + 1]);
-			// add exit on malloc error?
-			if (!value)
-				perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
-			return (value);
+			if (environment[i][name_len] == '=')
+			{
+				value = ft_strdup(&environment[i][name_len + 1]);
+				// add exit on malloc error?
+				if (!value)
+					perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+				return (value);
+			}
+			else
+				i++;
 		}
 	}
 	return (NULL);

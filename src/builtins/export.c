@@ -56,6 +56,12 @@ int	minishell_export(
 	printf("\n\n\nPOST EXPORT\n\n\n");
 	minishell_env(minishell_data);
 
-	minishell_unset((char[2][5]) { "var1", "var2" }, minishell_data);
+	char **test_unset = ft_calloc(2, sizeof(char *));
+	test_unset[0] = "var1";
+	test_unset[1] = "var2";
+	minishell_unset(test_unset, minishell_data);
+
+	printf("\n\n\nPOST UNSET\n\n\n");
+	minishell_env(minishell_data);
 	return (0);
 }

@@ -42,22 +42,26 @@ int	minishell_unset(
 	while (argv[++i])
 	{
 		len = check_name_len_and_validity(argv[i]);
+		printf("len: %d\n", len);
 		var_index = env_var_find_index(minishell_data->environment, argv[i], &argv[i][len]);
+		printf("what is var index? %d\n", var_index);
+		printf("what is minishell len %d\n", minishell_data->env_var_count);
 		if (var_index == minishell_data->env_var_count)
 		{
 			// PLACEHOLDER ADD PROPER ERROR MANAGEMENT
 			printf("invalid parameter name\n");
 			continue ;
 		}
-		while (var_index < minishell_data->env_var_count)
+		while (var_index < minishell_data->env_var_count - 1)
 		{
 			free(minishell_data->environment[var_index]);
 			minishell_data->environment[var_index] = ft_strdup(minishell_data->environment[var_index + 1]);
 			if (!minishell_data->environment[var_index])
 				perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
 			var_index++;
+			minishell_data->env_var_count -= 1;
 		}
-		minishell_data->env_var_count--;
+		free(minishell_data->environment[var_index]);
 	}
 	// step_1: look for variable name
 	// if not exists, say: invalud parameter name
