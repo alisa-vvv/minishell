@@ -113,17 +113,14 @@ int	env_var_find_index(
 	const int	name_len = identifier - name;
 
 	i = 0;
+
 	while (environment[i])
 	{
-		if (ft_strncmp(environment[i], name, name_len) != 0)
-				i++;
+		if (ft_strncmp(environment[i], name, name_len) == 0 &&
+				environment[i][name_len] == '=')
+			return (i);
 		else
-		{
-			if (environment[i][name_len] == '=')
-				return (i);
-			else
 				i++;
-		}
 	}
 	return (i);
 }
@@ -141,21 +138,17 @@ char	*env_var_get_value(
 	i = 0;
 	while (environment[i])
 	{
-		if (ft_strncmp(environment[i], name, name_len) != 0)
-			i++;
-		else
+		if (ft_strncmp(environment[i], name, name_len) == 0 &&
+				environment[i][name_len] == '=')
 		{
-			if (environment[i][name_len] == '=')
-			{
 				value = ft_strdup(&environment[i][name_len + 1]);
 				// add exit on malloc error?
 				if (!value)
-					perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+					perror_and_return(MALLOC_ERR, LIBFUNC_ERR, NULL);
 				return (value);
-			}
-			else
-				i++;
 		}
+		else
+				i++;
 	}
 	return (NULL);
 }

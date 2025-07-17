@@ -44,7 +44,7 @@ int	minishell_export(
 		if (var_index == minishell_data->env_mem - 1)
 			env_var_realloc(minishell_data, *argv);
 		if (var_index == minishell_data->env_var_count)
-			minishell_data->env_var_count++; 
+			minishell_data->env_var_count += 1; 
 		else if (var_index < minishell_data->env_var_count)
 			free(minishell_data->environment[var_index]);
 		minishell_data->environment[var_index] = ft_strdup(*argv);
@@ -53,15 +53,15 @@ int	minishell_export(
 		argv++;
 	}
 
-	printf("\n\n\nPOST EXPORT\n\n\n");
-	minishell_env(minishell_data);
+	//printf("\n\n\nPOST EXPORT\n\n\n");
+	//minishell_env(minishell_data);
 
-	char **test_unset = ft_calloc(2, sizeof(char *));
-	test_unset[0] = "var1";
-	test_unset[1] = "var2";
-	minishell_unset(test_unset, minishell_data);
+	//char **test_unset = ft_calloc(2, sizeof(char *));
+	//test_unset[0] = "var";
+	//test_unset[1] = "var2";
+	//minishell_unset(test_unset, minishell_data);
 
-	printf("\n\n\nPOST UNSET\n\n\n");
-	minishell_env(minishell_data);
+	//printf("\n\n\nPOST UNSET\n\n\n");
+	//minishell_env(minishell_data);
 	return (0);
 }
