@@ -19,7 +19,7 @@
 #include "minishell_env.h"
 
 int	minishell_export(
-	char **argv,
+	char *const *argv,
 	t_minishell_data *minishell_data
 )
 {

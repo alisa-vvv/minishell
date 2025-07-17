@@ -13,6 +13,7 @@
 #include "libft.h"
 #include "minishell.h"
 #include "builtins.h"
+#include "minishell_env.h"
 #include <unistd.h>
 
 #include <stdio.h>
@@ -23,16 +24,27 @@ int	minishell_cd(
 	t_minishell_data *const minishell_data
 )
 {
-	int			err_check;
-	const char	*new_pwd = ft_strjoin("PWD=", path);
+	int		err_check;
+	int		old_pwd_index;
+	char	*new_pwd;
+//	char	*new_old_pwd;
 
+	// look for OLD_PWD and PWD variables // probably don't actually need to look for OLD_PWD cause we always export it
+	// if they exist, change values
+	// otherwise export them
+	//
+	new_pwd = ft_strjoin("PWD=", path);
 	if (!new_pwd)
-		return (1);
-	err_check = chdir(path);
-	free((char *) new_pwd);
+		return (-1);
 	if (err_check < 0)
-		perror_and_return("cd", MINISHELL_ERR, 1);
+	{
+		free(new_pwd);
+		perror_and_return("cd", MINISHELL_ERR, -1);
+	}
 	else
-		minishell_export((char **) &new_pwd, minishell_data);
+	{
+		minishell_export(&new_pwd, minishell_data);
+	}
+	free(new_pwd);
 	return (0);
 }

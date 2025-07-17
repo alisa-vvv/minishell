@@ -35,7 +35,7 @@ int	minishell_env(
 	t_minishell_data *const minishell_data
 );
 int	minishell_export(
-	char **argv,
+	char *const *argv,
 	t_minishell_data *minishell_data
 );
 int	minishell_unset(
