@@ -144,7 +144,7 @@ char	*env_var_get_value(
 				value = ft_strdup(&environment[i][name_len + 1]);
 				// add exit on malloc error?
 				if (!value)
-					perror_and_return(MALLOC_ERR, LIBFUNC_ERR, NULL);
+					perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 0);
 				return (value);
 		}
 		else

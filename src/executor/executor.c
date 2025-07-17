@@ -13,6 +13,7 @@
 #include "libft.h"
 #include "minishell.h"
 #include "executor.h"
+#include "builtins.h"
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
