@@ -36,7 +36,7 @@ int	minishell_export(
 	{
 		identifier = env_var_find_identifier(*argv);
 		if (!identifier)
-			return (1);
+			return (-1);
 		var_index = env_var_find_index(minishell_data->environment, *argv, identifier);
 
 		assert(var_index <= minishell_data->env_var_count); // REMOVE ASSERT
@@ -44,17 +44,18 @@ int	minishell_export(
 		if (var_index == minishell_data->env_mem - 1)
 			env_var_realloc(minishell_data, *argv);
 		if (var_index == minishell_data->env_var_count)
-			minishell_data->env_var_count += 1; 
+			minishell_data->env_var_count++; 
 		else if (var_index < minishell_data->env_var_count)
 			free(minishell_data->environment[var_index]);
 		minishell_data->environment[var_index] = ft_strdup(*argv);
 		if (!minishell_data->environment[var_index])
-			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
 		argv++;
 	}
 
-//	printf("\n\n\nPOST EXPORT\n\n\n");
-//	minishell_env(minishell_data);
+	printf("\n\n\nPOST EXPORT\n\n\n");
+	minishell_env(minishell_data);
 
+	minishell_unset((char[2][5]) { "var1", "var2" }, minishell_data);
 	return (0);
 }

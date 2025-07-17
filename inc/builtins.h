@@ -38,6 +38,10 @@ int	minishell_export(
 	char **argv,
 	t_minishell_data *minishell_data
 );
+int	minishell_unset(
+	char **argv,
+	t_minishell_data *minishell_data
+);
 
 #endif
 

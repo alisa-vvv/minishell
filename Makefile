@@ -30,8 +30,9 @@ BULTINS_CFILES	=	exec_builtin.c\
 					pwd.c\
 					cd.c\
 					echo.c\
+					env.c\
 					export.c\
-					env.c
+					unset.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))
 DEPFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.d))
