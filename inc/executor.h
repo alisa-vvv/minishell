@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:25:20 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 16:34:59 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:26:31 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,11 @@ int	perform_redirections(
 /**/
 
 /*		Try_execve		*/
-const char	**find_env_path(
-	const char **env
+const char	*const *find_env_path(
+	char **env
 );
 int	try_execve(
-	const char **path,
+	char **env,
 	char *const argv[]
 );
 /**/

@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/01 15:42:19 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 20:00:38 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:28:45 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,13 @@ t_exec_data	*test_get_dummy_exec_data(
 	int i = 0;
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("export");
-	exec_data[i].argv[1] = ft_strdup("var1=value1");
-	exec_data[i].argv[2] = ft_strdup("var2=value2");
+	exec_data[i].argv[0] = ft_strdup("ls");
+	exec_data[i].argv[1] = ft_strdup("-l");
 //	exec_data[i].argv[0] = ft_strdup("env");
 //	exec_data[i].argv[1] = ft_strdup("src");
 	//exec_data[i].argv[2] = ft_strdup("one");
 	//exec_data[i].argv[3] = ft_strdup("two");
-	exec_data[i].is_builtin = true;
+	exec_data[i].is_builtin = false;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = false;
 	exec_data[i].redirections = NULL;

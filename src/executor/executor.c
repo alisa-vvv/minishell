@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 20:15:39 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:30:51 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static int	cleanup_in_parent_process(
 static int	run_child_process(
 	const t_exec_data *const command,
 	const t_command_io *const command_io,
-	const char **const path, 
 	t_minishell_data *const minishell_data
 )
 {
@@ -55,16 +54,15 @@ static int	run_child_process(
 	}
 	perform_redirections(command->redirections, command_io);
 	if (command->is_builtin == false)
-		try_execve(path, command->argv);
+		try_execve(minishell_data->env, command->argv);
 	else if (command->is_builtin == true)
 		err_check = exec_builtin(command, minishell_data);
 	exit(err_check);
 }
 
-int	execute_command(
+static int	execute_command(
 	const t_exec_data *command,
 	t_command_io *const command_io,
-	const char **path,
 	t_minishell_data *const minishell_data
 )
 {
@@ -77,17 +75,14 @@ int	execute_command(
 	{
 		process_id = fork();
 		if (process_id == 0)
-			run_child_process(command, command_io, path, minishell_data);
+			run_child_process(command, command_io, minishell_data);
 		else if (process_id > 0)
 			cleanup_in_parent_process(command, command_io);
 		else if (process_id < 0)
 			perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
 	}
 	else if (command->is_builtin == true)
-	{
-		printf("this should happen 3 times\n");
 		err_check = exec_builtin(command, minishell_data);
-	}
 	return (err_check);
 }
 
@@ -100,10 +95,7 @@ int	executor(
 	int				i;
 	int				process_status;
 	t_command_io	command_io;
-	const char		**path = find_env_path((const char **) minishell_data->env);
 
-	if (!path)
-		return (EXIT_FAILURE);
 	i = -1;
 	// CURRENT LOGIC: fail in a process wil never stop execution of other commands. last exittable fail check was during pipe setup
 	while (++i < command_count)
@@ -114,7 +106,7 @@ int	executor(
 			printf("PLACEHOLDER ERROR\n");
 			return (EXIT_FAILURE);
 		}
-		execute_command(&exec_data[i], &command_io, path, minishell_data);
+		execute_command(&exec_data[i], &command_io, minishell_data);
 	}
 	while (waitpid(-1, &process_status, 0) > 0) // check if there's some exit signals or codes we need to handle here
 	{
@@ -127,6 +119,6 @@ int	executor(
 				//perror("PLACEHOLDER, Child process sent an error");
 			}
 	}
-	free_and_close_exec_data(exec_data);
+	//free_and_close_exec_data(exec_data);
 	return (EXIT_SUCCESS);
 }
