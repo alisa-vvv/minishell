@@ -15,7 +15,7 @@
 
 #include "minishell.h"
 
-char	**clone_environment(
+char	**clone_env(
 	int *env_var_count,
 	int *env_mem
 );
@@ -26,7 +26,7 @@ int	env_var_realloc(
 );
 
 int	env_var_find_index(
-	char **environment,
+	char **env,
 	char *name,
 	char *identifier
 );
@@ -36,7 +36,7 @@ char	*env_var_find_identifier(
 );
 
 char	*env_var_get_value(
-	char **environment,
+	char **env,
 	char *name
 );
 

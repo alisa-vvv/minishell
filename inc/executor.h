@@ -55,7 +55,7 @@ int	perform_redirections(
 
 /*		Try_execve		*/
 const char	**find_env_path(
-	const char **environment
+	const char **env
 );
 int	try_execve(
 	const char **path,

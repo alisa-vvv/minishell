@@ -17,7 +17,7 @@
 
 //aedit this to find p
 const char	**find_env_path(
-	const char **environment
+	const char **env
 )
 {
 	int		i;
@@ -25,11 +25,11 @@ const char	**find_env_path(
 
 	i = -1;
 	path_arr = NULL;
-	while (environment[++i])
+	while (env[++i])
 	{
-		if (ft_strncmp(environment[i], "PATH", 4) ==0)
+		if (ft_strncmp(env[i], "PATH", 4) ==0)
 		{
-			path_arr = ft_split(&environment[i][5], ':');
+			path_arr = ft_split(&env[i][5], ':');
 			if (!path_arr)
 			{
 				perror(MALLOC_ERR);

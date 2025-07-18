@@ -13,20 +13,20 @@
 #include "libft.h"
 #include "minishell.h"
 
-char	**clone_environment(
+char	**clone_env(
 	int *env_var_count,
 	int *env_mem
 )
 {
 	// SET A MAX VALUE FOR ALLOC SIZE
-	char		**environment;
+	char		**env;
 	int			i;
 	int			len;
 	int			alloc_size;
 
 	alloc_size = 128;
-	environment = ft_calloc(alloc_size, sizeof(char *));
-	if (!environment)
+	env = ft_calloc(alloc_size, sizeof(char *));
+	if (!env)
 		return (NULL);
 	i = -1;
 	while(__environ[++i])
@@ -34,22 +34,22 @@ char	**clone_environment(
 		if (i == alloc_size)
 		{
 			alloc_size += alloc_size;
-			free_2d_arr((void **) environment);
-			environment = ft_calloc(alloc_size, sizeof(char *));
-			if (!environment)
+			free_2d_arr((void **) env);
+			env = ft_calloc(alloc_size, sizeof(char *));
+			if (!env)
 				return (NULL);
 			i = 0;
 		}
-		environment[i] = ft_strdup(__environ[i]);
-		if (!environment[i])
+		env[i] = ft_strdup(__environ[i]);
+		if (!env[i])
 		{
-			free_2d_arr((void **) environment);
+			free_2d_arr((void **) env);
 			return (NULL);
 		}
 	}
 	*env_var_count = i;
 	*env_mem = alloc_size;
-	return (environment);
+	return (env);
 }
 
 int env_var_realloc(
@@ -67,9 +67,9 @@ int env_var_realloc(
 	if (!new_env)
 		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
 	i = -1;
-	while (minishell_data->environment[++i])
+	while (minishell_data->env[++i])
 	{
-		new_env[i] = ft_strdup(minishell_data->environment[i]);
+		new_env[i] = ft_strdup(minishell_data->env[i]);
 		if (!new_env)
 		{
 			free_2d_arr((void **) new_env);
@@ -77,8 +77,8 @@ int env_var_realloc(
 		}
 	}
 	new_env[i] = var_string;
-	free_2d_arr((void **) minishell_data->environment);
-	minishell_data->environment = new_env;
+	free_2d_arr((void **) minishell_data->env);
+	minishell_data->env = new_env;
 	return (0);
 }
 
@@ -101,10 +101,10 @@ char	*env_var_find_identifier(
 	return (arg);
 }
 
-// compares the string name vs the variable in environment.
-// if finds match, checks if next symbol in environment is '='
+// compares the string name vs the variable in env.
+// if finds match, checks if next symbol in env is '='
 int	env_var_find_index(
-	char **environment,
+	char **env,
 	char *name,
 	char *identifier
 )
@@ -114,10 +114,10 @@ int	env_var_find_index(
 
 	i = 0;
 
-	while (environment[i])
+	while (env[i])
 	{
-		if (ft_strncmp(environment[i], name, name_len) == 0 &&
-				environment[i][name_len] == '=')
+		if (ft_strncmp(env[i], name, name_len) == 0 &&
+				env[i][name_len] == '=')
 			return (i);
 		else
 				i++;
@@ -126,7 +126,7 @@ int	env_var_find_index(
 }
 
 char	*env_var_get_value(
-	char **environment,
+	char **env,
 	char *name
 )
 {
@@ -136,12 +136,12 @@ char	*env_var_get_value(
 
 	name_len = ft_strlen(name);
 	i = 0;
-	while (environment[i])
+	while (env[i])
 	{
-		if (ft_strncmp(environment[i], name, name_len) == 0 &&
-				environment[i][name_len] == '=')
+		if (ft_strncmp(env[i], name, name_len) == 0 &&
+				env[i][name_len] == '=')
 		{
-				value = ft_strdup(&environment[i][name_len + 1]);
+				value = ft_strdup(&env[i][name_len + 1]);
 				// add exit on malloc error?
 				if (!value)
 					perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 0);

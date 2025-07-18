@@ -42,21 +42,21 @@ int	minishell_unset(
 	while (argv[++i])
 	{
 		len = check_name_len_and_validity(argv[i]);
-		var_index = env_var_find_index(minishell_data->environment, argv[i], &argv[i][len]);
+		var_index = env_var_find_index(minishell_data->env, argv[i], &argv[i][len]);
 		if (var_index == minishell_data->env_var_count)
 		{
 			// PLACEHOLDER ADD PROPER ERROR MANAGEMENT
 			printf("invalid parameter name\n");
 			continue ;
 		}
-		free(minishell_data->environment[var_index]);
+		free(minishell_data->env[var_index]);
 		while (var_index < minishell_data->env_var_count - 1)
 		{
-			minishell_data->environment[var_index] = minishell_data->environment[var_index + 1];
+			minishell_data->env[var_index] = minishell_data->env[var_index + 1];
 			var_index++;
 		}
 		minishell_data->env_var_count -= 1;
-		minishell_data->environment[minishell_data->env_var_count] = NULL;
+		minishell_data->env[minishell_data->env_var_count] = NULL;
 	}
 	return (0);
 }

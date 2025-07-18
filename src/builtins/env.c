@@ -21,10 +21,10 @@ int	minishell_env(
 	int	i;
 
 	i = -1;
-	while(minishell_data->environment[++i])
+	while(minishell_data->env[++i])
 	{
 		printf("%d", i);
-		printf("%s\n", minishell_data->environment[i]);
+		printf("%s\n", minishell_data->env[i]);
 	}
 	return (0);
 }

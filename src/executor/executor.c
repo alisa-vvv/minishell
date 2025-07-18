@@ -241,7 +241,7 @@ int	executor(
 	int				i;
 	int				process_status;
 	t_command_io	command_io;
-	const char		**path = find_env_path((const char **) minishell_data->environment); // make this shorter somehow
+	const char		**path = find_env_path((const char **) minishell_data->env);
 
 	if (!path)
 		return (EXIT_FAILURE);
