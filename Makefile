@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/07/18 16:56:54 by avaliull     ########   odam.nl           #
+#    Updated: 2025/07/18 20:03:44 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,22 +18,23 @@ CFILES	=	minishell.c\
 			errors.c\
 			cleanup.c\
 			env_operations.c\
-			$(EXECUTOR_CFILES)\
-			$(BULTINS_CFILES)\
+			$(CFILES_EXECUTOR)\
+			$(CFILES_BUILTINS)\
 			test_funcs.c
-EXECUTOR_CFILES	=	executor.c\
+CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\
 					redirections.c\
 					here-doc.c\
 					try_execve.c\
 					executor_test.c
-BULTINS_CFILES	=	exec_builtin.c\
+CFILES_BUILTINS	=	exec_builtin.c\
 					pwd.c\
 					cd.c\
 					echo.c\
 					env.c\
 					export.c\
-					unset.c
+					unset.c\
+					exit.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))
 DEPFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.d))

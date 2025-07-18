@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/07/18 16:33:46 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 16:54:36 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:15:50 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	free_and_close_redir_list(
 }
 
 void	free_and_close_exec_data(
-	t_exec_data	*exec_data
+	const t_exec_data	*exec_data
 )
 {
 	free_and_close_redir_list(exec_data->redirections);

@@ -6,9 +6,11 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:31:56 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 20:14:36 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:02:01 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "minishell_testfuncs.h"
 
 #include "libft.h"
 #include "minishell.h"

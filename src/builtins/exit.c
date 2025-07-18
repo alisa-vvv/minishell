@@ -1,50 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::             */
-/*   builtins.h                                        :+:    :+:             */
+/*   exit.c                                            :+:    :+:             */
 /*                                                    +:+                     */
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
-/*   Created: 2025/07/15 19:19:54 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 20:17:54 by avaliull     ########   odam.nl          */
+/*   Created: 2025/07/18 19:25:05 by avaliull     #+#    #+#                  */
+/*   Updated: 2025/07/18 20:18:03 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
-
+#include "libft.h"
 #include "minishell.h"
 
-int	exec_builtin(
-	const t_exec_data *command,
-	t_minishell_data *const minishell_data
-);
-
-int	minishell_echo(
-	char **arguments
-);
-int	minishell_cd(
-	const char *path,
-	t_minishell_data *const minishell_data
-);
-int	minishell_pwd(
-	void
-);
-int	minishell_env(
-	t_minishell_data *const minishell_data
-);
-int	minishell_export(
-	char *const *argv,
-	t_minishell_data *const minishell_data
-);
-int	minishell_unset(
-	char **argv,
-	t_minishell_data *minishell_data
-);
 void	minishell_exit(
 	const t_exec_data *const command,
 	t_minishell_data *const minishell_data
-);
-
-#endif
-
+)
+{
+	free_and_close_exec_data(command);
+	free_2d_arr((void **) minishell_data->env);
+	exit (0);
+}

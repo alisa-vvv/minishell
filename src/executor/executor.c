@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 16:55:19 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:15:39 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,119 +17,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
-// TEST - function with test_ in name will be either deleted or modified later
-
-int	test_dummy_builtin(
-	const t_exec_data *exec_data,
-	t_minishell_data *const minishell_data
-)
-{
-	// error management here or withibn buitin?
-	// this function will probably not exist at all cause it's just exec_builtin caller lol
-	return (exec_builtin(exec_data->argv[0], &exec_data->argv[1], minishell_data));
-}
-
-t_redir_list	*test_add_redirection(
-	const t_redir_list *first,
-	const t_redirect_type type,
-	const int src,
-	const char *dest,
-	const char *heredoc_delim
-	)
-{
-	t_redir_list	*cur_node = (t_redir_list *) first;
-	t_redir_list	*redir_list = ft_calloc(1, sizeof(*redir_list));
-	
-	redir_list->type = type;
-	redir_list->src_fd = src;
-	if (dest)
-		redir_list->dest_filename = ft_strdup(dest);
-	if (heredoc_delim)
-		redir_list->heredoc_delim = ft_strdup(heredoc_delim);
-	redir_list->next = NULL;
-	if (first != NULL)
-	{
-		while (cur_node->next != NULL)
-			cur_node = cur_node->next;
-		cur_node->next = redir_list;
-	}
-	else
-		first = redir_list;
-	return ((t_redir_list *) first);
-}
-
-t_exec_data	*test_get_dummy_exec_data(int len)
-{
-	t_exec_data	*exec_data;
-
-	len = 4;
-	int i = 0;
-	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("export");
-	exec_data[i].argv[1] = ft_strdup("var1=value1");
-	exec_data[i].argv[2] = ft_strdup("var2=value2");
-//	exec_data[i].argv[0] = ft_strdup("env");
-//	exec_data[i].argv[1] = ft_strdup("src");
-	//exec_data[i].argv[2] = ft_strdup("one");
-	//exec_data[i].argv[3] = ft_strdup("two");
-	exec_data[i].is_builtin = true;
-	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = false;
-	exec_data[i].redirections = NULL;
-	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, trunc, STDOUT_FILENO, "", NULL);
-	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
-	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF2");
-	i++;
-
-	//exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
-	//exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	//exec_data[i].argv[0] = ft_strdup("export");
-	//exec_data[i].is_builtin = true;
-	//exec_data[i].input_is_pipe = false;
-	//exec_data[i].output_is_pipe = false;
-	//exec_data[i].redirections = NULL;
-	//i++;
-
-//	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
-//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-//	exec_data[i].argv[0] = ft_strdup("env");
-//	exec_data[i].is_builtin = true;
-//	exec_data[i].input_is_pipe = false;
-//	exec_data[i].output_is_pipe = false;
-//	exec_data[i].redirections = NULL;
-//	i++;
-
-//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-//	exec_data[i].argv[0] = ft_strdup("pwd");
-//	//exec_data[i].argv[1] = ft_strdup("-e");
-//	exec_data[i].is_builtin = true;
-//	exec_data[i].input_is_pipe = false;
-//	exec_data[i].output_is_pipe = false;
-//	i++;
-
-//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-//	exec_data[i].argv[0] = ft_strdup("cat");
-//	exec_data[i].argv[1] = ft_strdup("-T");
-//	exec_data[i].is_builtin = false;
-//	exec_data[i].input_is_pipe = true;
-//	exec_data[i].output_is_pipe = true;
-//	i++;
-//
-//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-//	exec_data[i].argv[0] = ft_strdup("cat");
-//	exec_data[i].argv[1] = ft_strdup("-b");
-//	exec_data[i].is_builtin = false;
-//	exec_data[i].input_is_pipe = true;
-//	exec_data[i].output_is_pipe = false;
-//	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile", NULL);
-//	i++;
-
-	return (exec_data);
-}
-
-// CHILDREN
-
 
 static int	cleanup_in_parent_process(
 	const t_exec_data *command,
@@ -148,16 +35,14 @@ static int	cleanup_in_parent_process(
 }
 
 static int	run_child_process(
-	const t_exec_data *command,
-	const t_command_io *command_io,
-	const char **path,
+	const t_exec_data *const command,
+	const t_command_io *const command_io,
+	const char **const path, 
 	t_minishell_data *const minishell_data
 )
 {
 	int				err_check;
 
-	// path var should be found here since it can change potentially?
-	(void) path; // REMOVE THIS. KEPT FOR TESTING
 	if (command->input_is_pipe == true)
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
@@ -172,7 +57,7 @@ static int	run_child_process(
 	if (command->is_builtin == false)
 		try_execve(path, command->argv);
 	else if (command->is_builtin == true)
-		err_check = test_dummy_builtin(command, minishell_data);
+		err_check = exec_builtin(command, minishell_data);
 	exit(err_check);
 }
 
@@ -201,7 +86,7 @@ int	execute_command(
 	else if (command->is_builtin == true)
 	{
 		printf("this should happen 3 times\n");
-		err_check = test_dummy_builtin(command, minishell_data);
+		err_check = exec_builtin(command, minishell_data);
 	}
 	return (err_check);
 }
@@ -242,5 +127,6 @@ int	executor(
 				//perror("PLACEHOLDER, Child process sent an error");
 			}
 	}
+	free_and_close_exec_data(exec_data);
 	return (EXIT_SUCCESS);
 }
