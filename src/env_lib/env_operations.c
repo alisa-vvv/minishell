@@ -6,12 +6,13 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/07/15 19:44:31 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 20:15:08 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 16:41:07 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
+#include "minishell_env.h"
 
 char	**clone_env(
 	int *env_var_count,
@@ -92,8 +93,7 @@ char	*env_var_find_identifier(
 			return (arg);
 		else if (!ft_isalnum(*arg) && *arg != '_')
 		{
-			// REPLACE ERROR TEXT WITH A VAR?
-			perror_and_return("not a valid identifier", MINISHELL_ERR, 0);
+			perror_and_return(INVALID_IDENTIFIER, MINISHELL_ERR, 0);
 			break ;
 		}
 		arg++;
@@ -141,14 +141,14 @@ char	*env_var_get_value(
 		if (ft_strncmp(env[i], name, name_len) == 0 &&
 				env[i][name_len] == '=')
 		{
-				value = ft_strdup(&env[i][name_len + 1]);
-				// add exit on malloc error?
-				if (!value)
-					perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 0);
-				return (value);
+			value = ft_strdup(&env[i][name_len + 1]);
+			// add exit on malloc error?
+			if (!value)
+				perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 0);
+			return (value);
 		}
 		else
-				i++;
+			i++;
 	}
 	return (NULL);
 }

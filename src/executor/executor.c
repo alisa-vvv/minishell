@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/01 16:43:47 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 16:55:19 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,32 +18,6 @@
 #include <errno.h>
 #include <fcntl.h>
 // TEST - function with test_ in name will be either deleted or modified later
-void	free_and_close_redir_list(
-	t_redir_list *redirection
-)
-{
-	while (redirection != NULL)
-	{
-		if (redirection->dest_filename)
-			free(redirection->dest_filename);
-		if (redirection->src_filename)
-			free(redirection->src_filename);
-		if (redirection->heredoc_delim)
-			free(redirection->src_filename);
-		if (redirection->type == heredoc)
-			test_close(redirection->dest_fd);
-		free (redirection);
-		redirection = redirection->next;
-	}
-}
-void	test_free_and_close_exec_data(
-	t_exec_data	*exec_data
-)
-{
-	free_and_close_redir_list(exec_data->redirections);
-	if (exec_data->argv)
-		free_2d_arr((void **) exec_data->argv);
-}
 
 int	test_dummy_builtin(
 	const t_exec_data *exec_data,
@@ -169,7 +143,7 @@ static int	cleanup_in_parent_process(
 		test_close(command_io->in_pipe[READ_END]);
 	if (command->output_is_pipe == true)
 		test_close(command_io->out_pipe[WRITE_END]);
-	test_free_and_close_exec_data((t_exec_data *) command);
+	free_and_close_exec_data((t_exec_data *) command);
 	return (0);
 }
 

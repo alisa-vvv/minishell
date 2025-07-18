@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/07/01 15:41:12 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 19:57:06 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 16:51:00 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 int	minishell_export(
 	char *const *argv,
-	t_minishell_data *minishell_data
+	t_minishell_data *const minishell_data
 )
 {
 	int		var_index;

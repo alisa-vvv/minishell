@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/07/15 19:52:50 by avaliull     ########   odam.nl           #
+#    Updated: 2025/07/18 16:56:54 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ NAME	=	minishell
 
 CFILES	=	minishell.c\
 			errors.c\
+			cleanup.c\
 			env_operations.c\
 			$(EXECUTOR_CFILES)\
 			$(BULTINS_CFILES)\

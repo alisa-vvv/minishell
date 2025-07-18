@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:25:20 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 19:20:51 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 16:34:59 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # define PATH_MAX 4096
 # define READ_END 0
 # define WRITE_END 1
+
+/*		Executor errors		*/
 
 typedef struct	s_command_io
 {
