@@ -53,19 +53,19 @@ int	count_symbol(element *tokenlist, int pos, char symbol)
 	return (count);
 }
 
-// //index lexer by traversing - not needed anymore
-// int index_lexer(element **tokenlist)
-// {
-//     int i;
-//     i = 0;
+//index lexer by traversing - not needed anymore
+int index_lexer(element **tokenlist)
+{
+    int i;
+    i = 0;
 
-//     while (i < (size_t)(*tokenlist)->elementList.total)
-//     {
-//         (*tokenlist)->elementList.tokens[i].pos = i;
-//         i++;
-//     }
-//     return (0);
-// }
+    while (i < (size_t)(*tokenlist)->element_list.total)
+    {
+        (*tokenlist)->element_list.tokens[i].pos = i;
+        i++;
+    }
+    return (0);
+}
 
 // check if left and right are args for pipe
 int	check_pipe(char *str)
@@ -101,29 +101,29 @@ int	val_inputline(char *str)
     return(0);
 }
 
-int	val_redirects(element **tokenlist)
-{
-	size_t	i;
-	t_token	*check_token;
+// int	val_redirects(element **tokenlist)
+// {
+// 	size_t	i;
+// 	t_token	*check_token;
 
-	i = 0;
-	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
-	while (i < (size_t)(*tokenlist)->element_list.total)
-	{
-		if (check_token->type == REDIRECT_IN)
-		{
-			if (lookahead(tokenlist, i) != STRING && lookahead(tokenlist, i) != PARAMETER)
-				return (1);
-			//check if leading arg is something or nothing 
-		}
-		else if (check_token->type == REDIRECT_OUT || REDIRECT_OUT_APP)
-		{
-			if ()
-		}
-		i++;
-	}
-	return (0);
-}
+// 	i = 0;
+// 	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
+// 	while (i < (size_t)(*tokenlist)->element_list.total)
+// 	{
+// 		if (check_token->type == REDIRECT_IN)
+// 		{
+// 			if (lookahead(tokenlist, i) != STRING && lookahead(tokenlist, i) != PARAMETER)
+// 				return (1);
+// 			//check if leading arg is something or nothing 
+// 		}
+// 		else if (check_token->type == REDIRECT_OUT || REDIRECT_OUT_APP)
+// 		{
+// 			if ()
+// 		}
+// 		i++;
+// 	}
+// 	return (0);
+// }
 
 int check_lexer(element **tokenlist)
 {

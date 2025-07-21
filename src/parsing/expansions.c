@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "minishell.h"
 
 
 // $ expansion, environment
@@ -26,20 +27,24 @@
 //--> make expansion first, remove quotes later
 // expand $EMPTY to nothing
 // look for return value in minishell struct when accessing $?
-// 
- 
-int expand_var(element **tokenlist, int pos)
+
+
+//expand known var and otherwise delete and re-position all tokens
+int expand_var(element **tokenlist, int pos, t_minishell_data *minishell_data)
 {
     t_token *check_token;
     int i;
 
-    i = 0; 
+    i = 0;
     check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, pos);
-    while (check_token->value[i])
+    if (env_var_get_value(minishell_data.environment, check_token->value))
+        check_token->value = ft_strdup(env_var_get_value(minishell_data.environment, check_token->value));
+    else 
     {
-        if ()
-        i++;
+        (*tokenlist)->pf_element_delete(tokenlist, pos);
+        index_lexer(tokenlist);
     }
+    
     return (0);
 }
  
