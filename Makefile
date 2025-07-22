@@ -1,10 +1,12 @@
-# **************************************************************************** # # ::::::::              #
+# **************************************************************************** #
+#                                                                              #
+#                                                        ::::::::              #
 #    Makefile                                          :+:    :+:              #
 #                                                     +:+                      #
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
-#    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/07/18 20:03:44 by avaliull     ########   odam.nl           #
+#    Created: 2025/07/22 19:01:25 by avaliull     #+#    #+#                   #
+#    Updated: 2025/07/22 19:22:37 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -107,7 +109,7 @@ clangd:
 debug: CPPFLAGS += -g
 debug: clean $(NAME)
 gdb: fclean debug
-	gdb ./$(NAME)
+	gdb -tui ./$(NAME)
 test: $(NAME) run
 run:
 	./$(NAME) $(INPUT)
