@@ -114,10 +114,13 @@ test: $(NAME) run
 run:
 	./$(NAME) $(INPUT)
 leak:	debug
-	valgrind  --suppressions=minishell.supp -s --leak-check=full \
-	--show-leak-kinds=all --track-fds=yes ./$(NAME) $(INPUT)
+	valgrind --suppressions=minishell.supp --leak-check=full --track-origins=yes \
+	--show-leak-kinds=definite --track-fds=yes ./$(NAME) $(INPUT)
 val:
-	valgrind  --suppressions=minishell.supp -s --leak-check=full \
-	--show-leak-kinds=all --track-fds=yes ./$(NAME) $(INPUT)
+	valgrind --suppressions=minishell.supp --leak-check=full --track-origins=yes \
+	--show-leak-kinds=definite --track-fds=yes ./$(NAME) $(INPUT)
+gensupp:
+	valgrind  --gen-suppressions=all -s --leak-check=full \
+	--show-leak-kinds=reachable --track-fds=yes ./$(NAME) $(INPUT) | tee gensupp
 
 .PHONY:	clangd all clean fclean re libs_clean test run leak debug gdb
