@@ -1,6 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                        ::::::::              #
+# **************************************************************************** # # ::::::::              #
 #    Makefile                                          :+:    :+:              #
 #                                                     +:+                      #
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
@@ -113,14 +111,12 @@ gdb: fclean debug
 test: $(NAME) run
 run:
 	./$(NAME) $(INPUT)
-leak:	debug
-	valgrind --suppressions=minishell.supp --leak-check=full --track-origins=yes \
-	--show-leak-kinds=definite --track-fds=yes ./$(NAME) $(INPUT)
+leak:
+	$(MAKE) -s debug
+	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
+	--leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
 val:
-	valgrind --suppressions=minishell.supp --leak-check=full --track-origins=yes \
-	--show-leak-kinds=definite --track-fds=yes ./$(NAME) $(INPUT)
-gensupp:
-	valgrind  --gen-suppressions=all -s --leak-check=full \
-	--show-leak-kinds=reachable --track-fds=yes ./$(NAME) $(INPUT) | tee gensupp
+	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
+	--leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
 
 .PHONY:	clangd all clean fclean re libs_clean test run leak debug gdb
