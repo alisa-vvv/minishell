@@ -104,7 +104,7 @@ clangd:
 	intercept-build-14 $(MAKE)
 
 #debugging
-debug: CFLAGS += -g
+debug: CPPFLAGS += -g
 debug: clean $(NAME)
 gdb: fclean debug
 	gdb ./$(NAME)
