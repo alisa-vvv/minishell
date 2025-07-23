@@ -55,7 +55,7 @@ int	main(void)
 			printf("what happens?\n");
 		else
 		{
-			if (default_lexer(read_line))
+			if (default_lexer(read_line, &minishell_data))
 				is_open = false;
 			else 
 				printf("We entered: %s\n", read_line);

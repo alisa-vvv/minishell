@@ -29,7 +29,7 @@ int	skip_blanks(char *str, int pos)
 		count++;
 		str++;
 	}
-    // t_printf("%d\n", count);
+    // l_printf("%d\n", count);
 	return (count);
 }
 
@@ -59,7 +59,7 @@ char	*trim_str_space(char *str)
 		j++;
 	}
 	str[i] = '\0';
-    t_printf("trimmed str = %s$\n", str);
+    l_printf("trimmed str = %s$\n", str);
 	return (str);
 }
 
@@ -125,7 +125,7 @@ int	token_count(char *str)
         else 
             i++;
 	}
-    t_printf("tokencount = %d\n", tokencount);
+    t_printf("token count = %d\n", tokencount);
 	return (tokencount);
 }
 
@@ -133,7 +133,7 @@ int	token_count(char *str)
 int add_token(element *tokenlist, char *str, int i, size_t len)
 {
 	t_token	*token;
-	t_printf("len = %zu ", len);
+	l_printf("len = %zu ", len);
 	
 	token = new_token(str + i - len, len + 1);
 	if (!token)
@@ -178,7 +178,7 @@ int	fill_tokenlist(element *tokenlist, char *str)
 }
 
 // default option to put trimmed input in tokenlist
-int	default_lexer(char *input_line)
+int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 {
 	int		token_c;
 	size_t	i;
@@ -205,7 +205,7 @@ int	default_lexer(char *input_line)
 		t_printf("Token type = %d$\n", token_test->type);
 		i++;
 	}
-	check_lexer(token_list);
+	check_lexer(&token_list, &minishell_data);
 	t_printf("After expansion:\n");
 	i = 0;
 	while (i < token_list.element_list.total)

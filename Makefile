@@ -16,13 +16,18 @@ NAME	=	minishell
 
 CFILES	=	minishell.c\
 			lexer_match.c\
+			expansions.c\
 			lexer.c\
 			lexer2.c\
 			quote_handler.c\
 			vec_lib.c\
 			vec_lib2.c\
 			debug.c\
-			errors.c
+			errors.c\
+			env_operations.c\
+			$(EXECUTOR_CFILES)\
+			$(BULTINS_CFILES)\
+			test_funcs.c
 			# executor.c\
 			# command_io_setup.c\
 			# redirections.c\
@@ -30,11 +35,6 @@ CFILES	=	minishell.c\
 			# try_execve.c\
 			# executor_test.c\
 			# test_funcs.c
-			errors.c\
-			env_operations.c\
-			$(EXECUTOR_CFILES)\
-			$(BULTINS_CFILES)\
-			test_funcs.c
 EXECUTOR_CFILES	=	executor.c\
 					command_io_setup.c\
 					redirections.c\

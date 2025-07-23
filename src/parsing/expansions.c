@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "parser.h"
-#include "minishell.h"
 
 
 // $ expansion, environment
@@ -30,18 +29,22 @@
 
 
 //expand known var and otherwise delete and re-position all tokens
-int expand_var(element **tokenlist, int pos, t_minishell_data *minishell_data)
+int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
 {
     t_token *check_token;
     int i;
 
     i = 0;
-    check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, pos);
-    if (env_var_get_value(minishell_data.environment, check_token->value))
-        *check_token->value = env_var_get_value(minishell_data.environment, check_token->value);
+    check_token = (t_token *)(*tokenlist)->pf_element_get((*tokenlist), pos);
+    
+    if (env_var_get_value((*minishell_data)->environment, check_token->value))
+    {
+        e_printf("VALUE= %d \n", env_var_get_value((*minishell_data)->environment, check_token->value));	
+        *check_token->value = *env_var_get_value((*minishell_data)->environment, check_token->value);
+    }
     else 
     {
-        (*tokenlist)->pf_element_delete(tokenlist, pos);
+        (*tokenlist)->pf_element_delete((*tokenlist), pos);
         index_lexer(tokenlist);
     }
     
