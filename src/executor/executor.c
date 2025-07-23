@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 15:24:57 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 19:30:26 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/01 16:43:47 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,13 @@ void	test_free_and_close_exec_data(
 }
 
 int	test_dummy_builtin(
-	const t_exec_data *exec_data
+	const t_exec_data *exec_data,
+	t_minishell_data *const minishell_data
 )
 {
-	printf("Dummy built-in executed: %s\n", exec_data->argv[0]);
-	return (0);
+	// error management here or withibn buitin?
+	// this function will probably not exist at all cause it's just exec_builtin caller lol
+	return (exec_builtin(exec_data->argv[0], &exec_data->argv[1], minishell_data));
 }
 
 t_redir_list	*test_add_redirection(
@@ -62,7 +64,7 @@ t_redir_list	*test_add_redirection(
 {
 	t_redir_list	*cur_node = (t_redir_list *) first;
 	t_redir_list	*redir_list = ft_calloc(1, sizeof(*redir_list));
-
+	
 	redir_list->type = type;
 	redir_list->src_fd = src;
 	if (dest)
@@ -89,54 +91,63 @@ t_exec_data	*test_get_dummy_exec_data(int len)
 	int i = 0;
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("ca");
-	//exec_data[i].argv[0] = ft_strdup("ls");
-	//exec_data[i].argv[1] = ft_strdup("-l");
-	exec_data[i].is_builtin = false;
+	exec_data[i].argv[0] = ft_strdup("echo");
+	exec_data[i].argv[1] = ft_strdup("hi");
+//	exec_data[i].argv[0] = ft_strdup("env");
+//	exec_data[i].argv[1] = ft_strdup("src");
+	//exec_data[i].argv[2] = ft_strdup("one");
+	//exec_data[i].argv[3] = ft_strdup("two");
+	exec_data[i].is_builtin = false	;
 	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = true;
-	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
-	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
+	exec_data[i].output_is_pipe = false;
+	//exec_data[i].redirections = NULL;
+	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, trunc, STDOUT_FILENO, "", NULL);
+	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
 	//exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF2");
 	i++;
 
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].argv[1] = ft_strdup("-e");
-	exec_data[i].is_builtin = false;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = true;
-	i++;
-
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].argv[1] = ft_strdup("-T");
-	exec_data[i].is_builtin = false;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = true;
-	i++;
-
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].argv[1] = ft_strdup("-b");
-	exec_data[i].is_builtin = false;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = false;
-	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile", NULL);
-	i++;
-
-	//exec_data[i].len = len;
-	//exec_data[i].argv = ft_calloc(exec_data[i].len + 1, sizeof(char *));
-	//exec_data[i].argv[0] = ft_strdup("cat");
-	//exec_data[i].argv[1] = ft_strdup("-b");
-	//exec_data[i].argv[2] = NULL;
+	//exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
+	//exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	//exec_data[i].argv[0] = ft_strdup("export");
 	//exec_data[i].is_builtin = true;
-	//exec_data[i].input_type = std_in;
-	//exec_data[i].output_type = std_out;
-	//exec_data[i].redirect_type = trunc;
-	//exec_data[i].heredoc_delim = NULL;
-	//exec_data[i].out_filename = ft_strdup("outfile");
+	//exec_data[i].input_is_pipe = false;
+	//exec_data[i].output_is_pipe = false;
+	//exec_data[i].redirections = NULL;
 	//i++;
+
+//	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("env");
+//	exec_data[i].is_builtin = true;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	exec_data[i].redirections = NULL;
+//	i++;
+
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("pwd");
+//	//exec_data[i].argv[1] = ft_strdup("-e");
+//	exec_data[i].is_builtin = true;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	i++;
+
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("cat");
+//	exec_data[i].argv[1] = ft_strdup("-T");
+//	exec_data[i].is_builtin = false;
+//	exec_data[i].input_is_pipe = true;
+//	exec_data[i].output_is_pipe = true;
+//	i++;
+//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("cat");
+//	exec_data[i].argv[1] = ft_strdup("-b");
+//	exec_data[i].is_builtin = false;
+//	exec_data[i].input_is_pipe = true;
+//	exec_data[i].output_is_pipe = false;
+//	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, append, STDOUT_FILENO, "outfile", NULL);
+//	i++;
 
 	return (exec_data);
 }
@@ -163,11 +174,14 @@ static int	cleanup_in_parent_process(
 static int	run_child_process(
 	const t_exec_data *command,
 	const t_command_io *command_io,
-	const char **path
+	const char **path,
+	t_minishell_data *const minishell_data
 )
 {
 	int				err_check;
 
+	// path var should be found here since it can change potentially?
+	(void) path; // REMOVE THIS. KEPT FOR TESTING
 	if (command->input_is_pipe == true)
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
@@ -182,38 +196,50 @@ static int	run_child_process(
 	if (command->is_builtin == false)
 		try_execve(path, command->argv);
 	else if (command->is_builtin == true)
-		err_check = test_dummy_builtin(command);
+		err_check = test_dummy_builtin(command, minishell_data);
 	exit(err_check);
 }
 
 int	execute_command(
 	const t_exec_data *command,
 	t_command_io *const command_io,
-	const char **path
+	const char **path,
+	t_minishell_data *const minishell_data
 )
 {
 	pid_t	process_id;
+	int		err_check;
 
-	process_id = fork();
-	if (process_id == 0)
-		run_child_process(command, command_io, path);
-	else if (process_id > 0)
-		cleanup_in_parent_process(command, command_io);
-	else if (process_id < 0)
-		perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
-	return (EXIT_SUCCESS);
+	err_check = 0;
+	if (command->input_is_pipe == true || command->output_is_pipe == true ||
+		command->is_builtin == false)
+	{
+		process_id = fork();
+		if (process_id == 0)
+			run_child_process(command, command_io, path, minishell_data);
+		else if (process_id > 0)
+			cleanup_in_parent_process(command, command_io);
+		else if (process_id < 0)
+			perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
+	}
+	else if (command->is_builtin == true)
+	{
+		printf("this should happen 3 times\n");
+		err_check = test_dummy_builtin(command, minishell_data);
+	}
+	return (err_check);
 }
 
 int	executor(
 	const t_exec_data *exec_data,
 	int command_count,
-	int dummy_minishell_struct
+	t_minishell_data *const minishell_data
 )
 {
 	int				i;
 	int				process_status;
 	t_command_io	command_io;
-	const char		**path = find_env_path();
+	const char		**path = find_env_path((const char **) minishell_data->environment); // make this shorter somehow
 
 	if (!path)
 		return (EXIT_FAILURE);
@@ -227,7 +253,7 @@ int	executor(
 			printf("PLACEHOLDER ERROR\n");
 			return (EXIT_FAILURE);
 		}
-		execute_command(&exec_data[i], &command_io, path);
+		execute_command(&exec_data[i], &command_io, path, minishell_data);
 	}
 	while (waitpid(-1, &process_status, 0) > 0) // check if there's some exit signals or codes we need to handle here
 	{

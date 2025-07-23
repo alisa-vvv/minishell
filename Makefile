@@ -6,12 +6,11 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/06/12 17:29:38 by avaliull     ########   odam.nl           #
+#    Updated: 2025/07/15 19:52:50 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
 .DEFAULT_GOAL := all
-MAKEFLAGS =
 
 NAME	=	minishell
 
@@ -31,6 +30,23 @@ CFILES	=	minishell.c\
 			# try_execve.c\
 			# executor_test.c\
 			# test_funcs.c
+			errors.c\
+			env_operations.c\
+			$(EXECUTOR_CFILES)\
+			$(BULTINS_CFILES)\
+			test_funcs.c
+EXECUTOR_CFILES	=	executor.c\
+					command_io_setup.c\
+					redirections.c\
+					here-doc.c\
+					try_execve.c\
+					executor_test.c
+BULTINS_CFILES	=	exec_builtin.c\
+					pwd.c\
+					cd.c\
+					echo.c\
+					export.c\
+					env.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))
 DEPFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.d))
@@ -40,7 +56,8 @@ BUILDDIR = build/
 SRCDIR = src/
 LIBDIR = lib/
 INCDIR = inc/
-SRCDIRS = $(addprefix $(SRCDIR), parsing executor) $(SRCDIR)
+SRCDIRS = $(addprefix $(SRCDIR), parsing executor builtins env_lib) \
+		  $(SRCDIR)
 $(SRCDIR):
 	mkdir -p $@
 $(LIBDIR):
@@ -98,7 +115,7 @@ re:	fclean all
 #LSP connection for neovim
 clangd:
 	$(MAKE) fclean
-	intercept-build-14 make all
+	intercept-build-14 $(MAKE)
 
 #debugging
 debug: CFLAGS += -g

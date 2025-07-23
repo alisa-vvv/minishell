@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/12 18:11:12 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/01 15:56:16 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ int	perror_and_return(
 	int return_value
 );
 
+# define MAX_ENV 4096
+
 /*		Executor - data structures		*/
 
 typedef enum	e_redirect_type
@@ -81,10 +83,18 @@ typedef struct	s_redir_list
 typedef struct	s_exec_data
 {
 	char			**argv;
-	int				is_builtin;
-	int				input_is_pipe;
-	int				output_is_pipe;
+	bool			is_builtin;
+	bool			input_is_pipe;
+	bool			output_is_pipe;
 	t_redir_list	*redirections;
 }	t_exec_data;
+
+typedef struct	minishell_data
+{
+	int		last_pipeline_return;
+	char	**environment;
+	int		env_var_count;
+	int		env_mem;
+}	t_minishell_data;
 
 #endif

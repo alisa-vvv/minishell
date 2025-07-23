@@ -15,26 +15,31 @@
 #include "executor.h"
 #include <stdio.h>
 
-const char	**find_env_path(void)
+//aedit this to find p
+const char	**find_env_path(
+	const char **environment
+)
 {
 	int		i;
 	char	**path_arr;
-	char	*path_var;
 
 	i = -1;
 	path_arr = NULL;
-	path_var = getenv("PATH");
-	if (!path_var)
+	while (environment[++i])
 	{
-		ft_putstr_fd(PATH_ERR, STDERR_FILENO);
-		return (NULL);
+		if (ft_strncmp(environment[i], "PATH", 4) ==0)
+		{
+			path_arr = ft_split(&environment[i][5], ':');
+			if (!path_arr)
+			{
+				perror(MALLOC_ERR);
+				return (NULL);
+			}
+			break ;
+		}
 	}
-	path_arr = ft_split(path_var, ':');
 	if (!path_arr)
-	{
-		perror(MALLOC_ERR);
 		return (NULL);
-	}
 	return ((const char **) path_arr);
 }
 
@@ -60,9 +65,9 @@ int	try_execve(
 	tmp_slash = ft_strjoin("/", argv[0]);
 	if (!tmp_slash)
 		return (perror_and_return(MALLOC_ERR, LIBFUNC_ERR, EXIT_FAILURE));
-	while (path[0])
+	while (path)
 	{
-		command_path = ft_strjoin(path[0], tmp_slash);
+		command_path = ft_strjoin(*path, tmp_slash);
 		if (!command_path)
 			return (perror_and_return(MALLOC_ERR, LIBFUNC_ERR, EXIT_FAILURE));
 		if (execve(command_path, argv, __environ) == -1)
