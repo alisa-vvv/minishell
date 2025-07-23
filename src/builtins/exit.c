@@ -1,30 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::             */
-/*   env.c                                             :+:    :+:             */
+/*   exit.c                                            :+:    :+:             */
 /*                                                    +:+                     */
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
-/*   Created: 2025/06/24 17:17:16 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 19:21:59 by avaliull     ########   odam.nl          */
+/*   Created: 2025/07/18 19:25:05 by avaliull     #+#    #+#                  */
+/*   Updated: 2025/07/18 20:18:03 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
-#include <unistd.h>
-#include <stdio.h>
+#include "libft.h"
+#include "minishell.h"
 
-int	minishell_env(
+void	minishell_exit(
+	const t_exec_data *const command,
 	t_minishell_data *const minishell_data
 )
 {
-	int	i;
-
-	i = -1;
-	while(minishell_data->env[++i])
-	{
-		printf("%d", i);
-		printf("%s\n", minishell_data->env[i]);
-	}
-	return (0);
+	free_and_close_exec_data(command);
+	free_2d_arr((void **) minishell_data->env);
+	exit (0);
 }

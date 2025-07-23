@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::             */
-/*   env.c                                             :+:    :+:             */
+/*   minishell_testfuncs.h                             :+:    :+:             */
 /*                                                    +:+                     */
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
-/*   Created: 2025/06/24 17:17:16 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 19:21:59 by avaliull     ########   odam.nl          */
+/*   Created: 2025/07/18 19:58:23 by avaliull     #+#    #+#                  */
+/*   Updated: 2025/07/18 20:00:56 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
-#include <unistd.h>
-#include <stdio.h>
+#ifndef MINISHELL_TEST_FUNCS_H
+# define MINISHELL_TEST_FUNCS_H
 
-int	minishell_env(
-	t_minishell_data *const minishell_data
-)
-{
-	int	i;
+#include "minishell.h"
 
-	i = -1;
-	while(minishell_data->env[++i])
-	{
-		printf("%d", i);
-		printf("%s\n", minishell_data->env[i]);
-	}
-	return (0);
-}
+t_redir_list	*test_add_redirection(
+	const t_redir_list *first,
+	const t_redirect_type type,
+	const int src,
+	const char *dest,
+	const char *heredoc_delim
+);
+
+t_exec_data	*test_get_dummy_exec_data(
+	int len
+);
+
+#endif

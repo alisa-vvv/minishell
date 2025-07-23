@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/07/01 15:41:12 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 19:57:06 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 16:51:00 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 #include "minishell_env.h"
 
 int	minishell_export(
-	char **argv,
-	t_minishell_data *minishell_data
+	char *const *argv,
+	t_minishell_data *const minishell_data
 )
 {
 	int		var_index;
@@ -36,7 +36,7 @@ int	minishell_export(
 	{
 		identifier = env_var_find_identifier(*argv);
 		if (!identifier)
-			return (1);
+			return (-1);
 		var_index = env_var_find_index(minishell_data->env, *argv, identifier);
 
 		assert(var_index <= minishell_data->env_var_count); // REMOVE ASSERT
@@ -49,12 +49,19 @@ int	minishell_export(
 			free(minishell_data->env[var_index]);
 		minishell_data->env[var_index] = ft_strdup(*argv);
 		if (!minishell_data->env[var_index])
-			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
 		argv++;
 	}
 
-//	printf("\n\n\nPOST EXPORT\n\n\n");
-//	minishell_env(minishell_data);
+	//printf("\n\n\nPOST EXPORT\n\n\n");
+	//minishell_env(minishell_data);
 
+	//char **test_unset = ft_calloc(2, sizeof(char *));
+	//test_unset[0] = "var";
+	//test_unset[1] = "var2";
+	//minishell_unset(test_unset, minishell_data);
+
+	//printf("\n\n\nPOST UNSET\n\n\n");
+	//minishell_env(minishell_data);
 	return (0);
 }
