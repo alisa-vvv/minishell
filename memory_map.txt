@@ -3,6 +3,8 @@ It lists all heap allocations that are used across different submodules of the p
 These allocations are highly relevant because they need to be freed whenever the program exits and persist throughout the program's run cycle.
 All allocations not listed here should be freed within the scope of their functions or submodules.
 
+GLOBAL TODO: make a error_exit() function
+
 ##Template:
 ##
 
@@ -14,6 +16,7 @@ All allocations not listed here should be freed within the scope of their functi
 		ERROR MANAGED: 
 		PASSED TO: 
 		FREED AT: 
+		FREE HANDLED:
 		FUNCTION TO FREE: 
 		TODO: 
 
@@ -32,7 +35,7 @@ FILE: minishell.c {
 		PASSED TO: executor(), parser()
 		FREED AT: exit, error exit
 		FREE HANDLED: no
-		FUNCTION TO FREE: free_2d_arr();
+		FUNCTION TO FREE: free_2d_arr(), error_exit()
 		TODO: ERROR MANAGED, FREED AT
 
 		## NOTE: 2. and 3. both belong to t_exec_data. t_exec_data should be allocated on stack and not heap for ease/speed - ? are you sure? null the values then?
@@ -45,7 +48,7 @@ FILE: minishell.c {
 		PASSED TO: executor()
 		FREED AT: executor() return, error exit, execute_command in child process on error
 		FREE HANDLED: no
-		FUNCTION TO FREE: free_and_close_exec_data()
+		FUNCTION TO FREE: free_and_close_exec_data(), error_exit()
 		TODO: FREE HANDLED, FUNCTION TO FREE, replace test with actual parser result, move alloc to parser
 
 		3.
@@ -57,19 +60,20 @@ FILE: minishell.c {
 		PASSED TO: executor()
 		FREED AT: executor() return, error exit, execute_command in child process on error
 		FREE HANDLED: no
-		FUNCTION TO FREE: free_and_close_exec_data()
+		FUNCTION TO FREE: free_and_close_exec_data(), error_exit()
 		TODO: FREE HANDLED, FUNCTION TO FREE, replace test with actual parser result, move alloc to parser
 
 		4.
 		NAME: read_line
-		TYPE: 
-		ALLOCED BY: 
-		ALLOC PROTECTED: 
-		ERROR MANAGED: 
-		PASSED TO: 
-		FREED AT: 
-		FUNCTION TO FREE: 
-		TODO: 
+		TYPE: char *
+		ALLOCED BY: readline()
+		ALLOC PROTECTED: no
+		ERROR MANAGED: no
+		PASSED TO: parser()
+		FREED AT: after parsing, on error exit
+		FREE HANDLED: no
+		FUNCTION TO FREE: just free()?, error_exit()
+		TODO: ALLOC PROTECTED, ERROR MANAGED, FREE HANDLED
 
 	}
 }
