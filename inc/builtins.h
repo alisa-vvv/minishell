@@ -6,39 +6,45 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/07/15 19:19:54 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 20:19:07 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:17:54 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BUILTINS_H
 # define BUILTINS_H
 
-# include "minishell.h"
+#include "minishell.h"
 
 int	exec_builtin(
-		char *builtin_name,
-		char **arguments,
-		t_minishell_data *const minishell_data
-		);
+	const t_exec_data *command,
+	t_minishell_data *const minishell_data
+);
 
 int	minishell_echo(
-		char **arguments
-		);
-
+	char **arguments
+);
 int	minishell_cd(
-		const char *path,
-		t_minishell_data *const minishell_data
-		);
-
-int	minishell_pwd(void);
-
+	const char *path,
+	t_minishell_data *const minishell_data
+);
+int	minishell_pwd(
+	void
+);
 int	minishell_env(
-		t_minishell_data *const minishell_data
-		);
-
+	t_minishell_data *const minishell_data
+);
 int	minishell_export(
-		char **argv,
-		t_minishell_data *minishell_data
-		);
+	char *const *argv,
+	t_minishell_data *const minishell_data
+);
+int	minishell_unset(
+	char **argv,
+	t_minishell_data *minishell_data
+);
+void	minishell_exit(
+	const t_exec_data *const command,
+	t_minishell_data *const minishell_data
+);
 
 #endif
+
