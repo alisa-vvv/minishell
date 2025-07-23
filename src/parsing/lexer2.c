@@ -134,16 +134,15 @@ int check_lexer(element *tokenlist, t_minishell_data **minishell_data)
 {
 	size_t i;
 	t_token *check_token;
-    i = 0;
-
-	// e_printf("ELEMENT TOTAL = %d\n", (int)tokenlist->element_list.total);	
+    i = 0;	
     while (i < (size_t)tokenlist->element_list.total)
     {
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
 		e_printf("TYPE = %d \n", (int)check_token->type);	
         if ((int)check_token->type == PARAMETER)
 		{
-			expand_var(&tokenlist, i, minishell_data);
+			if (expand_var(&tokenlist, i, minishell_data))
+				i--;
 		}
         i++;
     }

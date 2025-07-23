@@ -46,6 +46,7 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
     {
         (*tokenlist)->pf_element_delete((*tokenlist), pos);
         index_lexer(tokenlist);
+        return (1);
     }
     free(name);
     return (0);
