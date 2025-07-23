@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 20:16:12 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/01 15:56:16 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,29 +80,34 @@ typedef struct	s_redir_list
 	struct s_redir_list	*next;
 }	t_redir_list;
 
+typedef enum e_builtin_name
+{
+	none,
+	echo,
+	cd,
+	pwd,
+	env,
+	export,
+	unset,
+	exit,
+}	t_builtin_name;
+
 typedef struct	s_exec_data
 {
 	char			**argv;
 	bool			is_builtin;
+	t_builtin_name	builtin_name;
 	bool			input_is_pipe;
 	bool			output_is_pipe;
 	t_redir_list	*redirections;
 }	t_exec_data;
 
-void	free_and_close_exec_data(
-	const t_exec_data	*exec_data
-);
-
 typedef struct	minishell_data
 {
-	char	**env;
+	int		last_pipeline_return;
+	char	**environment;
 	int		env_var_count;
 	int		env_mem;
-	int		last_pipeline_return;
 }	t_minishell_data;
-
-void	free_and_close_redir_list(
-	t_redir_list *redirection
-);
 
 #endif
