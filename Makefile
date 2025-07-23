@@ -5,8 +5,8 @@
 #                                                     +:+                      #
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
-#    Created: 2025/05/21 19:45:55 by avaliull     #+#    #+#                   #
-#    Updated: 2025/07/15 19:52:50 by avaliull     ########   odam.nl           #
+#    Created: 2025/07/22 19:01:25 by avaliull     #+#    #+#                   #
+#    Updated: 2025/07/22 19:22:37 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,29 +24,25 @@ CFILES	=	minishell.c\
 			vec_lib2.c\
 			debug.c\
 			errors.c\
+			cleanup.c\
 			env_operations.c\
-			$(EXECUTOR_CFILES)\
-			$(BULTINS_CFILES)\
+			$(CFILES_EXECUTOR)\
+			$(CFILES_BUILTINS)\
 			test_funcs.c
-			# executor.c\
-			# command_io_setup.c\
-			# redirections.c\
-			# here-doc.c\
-			# try_execve.c\
-			# executor_test.c\
-			# test_funcs.c
-EXECUTOR_CFILES	=	executor.c\
+CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\
 					redirections.c\
 					here-doc.c\
 					try_execve.c\
 					executor_test.c
-BULTINS_CFILES	=	exec_builtin.c\
+CFILES_BUILTINS	=	exec_builtin.c\
 					pwd.c\
 					cd.c\
 					echo.c\
+					env.c\
 					export.c\
-					env.c
+					unset.c\
+					exit.c
 
 OFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.o))
 DEPFILES	= $(addprefix $(BUILDDIR),$(CFILES:.c=.d))
@@ -118,18 +114,19 @@ clangd:
 	intercept-build-14 $(MAKE)
 
 #debugging
-debug: CFLAGS += -g
+debug: CPPFLAGS += -g
 debug: clean $(NAME)
 gdb: fclean debug
-	gdb ./$(NAME)
+	gdb -tui ./$(NAME)
 test: $(NAME) run
 run:
 	./$(NAME) $(INPUT)
-leak:	debug
-	valgrind  --suppressions=minishell.supp -s --leak-check=full \
-	--show-leak-kinds=all --track-fds=yes ./$(NAME) $(INPUT)
+leak:
+	$(MAKE) -s debug
+	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
+	--leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
 val:
-	valgrind  --suppressions=minishell.supp -s --leak-check=full \
-	--show-leak-kinds=all --track-fds=yes ./$(NAME) $(INPUT)
+	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
+	--leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
 
 .PHONY:	clangd all clean fclean re libs_clean test run leak debug gdb

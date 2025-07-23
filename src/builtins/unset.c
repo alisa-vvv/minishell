@@ -10,18 +10,53 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "minishell.h"
+#include "minishell_env.h"
 
+// maybe just add a list of characters that are invalid for a variable name?
+static int	check_name_len_and_validity(char *name)
+{
+	int	len;
+
+	len = -1;
+	while (name[++len])
+	{
+		if (name[len] == '=')
+			return (-1);
+	}
+	return (len);
+}
+
+// this is horrible but i don't see a better way if we keep env as a string array
 int	minishell_unset(
 	char **argv,
-	t_minishell_data minishell_data
+	t_minishell_data *minishell_data
 )
 {
-	// step_1: look for variable name
-	// if not exists, say: invalud parameter name
-	// equal sign not included for var name, use as delimiter for actual name
-	// step_2: from that variable and onwards, free(env[i]); env[i] = ft_strdup(env[i + 1]);
-	// step_3: update len of env?
+	int	i;
+	int	len;
+	int	var_index;
 
+	i = -1;
+	while (argv[++i])
+	{
+		len = check_name_len_and_validity(argv[i]);
+		var_index = env_var_find_index(minishell_data->env, argv[i], &argv[i][len]);
+		if (var_index == minishell_data->env_var_count)
+		{
+			// PLACEHOLDER ADD PROPER ERROR MANAGEMENT
+			printf("invalid parameter name\n");
+			continue ;
+		}
+		free(minishell_data->env[var_index]);
+		while (var_index < minishell_data->env_var_count - 1)
+		{
+			minishell_data->env[var_index] = minishell_data->env[var_index + 1];
+			var_index++;
+		}
+		minishell_data->env_var_count -= 1;
+		minishell_data->env[minishell_data->env_var_count] = NULL;
+	}
 	return (0);
 }

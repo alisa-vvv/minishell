@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/01 15:56:16 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:16:12 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,12 +89,20 @@ typedef struct	s_exec_data
 	t_redir_list	*redirections;
 }	t_exec_data;
 
+void	free_and_close_exec_data(
+	const t_exec_data	*exec_data
+);
+
 typedef struct	minishell_data
 {
-	int		last_pipeline_return;
-	char	**environment;
+	char	**env;
 	int		env_var_count;
 	int		env_mem;
+	int		last_pipeline_return;
 }	t_minishell_data;
+
+void	free_and_close_redir_list(
+	t_redir_list *redirection
+);
 
 #endif

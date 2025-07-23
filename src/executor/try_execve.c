@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/03 17:14:59 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/06/03 17:16:30 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:25:48 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include <stdio.h>
 
 //aedit this to find p
-const char	**find_env_path(
-	const char **environment
+const char	*const *find_env_path(
+	char **env
 )
 {
 	int		i;
@@ -25,11 +25,11 @@ const char	**find_env_path(
 
 	i = -1;
 	path_arr = NULL;
-	while (environment[++i])
+	while (env[++i])
 	{
-		if (ft_strncmp(environment[i], "PATH", 4) ==0)
+		if (ft_strncmp(env[i], "PATH", 4) ==0)
 		{
-			path_arr = ft_split(&environment[i][5], ':');
+			path_arr = ft_split(&env[i][5], ':');
 			if (!path_arr)
 			{
 				perror(MALLOC_ERR);
@@ -40,7 +40,7 @@ const char	**find_env_path(
 	}
 	if (!path_arr)
 		return (NULL);
-	return ((const char **) path_arr);
+	return ((const char *const *) path_arr);
 }
 
 static int	command_not_found(
@@ -53,12 +53,13 @@ static int	command_not_found(
 }
 
 int	try_execve(
-	const char **path,
+	char **env,
 	char *const argv[]
 )
 {
 	char	*tmp_slash;
 	char	*command_path;
+	const char *const *path = find_env_path(env);
 
 	if (execve(argv[0], argv, __environ) != -1)
 		return (0);

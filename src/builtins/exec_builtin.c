@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/06/19 15:47:26 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/15 19:29:59 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/07/18 20:18:05 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,27 @@
 // 7. exit with no options
 //
 int	exec_builtin(
-	char *builtin_name,
-	char **arguments,
+	const t_exec_data *const command,
 	t_minishell_data *const minishell_data
 )
 {
-	int	err_check;
+	const char	*const	builtin_name = command->argv[0];
+	int			err_check;
+	char		**builtin_args;
 
+	builtin_args = &command->argv[1];
 	err_check = 0;
-	printf("arguments[0]: %s\n", arguments[0]);
 	if (ft_strncmp(builtin_name, "echo", 5) == 0)
-		err_check = minishell_echo(arguments);
+		err_check = minishell_echo(builtin_args);
 	else if (ft_strncmp(builtin_name, "cd", 3) == 0)
-		err_check = minishell_cd(arguments[0], minishell_data);
+		err_check = minishell_cd(builtin_args[0], minishell_data);
 	else if (ft_strncmp(builtin_name, "pwd", 4) == 0)
 		err_check = minishell_pwd();
 	else if (ft_strncmp(builtin_name, "env", 4) == 0)
 		err_check = minishell_env(minishell_data);
 	else if (ft_strncmp(builtin_name, "export", 7) == 0)
-		err_check = minishell_export(arguments, minishell_data);
+		err_check = minishell_export(builtin_args, minishell_data);
+	else if (ft_strncmp(builtin_name, "exit", 5) == 0)
+		minishell_exit(command, minishell_data);
 	return (err_check);
 }
