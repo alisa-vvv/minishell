@@ -32,14 +32,14 @@
 int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
 {
     t_token *check_token;
-    int i;
-
-    i = 0;
-    check_token = (t_token *)(*tokenlist)->pf_element_get((*tokenlist), pos);
-    e_printf("VALUE= %s \n", (char *)check_token->value);	
-    if (env_var_get_value((*minishell_data)->environment, check_token->value))
+    check_token = (t_token *)(*tokenlist)->element_list.tokens[pos];
+    
+    char *name;
+    name = ft_strdup(&check_token->value[1]);
+    e_printf("NAME= %s \n", name);
+    if (env_var_get_value((*minishell_data)->environment, name))
     {
-        e_printf("VALUE= %d \n", env_var_get_value((*minishell_data)->environment, check_token->value));	
+        e_printf("VALUE= %s \n", env_var_get_value((*minishell_data)->environment, name));
         *check_token->value = *env_var_get_value((*minishell_data)->environment, check_token->value);
     }
     else 
@@ -47,7 +47,7 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
         (*tokenlist)->pf_element_delete((*tokenlist), pos);
         index_lexer(tokenlist);
     }
-    
+    free(name);
 
     return (0);
 }
