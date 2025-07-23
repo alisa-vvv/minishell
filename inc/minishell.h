@@ -80,10 +80,23 @@ typedef struct	s_redir_list
 	struct s_redir_list	*next;
 }	t_redir_list;
 
+typedef enum	e_builtin_name
+{
+	not_builtin,
+	builtin_echo,
+	builtin_cd,
+	builtin_pwd,
+	builtin_export,
+	builtin_unset,
+	builtin_env,
+	builtin_exit,
+}	t_builtin_name;
+
 typedef struct	s_exec_data
 {
 	char			**argv;
 	bool			is_builtin;
+	t_builtin_name	builtin_name;
 	bool			input_is_pipe;
 	bool			output_is_pipe;
 	t_redir_list	*redirections;

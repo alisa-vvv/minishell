@@ -60,6 +60,7 @@ t_exec_data	*test_get_dummy_exec_data(
 	//exec_data[i].argv[2] = ft_strdup("one");
 	//exec_data[i].argv[3] = ft_strdup("two");
 	exec_data[i].is_builtin = false;
+	exec_data[i].builtin_name = not_builtin;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = false;
 	exec_data[i].redirections = NULL;

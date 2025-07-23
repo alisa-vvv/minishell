@@ -47,6 +47,7 @@ FILE: minishell.c {
 		FREE HANDLED: no
 		FUNCTION TO FREE: free_and_close_exec_data()
 		TODO: FREE HANDLED, FUNCTION TO FREE, replace test with actual parser result, move alloc to parser
+
 		3.
 		NAME: exec_data->redirections
 		TYPE: t_redir_list *, contains char *
@@ -58,5 +59,17 @@ FILE: minishell.c {
 		FREE HANDLED: no
 		FUNCTION TO FREE: free_and_close_exec_data()
 		TODO: FREE HANDLED, FUNCTION TO FREE, replace test with actual parser result, move alloc to parser
+
+		4.
+		NAME: read_line
+		TYPE: 
+		ALLOCED BY: 
+		ALLOC PROTECTED: 
+		ERROR MANAGED: 
+		PASSED TO: 
+		FREED AT: 
+		FUNCTION TO FREE: 
+		TODO: 
+
 	}
 }

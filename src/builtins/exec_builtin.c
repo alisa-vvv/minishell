@@ -29,23 +29,24 @@ int	exec_builtin(
 	t_minishell_data *const minishell_data
 )
 {
-	const char	*const	builtin_name = command->argv[0];
 	int			err_check;
 	char		**builtin_args;
 
 	builtin_args = &command->argv[1];
 	err_check = 0;
-	if (ft_strncmp(builtin_name, "echo", 5) == 0)
+	if (command->builtin_name == builtin_echo)
 		err_check = minishell_echo(builtin_args);
-	else if (ft_strncmp(builtin_name, "cd", 3) == 0)
+	else if (command->builtin_name == builtin_cd)
 		err_check = minishell_cd(builtin_args[0], minishell_data);
-	else if (ft_strncmp(builtin_name, "pwd", 4) == 0)
+	else if (command->builtin_name == builtin_pwd)
 		err_check = minishell_pwd();
-	else if (ft_strncmp(builtin_name, "env", 4) == 0)
+	else if (command->builtin_name == builtin_env)
 		err_check = minishell_env(minishell_data);
-	else if (ft_strncmp(builtin_name, "export", 7) == 0)
+	else if (command->builtin_name == builtin_export)
 		err_check = minishell_export(builtin_args, minishell_data);
-	else if (ft_strncmp(builtin_name, "exit", 5) == 0)
+	else if (command->builtin_name == builtin_unset)
+		err_check = minishell_unset(builtin_args, minishell_data);
+	else if (command->builtin_name == builtin_exit)
 		minishell_exit(command, minishell_data);
 	return (err_check);
 }
