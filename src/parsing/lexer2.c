@@ -56,7 +56,7 @@ int	count_symbol(element *tokenlist, int pos, char symbol)
 //index lexer by traversing - not needed anymore
 int index_lexer(element **tokenlist)
 {
-    int i;
+    size_t i;
     i = 0;
 
     while (i < (size_t)(*tokenlist)->element_list.total)
@@ -136,9 +136,9 @@ int check_lexer(element **tokenlist)
     {
         if (check_token->type == PARAMETER)
 			expand_var(tokenlist, i);
-
+		
         i++;
     }
-
+	return (0);
 }
 

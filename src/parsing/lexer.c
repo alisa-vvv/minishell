@@ -205,14 +205,16 @@ int	default_lexer(char *input_line)
 		t_printf("Token type = %d$\n", token_test->type);
 		i++;
 	}
-	// i = 0;
-	// while (i < token_list.element_list.total)
-	// {
-	// 	token_test = (t_token *)token_list.element_list.tokens[i];
-	// 	t_printf("Token value = %s$\n", token_test->value);
-	// 	t_printf("Token type = %d$\n", token_test->type);
-	// 	i++;
-	// }
+	check_lexer(token_list);
+	t_printf("After expansion:\n");
+	i = 0;
+	while (i < token_list.element_list.total)
+	{
+		token_test = (t_token *)token_list.element_list.tokens[i];
+		t_printf("Token value = %s$\n", token_test->value);
+		t_printf("Token type = %d$\n", token_test->type);
+		i++;
+	}
 	return (0);
 }
 

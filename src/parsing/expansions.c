@@ -38,13 +38,14 @@ int expand_var(element **tokenlist, int pos, t_minishell_data *minishell_data)
     i = 0;
     check_token = (t_token *)(*tokenlist)->pf_element_get(tokenlist, pos);
     if (env_var_get_value(minishell_data.environment, check_token->value))
-        check_token->value = ft_strdup(env_var_get_value(minishell_data.environment, check_token->value));
+        *check_token->value = env_var_get_value(minishell_data.environment, check_token->value);
     else 
     {
         (*tokenlist)->pf_element_delete(tokenlist, pos);
         index_lexer(tokenlist);
     }
     
+
     return (0);
 }
  
