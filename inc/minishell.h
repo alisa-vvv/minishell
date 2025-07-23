@@ -60,6 +60,10 @@ typedef enum	e_redirect_type
 	trunc,
 }	t_redirect_type;
 
+// t_redir_list will be assigned default values at start up.
+// Parser will set available values for execution.
+// Execution will free/reset defaults after each execution cycle.
+// QUESTION: use buffers for filenames instead to avoid reallocs?
 // this list assumes that the source of a redirection is either unspecified,
 // specified as an integer, or opened from an env/direct path during parsing
 // here are examples of what is a source and what is a destionation:
@@ -84,6 +88,8 @@ void	free_and_close_redir_list(
 	t_redir_list *redirection
 );
 
+// Since parser will read the builtin name, makes sense to save name in enum
+// to avoid redundant parsing of the name
 typedef enum	e_builtin_name
 {
 	not_builtin,
@@ -96,6 +102,15 @@ typedef enum	e_builtin_name
 	builtin_exit,
 }	t_builtin_name;
 
+// This struct contains all information executor needs to execute a pipeline
+// It's contents are filled during parsing, and NULLed/freed at the end of
+// the execution cycle.
+// The struct itself is located on the stack, the pointer to it will be reused
+// again for consecutive cycles.
+// QUESTION: make buffers to avoid reallocation on each execution cycle?
+// smart choice, not technically necessary
+// is_builtin bool not technically necessary but seems more readable to me then
+// checking builtin_name to see if it is one
 typedef struct	s_exec_data
 {
 	char			**argv;
@@ -106,7 +121,11 @@ typedef struct	s_exec_data
 	t_redir_list	*redirections;
 }	t_exec_data;
 
-// QUESTION: MERGE MINISHELL_DATA WITH EXEC_DATA?
+// This struct contains data that maybe accessed and modified by both parsing
+// and execution modules at any point, and does not get deleted/freed after
+// each execution cycle.
+// env is cloned at start and contains environment.
+// last_pipleline_return starts at 0 and stores return value of last pipeline.
 typedef struct	minishell_data
 {
 	char	**env;
@@ -118,6 +137,5 @@ typedef struct	minishell_data
 void	free_and_close_exec_data(
 	const t_exec_data	*exec_data
 );
-
 
 #endif
