@@ -84,7 +84,7 @@ void		ft_free_arr(void **array);
 size_t		ft_strlcpy(char *dst, const char *src, size_t size);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			index_lexer(element **tokenlist);
-int			check_lexer(element *tokenlist, t_minishell_data **minishell_data);
+int			check_lexer(element *tokenlist, t_minishell_data **minishell_data, int type);
 int			skip_blanks(char *str, int pos);
 char		*trim_str_space(char *str);
 int			match_token(char *str_token);

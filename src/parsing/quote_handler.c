@@ -45,7 +45,7 @@ int	check_in_quote(char *str, int pos)
 
 
 //rm quotes for certain pos in tokenlist
-void	rm_quotes(element *tokenlist, int pos, char symbol)
+int	rm_quotes(element *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
 	int		i;
@@ -63,7 +63,10 @@ void	rm_quotes(element *tokenlist, int pos, char symbol)
 				check_token->value[i] = check_token->value[i + 1];
 				i++;
 			}
+			check_token->value[i] = '\0';
 		}
+		i++;
 	}
 	check_token->type = STRING;
+	return (0);
 }
