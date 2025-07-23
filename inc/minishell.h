@@ -80,6 +80,10 @@ typedef struct	s_redir_list
 	struct s_redir_list	*next;
 }	t_redir_list;
 
+void	free_and_close_redir_list(
+	t_redir_list *redirection
+);
+
 typedef enum	e_builtin_name
 {
 	not_builtin,
@@ -102,10 +106,7 @@ typedef struct	s_exec_data
 	t_redir_list	*redirections;
 }	t_exec_data;
 
-void	free_and_close_exec_data(
-	const t_exec_data	*exec_data
-);
-
+// QUESTION: MERGE MINISHELL_DATA WITH EXEC_DATA?
 typedef struct	minishell_data
 {
 	char	**env;
@@ -114,8 +115,9 @@ typedef struct	minishell_data
 	int		last_pipeline_return;
 }	t_minishell_data;
 
-void	free_and_close_redir_list(
-	t_redir_list *redirection
+void	free_and_close_exec_data(
+	const t_exec_data	*exec_data
 );
+
 
 #endif
