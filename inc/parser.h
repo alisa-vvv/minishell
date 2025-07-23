@@ -96,6 +96,7 @@ int			count_symbol(element *tokenlist, int pos, char symbol);
 int			match_nonterminal(char *str_token);
 int			match_string(char *str_token);
 int			expand_var(element **tokenlist, int pos,
-				t_minishell_data **minishell_data);
+				t_minishell_data **minishell_data, bool quoted);
+int			rm_quotes(element *tokenlist, int pos, char symbol);
 
 #endif

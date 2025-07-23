@@ -13,7 +13,7 @@
 #include "parser.h"
 
 
-// $ expansion, environment
+// $ expansion, env
 // tilde expansion?
 // $0 name of the shell script or command
 // $1-9 indicated postiional arg 
@@ -27,22 +27,45 @@
 // expand $EMPTY to nothing
 // look for return value in minishell struct when accessing $?
 
+char *refine_name_var(char *token_name, char *result)
+{
+    char *start;
+    int i;
+
+    i = 0;
+    start = ft_strchr(token_name, '$');
+    // e_printf("\nSTART = %s\n", start);
+    result = ft_strdup(start + 1);
+   // e_printf("\nRESULT = %s$\n", result);
+    while (result[i])
+    {
+        if (result[i] == '"' || result[i] == 32 || result[i] == '\t')
+            break;
+        i++;
+    }
+    result[i] = '\0';
+    //free(start);
+    return (result);
+}
 
 //expand known var and otherwise delete and re-position all tokens
-int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
+int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, bool quoted)
 {
     t_token *check_token;
     check_token = (t_token *)(*tokenlist)->element_list.tokens[pos];
-    
     char *name;
-    int i;
-    i = ft_strchr(check_token->value, '$');
-    name = ft_strdup(&check_token->value[i+1]);
-    e_printf("NAME= %s \n", name);
-    if (env_var_get_value((*minishell_data)->environment, name))
+
+    name = refine_name_var(check_token->value, name);
+    e_printf("\nNAME= %s \n", name);
+    if (env_var_get_value((*minishell_data)->env, name))
     {
-        e_printf("VALUE= %s \n", env_var_get_value((*minishell_data)->environment, name));
-        check_token->value = env_var_get_value((*minishell_data)->environment, name);
+        e_printf("VALUE= %s \n", env_var_get_value((*minishell_data)->env, name));
+        if (quoted)
+        {
+            check_token->value = ft_strjoin(check_token->value, env_var_get_value((*minishell_data)->env, name));
+        }
+        else 
+            check_token->value = env_var_get_value((*minishell_data)->env, name);
     }
     else 
     {

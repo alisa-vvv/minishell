@@ -67,9 +67,9 @@ int env_var_realloc(
 	if (!new_env)
 		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
 	i = -1;
-	while (minishell_data->environment[++i])
+	while (minishell_data->env[++i])
 	{
-		new_env[i] = ft_strdup(minishell_data->environment[i]);
+		new_env[i] = ft_strdup(minishell_data->env[i]);
 		if (!new_env)
 		{
 			free_2d_arr((void **) new_env);
@@ -77,8 +77,8 @@ int env_var_realloc(
 		}
 	}
 	new_env[i] = var_string;
-	free_2d_arr((void **) minishell_data->environment);
-	minishell_data->environment = new_env;
+	free_2d_arr((void **) minishell_data->env);
+	minishell_data->env = new_env;
 	return (0);
 }
 

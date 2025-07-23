@@ -139,15 +139,20 @@ int check_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
     {
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
 		e_printf("TYPE = %d \n", (int)check_token->type);
-        if ((int)check_token->type == PARAMETER && type == PARAMETER)
+        if ((int)check_token->type == PARAMETER && type == PARAMETER  || ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
 		{
-			if (expand_var(&tokenlist, i, minishell_data))
-				i--;
+			if (type == DOUBLE_Q && ft_strchr(check_token->value, '$') != NULL)
+				expand_var(&tokenlist, i, minishell_data, true);
+			else if (type == PARAMETER)
+			{
+				if (expand_var(&tokenlist, i, minishell_data, false))
+					i--;
+			}
+			else 
+				rm_quotes(tokenlist, i, '"');
 		}
 		else if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
 			rm_quotes(tokenlist, i, '\'');
-		else if ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q)
-			rm_quotes(tokenlist, i, '"');
         i++;
     }
 	return (0);

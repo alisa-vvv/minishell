@@ -70,12 +70,12 @@ int	match_token(char *str_token)
 {
 	if (str_token[0] == '\'')
 		return (SINGLE_Q);
+    else if (str_token[0] == '"')
+		return (DOUBLE_Q);
     else if ((str_token[0] == '>') || (str_token[0] == '<')
 		|| (ft_strchr(str_token, '$') != NULL) || (str_token[0] == '|')
 		|| (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
 		return (match_nonterminal(str_token));
-    else if (str_token[0] == '"')
-		return (DOUBLE_Q);
 	else if (str_token[0] == '(' || str_token[0] == '{')
 		return (OPEN_BRACKET);
 	else if (str_token[0] == '-')

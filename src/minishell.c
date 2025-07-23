@@ -34,8 +34,8 @@ int	main(void)
 	t_minishell_data	minishell_data;
 
 	int	TEST_len = 3;
-	minishell_data.environment = clone_environment(&minishell_data.env_var_count, &minishell_data.env_mem);
-	if (!minishell_data.environment)
+	minishell_data.env = clone_environment(&minishell_data.env_var_count, &minishell_data.env_mem);
+	if (!minishell_data.env)
 	{
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
 		return (EXIT_FAILURE);
@@ -62,6 +62,6 @@ int	main(void)
 		}
 		add_history(read_line);
 	}
-	free_2d_arr((void **) minishell_data.environment);
+	free_2d_arr((void **) minishell_data.env);
 	return (0);
 }
