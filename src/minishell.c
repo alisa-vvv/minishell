@@ -47,8 +47,6 @@ int	main(void)
 		read_line = readline("minishell ");
 		if (strcmp(read_line, "clear") == 0)
 			clear_history();
-		else if (strcmp(read_line, "clear") == 0)
-			clear_history();
 		else if (strcmp(read_line, "exit") == 0)
 			is_open = false;
 		else if (strcmp(read_line, "executor") == 0)

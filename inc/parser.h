@@ -10,6 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+//make enums lowercase
+//check the exec for enums in struct (build-in --> to pass which enum and biuld-in)
+
 #ifndef PARSER_H
 # define PARSER_H
 

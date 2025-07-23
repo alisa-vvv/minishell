@@ -95,8 +95,6 @@ void	free_and_close_exec_data(
 
 typedef struct	minishell_data
 {
-	int		last_pipeline_return;
-	char	**env;
 	char	**env;
 	int		env_var_count;
 	int		env_mem;

@@ -193,8 +193,6 @@ void test_tokens(element tokenlist)
 }
 
 
-
-
 // default option to put trimmed input in tokenlist
 int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 {
