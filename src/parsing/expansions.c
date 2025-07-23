@@ -40,7 +40,7 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
     if (env_var_get_value((*minishell_data)->environment, name))
     {
         e_printf("VALUE= %s \n", env_var_get_value((*minishell_data)->environment, name));
-        *check_token->value = *env_var_get_value((*minishell_data)->environment, check_token->value);
+        check_token->value = env_var_get_value((*minishell_data)->environment, name);
     }
     else 
     {
@@ -48,7 +48,6 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
         index_lexer(tokenlist);
     }
     free(name);
-
     return (0);
 }
  
