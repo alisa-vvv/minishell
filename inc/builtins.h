@@ -13,32 +13,31 @@
 #ifndef BUILTINS_H
 # define BUILTINS_H
 
-# include "minishell.h"
+#include "minishell.h"
 
 int	exec_builtin(
-		char *builtin_name,
-		char **arguments,
-		t_minishell_data *const minishell_data
-		);
+	char *builtin_name,
+	char **arguments,
+	t_minishell_data *const minishell_data
+);
 
 int	minishell_echo(
-		char **arguments
-		);
-
+	char **arguments
+);
 int	minishell_cd(
-		const char *path,
-		t_minishell_data *const minishell_data
-		);
-
-int	minishell_pwd(void);
-
+	const char *path,
+	t_minishell_data *const minishell_data
+);
+int	minishell_pwd(
+	void
+);
 int	minishell_env(
-		t_minishell_data *const minishell_data
-		);
-
+	t_minishell_data *const minishell_data
+);
 int	minishell_export(
-		char **argv,
-		t_minishell_data *minishell_data
-		);
+	char **argv,
+	t_minishell_data *minishell_data
+);
 
 #endif
+
