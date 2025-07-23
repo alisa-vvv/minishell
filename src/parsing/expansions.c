@@ -36,7 +36,7 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
 
     i = 0;
     check_token = (t_token *)(*tokenlist)->pf_element_get((*tokenlist), pos);
-    
+    e_printf("VALUE= %s \n", (char *)check_token->value);	
     if (env_var_get_value((*minishell_data)->environment, check_token->value))
     {
         e_printf("VALUE= %d \n", env_var_get_value((*minishell_data)->environment, check_token->value));	

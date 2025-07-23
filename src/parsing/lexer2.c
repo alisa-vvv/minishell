@@ -58,12 +58,15 @@ int index_lexer(element **tokenlist)
 {
     size_t i;
     i = 0;
-
-    while (i < (size_t)(*tokenlist)->element_list.total)
+	e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
+	size_t total; 
+	total = (size_t)(*tokenlist)->element_list.total;
+    while (i < total)
     {
         t_token *check_token;
-		check_token = (*tokenlist)->element_list.tokens[i];
+		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
 		check_token->pos = i;
+		e_printf("POS= %d \n", check_token->pos);
         i++;
     }
     return (0);
@@ -134,14 +137,13 @@ int check_lexer(element *tokenlist, t_minishell_data **minishell_data)
     i = 0;
 
 	// e_printf("ELEMENT TOTAL = %d\n", (int)tokenlist->element_list.total);	
-    while (i < (size_t)tokenlist->pf_element_total)
+    while (i < (size_t)tokenlist->element_list.total)
     {
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
 		e_printf("TYPE = %d \n", (int)check_token->type);	
         if ((int)check_token->type == PARAMETER)
 		{
 			expand_var(&tokenlist, i, minishell_data);
-			
 		}
         i++;
     }

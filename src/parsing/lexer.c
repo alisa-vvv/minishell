@@ -177,6 +177,24 @@ int	fill_tokenlist(element *tokenlist, char *str)
 	return (0);
 }
 
+void test_tokens(element tokenlist)
+{
+	size_t i;
+	t_token	*token_test;
+
+	i = 0;
+	while (i < tokenlist.element_list.total)
+	{
+		token_test = tokenlist.element_list.tokens[i];
+		t_printf("Token value = %s$\n", token_test->value);
+		t_printf("Token type = %d$\n", token_test->type);
+		i++;
+	}
+}
+
+
+
+
 // default option to put trimmed input in tokenlist
 int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 {
@@ -197,24 +215,12 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	fill_tokenlist(&token_list, input_line);
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
-	i = 0;
-	while (i < token_list.element_list.total)
-	{
-		token_test = (t_token *)token_list.element_list.tokens[i];
-		t_printf("Token value = %s\n$ ", token_test->value);
-		t_printf("Token type = %d$\n", token_test->type);
-		i++;
-	}
+
+	test_tokens(token_list);
 	check_lexer(&token_list, &minishell_data);
-	t_printf("After expansion:\n");
-	i = 0;
-	while (i < token_list.element_list.total)
-	{
-		token_test = (t_token *)token_list.element_list.tokens[i];
-		t_printf("Token value = %s$\n", token_test->value);
-		t_printf("Token type = %d$\n", token_test->type);
-		i++;
-	}
+	t_printf("\nAfter expansion:\n");
+	test_tokens(token_list);
+
 	return (0);
 }
 
