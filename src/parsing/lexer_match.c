@@ -68,18 +68,18 @@ int match_string(char *str_token)
 // set a value to the token so we can expand on those later
 int	match_token(char *str_token)
 {
-	if (str_token[0] == '"')
-		return (DOUBLE_Q);
-	else if (str_token[0] == '\'')
+	if (str_token[0] == '\'')
 		return (SINGLE_Q);
+    else if ((str_token[0] == '>') || (str_token[0] == '<')
+		|| (ft_strchr(str_token, '$') != NULL) || (str_token[0] == '|')
+		|| (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
+		return (match_nonterminal(str_token));
+    else if (str_token[0] == '"')
+		return (DOUBLE_Q);
 	else if (str_token[0] == '(' || str_token[0] == '{')
 		return (OPEN_BRACKET);
 	else if (str_token[0] == '-')
 		return (HYPHEN);
-	else if ((str_token[0] == '>') || (str_token[0] == '<')
-		|| (str_token[0] == '$') || (str_token[0] == '|')
-		|| (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
-		return (match_nonterminal(str_token));
 	else if ((ft_strchr(str_token, '=') != NULL))
 		return (OPERATOR);
 	else if (str_token[0] == '/')

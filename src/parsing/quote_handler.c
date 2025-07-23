@@ -67,6 +67,9 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 		}
 		i++;
 	}
-	check_token->type = STRING;
+	if (symbol == '\'')
+		check_token->type = STRING;
+	else if (symbol == '"')
+		check_token->type = DOUBLE_Q;
 	return (0);
 }

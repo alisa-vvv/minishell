@@ -35,7 +35,9 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data)
     check_token = (t_token *)(*tokenlist)->element_list.tokens[pos];
     
     char *name;
-    name = ft_strdup(&check_token->value[1]);
+    int i;
+    i = ft_strchr(check_token->value, '$');
+    name = ft_strdup(&check_token->value[i+1]);
     e_printf("NAME= %s \n", name);
     if (env_var_get_value((*minishell_data)->environment, name))
     {

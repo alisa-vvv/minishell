@@ -220,7 +220,7 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	check_lexer(&token_list, &minishell_data, PARAMETER);
 	t_printf("\nAfter expansion and rm quotes:\n");
 	check_lexer(&token_list, &minishell_data, SINGLE_Q);
-	//check_lexer(&token_list, &minishell_data, DOUBLE_Q);
+	check_lexer(&token_list, &minishell_data, DOUBLE_Q);
 	test_tokens(token_list);
 
 	return (0);
