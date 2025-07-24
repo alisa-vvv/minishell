@@ -57,11 +57,11 @@ int	try_execve(
 	char *const argv[]
 )
 {
-	char	*tmp_slash;
-	char	*command_path;
-	const char *const *path = find_env_path(env);
+	char				*tmp_slash;
+	char				*command_path;
+	const char *const 	*path = find_env_path(env);
 
-	if (execve(argv[0], argv, __environ) != -1)
+	if (execve(argv[0], argv, env) != -1)
 		return (0);
 	tmp_slash = ft_strjoin("/", argv[0]);
 	if (!tmp_slash)
@@ -71,7 +71,7 @@ int	try_execve(
 		command_path = ft_strjoin(*path, tmp_slash);
 		if (!command_path)
 			return (perror_and_return(MALLOC_ERR, LIBFUNC_ERR, EXIT_FAILURE));
-		if (execve(command_path, argv, __environ) == -1)
+		if (execve(command_path, argv, env) == -1)
 			free(command_path);
 		path++;
 	}

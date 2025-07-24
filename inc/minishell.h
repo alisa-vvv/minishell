@@ -28,7 +28,7 @@
 /* for true/false macro (and bool if we need it) */
 # include <stdbool.h>
 
-/*		Error Management	*/
+/*		Error Macros	*/
 
 # define MALLOC_ERR "Error! malloc()"
 # define PIPE_ERR "Error! pipe()"
@@ -42,11 +42,8 @@
 # define LIBFUNC_ERR 0
 # define MINISHELL_ERR 1
 
-int	perror_and_return(
-	const char *error_msg,
-	int	msh_errno,
-	int return_value
-);
+/**/
+
 
 # define MAX_ENV 4096
 
@@ -137,5 +134,23 @@ typedef struct	minishell_data
 void	free_and_close_exec_data(
 	const t_exec_data	*exec_data
 );
+
+/**/
+
+/*		Error Mananagement Functions	*/
+
+int	perror_and_return(
+	const char *error_msg,
+	int	msh_errno,
+	int return_value
+);
+void	error_exit(
+	t_exec_data *exec_data,
+	t_minishell_data *minishell_data,
+	char *read_line,
+	int exit_code
+);
+
+/**/
 
 #endif

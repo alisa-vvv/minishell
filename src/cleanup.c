@@ -14,6 +14,25 @@
 #include "stdlib.h"
 #include "executor.h"
 
+void	error_exit(
+	t_exec_data *exec_data,
+	t_minishell_data *minishell_data,
+	char *read_line,
+	int exit_code
+)
+{
+	if (exec_data)
+		free_and_close_exec_data(exec_data);
+	if (read_line)
+		free(read_line);
+	if (minishell_data)
+	{
+		if (minishell_data->env)
+			free_2d_arr((void **) minishell_data->env);
+	}
+	exit (exit_code);
+}
+
 void	free_and_close_redir_list(
 	t_redir_list *redirection
 )

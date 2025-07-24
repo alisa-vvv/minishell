@@ -24,7 +24,10 @@ int	main(void)
 	int					is_open = true;
 	t_minishell_data	minishell_data;
 
-	int	TEST_len = 3;
+	// NOTE: THIS VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
+	// MAKE SURE THAT IT"S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
+	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
+	int	TEST_len = 1;
 	minishell_data.env = clone_env(&minishell_data.env_var_count, &minishell_data.env_mem);
 	if (!minishell_data.env)
 	{
