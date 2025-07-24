@@ -49,7 +49,6 @@ t_exec_data	*test_get_dummy_exec_data(
 {
 	t_exec_data	*exec_data;
 
-	len = 1;
 	int i = 0;
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));

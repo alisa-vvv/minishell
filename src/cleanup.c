@@ -14,15 +14,18 @@
 #include "stdlib.h"
 #include "executor.h"
 
-void	error_exit(
+void	clean_exit(
 	t_exec_data *exec_data,
 	t_minishell_data *minishell_data,
 	char *read_line,
 	int exit_code
 )
 {
-	if (exec_data)
+	while (exec_data)
+	{
 		free_and_close_exec_data(exec_data);
+		exec_data++;
+	}
 	if (read_line)
 		free(read_line);
 	if (minishell_data)
@@ -53,10 +56,20 @@ void	free_and_close_redir_list(
 }
 
 void	free_and_close_exec_data(
-	const t_exec_data	*exec_data
+	t_exec_data	*exec_data
 )
 {
-	free_and_close_redir_list(exec_data->redirections);
+	int	i;
+	if (exec_data)
+		free_and_close_redir_list(exec_data->redirections);
+
+	i = -1;
 	if (exec_data->argv)
-		free_2d_arr((void **) exec_data->argv);
+	{
+		//free_2d_arr((void **) exec_data->argv);
+		while (exec_data->argv[++i])
+			free(exec_data->argv[i]);
+		free(exec_data->argv);
+	}
+	free(exec_data);
 }

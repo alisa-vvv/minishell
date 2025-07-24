@@ -87,7 +87,7 @@ static int	execute_command(
 }
 
 int	executor(
-	const t_exec_data *exec_data,
+	t_exec_data *exec_data,
 	int command_count,
 	t_minishell_data *const minishell_data
 )
@@ -119,6 +119,5 @@ int	executor(
 				//perror("PLACEHOLDER, Child process sent an error");
 			}
 	}
-	//free_and_close_exec_data(exec_data);
 	return (EXIT_SUCCESS);
 }

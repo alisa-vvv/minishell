@@ -30,8 +30,10 @@ typedef struct	s_command_io
 
 /*		Executor - temporary functions!		*/
 t_exec_data	*test_get_dummy_exec_data(int len);
+/**/
+
 int	executor(
-	const t_exec_data *exec_data,
+	t_exec_data *exec_data,
 	int command_count,
 	t_minishell_data *const minishell_data
 );

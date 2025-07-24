@@ -113,12 +113,15 @@ gdb: fclean debug
 test: $(NAME) run
 run:
 	./$(NAME) $(INPUT)
+# the suppression file is still incomplete.
+# might not be worthwhile to have at all since we don't care about non-definite leaks?
+#--suppressions=minishell.supp 
 leak:
 	$(MAKE) -s debug
-	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
-	--leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
+	valgrind --track-fds=yes --track-origins=yes \
+	-s --leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
 val:
-	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
-	--leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
+	valgrind --track-fds=yes --track-origins=yes \
+	-s --leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
 
 .PHONY:	clangd all clean fclean re libs_clean test run leak debug gdb

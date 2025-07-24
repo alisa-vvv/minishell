@@ -23,6 +23,7 @@ int	main(void)
 	char				*read_line;
 	int					is_open = true;
 	t_minishell_data	minishell_data;
+	t_exec_data			*exec_data;
 
 	// NOTE: THIS VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT"S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
@@ -44,11 +45,16 @@ int	main(void)
 		else if (strcmp(read_line, "exit") == 0)
 			is_open = false;
 		else if (strcmp(read_line, "executor") == 0)
-			executor(test_get_dummy_exec_data(TEST_len), TEST_len, &minishell_data);
+		{
+			exec_data = test_get_dummy_exec_data(TEST_len);
+			executor(exec_data, TEST_len, &minishell_data);
+		}
 		else
 			printf("We entered: %s\n", read_line);
 		add_history(read_line);
+		if (read_line)
+			free(read_line);
 	}
-	free_2d_arr((void **) minishell_data.env);
+	clean_exit(NULL, &minishell_data, NULL, EXIT_SUCCESS);
 	return (0);
 }

@@ -132,7 +132,7 @@ typedef struct	minishell_data
 }	t_minishell_data;
 
 void	free_and_close_exec_data(
-	const t_exec_data	*exec_data
+	t_exec_data	*exec_data
 );
 
 /**/
@@ -144,7 +144,7 @@ int	perror_and_return(
 	int	msh_errno,
 	int return_value
 );
-void	error_exit(
+void	clean_exit(
 	t_exec_data *exec_data,
 	t_minishell_data *minishell_data,
 	char *read_line,
