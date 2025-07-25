@@ -88,42 +88,17 @@ static int	execute_command(
 	return (process_id);
 }
 
-// Idea for recording the return value of pipeline:
-// do not free a command's exec_data. add a variable holding it's return value.
-// after executing the entire pipeline, iterate through exec_data to check ////
-// idea 2: use wait()
-// record PID of each process, associate it with the command.
-// while wait()ing, record the specific pid value in an array of return values
-// then iterate through array from right to left until an error is found
-// if no errors, return 0
-int	executor(
-	t_exec_data *exec_data,
-	int command_count,
-	t_minishell_data *const minishell_data
+static int	wait_for_children(
+	const int command_count,
+	t_minishell_data *const minishell_data,
+	const int *const p_ids,
+	int *const p_exit_codes
 )
 {
-	int				i;
-	int				*p_ids;
-	int				*p_exit_codes;
-	t_command_io	command_io;
+	int	exit_status;
+	int	i;
+	int	error_check;
 
-	i = -1;
-	// CURRENT LOGIC: fail in a process wil never stop execution of other commands. last exittable fail check was during pipe setup
-	p_exit_codes = ft_calloc(sizeof(int), command_count);
-	p_ids = ft_calloc(sizeof(int), command_count);
-	while (++i < command_count)
-	{
-		if (prepare_command_io(&exec_data[i], &command_io) < 0)
-		{
-			// QUESTION: WHAT IS THE BEHAVIOUR IF HEREDOC CAN'T BE CREATED?
-			printf("PLACEHOLDER ERROR\n");
-			return (EXIT_FAILURE);
-		}
-		execute_command(&exec_data[i], &command_io, minishell_data);
-	}
-	minishell_data->last_pipeline_return = 0;
-
-	int exit_status;
 	i = command_count;
 	while (--i >= 0)
 	{
@@ -140,9 +115,54 @@ int	executor(
 			}
 		}
 		else
+		{
 			printf("PLACEHOLDER ERROR, really freaky\n");
+			return (EXIT_FAILURE);
+		}
 	}
 	printf("pipeline return: %d\n", minishell_data->last_pipeline_return); // TEST ONLY, REMOVE LATER
+	return (EXIT_SUCCESS);
+}
+// Idea for recording the return value of pipeline:
+// do not free a command's exec_data. add a variable holding it's return value.
+// after executing the entire pipeline, iterate through exec_data to check ////
+// idea 2: use wait()
+// record PID of each process, associate it with the command.
+// while wait()ing, record the specific pid value in an array of return values
+// then iterate through array from right to left until an error is found
+// if no errors, return 0
+int	executor(
+	t_exec_data *exec_data,
+	int command_count,
+	t_minishell_data *const minishell_data
+)
+{
+	int				i;
+	int				*const p_ids = ft_calloc(sizeof(int), command_count);
+	int				*const p_exit_codes = ft_calloc(sizeof(int), command_count);
+	t_command_io	command_io;
+
+	if (!p_ids || !p_exit_codes)
+	{
+		printf("PLACEHOLDER ERROR\n");
+		return (EXIT_FAILURE);
+	}
+	i = -1;
+	// CURRENT LOGIC: fail in a process wil never stop execution of other commands. last exittable fail check was during pipe setup
+	while (++i < command_count)
+	{
+		if (prepare_command_io(&exec_data[i], &command_io) < 0)
+		{
+			// QUESTION: WHAT IS THE BEHAVIOUR IF HEREDOC CAN'T BE CREATED?
+			printf("PLACEHOLDER ERROR\n");
+			return (EXIT_FAILURE);
+		}
+		execute_command(&exec_data[i], &command_io, minishell_data);
+	}
+	minishell_data->last_pipeline_return = 0;
+	wait_for_children(command_count, minishell_data, p_ids, p_exit_codes);
+	free(p_ids);
+	free(p_exit_codes);
 	free(exec_data);
 	return (EXIT_SUCCESS);
 }
