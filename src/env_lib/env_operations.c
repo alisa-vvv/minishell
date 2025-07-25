@@ -89,7 +89,7 @@ char	*env_var_find_identifier(
 {
 	while (*arg)
 	{
-		if (*arg == '=')
+		if (*arg == '=' || (*arg == '+' && *(arg + 1) == '='))
 			return (arg);
 		else if (!ft_isalnum(*arg) && *arg != '_')
 		{

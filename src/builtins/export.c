@@ -18,6 +18,38 @@
 #include "builtins.h"
 #include "minishell_env.h"
 
+static int create_truncate_var(
+	t_minishell_data *const minishell_data,
+	int var_index,
+	char *arg
+)
+{
+	if (var_index < minishell_data->env_var_count &&
+			minishell_data->env[var_index])
+		free(minishell_data->env[var_index]);
+	minishell_data->env[var_index] = ft_strdup(arg);
+	if (!minishell_data->env[var_index])
+		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
+	return (0);
+}
+
+static int create_append_var(
+	t_minishell_data *const minishell_data,
+	int var_index,
+	char *arg
+)
+{
+	char	*appended_var;
+
+	appended_var = ft_strjoin(minishell_data->env[var_index], arg);
+	if (!appended_var)
+		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
+	if (minishell_data->env[var_index])
+		free(minishell_data->env[var_index]);
+	minishell_data->env[var_index] = appended_var;
+	return (0);
+}
+
 int	minishell_export(
 	char *const *argv,
 	t_minishell_data *const minishell_data
@@ -26,9 +58,9 @@ int	minishell_export(
 	int		var_index;
 	char	*identifier;
 
-//	printf("\n\n\nPRE EXPORT\n\n\n");
-//	minishell_env(minishell_data);
-//	printf("\n\n\nENDPRE\n\n\n");
+	printf("\n\n\nPRE EXPORT\n\n\n");
+	minishell_env(minishell_data);
+	printf("\n\n\nENDPRE\n\n\n");
 
 	if (!*argv)
 		minishell_env(minishell_data);
@@ -41,20 +73,20 @@ int	minishell_export(
 
 		assert(var_index <= minishell_data->env_var_count); // REMOVE ASSERT
     	
+		// checks if env mem needs to be expanded, and if we='re adding or modifyig a var
 		if (var_index == minishell_data->env_mem - 1)
 			env_var_realloc(minishell_data, *argv);
 		if (var_index == minishell_data->env_var_count)
 			minishell_data->env_var_count += 1; 
-		else if (var_index < minishell_data->env_var_count)
-			free(minishell_data->env[var_index]);
-		minishell_data->env[var_index] = ft_strdup(*argv);
-		if (!minishell_data->env[var_index])
-			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
+		if (*identifier == '=')
+			create_truncate_var(minishell_data, var_index, *argv);
+		if (*identifier == '+')
+			create_append_var(minishell_data, var_index, identifier + 2);
 		argv++;
 	}
 
-	//printf("\n\n\nPOST EXPORT\n\n\n");
-	//minishell_env(minishell_data);
+	printf("\n\n\nPOST EXPORT\n\n\n");
+	minishell_env(minishell_data);
 
 	//char **test_unset = ft_calloc(2, sizeof(char *));
 	//test_unset[0] = "var";
