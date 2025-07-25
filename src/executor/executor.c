@@ -15,6 +15,8 @@
 #include "executor.h"
 #include "builtins.h"
 #include <stdio.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 #include <errno.h>
 #include <fcntl.h>
 
@@ -83,9 +85,17 @@ static int	execute_command(
 	}
 	else if (command->is_builtin == true)
 		err_check = exec_builtin(command, minishell_data);
-	return (err_check);
+	return (process_id);
 }
 
+// Idea for recording the return value of pipeline:
+// do not free a command's exec_data. add a variable holding it's return value.
+// after executing the entire pipeline, iterate through exec_data to check ////
+// idea 2: use wait()
+// record PID of each process, associate it with the command.
+// while wait()ing, record the specific pid value in an array of return values
+// then iterate through array from right to left until an error is found
+// if no errors, return 0
 int	executor(
 	t_exec_data *exec_data,
 	int command_count,
@@ -93,11 +103,14 @@ int	executor(
 )
 {
 	int				i;
-	int				process_status;
+	int				*p_ids;
+	int				*p_exit_codes;
 	t_command_io	command_io;
 
 	i = -1;
 	// CURRENT LOGIC: fail in a process wil never stop execution of other commands. last exittable fail check was during pipe setup
+	p_exit_codes = ft_calloc(sizeof(int), command_count);
+	p_ids = ft_calloc(sizeof(int), command_count);
 	while (++i < command_count)
 	{
 		if (prepare_command_io(&exec_data[i], &command_io) < 0)
@@ -108,16 +121,28 @@ int	executor(
 		}
 		execute_command(&exec_data[i], &command_io, minishell_data);
 	}
-	while (waitpid(-1, &process_status, 0) > 0) // check if there's some exit signals or codes we need to handle here
+	minishell_data->last_pipeline_return = 0;
+
+	int exit_status;
+	i = command_count;
+	while (--i >= 0)
 	{
-		if (WIFEXITED(process_status) == true)
-			if (WEXITSTATUS(process_status) != EXIT_SUCCESS)
+		//while (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) previously this was a loop, still not sure how waitpid works
+		//to be tested further
+		if (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) // check if there's some exit signals or codes we need to handle here
+		{
+			if (WIFEXITED(p_exit_codes[i]) == true)
 			{
-				// this should probably be removed and only relevant things need to be shown
-				// check gnu manual? I don;t know where to find things that are re;evan0t
-				//printf("exit status: %d\n", process_status == EBADF);
-				//perror("PLACEHOLDER, Child process sent an error");
+				exit_status = WEXITSTATUS(p_exit_codes[i]);
+				if (exit_status != EXIT_SUCCESS &&
+						minishell_data->last_pipeline_return == 0)
+					minishell_data->last_pipeline_return = exit_status;
 			}
+		}
+		else
+			printf("PLACEHOLDER ERROR, really freaky\n");
 	}
+	printf("pipeline return: %d\n", minishell_data->last_pipeline_return); // TEST ONLY, REMOVE LATER
+	free(exec_data);
 	return (EXIT_SUCCESS);
 }

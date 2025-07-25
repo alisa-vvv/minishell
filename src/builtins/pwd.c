@@ -26,6 +26,7 @@ int	minishell_pwd(
 	if (!dir)
 	{
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+		return (-1);
 	}
 	printf("%s\n", dir);
 	free(dir);

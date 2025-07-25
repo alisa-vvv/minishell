@@ -60,16 +60,19 @@ void	free_and_close_exec_data(
 )
 {
 	int	i;
+	printf("are we here?\n");
 	if (exec_data)
-		free_and_close_redir_list(exec_data->redirections);
-
-	i = -1;
-	if (exec_data->argv)
 	{
-		//free_2d_arr((void **) exec_data->argv);
-		while (exec_data->argv[++i])
-			free(exec_data->argv[i]);
-		free(exec_data->argv);
+		if (exec_data->redirections)
+			free_and_close_redir_list(exec_data->redirections);
+		i = -1;
+		if (exec_data->argv)
+		{
+			//free_2d_arr((void **) exec_data->argv);
+			while (exec_data->argv[++i])
+				free(exec_data->argv[i]);
+			free(exec_data->argv);
+		}
+		//free(exec_data);
 	}
-	free(exec_data);
 }
