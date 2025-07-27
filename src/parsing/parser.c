@@ -49,14 +49,42 @@
 int lookahead(element **tokenlist, size_t index)
 {
     t_token *check_token;
-    check_token = (t_token *)(*tokenlist)->pf_element_get(&tokenlist, index + 1);
+    check_token = (t_token *)(*tokenlist)->pf_element_get((*tokenlist), index + 1);
     if (!check_token)
         return (-1);
     return (check_token->type);
 }
 
-
-
+//check lexer on expansion and quotes
+int check_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
+{
+	size_t i;
+	t_token *check_token;
+    i = 0;	
+    while (i < (size_t)tokenlist->element_list.total)
+    {
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		e_printf("TYPE = %d \n", (int)check_token->type);
+        if ((int)check_token->type == PARAMETER && type == PARAMETER  || ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
+		{
+			rm_quotes(tokenlist, i, '"');
+			if (type == DOUBLE_Q && ft_strchr(check_token->value, '$') != NULL)
+			{
+				if (expand_var(&tokenlist, i, minishell_data, true))
+					i--;
+			}
+			else if (type == PARAMETER)
+			{
+				if (expand_var(&tokenlist, i, minishell_data, false))
+					i--;
+			}
+		}
+		else if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
+			rm_quotes(tokenlist, i, '\'');
+        i++;
+    }
+	return (0);
+}
 
 // typedef struct	s_exec_data
 // {

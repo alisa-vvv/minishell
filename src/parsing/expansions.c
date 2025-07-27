@@ -27,6 +27,27 @@
 // expand $EMPTY to nothing
 // look for return value in minishell struct when accessing $?
 
+char *exp_str_token(char *str_token, char *name, char *value)
+{
+    char *new_str;
+    char *start; 
+    char *leftover;
+
+    start = NULL;
+    leftover = NULL;
+    if (!value)
+        value = "";
+    start = ft_strchr(str_token, "$");
+    *leftover = start + ft_strlen(name);
+    leftover = ft_strjoin(value, leftover);
+    start[0] = '\0';
+    new_str = ft_strjoin(str_token, leftover);
+
+    return (new_str);
+}
+
+
+//get name of env var
 char *refine_name_var(char *token_name, char *result)
 {
     char *start;
@@ -39,7 +60,7 @@ char *refine_name_var(char *token_name, char *result)
    // e_printf("\nRESULT = %s$\n", result);
     while (result[i])
     {
-        if (result[i] == '"' || result[i] == 32 || result[i] == '\t')
+        if (result[i] == '"' || result[i] == 32 || (result[i] >= 9 && result[i] <= 13))
             break;
         i++;
     }
@@ -60,12 +81,7 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
     if (env_var_get_value((*minishell_data)->env, name))
     {
         e_printf("VALUE= %s \n", env_var_get_value((*minishell_data)->env, name));
-        if (quoted)
-        {
-            check_token->value = ft_strjoin(check_token->value, env_var_get_value((*minishell_data)->env, name));
-        }
-        else 
-            check_token->value = env_var_get_value((*minishell_data)->env, name);
+        check_token->value = exp_str_token(check_token->value, name, env_var_get_value((*minishell_data)->env, name));
     }
     else 
     {

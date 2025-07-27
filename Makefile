@@ -26,6 +26,7 @@ CFILES	=	minishell.c\
 			errors.c\
 			cleanup.c\
 			env_operations.c\
+			parser.c\
 			$(CFILES_EXECUTOR)\
 			$(CFILES_BUILTINS)\
 			test_funcs.c
