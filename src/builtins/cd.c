@@ -14,7 +14,6 @@
 #include "minishell.h"
 #include "executor.h"
 #include "builtins.h"
-#include "minishell_env.h"
 #include <unistd.h>
 
 #include <stdio.h>
