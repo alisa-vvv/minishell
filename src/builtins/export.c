@@ -18,7 +18,7 @@
 #include "builtins.h"
 #include "minishell_env.h"
 
-static int create_truncate_var(
+static int truncate_var(
 	t_minishell_data *const minishell_data,
 	int var_index,
 	char *arg
@@ -33,15 +33,25 @@ static int create_truncate_var(
 	return (0);
 }
 
-static int create_append_var(
+static int append_var(
 	t_minishell_data *const minishell_data,
 	int var_index,
-	char *arg
+	char *arg,
+	char *identifier
 )
 {
 	char	*appended_var;
 
-	appended_var = ft_strjoin(minishell_data->env[var_index], arg);
+	if (var_index == minishell_data->env_var_count)
+	{
+		*identifier = '\0';
+		appended_var = ft_strjoin(arg, identifier + 1);
+		*identifier = '+';
+		if (!appended_var)
+			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
+	}
+	else
+		appended_var = ft_strjoin(minishell_data->env[var_index], identifier + 2);
 	if (!appended_var)
 		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
 	if (minishell_data->env[var_index])
@@ -55,8 +65,9 @@ int	minishell_export(
 	t_minishell_data *const minishell_data
 )
 {
-	int		var_index;
+	int		var_i;
 	char	*identifier;
+	int		err_check;
 
 	printf("\n\n\nPRE EXPORT\n\n\n");
 	minishell_env(minishell_data);
@@ -69,19 +80,25 @@ int	minishell_export(
 		identifier = env_var_find_identifier(*argv);
 		if (!identifier)
 			return (-1);
-		var_index = env_var_find_index(minishell_data->env, *argv, identifier);
+		var_i = env_var_find_index(minishell_data->env, *argv, identifier);
 
-		assert(var_index <= minishell_data->env_var_count); // REMOVE ASSERT
+		assert(var_i <= minishell_data->env_var_count); // REMOVE ASSERT
     	
 		// checks if env mem needs to be expanded, and if we='re adding or modifyig a var
-		if (var_index == minishell_data->env_mem - 1)
+		if (var_i == minishell_data->env_mem - 1)
 			env_var_realloc(minishell_data, *argv);
-		if (var_index == minishell_data->env_var_count)
-			minishell_data->env_var_count += 1; 
 		if (*identifier == '=')
-			create_truncate_var(minishell_data, var_index, *argv);
+			err_check = truncate_var(minishell_data, var_i, *argv);
+		printf("minishel lexport6\n");
 		if (*identifier == '+')
-			create_append_var(minishell_data, var_index, identifier + 2);
+			err_check = append_var(minishell_data, var_i, *argv, identifier);
+		if (err_check < 0)
+		{
+			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+			return (-1);
+		}
+		if (var_i == minishell_data->env_var_count)
+			minishell_data->env_var_count += 1; 
 		argv++;
 	}
 

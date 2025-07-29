@@ -72,6 +72,7 @@ static int	execute_command(
 	int		err_check;
 
 	err_check = 0;
+	process_id = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true ||
 		command->is_builtin == false)
 	{
@@ -79,13 +80,17 @@ static int	execute_command(
 		if (process_id == 0)
 			run_child_process(command, command_io, minishell_data);
 		else if (process_id > 0)
-			cleanup_in_parent_process(command, command_io);
+			return (cleanup_in_parent_process(command, command_io));
 		else if (process_id < 0)
-			perror_and_return(FORK_ERR, LIBFUNC_ERR, EXIT_FAILURE);
+			perror_and_return(FORK_ERR, LIBFUNC_ERR, -1);
 	}
 	else if (command->is_builtin == true)
+	{
 		err_check = exec_builtin(command, minishell_data);
-	return (process_id);
+		return (err_check);
+	}
+	// this should never reach unless error
+	return (-1);
 }
 
 static int	wait_for_children(
@@ -106,6 +111,7 @@ static int	wait_for_children(
 		//to be tested further
 		if (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) // check if there's some exit signals or codes we need to handle here
 		{
+			printf("TEST p_ids[%d]: %d\n", i, p_ids[i]);
 			if (WIFEXITED(p_exit_codes[i]) == true)
 			{
 				exit_status = WEXITSTATUS(p_exit_codes[i]);
@@ -113,6 +119,7 @@ static int	wait_for_children(
 						minishell_data->last_pipeline_return == 0)
 					minishell_data->last_pipeline_return = exit_status;
 			}
+			printf("TEST p_exit_codes[%d]: %d\n", i, p_exit_codes[i]);
 		}
 		else
 		{
@@ -157,10 +164,14 @@ int	executor(
 			printf("PLACEHOLDER ERROR\n");
 			return (EXIT_FAILURE);
 		}
-		execute_command(&exec_data[i], &command_io, minishell_data);
+		p_ids[i] = execute_command(&exec_data[i], &command_io, minishell_data);
 	}
 	minishell_data->last_pipeline_return = 0;
-	wait_for_children(command_count, minishell_data, p_ids, p_exit_codes);
+	// will wait only if there is more than 1 command and/or of the one command is not builtin
+	// question: should single commands be executed in shell?
+	if (command_count > 1 ||
+		(command_count == 1 && exec_data->is_builtin == false))
+		wait_for_children(command_count, minishell_data, p_ids, p_exit_codes);
 	free(p_ids);
 	free(p_exit_codes);
 	free(exec_data);
