@@ -92,7 +92,7 @@ int	minishell_export(
 		// CHANGE ENV_VAR_REALLOC
 		// checks if env mem needs to be expanded, and if we='re adding or modifyig a var
 		if (var_i == minishell_data->env_mem - 1)
-			env_var_realloc(minishell_data, argv[arg_i]);
+			env_var_realloc(minishell_data);
 		if (*identifier == '=')
 			err_check = truncate_var(minishell_data, var_i, argv[arg_i]);
 		if (*identifier == '+')

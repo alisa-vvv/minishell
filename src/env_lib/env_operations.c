@@ -54,8 +54,7 @@ char	**clone_env(
 }
 
 int env_var_realloc(
-	t_minishell_data *minishell_data,
-	char *var_string
+	t_minishell_data *minishell_data
 )
 {
 	char	**new_env;
@@ -77,7 +76,6 @@ int env_var_realloc(
 			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
 		}
 	}
-	new_env[i] = var_string;
 	free_2d_arr((void **) minishell_data->env);
 	minishell_data->env = new_env;
 	return (0);

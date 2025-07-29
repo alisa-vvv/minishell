@@ -24,7 +24,7 @@ int	minishell_echo(
 	char **arguments
 );
 int	minishell_cd(
-	const char *path,
+	char *const arg,
 	t_minishell_data *const minishell_data
 );
 int	minishell_pwd(
