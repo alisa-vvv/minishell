@@ -80,7 +80,16 @@ static int	execute_command(
 		if (process_id == 0)
 			run_child_process(command, command_io, minishell_data);
 		else if (process_id > 0)
-			return (cleanup_in_parent_process(command, command_io));
+		{
+			err_check = cleanup_in_parent_process(command, command_io);
+			if (err_check == 0)
+				return (process_id);
+			else
+			{
+				printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+				return (err_check);
+			}
+		}
 		else if (process_id < 0)
 			perror_and_return(FORK_ERR, LIBFUNC_ERR, -1);
 	}
