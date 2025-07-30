@@ -83,7 +83,10 @@ int	minishell_export(
 		printf("arg_i: %d\n", arg_i);
 		identifier = env_var_find_identifier(argv[arg_i]);
 		if (!identifier)
+		{
+			printf("this should be entered twice\n");
 			continue ;
+		}
 		printf("indentifier: %s\n", identifier);
 		var_i = env_var_find_index(minishell_data->env, argv[arg_i], identifier);
 
@@ -107,8 +110,8 @@ int	minishell_export(
 	}
 
 	
-	printf("\n\n\nPOST EXPORT\n\n\n");
-	minishell_env(minishell_data);
+//	printf("\n\n\nPOST EXPORT\n\n\n");
+//	minishell_env(minishell_data);
 
 	//char **test_unset = ft_calloc(2, sizeof(char *));
 	//test_unset[0] = "var";

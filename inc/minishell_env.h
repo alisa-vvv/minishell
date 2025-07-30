@@ -16,7 +16,7 @@
 #include "minishell.h"
 
 /*		Environment errors		*/
-# define INVALID_IDENTIFIER "not a valid identifier"
+# define INVALID_IDENTIFIER "not a valid identifier: "
 /**/
 
 char	**clone_env(

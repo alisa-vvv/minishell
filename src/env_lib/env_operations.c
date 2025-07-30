@@ -91,8 +91,11 @@ char	*env_var_find_identifier(
 			return (arg);
 		else if (!ft_isalnum(*arg) && *arg != '_')
 		{
-			perror_and_return(INVALID_IDENTIFIER, MINISHELL_ERR, 0);
-			break ;
+			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+			ft_putstr_fd(INVALID_IDENTIFIER, STDERR_FILENO);
+			ft_putstr_fd(arg, STDERR_FILENO);
+			ft_putchar_fd('\n', STDERR_FILENO);
+			return (NULL);
 		}
 		arg++;
 	}
