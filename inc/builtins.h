@@ -41,8 +41,8 @@ int	minishell_unset(
 	char **argv,
 	t_minishell_data *minishell_data
 );
-void	minishell_exit(
-	const t_exec_data *const command,
+int	minishell_exit(
+	t_exec_data *command,
 	t_minishell_data *const minishell_data
 );
 
