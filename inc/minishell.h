@@ -143,31 +143,12 @@ void	free_and_close_exec_data(
 /**/
 
 // Error management logic
-//
-// 1. Error Messages.
-// Error messages are defined in header as macros.
-// Not all errors show messages. This is decided case-by-case in code.
-// Error functions take the message as a char pointer to a string literal.
-// We can pass NULL instead to tell the function to not show message.
-//
-// 2. Error relation.
-// In addition to the error message, we should show where it's from.
-// This is done by setting the error_relation to the relevant value.
-// If the error is from an external function, we show the name of the function.
-// 		The function name is part of the error message macro.
-// If the error is from core msh functionality, we show "minishell:"
-// Optionally followed by:
-// 		If the error is from parsing, follow by "parsing error:"
-// 		If the error is from execution, follow by "execution error:"
-// 		If the error is from a builtin, follow by "[builtin_name]:"
-// 
-// 3. Error codes.
-// External functions will usually use errno.
-// We have msh_errno for error values specific to minishell.
-// Additionally, different functions do different things based on error type.
-// So we use int return_value to tell the caller function what to do.
-// The error instruction values are also macros.
-//
+// error_prefix is for stuff to print before error message, like error during a builtin
+// relation will specify behavior for different errors.
+// function errors (extern_err) will use native perror() to print their messages.
+// all other errors will put a "minishell: " prefix automatic.
+// generic_err is for an error that doesn't need specific prefix
+// other two values are for parse_err and exec_err
 /*		Error Mananagement Structures	*/
 typedef enum	e_msh_errno
 {
@@ -177,23 +158,18 @@ typedef enum	e_msh_errno
 typedef enum	e_error_relation
 {
 	extern_err,
+	generic_err,
 	parse_err,
 	exec_err,
-	builtin_err,
 }	t_error_relation;
 
 /**/
 
 /*		Error Mananagement Functions	*/
-int	perror_and_continue(
-	const char *const error_msg,
-	t_error_relation relation,
-	t_msh_errno msh_errno
-);
 int	perror_and_return(
-	const char *const error_msg,
+	char *const error_prefix,
+	char *const error_msg,
 	t_error_relation relation,
-	t_msh_errno msh_errno,
 	int return_value
 );
 void	clean_exit(

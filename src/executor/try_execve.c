@@ -61,13 +61,13 @@ int	try_execve(
 		return (0);
 	tmp_slash = ft_strjoin("/", argv[0]);
 	if (!tmp_slash)
-		return (perror_and_return(MALLOC_ERR, LIBFUNC_ERR, EXIT_FAILURE));
+		return (perror_and_return(NULL, MALLOC_ERR, extern_err, -1));
 	i = -1;
 	while (path[++i])
 	{
 		command_path = ft_strjoin(path[i], tmp_slash);
 		if (!command_path)
-			return (perror_and_return(MALLOC_ERR, LIBFUNC_ERR, EXIT_FAILURE));
+			return (perror_and_return(NULL, MALLOC_ERR, extern_err, -1));
 		if (execve(command_path, argv, env) == -1)
 			free(command_path);
 	}

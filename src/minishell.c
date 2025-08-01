@@ -13,6 +13,7 @@
 #include "minishell_testfuncs.h"
 
 #include "libft.h"
+#include <errno.h>
 #include "minishell.h"
 #include "executor.h"
 #include "minishell_env.h"
@@ -31,10 +32,7 @@ int	main(void)
 	int	TEST_len = 1;
 	minishell_data.env = clone_env(&minishell_data.env_var_count, &minishell_data.env_mem);
 	if (!minishell_data.env)
-	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (EXIT_FAILURE);
-	}
+		exit(errno);
 	while (is_open != 0)
 	{
 		read_line = readline("minishell ");

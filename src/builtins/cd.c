@@ -106,11 +106,10 @@ int	minishell_cd(
 	getcwd(cur_pwd, PATH_MAX);
 	path = ft_strjoin(cur_pwd, arg_with_slash);
 	free(arg_with_slash);
-	printf("path before thing: %s\n", path);
 	if (!path)
 	{
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
 	}
 	int check = access(path, F_OK);
 	if (check != 0)
@@ -129,7 +128,7 @@ int	minishell_cd(
 	if (err_check != 0)
 	{
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		perror_and_return("cd", LIBFUNC_ERR, -1);
+		perror_and_return("cd: ", NULL, extern_err, -1);
 	}
 	else
 		err_check = set_env_vars(minishell_data, new_pwd, new_old_pwd, cur_pwd);

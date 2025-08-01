@@ -61,11 +61,11 @@ int env_var_realloc(
 	int		i;
 
 	if (minishell_data->env_mem * 2 > MAX_ENV)
-		perror_and_return("Environment variable limit reached", MINISHELL_ERR, 1);
+		perror_and_return(NULL, "Environment variable limit reached", extern_err, 1);
 	minishell_data->env_mem *= 2;
 	new_env = ft_calloc(minishell_data->env_mem, sizeof(char *));
 	if (!new_env)
-		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
 	i = -1;
 	while (minishell_data->env[++i])
 	{
@@ -73,7 +73,7 @@ int env_var_realloc(
 		if (!new_env)
 		{
 			free_2d_arr((void **) new_env);
-			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+			perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
 		}
 	}
 	free_2d_arr((void **) minishell_data->env);
@@ -145,7 +145,7 @@ char	*env_var_get_value(
 			value = ft_strdup(&env[i][name_len + 1]);
 			// add exit on malloc error?
 			if (!value)
-				perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 0);
+				perror_and_return(NULL, MALLOC_ERR, extern_err, 0);
 			return (value);
 		}
 		else

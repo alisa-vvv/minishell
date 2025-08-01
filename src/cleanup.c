@@ -21,6 +21,8 @@ void	clean_exit(
 	int exit_code
 )
 {
+	if (exit_code == 0)
+		exit_code = minishell_data->last_pipeline_return;
 	while (exec_data)
 	{
 		free_and_close_exec_data(exec_data);

@@ -45,7 +45,7 @@ int	prepare_command_io(
 	{
 		err_check = pipe(command_io->out_pipe);
 		if (err_check < 0)
-			perror_and_return(PIPE_ERR, LIBFUNC_ERR, EXIT_FAILURE);
+			perror_and_return(NULL, PIPE_ERR, extern_err, -1);
 	}
 	err_check = find_and_create_heredocs(command->redirections);
 	return (err_check);

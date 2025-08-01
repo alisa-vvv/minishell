@@ -30,17 +30,17 @@ int	create_here_doc(
 	err_check = 0;
 	err_check = pipe(here_doc);
 	if (err_check < 0)
-		perror_and_return(PIPE_ERR, LIBFUNC_ERR, -1);
+		perror_and_return(NULL, PIPE_ERR, extern_err, -1);
 	input_str = readline("heredoc> ");
 	if (input_str == NULL)
-		perror_and_return(READLINE_ERR, LIBFUNC_ERR, -1);
+		perror_and_return(NULL, READLINE_ERR, extern_err, -1);
 	while (ft_strncmp(input_str, heredoc_delim, delim_len) != 0)
 	{
 		ft_putstr_fd(input_str, here_doc[WRITE_END]);
 		free(input_str);
 		input_str = readline("heredoc> ");
 		if (input_str == NULL)
-			perror_and_return(READLINE_ERR, LIBFUNC_ERR, -1);
+			perror_and_return(NULL, READLINE_ERR, extern_err, -1);
 	}
 	test_close(here_doc[WRITE_END]);
 	return (here_doc[READ_END]);

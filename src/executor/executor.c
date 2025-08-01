@@ -91,7 +91,7 @@ static int	execute_command(
 			}
 		}
 		else if (process_id < 0)
-			perror_and_return(FORK_ERR, LIBFUNC_ERR, -1);
+			perror_and_return(NULL, FORK_ERR, extern_err, -1);
 	}
 	else if (command->is_builtin == true)
 	{

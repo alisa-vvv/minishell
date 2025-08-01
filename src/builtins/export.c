@@ -29,7 +29,7 @@ static int truncate_var(
 		free(minishell_data->env[var_index]);
 	minishell_data->env[var_index] = ft_strdup(arg);
 	if (!minishell_data->env[var_index])
-		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
 	return (0);
 }
 
@@ -48,12 +48,12 @@ static int append_var(
 		appended_var = ft_strjoin(arg, identifier + 1);
 		*identifier = '+';
 		if (!appended_var)
-			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
+			perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
 	}
 	else
 		appended_var = ft_strjoin(minishell_data->env[var_index], identifier + 2);
 	if (!appended_var)
-		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
 	if (minishell_data->env[var_index])
 		free(minishell_data->env[var_index]);
 	minishell_data->env[var_index] = appended_var;
