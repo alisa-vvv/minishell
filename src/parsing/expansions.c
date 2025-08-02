@@ -32,17 +32,23 @@ char *exp_str_token(char *str_token, char *name, char *value)
     char *new_str;
     char *start; 
     char *leftover;
+    char *temp_left;
+    int offset; 
 
-    start = NULL;
-    leftover = NULL;
-    if (!value)
+    if (!value || !name)
         value = "";
-    start = ft_strchr(str_token, "$");
-    *leftover = start + ft_strlen(name);
-    leftover = ft_strjoin(value, leftover);
+    start = ft_strchr(str_token, '$');
+    offset = ft_strlen(name) + 1;
+    temp_left = malloc(sizeof(char) * ft_strlen(start) - offset);
+    if (!temp_left)
+        return (NULL);
+    ft_strlcpy(temp_left, start + offset, ft_strlen(start)- offset + 1);
+   // e_printf("IN HERE\n");
+    //*leftover = start + ft_strlen(name);
+    leftover = ft_strjoin(value, temp_left);
     start[0] = '\0';
     new_str = ft_strjoin(str_token, leftover);
-
+    (free(leftover), free(temp_left));
     return (new_str);
 }
 
@@ -57,10 +63,12 @@ char *refine_name_var(char *token_name, char *result)
     start = ft_strchr(token_name, '$');
     // e_printf("\nSTART = %s\n", start);
     result = ft_strdup(start + 1);
+    if (!result)
+        return(NULL);
    // e_printf("\nRESULT = %s$\n", result);
     while (result[i])
     {
-        if (result[i] == '"' || result[i] == 32 || (result[i] >= 9 && result[i] <= 13))
+        if (result[i] == '"' || result[i] == ' ' || (result[i] >= '\t' && result[i] <= '\r'))
             break;
         i++;
     }
