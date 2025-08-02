@@ -66,7 +66,7 @@ int index_lexer(element **tokenlist)
         t_token *check_token;
 		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
 		check_token->pos = i;
-		e_printf("POS= %d \n", check_token->pos);
+		//e_printf("POS= %d \n", check_token->pos);
         i++;
     }
     return (0);

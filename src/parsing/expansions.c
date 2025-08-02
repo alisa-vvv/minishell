@@ -43,12 +43,10 @@ char *exp_str_token(char *str_token, char *name, char *value)
     if (!temp_left)
         return (NULL);
     ft_strlcpy(temp_left, start + offset, ft_strlen(start)- offset + 1);
-   // e_printf("IN HERE\n");
-    //*leftover = start + ft_strlen(name);
     leftover = ft_strjoin(value, temp_left);
     start[0] = '\0';
     new_str = ft_strjoin(str_token, leftover);
-    (free(leftover), free(temp_left));
+    (free(leftover), free(temp_left), free(str_token));
     return (new_str);
 }
 
@@ -86,12 +84,12 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
 
     name = refine_name_var(check_token->value, name);
     e_printf("\nNAME= %s \n", name);
-    if (env_var_get_value((*minishell_data)->env, name))
+    if (quoted || env_var_get_value((*minishell_data)->env, name))
     {
         e_printf("VALUE= %s \n", env_var_get_value((*minishell_data)->env, name));
         check_token->value = exp_str_token(check_token->value, name, env_var_get_value((*minishell_data)->env, name));
     }
-    else 
+    else if (!quoted && !env_var_get_value((*minishell_data)->env, name))
     {
         (*tokenlist)->pf_element_delete((*tokenlist), pos);
         index_lexer(tokenlist);

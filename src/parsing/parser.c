@@ -10,30 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "parser.h"
-
-// top-down parser ll1 parser?, without backtracking,
-// looking for elements to expand from 
-// looking for: 
-//      - double quotes
-//      - single quotes 
-//      - redirections
-//      - $ sign
 
 // construc parsing table 
 // first() and follow() funcs
 // lookahead func for check next token
 // match function to check and expand on aliases 
-
-// Different expansions to think of: 
-//  - brace expansion
-//  - tilde expansion
-//  - parameter and variable expansion
-//  - command substitution
-//  - arithmetic expansion
-//  - word splitting
-//  - filename expansion 
 
 // Your shell must implement the following built-in commands:
 //     - echo with option -n
@@ -86,6 +68,9 @@ int check_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
 	return (0);
 }
 
+
+
+
 // typedef struct	s_exec_data
 // {
 // 	char			**argv;
@@ -95,4 +80,6 @@ int check_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
 // 	t_redir_list	*redirections;
 // }	t_exec_data;
 
+
+// *t_exec_data convert_data(element *tokenlist, )
 

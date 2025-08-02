@@ -213,14 +213,12 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	fill_tokenlist(&token_list, input_line);
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
-
 	test_tokens(token_list);
 	check_lexer(&token_list, &minishell_data, PARAMETER);
 	t_printf("\nAfter expansion and rm quotes:\n");
 	check_lexer(&token_list, &minishell_data, SINGLE_Q);
 	check_lexer(&token_list, &minishell_data, DOUBLE_Q);
 	test_tokens(token_list);
-
 	return (0);
 }
 
