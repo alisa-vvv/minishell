@@ -68,7 +68,10 @@ int exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
 	return (0);
 }
 
-
+t_exec_data *convert_data(element *tokenlist)
+{
+	
+}
 
 // typedef struct	s_exec_data
 // {
