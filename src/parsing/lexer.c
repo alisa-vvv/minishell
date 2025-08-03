@@ -96,6 +96,11 @@ int move_over_quote(char *str, int pos)
         }
         if (str[pos] == quote)
             pos++;
+		while (str[pos] && !ft_isspace(str[pos]))
+		{
+			i++;
+			pos++;
+		}
     }
     if (i > 0)
         i += 2;
@@ -214,10 +219,10 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
 	test_tokens(token_list);
-	check_lexer(&token_list, &minishell_data, PARAMETER);
+	exp_lexer(&token_list, &minishell_data, PARAMETER);
+	exp_lexer(&token_list, &minishell_data, SINGLE_Q);
+	exp_lexer(&token_list, &minishell_data, DOUBLE_Q);
 	t_printf("\nAfter expansion and rm quotes:\n");
-	check_lexer(&token_list, &minishell_data, SINGLE_Q);
-	check_lexer(&token_list, &minishell_data, DOUBLE_Q);
 	test_tokens(token_list);
 	return (0);
 }

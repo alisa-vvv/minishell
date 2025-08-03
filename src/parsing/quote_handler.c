@@ -52,8 +52,6 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 
 	i = 0;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	if (check_token->value[ft_strlen(check_token->value)-1] == symbol)
-		check_token->value[ft_strlen(check_token->value)-1] = '\0';
 	while (check_token->value[i])
 	{
 		if (check_token->value[i] == symbol)
@@ -66,10 +64,13 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 			check_token->value[i] = '\0';
 		}
 		i++;
+		if (!check_token->value[i] && ft_strrchr(check_token->value, symbol))
+			i = 0;
 	}
 	if (symbol == '\'')
 		check_token->type = STRING;
 	else if (symbol == '"')
-		check_token->type = DOUBLE_Q;
+		check_token->type = match_token(check_token->value);
 	return (0);
 }
+

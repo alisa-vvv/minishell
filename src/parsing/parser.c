@@ -38,7 +38,7 @@ int lookahead(element **tokenlist, size_t index)
 }
 
 //check lexer on expansion and quotes
-int check_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
+int exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
 {
 	size_t i;
 	t_token *check_token;
@@ -46,7 +46,7 @@ int check_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
     while (i < (size_t)tokenlist->element_list.total)
     {
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		e_printf("TYPE = %d \n", (int)check_token->type);
+		//e_printf("TYPE = %d \n", (int)check_token->type);
         if ((int)check_token->type == PARAMETER && type == PARAMETER  || ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
 		{
 			rm_quotes(tokenlist, i, '"');
@@ -67,7 +67,6 @@ int check_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
     }
 	return (0);
 }
-
 
 
 

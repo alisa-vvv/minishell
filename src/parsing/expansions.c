@@ -46,6 +46,8 @@ char *exp_str_token(char *str_token, char *name, char *value)
     leftover = ft_strjoin(value, temp_left);
     start[0] = '\0';
     new_str = ft_strjoin(str_token, leftover);
+    if (!new_str || !leftover)
+        return ((free(leftover), free(temp_left), free(new_str)), NULL);
     (free(leftover), free(temp_left), free(str_token));
     return (new_str);
 }
@@ -71,7 +73,6 @@ char *refine_name_var(char *token_name, char *result)
         i++;
     }
     result[i] = '\0';
-    //free(start);
     return (result);
 }
 
