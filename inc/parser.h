@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//make enums lowercase
-//check the exec for enums in struct (build-in --> to pass which enum and biuld-in)
+// make enums lowercase
+// check the exec for enums in struct (build-in --> to pass which enum and biuld-in)
 
 #ifndef PARSER_H
 # define PARSER_H
@@ -55,23 +55,23 @@ enum
 	DOT,
 	HYPHEN,
 	PIPE,
+	HEREDOC,
 	REDIRECT_OUT,
 	REDIRECT_OUT_APP,
 	REDIRECT_IN,
-	HEREDOC,
 
 	FORW_SLASH,
 	BACKW_SLASH,
 	QUESTION_MARK,
 	EXCLAM_MARK,
 
-	ECHO,
 	CAT,
 	CD,
+	ECHO,
 	ENV,
+	EXPORT,
 	PWD,
 	UNSET,
-	EXPORT,
 
 	UNKNOWN
 
@@ -87,7 +87,9 @@ void		ft_free_arr(void **array);
 size_t		ft_strlcpy(char *dst, const char *src, size_t size);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			index_lexer(element **tokenlist);
-int			exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type);
+t_token		*lookahead(element **tokenlist, size_t index);
+int			exp_lexer(element *tokenlist, t_minishell_data **minishell_data,
+				int type);
 int			skip_blanks(char *str, int pos);
 char		*trim_str_space(char *str);
 int			match_token(char *str_token);
@@ -101,5 +103,6 @@ int			match_string(char *str_token);
 int			expand_var(element **tokenlist, int pos,
 				t_minishell_data **minishell_data, bool quoted);
 int			rm_quotes(element *tokenlist, int pos, char symbol);
+t_exec_data	*convert_data(element *tokenlist);
 
 #endif

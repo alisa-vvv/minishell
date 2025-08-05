@@ -27,6 +27,7 @@
 // expand $EMPTY to nothing
 // look for return value in minishell struct when accessing $?
 
+//expand the var when token is in quotes 
 char *exp_str_token(char *str_token, char *name, char *value)
 {
     char *new_str;
@@ -53,7 +54,7 @@ char *exp_str_token(char *str_token, char *name, char *value)
 }
 
 
-//get name of env var
+//get name of env var from token_name
 char *refine_name_var(char *token_name, char *result)
 {
     char *start;
