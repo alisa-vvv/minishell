@@ -44,7 +44,7 @@ int	main(void)
 			is_open = false;
 		else if (strcmp(read_line, "executor") == 0)
 		{
-			exec_data = test_get_dummy_exec_data(TEST_len);
+			exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
 			executor(exec_data, TEST_len, &minishell_data);
 		}
 		else
@@ -53,6 +53,6 @@ int	main(void)
 		if (read_line)
 			free(read_line);
 	}
-	clean_exit(NULL, &minishell_data, NULL, EXIT_SUCCESS);
+	clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
 	return (0);
 }

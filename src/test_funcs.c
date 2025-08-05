@@ -44,6 +44,7 @@ t_redir_list	*test_add_redirection(
 }
 
 t_exec_data	*test_get_dummy_exec_data(
+	t_minishell_data	*minishell_data,
 	int len
 )
 {
@@ -52,17 +53,18 @@ t_exec_data	*test_get_dummy_exec_data(
 	int i = 0;
 	printf("len? %d\n", len);
 	exec_data = ft_calloc(len + 1, sizeof(t_exec_data));
+	minishell_data->exec_data = exec_data;
+	minishell_data->command_count = len;
 
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("export");
-	exec_data[i].argv[1] = ft_strdup("var1+123");
-	exec_data[i].argv[2] = ft_strdup("var2+123");
+	exec_data[i].argv[0] = ft_strdup("exit");
+	exec_data[i].argv[1] = ft_strdup("123732813721");
 //	exec_data[i].argv[0] = ft_strdup("env");
 //	exec_data[i].argv[1] = ft_strdup("src");
 	//exec_data[i].argv[2] = ft_strdup("one");
 	//exec_data[i].argv[3] = ft_strdup("two");
 	exec_data[i].is_builtin = true;
-	exec_data[i].builtin_name = builtin_export;
+	exec_data[i].builtin_name = builtin_exit;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = false;
 	exec_data[i].redirections = NULL;

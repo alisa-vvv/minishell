@@ -130,14 +130,16 @@ typedef struct	s_exec_data
 // last_pipleline_return starts at 0 and stores return value of last pipeline.
 typedef struct	minishell_data
 {
-	char	**env;
-	int		env_var_count;
-	int		env_mem;
-	int		last_pipeline_return;
+	char		**env;
+	int			env_var_count;
+	int			env_mem;
+	t_exec_data	*exec_data;
+	int			command_count;
+	int			last_pipeline_return;
 }	t_minishell_data;
 
 void	free_and_close_exec_data(
-	t_exec_data	*exec_data
+	t_exec_data	exec_data
 );
 
 /**/
@@ -173,7 +175,6 @@ int	perror_and_return(
 	int return_value
 );
 void	clean_exit(
-	t_exec_data *exec_data,
 	t_minishell_data *minishell_data,
 	char *read_line,
 	int exit_code

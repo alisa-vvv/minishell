@@ -17,6 +17,7 @@
 #include "minishell.h"
 #include "builtins.h"
 #include "minishell_env.h"
+#include <errno.h>
 
 static int truncate_var(
 	t_minishell_data *const minishell_data,

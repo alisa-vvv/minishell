@@ -28,10 +28,6 @@ typedef struct	s_command_io
 	int	out_pipe[2];
 }	t_command_io;
 
-/*		Executor - temporary functions!		*/
-t_exec_data	*test_get_dummy_exec_data(int len);
-/**/
-
 int	executor(
 	t_exec_data *exec_data,
 	int command_count,

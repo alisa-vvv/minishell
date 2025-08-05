@@ -21,7 +21,7 @@
 #include <fcntl.h>
 
 static int	cleanup_in_parent_process(
-	const t_exec_data *command,
+	t_exec_data *command,
 	t_command_io *const command_io
 )
 {
@@ -32,12 +32,12 @@ static int	cleanup_in_parent_process(
 		test_close(command_io->in_pipe[READ_END]);
 	if (command->output_is_pipe == true)
 		test_close(command_io->out_pipe[WRITE_END]);
-	free_and_close_exec_data((t_exec_data *) command);
+	free_and_close_exec_data(*command);
 	return (0);
 }
 
 static int	run_child_process(
-	const t_exec_data *const command,
+	t_exec_data *const command,
 	const t_command_io *const command_io,
 	t_minishell_data *const minishell_data
 )
@@ -63,7 +63,7 @@ static int	run_child_process(
 }
 
 static int	execute_command(
-	const t_exec_data *command,
+	t_exec_data *command,
 	t_command_io *const command_io,
 	t_minishell_data *const minishell_data
 )

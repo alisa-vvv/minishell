@@ -15,18 +15,23 @@
 #include "executor.h"
 
 void	clean_exit(
-	t_exec_data *exec_data,
 	t_minishell_data *minishell_data,
 	char *read_line,
 	int exit_code
 )
 {
+	int	i;
 	if (exit_code == 0)
 		exit_code = minishell_data->last_pipeline_return;
-	while (exec_data)
+	i = -1;
+	if (minishell_data->exec_data)
 	{
-		free_and_close_exec_data(exec_data);
-		exec_data++;
+		while (++i < minishell_data->command_count)
+		{
+			free_and_close_exec_data(minishell_data->exec_data[i]);
+			i++;
+		}
+		free(minishell_data->exec_data);
 	}
 	if (read_line)
 		free(read_line);
@@ -58,23 +63,20 @@ void	free_and_close_redir_list(
 }
 
 void	free_and_close_exec_data(
-	t_exec_data	*exec_data
+	t_exec_data	exec_data
 )
 {
 	int	i;
-	printf("are we here?\n");
-	if (exec_data)
+
+	printf("where seg\n");
+	if (exec_data.redirections)
+		free_and_close_redir_list(exec_data.redirections);
+	i = -1;
+	if (exec_data.argv)
 	{
-		if (exec_data->redirections)
-			free_and_close_redir_list(exec_data->redirections);
-		i = -1;
-		if (exec_data->argv)
-		{
-			//free_2d_arr((void **) exec_data->argv);
-			while (exec_data->argv[++i])
-				free(exec_data->argv[i]);
-			free(exec_data->argv);
-		}
-		//free(exec_data);
+		//free_2d_arr((void **) exec_data->argv);
+		while (exec_data.argv[++i])
+			free(exec_data.argv[i]);
+		free(exec_data.argv);
 	}
 }

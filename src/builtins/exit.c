@@ -23,7 +23,7 @@ int	minishell_exit(
 	int		i;
 
 	if (args[0] == NULL)
-		clean_exit(command, minishell_data, NULL, 0);
+		clean_exit(minishell_data, NULL, 0);
 	else if (args[1] != NULL)
 	{
 		//should return and not exit
@@ -34,6 +34,7 @@ int	minishell_exit(
 	else
 	{
 		exit_code = ft_atoi(args[0]);
+		printf("[n]: %d\n", exit_code);
 		if (exit_code == 0 && args[0][0] != '0')
 		{
 			if ((args[0][0] == '-' || args[0][0] == '+') &&
@@ -45,11 +46,11 @@ int	minishell_exit(
 				// "bash: exit: numeric argument required"
 				// also for whatever reason i think bash exits with 2 here (dumb?)
 				printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-				clean_exit(command, minishell_data, NULL, 2);
+				clean_exit(minishell_data, NULL, exit_code);
 			}
 		}
 	}
-	clean_exit(command, minishell_data, NULL, exit_code);
+	clean_exit(minishell_data, NULL, exit_code);
 	// should NEVER get here, something is COMPLETELY fucked if we are here
 	return (-1);
 }

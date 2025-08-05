@@ -16,7 +16,7 @@
 #include "minishell.h"
 
 int	exec_builtin(
-	const t_exec_data *command,
+	t_exec_data *const command,
 	t_minishell_data *const minishell_data
 );
 
