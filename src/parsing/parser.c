@@ -90,9 +90,10 @@ int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
 		(*comm_list)->redirections = malloc(sizeof(t_redir_list));
 		if (!(*comm_list)->redirections)
 			return (write(1, MALLOC_ERR, 15));
-		(*comm_list)->redirections->heredoc_delim = lookahead(tokenlist, pos +1);
-
 	}
+	if (check_token->type == HEREDOC_DEL)
+		(*comm_list)->redirections->heredoc_delim = ft_strdup(check_token->value);
+	
 	return (0);
 }
 
