@@ -23,6 +23,7 @@ int	main(void)
 {
 	char				*read_line;
 	int					is_open = true;
+	int					err_check;
 	t_minishell_data	minishell_data;
 	t_exec_data			*exec_data;
 
@@ -45,7 +46,7 @@ int	main(void)
 		else if (strcmp(read_line, "executor") == 0)
 		{
 			exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
-			executor(exec_data, TEST_len, &minishell_data);
+			err_check = executor(exec_data, TEST_len, &minishell_data);
 		}
 		else
 			printf("We entered: %s\n", read_line);

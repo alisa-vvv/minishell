@@ -15,6 +15,7 @@
 #include "minishell_env.h"
 #include "executor.h"
 #include <stdio.h>
+#include <errno.h>
 
 static const char	*const *split_path_var(
 	char **env
@@ -61,13 +62,13 @@ int	try_execve(
 		return (0);
 	tmp_slash = ft_strjoin("/", argv[0]);
 	if (!tmp_slash)
-		return (perror_and_return(NULL, MALLOC_ERR, extern_err, -1));
+		return (perror_and_return(NULL, MALLOC_ERR, extern_err, errno));
 	i = -1;
 	while (path[++i])
 	{
 		command_path = ft_strjoin(path[i], tmp_slash);
 		if (!command_path)
-			return (perror_and_return(NULL, MALLOC_ERR, extern_err, -1));
+			return (perror_and_return(NULL, MALLOC_ERR, extern_err, errno));
 		if (execve(command_path, argv, env) == -1)
 			free(command_path);
 	}

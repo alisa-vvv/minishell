@@ -58,7 +58,7 @@ t_exec_data	*test_get_dummy_exec_data(
 
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
 	exec_data[i].argv[0] = ft_strdup("exit");
-	exec_data[i].argv[1] = ft_strdup("123732813721");
+	exec_data[i].argv[1] = ft_strdup("1237328");
 //	exec_data[i].argv[0] = ft_strdup("env");
 //	exec_data[i].argv[1] = ft_strdup("src");
 	//exec_data[i].argv[2] = ft_strdup("one");

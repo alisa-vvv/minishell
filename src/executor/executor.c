@@ -54,9 +54,9 @@ static int	run_child_process(
 		test_dup2(command_io->out_pipe[WRITE_END], STDOUT_FILENO);
 		test_close(command_io->out_pipe[WRITE_END]);
 	}
-	perform_redirections(command->redirections, command_io);
+	err_check = perform_redirections(command->redirections, command_io);
 	if (command->is_builtin == false)
-		try_execve(minishell_data->env, command->argv);
+		err_check = try_execve(minishell_data->env, command->argv);
 	else if (command->is_builtin == true)
 		err_check = exec_builtin(command, minishell_data);
 	exit(err_check);
@@ -78,7 +78,7 @@ static int	execute_command(
 	{
 		process_id = fork();
 		if (process_id == 0)
-			run_child_process(command, command_io, minishell_data);
+			err_check = run_child_process(command, command_io, minishell_data);
 		else if (process_id > 0)
 		{
 			err_check = cleanup_in_parent_process(command, command_io);
@@ -99,7 +99,7 @@ static int	execute_command(
 		return (err_check);
 	}
 	// this should never reach unless error
-	return (-1);
+	return (err_check);
 }
 
 static int	wait_for_children(
@@ -160,11 +160,10 @@ int	executor(
 
 	if (!p_ids || !p_exit_codes)
 	{
-		printf("PLACEHOLDER ERROR\n");
-		return (EXIT_FAILURE);
+		minishell_data->last_pipeline_return = errno;
+		perror_and_return(NULL, MALLOC_ERR, extern_err, errno);
 	}
 	i = -1;
-	// CURRENT LOGIC: fail in a process wil never stop execution of other commands. last exittable fail check was during pipe setup
 	while (++i < command_count)
 	{
 		if (prepare_command_io(&exec_data[i], &command_io) < 0)
