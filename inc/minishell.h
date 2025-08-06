@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:32:15 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 20:16:12 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/08/06 15:24:33 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,12 @@
 
 
 # define MAX_ENV 4096
+
+/*		Signal handling		*/
+void	handle_signals_interactive(
+	void
+);
+/**/
 
 /*		Executor - data structures		*/
 

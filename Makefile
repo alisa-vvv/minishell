@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/07/22 19:01:25 by avaliull     #+#    #+#                   #
-#    Updated: 2025/07/22 19:22:37 by avaliull     ########   odam.nl           #
+#    Updated: 2025/08/06 15:25:10 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@
 NAME	=	minishell
 
 CFILES	=	minishell.c\
+			signal_handlers.c\
 			errors.c\
 			cleanup.c\
 			env_operations.c\

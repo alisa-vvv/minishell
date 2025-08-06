@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/07/18 16:33:46 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 20:15:50 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/08/06 15:42:59 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,25 @@ void	clean_exit(
 )
 {
 	int	i;
-	if (exit_code == 0)
-		exit_code = minishell_data->last_pipeline_return;
-	i = -1;
-	if (minishell_data->exec_data)
-	{
-		while (++i < minishell_data->command_count)
-		{
-			free_and_close_exec_data(minishell_data->exec_data[i]);
-			i++;
-		}
-		free(minishell_data->exec_data);
-	}
-	if (read_line)
-		free(read_line);
 	if (minishell_data)
 	{
+		if (exit_code == 0)
+			exit_code = minishell_data->last_pipeline_return;
+		i = -1;
+		if (minishell_data->exec_data)
+		{
+			while (++i < minishell_data->command_count)
+			{
+				free_and_close_exec_data(minishell_data->exec_data[i]);
+				i++;
+			}
+			free(minishell_data->exec_data);
+		}
 		if (minishell_data->env)
 			free_2d_arr((void **) minishell_data->env);
 	}
+	if (read_line)
+		free(read_line);
 	exit (exit_code);
 }
 

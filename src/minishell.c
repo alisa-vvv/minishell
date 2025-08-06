@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
 /*   Created: 2025/05/31 15:31:56 by avaliull     #+#    #+#                  */
-/*   Updated: 2025/07/18 20:02:01 by avaliull     ########   odam.nl          */
+/*   Updated: 2025/08/06 15:42:16 by avaliull     ########   odam.nl          */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,21 @@ int	main(void)
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	int	TEST_len = 1;
+	handle_signals_interactive();
+	minishell_data.exec_data = NULL;
+	minishell_data.last_pipeline_return = 0;
+	minishell_data.command_count = 0;
 	minishell_data.env = clone_env(&minishell_data.env_var_count, &minishell_data.env_mem);
 	if (!minishell_data.env)
 		exit(errno);
 	while (is_open != 0)
 	{
 		read_line = readline("minishell ");
+		// on ctrl-D, an EOT is sent to the tty.
+		// readline returns a null pointer in this case.
+		// this check is all thats needed to exit on ctrl-d in interactive mode
 		if (!read_line)
-			printf("what happens?\n");
+			clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
 		else if (strcmp(read_line, "clear") == 0)
 			rl_clear_history();
 		else if (strcmp(read_line, "exit") == 0)
