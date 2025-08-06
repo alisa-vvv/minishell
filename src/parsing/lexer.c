@@ -222,6 +222,9 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	exp_lexer(&token_list, &minishell_data, PARAMETER);
 	exp_lexer(&token_list, &minishell_data, SINGLE_Q);
 	exp_lexer(&token_list, &minishell_data, DOUBLE_Q);
+	if (single_token(&token_list))
+		return (1);
+	val_redir(&token_list);
 	t_printf("\nAfter expansion and rm quotes:\n");
 	test_tokens(token_list);
 	return (0);

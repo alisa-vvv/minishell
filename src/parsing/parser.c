@@ -35,7 +35,7 @@ t_token *lookahead(element **tokenlist, size_t index)
 	check_token = (t_token *)(*tokenlist)->pf_element_get((*tokenlist), index
 			+ 1);
 	if (!check_token)
-		return (-1);
+		return (NULL);
 	return (check_token);
 }
 
@@ -83,9 +83,9 @@ int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
 		return (write(1, MALLOC_ERR, 15));
 	if (check_token->type >= CAT && check_token->type <= UNSET)
 		(*comm_list)->is_builtin = check_token->type;
-	if (lookahead(tokenlist, pos)->type == PIPE)
+	if (lookahead(&tokenlist, pos)->type == PIPE)
 		(*comm_list)->input_is_pipe = true;
-	if (lookahead(tokenlist, pos)->type == HEREDOC)
+	if (lookahead(&tokenlist, pos)->type == HEREDOC)
 	{
 		(*comm_list)->redirections = malloc(sizeof(t_redir_list));
 		if (!(*comm_list)->redirections)
@@ -114,7 +114,7 @@ t_exec_data	*convert_data(element *tokenlist)
 	{
 		if (!add_arg_to_list(&comm_list, tokenlist, i))
 		{
-			free_2d_arr(comm_list->argv);
+			free_2d_arr((void *)comm_list->argv);
 			return (NULL);
 		}
 		i++;
@@ -131,4 +131,3 @@ t_exec_data	*convert_data(element *tokenlist)
 // 	t_redir_list	*redirections;
 // }	t_exec_data;
 
-// *t_exec_data convert_data(element *tokenlist, )

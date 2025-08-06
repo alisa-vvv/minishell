@@ -14,22 +14,25 @@
 
 NAME	=	minishell
 
-CFILES	=	minishell.c\
-			lexer_match.c\
-			expansions.c\
-			lexer.c\
-			lexer2.c\
-			quote_handler.c\
-			vec_lib.c\
-			vec_lib2.c\
-			debug.c\
-			errors.c\
-			cleanup.c\
-			env_operations.c\
-			parser.c\
+CFILES	=	$(CFILES_VECLIB)\
+			$(CFILES_PARSER)\
 			$(CFILES_EXECUTOR)\
 			$(CFILES_BUILTINS)\
+			minishell.c\
 			test_funcs.c
+CFILES_VECLIB	=	vec_lib.c\
+					vec_lib2.c
+CFILES_PARSER	=	debug.c\
+					lexer_match.c\
+					expansions.c\
+					lexer.c\
+					lexer2.c\
+					quote_handler.c\
+					val_redirect.c\
+					errors.c\
+					cleanup.c\
+					env_operations.c\
+					parser.c
 CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\
 					redirections.c\

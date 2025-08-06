@@ -56,6 +56,7 @@ enum
 	HYPHEN,
 	PIPE,
 	HEREDOC,
+	HEREDOC_DEL,
 	REDIRECT_OUT,
 	REDIRECT_OUT_APP,
 	REDIRECT_IN,
@@ -93,9 +94,11 @@ int			exp_lexer(element *tokenlist, t_minishell_data **minishell_data,
 int			skip_blanks(char *str, int pos);
 char		*trim_str_space(char *str);
 int			match_token(char *str_token);
-int			check_pipe(char *str);
+int			check_pipe_redirect(char *str, char symbol);
 int			check_in_quote(char *str, int pos);
+int			single_token(element *tokenlist);
 int			val_inputline(char *str);
+int			val_redir(element *tokenlist);
 int			find_symbol(element *tokenlist, int pos, char symbol);
 int			count_symbol(element *tokenlist, int pos, char symbol);
 int			match_nonterminal(char *str_token);

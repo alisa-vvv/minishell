@@ -73,25 +73,28 @@ int index_lexer(element **tokenlist)
 }
 
 // check if left and right are args for pipe
-int	check_pipe(char *str)
+int	check_pipe_redirect(char *str, char symbol)
 {
 	int	command;
     int i; 
     i = 0;
 	command = 0;
-	if (ft_strchr(str, '|') != (void *)0)
+	if (ft_strchr(str, symbol) != (void *)0)
 	{
-		while (&str[i] <= ft_strchr(str, '|'))
+		while (&str[i] <= ft_strchr(str, symbol))
 		{
 			if (ft_isalpha(str[i]))
 				command++;
 			i++;
 		}
-		if (!command)
+		if (!command && symbol == '|')
 			return (1);
-		// check for single pipe
-		if (str[i] == '|' && (str + i + 1 == (void *)0 || *str + i + 2 == '"'))
+		// check for single pipe or redirect
+		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i + 1 == '"' || !ft_isspace(str[i + 1])))
 			return (1);
+		//else if (str[i] == symbol && (str + i + 2 == (void *)0 || *str + i + 3 == '"' || !ft_isspace(str[i + 2])))
+		// 	return (1);
+		//t_printf("\nstring is:%c\n", str[i+1]);
 	}
     return (0);
 }
@@ -101,7 +104,11 @@ int	val_inputline(char *str)
 {
 	if (check_in_quote(str, ft_strlen(str) -1))
 	    return (write(1, "command not found\n", 18));
-	if (check_pipe(str))
+	if (check_pipe_redirect(str, '|'))
+		return (write(1, "command not found\n", 18));
+	if (check_pipe_redirect(str, '>'))
+		return (write(1, "command not found\n", 18));
+	if (check_pipe_redirect(str, '<'))
 		return (write(1, "command not found\n", 18));
     return(0);
 }

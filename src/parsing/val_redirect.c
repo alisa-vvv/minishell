@@ -39,6 +39,20 @@
 // 	return (0);
 // }
 
+//check single tokens
+int single_token(element *tokenlist)
+{
+    t_token *check_token;
+
+    check_token = (t_token *)tokenlist->element_list.tokens[0];
+    if ((int)tokenlist->element_list.total == 1)
+    {
+        if (check_token->type == HEREDOC || check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_IN)
+            return (write(1, "Command not found\n", 18));
+    }
+    return (0);
+}
+
 
 int val_redir(element *tokenlist)
 {
@@ -46,7 +60,7 @@ int val_redir(element *tokenlist)
     t_token *check_token;
     i = 0;
 
-    while (i + 1 < (size_t)tokenlist->element_list.tokens[i])
+    while (i + 1 < (size_t)tokenlist->element_list.total)
     {
         check_token = (t_token *)tokenlist->element_list.tokens[i];
         if (check_token->type == HEREDOC)
@@ -57,14 +71,13 @@ int val_redir(element *tokenlist)
         }
         else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT)
         {
-            if (lookahead(tokenlist, i)->type != FILENAME)
+            if (lookahead(&tokenlist, i)->type != FILENAME)
             {
                 check_token = (t_token *)tokenlist->element_list.tokens[i+1];
                 check_token->type = FILENAME;
                 i++;
             }
         }
-
         i++;
     }
     return (0);
