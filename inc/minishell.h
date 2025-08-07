@@ -52,7 +52,11 @@
 
 # define MAX_ENV 4096
 
+
 /*		Signal handling		*/
+
+static int	g_msh_signal = 0;
+
 void	handle_signals_interactive(
 	void
 );

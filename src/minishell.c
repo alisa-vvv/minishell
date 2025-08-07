@@ -30,8 +30,8 @@ int	main(void)
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
-	int	TEST_len = 1;
 	handle_signals_interactive();
+	int	TEST_len = 1;
 	minishell_data.exec_data = NULL;
 	minishell_data.last_pipeline_return = 0;
 	minishell_data.command_count = 0;
@@ -41,13 +41,23 @@ int	main(void)
 	while (is_open != 0)
 	{
 		read_line = readline("minishell ");
+		if (!read_line)
+			clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
 		// on ctrl-D, an EOT is sent to the tty.
 		// readline returns a null pointer in this case.
 		// this check is all thats needed to exit on ctrl-d in interactive mode
-		if (!read_line)
-			clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
-		else if (strcmp(read_line, "clear") == 0)
-			rl_clear_history();
+		if (g_msh_signal == SIGINT)
+		{
+			if (read_line)
+				free(read_line);
+			continue ;
+		}
+		if (read_line)
+			add_history(read_line);
+		if (strcmp(read_line, "clear") == 0)
+		{
+			continue ;
+		}
 		else if (strcmp(read_line, "exit") == 0)
 			is_open = false;
 		else if (strcmp(read_line, "executor") == 0)
@@ -57,7 +67,6 @@ int	main(void)
 		}
 		else
 			printf("We entered: %s\n", read_line);
-		add_history(read_line);
 		if (read_line)
 			free(read_line);
 	}

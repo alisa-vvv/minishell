@@ -10,18 +10,38 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <minishell.h>
 #include <stddef.h>
 #include <signal.h>
+#include <unistd.h>
+#include <readline/readline.h>
+
+void	sigign_handler(
+	int sig
+)
+{
+	write(STDOUT_FILENO, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+	g_msh_signal = SIGINT;
+	// add function that sends signals to hcildren?
+	// or it should be separate
+}
 
 void	handle_signals_interactive(
 	void
 )
 {
-	struct sigaction	ignore_signal;
+	struct sigaction	handle_sigign;
+	struct sigaction	handle_sigquit;
 
-	ignore_signal.sa_handler = SIG_IGN;
-	sigemptyset(&ignore_signal.sa_mask);
-	ignore_signal.sa_flags = 0;
-	sigaction(SIGQUIT, &ignore_signal, NULL);
-	sigaction(SIGINT, &ignore_signal, NULL);
+	sigemptyset(&handle_sigign.sa_mask);
+	handle_sigign.sa_handler = sigign_handler;
+	handle_sigign.sa_flags = 0;
+	sigaction(SIGINT, &handle_sigign, NULL);
+	sigemptyset(&handle_sigquit.sa_mask);
+	handle_sigquit.sa_handler = SIG_IGN;
+	handle_sigquit.sa_flags = 0;
+	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
