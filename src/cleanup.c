@@ -40,6 +40,8 @@ void	clean_exit(
 	}
 	if (read_line)
 		free(read_line);
+	// this should msybe have a check if we are in  child process
+	write(STDOUT_FILENO, "exit\n", 5);
 	exit (exit_code);
 }
 
@@ -68,7 +70,6 @@ void	free_and_close_exec_data(
 {
 	int	i;
 
-	printf("where seg\n");
 	if (exec_data.redirections)
 		free_and_close_redir_list(exec_data.redirections);
 	i = -1;

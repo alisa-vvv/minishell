@@ -16,6 +16,12 @@
 #include <unistd.h>
 #include <readline/readline.h>
 
+void	sigquit_handler(
+	int sig
+)
+{
+	g_msh_signal = SIGQUIT;
+}
 void	sigign_handler(
 	int sig
 )

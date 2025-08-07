@@ -40,7 +40,7 @@ int	main(void)
 		exit(errno);
 	while (is_open != 0)
 	{
-		read_line = readline("minishell ");
+		read_line = readline("minishell$ ");
 		if (!read_line)
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
 		// on ctrl-D, an EOT is sent to the tty.
@@ -54,11 +54,7 @@ int	main(void)
 		}
 		if (read_line)
 			add_history(read_line);
-		if (strcmp(read_line, "clear") == 0)
-		{
-			continue ;
-		}
-		else if (strcmp(read_line, "exit") == 0)
+		if (strcmp(read_line, "exit") == 0)
 			is_open = false;
 		else if (strcmp(read_line, "executor") == 0)
 		{
