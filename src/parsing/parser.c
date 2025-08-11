@@ -28,11 +28,11 @@
 
 
 // func returning next token type in the array
-t_token *lookahead(element **tokenlist, size_t index)
+t_token *lookahead(element *tokenlist, size_t index)
 {
 	t_token	*check_token;
 
-	check_token = (t_token *)(*tokenlist)->pf_element_get((*tokenlist), index
+	check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index
 			+ 1);
 	if (!check_token)
 		return (NULL);
@@ -76,27 +76,34 @@ int	exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
 int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
 {
 	t_token		*check_token;
-
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
 	(*comm_list)->argv[pos] = ft_strdup(check_token->value);
 	if (!(*comm_list)->argv[pos])
 		return (write(1, MALLOC_ERR, 15));
 	if (check_token->type >= CAT && check_token->type <= UNSET)
 		(*comm_list)->is_builtin = check_token->type;
-	if (lookahead(&tokenlist, pos)->type == PIPE)
+	if (lookahead(tokenlist, pos)->type == PIPE)
 		(*comm_list)->input_is_pipe = true;
-	if (lookahead(&tokenlist, pos)->type == HEREDOC)
+	if (check_token->type == HEREDOC)
 	{
 		(*comm_list)->redirections = malloc(sizeof(t_redir_list));
 		if (!(*comm_list)->redirections)
 			return (write(1, MALLOC_ERR, 15));
+		if (pos == 0)
+		{
+			(*comm_list)->redirections->dest_fd = -1;
+			(*comm_list)->redirections->dest_filename = -1;
+			(*comm_list)->redirections->src_fd = NULL;
+			(*comm_list)->redirections->src_filename = NULL;
+			(*comm_list)->redirections->next = NULL;
+		}
 	}
 	if (check_token->type == HEREDOC_DEL)
 		(*comm_list)->redirections->heredoc_delim = ft_strdup(check_token->value);
-	
 	return (0);
 }
 
+//convert the tokenlist to executable data 
 t_exec_data	*convert_data(element *tokenlist)
 {
 	size_t		i;

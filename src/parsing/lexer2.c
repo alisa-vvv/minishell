@@ -59,9 +59,8 @@ int index_lexer(element **tokenlist)
     size_t i;
     i = 0;
 	e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
-	size_t total; 
-	total = (size_t)(*tokenlist)->element_list.total;
-    while (i < total)
+
+    while (i < (size_t)(*tokenlist)->element_list.total)
     {
         t_token *check_token;
 		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
@@ -70,6 +69,35 @@ int index_lexer(element **tokenlist)
         i++;
     }
     return (0);
+}
+
+//check left and right from pipes and set as in or out
+int set_pipe_cm(element *tokenlist)
+{
+	size_t i;
+	i = 0;
+
+	while (i < (size_t)tokenlist->element_list.total)
+	{
+		t_token *check_token;
+		t_token *tmp;
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		if (check_token->type == PIPE)
+		{
+			if (i > 0)
+			{
+				tmp = (t_token *)tokenlist->element_list.tokens[i - 1];
+				tmp->type = PIPE_IN;
+			}
+			if (i + 1 < (size_t)tokenlist->element_list.total)
+			{
+				tmp = (t_token *)tokenlist->element_list.tokens[i + 1];
+				tmp = PIPE_OUT;
+			}
+		}
+		i++;
+	}
+	return (0);
 }
 
 // check if left and right are args for pipe

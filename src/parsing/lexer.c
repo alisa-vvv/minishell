@@ -225,6 +225,7 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	if (single_token(&token_list))
 		return (1);
 	val_redir(&token_list);
+	set_pipe_cm(&token_list);
 	t_printf("\nAfter expansion and rm quotes:\n");
 	test_tokens(token_list);
 	return (0);

@@ -55,6 +55,8 @@ enum
 	DOT,
 	HYPHEN,
 	PIPE,
+	PIPE_IN,
+	PIPE_OUT,
 	HEREDOC,
 	HEREDOC_DEL,
 	REDIRECT_OUT,
@@ -88,7 +90,7 @@ void		ft_free_arr(void **array);
 size_t		ft_strlcpy(char *dst, const char *src, size_t size);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			index_lexer(element **tokenlist);
-t_token		*lookahead(element **tokenlist, size_t index);
+t_token		*lookahead(element *tokenlist, size_t index);
 int			exp_lexer(element *tokenlist, t_minishell_data **minishell_data,
 				int type);
 int			skip_blanks(char *str, int pos);
@@ -106,6 +108,8 @@ int			match_string(char *str_token);
 int			expand_var(element **tokenlist, int pos,
 				t_minishell_data **minishell_data, bool quoted);
 int			rm_quotes(element *tokenlist, int pos, char symbol);
+int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist,
+				int pos);
 t_exec_data	*convert_data(element *tokenlist);
 
 #endif

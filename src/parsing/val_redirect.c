@@ -14,7 +14,6 @@
 #include "parser.h"
 
 
-
 // int	val_redirects(element **tokenlist)
 // {
 // 	size_t	i;
@@ -54,13 +53,14 @@ int single_token(element *tokenlist)
 }
 
 
+//set values 
 int val_redir(element *tokenlist)
 {
     size_t i;
     t_token *check_token;
     i = 0;
 
-    while (i + 1 < (size_t)tokenlist->element_list.total)
+    while (i < (size_t)tokenlist->element_list.total)
     {
         check_token = (t_token *)tokenlist->element_list.tokens[i];
         if (check_token->type == HEREDOC)
@@ -71,7 +71,7 @@ int val_redir(element *tokenlist)
         }
         else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT)
         {
-            if (lookahead(&tokenlist, i)->type != FILENAME)
+            if (i + 1 < (size_t)tokenlist->element_list.total && lookahead(tokenlist, i)->type != FILENAME)
             {
                 check_token = (t_token *)tokenlist->element_list.tokens[i+1];
                 check_token->type = FILENAME;

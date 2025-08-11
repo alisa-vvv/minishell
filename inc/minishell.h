@@ -60,6 +60,7 @@ typedef enum	e_redirect_type
 	trunc,
 }	t_redirect_type;
 
+
 // this list assumes that the source of a redirection is either unspecified,
 // specified as an integer, or opened from an env/direct path during parsing
 // here are examples of what is a source and what is a destionation:
