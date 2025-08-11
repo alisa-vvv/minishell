@@ -55,7 +55,7 @@
 
 /*		Signal handling		*/
 
-static int	g_msh_signal = 0;
+static int	g_msh_signal;
 
 void	handle_signals_interactive(
 	void

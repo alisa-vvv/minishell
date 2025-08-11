@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell_testfuncs.h"
+#include <assert.h>
 
 #include "libft.h"
 #include <errno.h>
@@ -18,6 +19,27 @@
 #include "executor.h"
 #include "minishell_env.h"
 #include <unistd.h>
+
+static void	reset_minishell_data(
+	t_minishell_data *minishell_data
+)
+{
+	assert(minishell_data != NULL);	//remove assert, replace with actal error catches	
+	minishell_data->exec_data = NULL;
+	minishell_data->last_pipeline_return = 0;
+	minishell_data->command_count = 0;
+}
+
+static void	setup_minishell_data(
+	t_minishell_data *minishell_data
+)
+{
+	assert(minishell_data != NULL);	//remove assert, replace with actal error catches	
+	reset_minishell_data(minishell_data);
+	minishell_data->env = clone_env(&minishell_data->env_var_count, &minishell_data->env_mem);
+	if (!minishell_data->env)
+		exit(errno);
+}
 
 int	main(void)
 {
@@ -31,13 +53,8 @@ int	main(void)
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	handle_signals_interactive();
-	int	TEST_len = 1;
-	minishell_data.exec_data = NULL;
-	minishell_data.last_pipeline_return = 0;
-	minishell_data.command_count = 0;
-	minishell_data.env = clone_env(&minishell_data.env_var_count, &minishell_data.env_mem);
-	if (!minishell_data.env)
-		exit(errno);
+	setup_minishell_data(&minishell_data);
+	int	TEST_len = 2;
 	while (is_open != 0)
 	{
 		read_line = readline("minishell$ ");
@@ -65,6 +82,7 @@ int	main(void)
 			printf("We entered: %s\n", read_line);
 		if (read_line)
 			free(read_line);
+		reset_minishell_data(&minishell_data);
 	}
 	clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
 	return (0);

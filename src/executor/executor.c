@@ -120,7 +120,6 @@ static int	wait_for_children(
 		//to be tested further
 		if (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) // check if there's some exit signals or codes we need to handle here
 		{
-			printf("TEST p_ids[%d]: %d\n", i, p_ids[i]);
 			if (WIFEXITED(p_exit_codes[i]) == true)
 			{
 				exit_status = WEXITSTATUS(p_exit_codes[i]);
@@ -128,7 +127,6 @@ static int	wait_for_children(
 						minishell_data->last_pipeline_return == 0)
 					minishell_data->last_pipeline_return = exit_status;
 			}
-			printf("TEST p_exit_codes[%d]: %d\n", i, p_exit_codes[i]);
 		}
 		else
 		{
@@ -136,7 +134,6 @@ static int	wait_for_children(
 			return (EXIT_FAILURE);
 		}
 	}
-	printf("pipeline return: %d\n", minishell_data->last_pipeline_return); // TEST ONLY, REMOVE LATER
 	return (EXIT_SUCCESS);
 }
 // Idea for recording the return value of pipeline:

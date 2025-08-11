@@ -25,11 +25,12 @@ void	clean_exit(
 	{
 		if (exit_code == 0)
 			exit_code = minishell_data->last_pipeline_return;
-		i = -1;
 		if (minishell_data->exec_data)
 		{
+			i = -1;
 			while (++i < minishell_data->command_count)
 			{
+				write(STDOUT_FILENO, "cringe\n", 7);
 				free_and_close_exec_data(minishell_data->exec_data[i]);
 				i++;
 			}
@@ -41,6 +42,7 @@ void	clean_exit(
 	if (read_line)
 		free(read_line);
 	// this should msybe have a check if we are in  child process
+
 	write(STDOUT_FILENO, "exit\n", 5);
 	exit (exit_code);
 }
