@@ -60,6 +60,9 @@ static int	g_msh_signal;
 void	handle_signals_interactive(
 	void
 );
+void	handle_signals_non_interactive(
+	void
+);
 /**/
 
 /*		Executor - data structures		*/

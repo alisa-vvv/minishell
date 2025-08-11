@@ -120,8 +120,10 @@ static int	wait_for_children(
 		//to be tested further
 		if (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) // check if there's some exit signals or codes we need to handle here
 		{
-			if (WIFEXITED(p_exit_codes[i]) == true)
+			if (WIFEXITED(p_exit_codes[i]) == true ||
+				WIFSIGNALED(p_exit_codes[i]) == true)
 			{
+				printf("do we get here?\n");
 				exit_status = WEXITSTATUS(p_exit_codes[i]);
 				if (exit_status != EXIT_SUCCESS &&
 						minishell_data->last_pipeline_return == 0)

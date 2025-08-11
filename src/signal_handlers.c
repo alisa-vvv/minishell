@@ -22,7 +22,8 @@ void	sigquit_handler(
 {
 	g_msh_signal = SIGQUIT;
 }
-void	sigign_handler(
+
+void	sigign_handler_interactive(
 	int sig
 )
 {
@@ -31,10 +32,30 @@ void	sigign_handler(
 	rl_on_new_line();
 	rl_redisplay();
 	g_msh_signal = SIGINT;
-	// add function that sends signals to hcildren?
-	// or it should be separate
 }
 
+void	sigign_handler_non_interactive(
+	int sig
+)
+{
+	if (g_msh_signal != 0)
+		return ;
+	kill(0, SIGINT);
+	sigign_handler_interactive(sig);
+}
+
+void	handle_signals_non_interactive(
+	void
+)
+{
+	struct sigaction	handle_sigign;
+	struct sigaction	handle_sigquit;
+
+	sigemptyset(&handle_sigign.sa_mask);
+	handle_sigign.sa_handler = sigign_handler_non_interactive;
+	handle_sigign.sa_flags = 0;
+	sigaction(SIGINT, &handle_sigign, NULL);
+}
 void	handle_signals_interactive(
 	void
 )
@@ -43,7 +64,7 @@ void	handle_signals_interactive(
 	struct sigaction	handle_sigquit;
 
 	sigemptyset(&handle_sigign.sa_mask);
-	handle_sigign.sa_handler = sigign_handler;
+	handle_sigign.sa_handler = sigign_handler_interactive;
 	handle_sigign.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigign, NULL);
 	sigemptyset(&handle_sigquit.sa_mask);
