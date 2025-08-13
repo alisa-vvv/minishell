@@ -13,7 +13,7 @@
 #include "minishell_testfuncs.h"
 #include <assert.h>
 
-#include "libft.h"
+#include <stdlib.h>
 #include <errno.h>
 #include "minishell.h"
 #include "executor.h"
@@ -50,11 +50,11 @@ int	main(void)
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
-	rl_catch_signals = 0;
 	setup_minishell_data(&minishell_data);
 	int	TEST_len = 3;
 	while (is_open != 0)
 	{
+		rl_catch_signals = false;
 		handle_signals_interactive();
 		read_line = readline("minishell$ ");
 		if (!read_line)

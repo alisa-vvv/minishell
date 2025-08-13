@@ -130,10 +130,17 @@ static int	wait_for_children(
 					minishell_data->last_pipeline_return = exit_status;
 			}
 		}
-		else
+		else // this entire thing is questionable. i dont understand this
 		{
-			printf("PLACEHOLDER ERROR, really freaky\n");
-			return (EXIT_FAILURE);
+			if (WIFEXITED(p_exit_codes[i]) == true)
+				printf("child exitted normally\n");
+			else if (WIFSIGNALED(p_exit_codes[i]) == true)
+				printf("child terminated by signal\n");
+			else if (WIFSTOPPED(p_exit_codes[i]) == true)
+				printf("child stopped by signal\n");
+			else
+				printf("PLACEHOLDER ERROR, really freaky\n");
+			//return (EXIT_FAILURE);
 		}
 	}
 	return (EXIT_SUCCESS);

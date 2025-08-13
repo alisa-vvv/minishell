@@ -16,14 +16,7 @@
 #include <unistd.h>
 #include <readline/readline.h>
 
-void	sigquit_handler(
-	int sig
-)
-{
-	g_msh_signal = SIGQUIT;
-}
-
-void	sigign_handler_interactive(
+void	sigint_handler_interactive(
 	int sig
 )
 {
@@ -34,28 +27,40 @@ void	sigign_handler_interactive(
 	g_msh_signal = SIGINT;
 }
 
-void	sigign_handler_non_interactive(
+void	sigint_handler_non_interactive(
 	int sig
 )
 {
 	if (g_msh_signal != 0)
 		return ;
 	kill(0, SIGINT);
-	sigign_handler_interactive(sig);
+	sigint_handler_interactive(sig);
+}
+
+void	handle_signals_child_process(
+	void
+)
+{
+	struct sigaction	handle_sigign;
+
+	sigemptyset(&handle_sigign.sa_mask);
+	handle_sigign.sa_handler = SIG_DFL;
+	handle_sigign.sa_flags = 0;
+	sigaction(SIGINT, &handle_sigign, NULL);
 }
 
 void	handle_signals_non_interactive(
 	void
 )
 {
-	struct sigaction	handle_sigign;
 	struct sigaction	handle_sigquit;
 
-	sigemptyset(&handle_sigign.sa_mask);
-	handle_sigign.sa_handler = sigign_handler_non_interactive;
-	handle_sigign.sa_flags = 0;
-	sigaction(SIGINT, &handle_sigign, NULL);
+	sigemptyset(&handle_sigquit.sa_mask);
+	handle_sigquit.sa_handler = SIG_DFL;
+	handle_sigquit.sa_flags = 0;
+	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
+
 void	handle_signals_interactive(
 	void
 )
@@ -64,9 +69,10 @@ void	handle_signals_interactive(
 	struct sigaction	handle_sigquit;
 
 	sigemptyset(&handle_sigign.sa_mask);
-	handle_sigign.sa_handler = sigign_handler_interactive;
+	handle_sigign.sa_handler = sigint_handler_interactive;
 	handle_sigign.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigign, NULL);
+
 	sigemptyset(&handle_sigquit.sa_mask);
 	handle_sigquit.sa_handler = SIG_IGN;
 	handle_sigquit.sa_flags = 0;
