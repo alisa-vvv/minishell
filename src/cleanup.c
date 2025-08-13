@@ -32,7 +32,6 @@ void	clean_exit(
 			{
 				write(STDOUT_FILENO, "cringe\n", 7);
 				free_and_close_exec_data(minishell_data->exec_data[i]);
-				i++;
 			}
 			free(minishell_data->exec_data);
 		}
@@ -77,9 +76,12 @@ void	free_and_close_exec_data(
 	i = -1;
 	if (exec_data.argv)
 	{
-		//free_2d_arr((void **) exec_data->argv);
 		while (exec_data.argv[++i])
+		{
 			free(exec_data.argv[i]);
+			exec_data.argv[i] = NULL;
+		}
 		free(exec_data.argv);
+		exec_data.argv = NULL;
 	}
 }

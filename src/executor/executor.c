@@ -25,9 +25,6 @@ static int	cleanup_in_parent_process(
 	t_command_io *const command_io
 )
 {
-	t_redir_list	*redirection;
-
-	redirection = command->redirections;
 	if (command->input_is_pipe == true)
 		test_close(command_io->in_pipe[READ_END]);
 	if (command->output_is_pipe == true)
@@ -145,6 +142,28 @@ static int	wait_for_children(
 	}
 	return (EXIT_SUCCESS);
 }
+
+static void	executor_cleanup(
+	t_minishell_data *const minishell_data,
+	t_exec_data *exec_data,
+	int *const p_ids,
+	int *const p_exit_codes
+)
+{
+	int	i;
+
+	i = -1;
+	printf("command count: %d\n", minishell_data->command_count);
+	while (++i < minishell_data->command_count)
+	{
+		printf("here?\n");
+		free_and_close_exec_data(exec_data[i]);
+	}
+	free(p_ids);
+	free(p_exit_codes);
+	free(exec_data);
+}
+//
 // Idea for recording the return value of pipeline:
 // do not free a command's exec_data. add a variable holding it's return value.
 // after executing the entire pipeline, iterate through exec_data to check ////
@@ -174,9 +193,11 @@ int	executor(
 	{
 		if (prepare_command_io(&exec_data[i], &command_io) < 0)
 		{
-			// QUESTION: WHAT IS THE BEHAVIOUR IF HEREDOC CAN'T BE CREATED?
-			printf("PLACEHOLDER ERROR\n");
-			return (EXIT_FAILURE);
+			// so current logic is that if pipe breaks it will stop further execution
+			// and adjust command_count so witpid oesnt wait for fake children
+			// feels kinda wacky, probably bad solutuibn
+			command_count = i + 1; // this is weird but it's for waiting
+			break ;
 		}
 		p_ids[i] = execute_command(&exec_data[i], &command_io, minishell_data);
 	}
@@ -186,8 +207,10 @@ int	executor(
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->is_builtin == false))
 		wait_for_children(command_count, minishell_data, p_ids, p_exit_codes);
+	//	somehow freeing exec_data here causes UB. FIGURE OUT
+//	executor_cleanup(minishell_data, exec_data, p_ids, p_exit_codes);
 	free(p_ids);
 	free(p_exit_codes);
 	free(exec_data);
-	return (EXIT_SUCCESS);
+	return(EXIT_SUCCESS);
 }

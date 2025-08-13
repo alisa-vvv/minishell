@@ -31,8 +31,6 @@ void	sigint_handler_non_interactive(
 	int sig
 )
 {
-	if (g_msh_signal != 0)
-		return ;
 	kill(0, SIGINT);
 	sigint_handler_interactive(sig);
 }
@@ -65,15 +63,17 @@ void	handle_signals_interactive(
 	void
 )
 {
-	struct sigaction	handle_sigign;
+	struct sigaction	handle_sigint;
 	struct sigaction	handle_sigquit;
 
-	sigemptyset(&handle_sigign.sa_mask);
-	handle_sigign.sa_handler = sigint_handler_interactive;
-	handle_sigign.sa_flags = 0;
-	sigaction(SIGINT, &handle_sigign, NULL);
+	sigaddset(&handle_sigint.sa_mask, SIGINT);
+	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
+	handle_sigint.sa_handler = sigint_handler_interactive;
+	handle_sigint.sa_flags = 0;
+	sigaction(SIGINT, &handle_sigint, NULL);
 
-	sigemptyset(&handle_sigquit.sa_mask);
+	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
+	sigaddset(&handle_sigquit.sa_mask, SIGINT);
 	handle_sigquit.sa_handler = SIG_IGN;
 	handle_sigquit.sa_flags = 0;
 	sigaction(SIGQUIT, &handle_sigquit, NULL);

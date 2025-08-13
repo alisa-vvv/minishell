@@ -50,25 +50,22 @@ int	main(void)
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
+	rl_catch_signals = false;
 	setup_minishell_data(&minishell_data);
 	int	TEST_len = 3;
 	while (is_open != 0)
 	{
-		rl_catch_signals = false;
 		handle_signals_interactive();
 		read_line = readline("minishell$ ");
 		if (!read_line)
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
-		// on ctrl-D, an EOT is sent to the tty.
-		// readline returns a null pointer in this case.
-		// this check is all thats needed to exit on ctrl-d in interactive mode
-		if (g_msh_signal == SIGINT)
-		{
-			if (read_line)
-				free(read_line);
-			g_msh_signal = 0;
-			continue ;
-		}
+	//	if (g_msh_signal == SIGINT)
+	//	{
+	//		if (read_line)
+	//			free(read_line);
+	//		g_msh_signal = 0;
+	//		continue ;
+	//	}
 		if (read_line)
 			add_history(read_line);
 		if (strcmp(read_line, "exit") == 0)
