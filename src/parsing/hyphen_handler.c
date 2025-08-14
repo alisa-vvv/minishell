@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-
+//check to see if string is all alph or digits
 int all_num_alph(
     const char *str)
 {

@@ -10,33 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "parser.h"
-
-
-// int	val_redirects(element **tokenlist)
-// {
-// 	size_t	i;
-// 	t_token	*check_token;
-
-// 	i = 0;
-// 	check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
-// 	while (i < (size_t)(*tokenlist)->element_list.total)
-// 	{
-// 		if (check_token->type == REDIRECT_IN)
-// 		{
-// 			if (lookahead(tokenlist, i) != STRING && lookahead(tokenlist, i) != PARAMETER)
-// 				return (1);
-// 			//check if leading arg is something or nothing 
-// 		}
-// 		else if (check_token->type == REDIRECT_OUT || REDIRECT_OUT_APP)
-// 		{
-// 			if ()
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }
 
 //check single tokens
 int single_token(element *tokenlist)
