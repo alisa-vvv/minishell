@@ -21,6 +21,13 @@
 
 /*		Executor errors		*/
 
+void	executor_cleanup(
+	t_minishell_data *const minishell_data,
+	t_exec_data *exec_data,
+	int *p_ids,
+	int *p_exit_codes
+);
+
 typedef struct	s_command_io
 {
 	int	here_docs;

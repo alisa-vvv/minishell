@@ -106,44 +106,44 @@ static int	wait_for_children(
 	int *const p_exit_codes
 )
 {
-	int	exit_status;
+	int	last_exit;
 	int	i;
 	int	error_check;
 
-	i = command_count;
-	while (--i >= 0)
+	i = -1;
+	printf("command count: %d\n", command_count);
+	while (++i < command_count)
 	{
 		//while (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) previously this was a loop, still not sure how waitpid works
 		//to be tested further
+		printf("\np_ids[%d]: %d\n", i, p_ids[i]);
+		printf("p_exit_codes[%d]: %d\n\n", i, p_exit_codes[i]);
 		if (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) // check if there's some exit signals or codes we need to handle here
 		{
-			if (WIFEXITED(p_exit_codes[i]) == true ||
-				WIFSIGNALED(p_exit_codes[i]) == true)
+			//https://tldp.org/LDP/abs/html/exitcodes.html - good source for exit codes testing
+			if (WIFEXITED(p_exit_codes[i]) == true)
 			{
-				printf("do we get here?\n");
-				exit_status = WEXITSTATUS(p_exit_codes[i]);
-				if (exit_status != EXIT_SUCCESS &&
-						minishell_data->last_pipeline_return == 0)
-					minishell_data->last_pipeline_return = exit_status;
+				last_exit = WEXITSTATUS(p_exit_codes[i]);
+				if (last_exit != EXIT_SUCCESS)
+					minishell_data->last_pipeline_return = last_exit;
+			}
+			else if (WIFSIGNALED(p_exit_codes[i]) == true)
+			{
+				last_exit = 128 + WTERMSIG(p_exit_codes[i]);
+				if (WCOREDUMP(p_exit_codes[i]))
+					ft_putstr_fd("Core dumped\n", STDERR_FILENO);
 			}
 		}
 		else // this entire thing is questionable. i dont understand this
 		{
-			if (WIFEXITED(p_exit_codes[i]) == true)
-				printf("child exitted normally\n");
-			else if (WIFSIGNALED(p_exit_codes[i]) == true)
-				printf("child terminated by signal\n");
-			else if (WIFSTOPPED(p_exit_codes[i]) == true)
-				printf("child stopped by signal\n");
-			else
-				printf("PLACEHOLDER ERROR, really freaky\n");
-			//return (EXIT_FAILURE);
+			// we probably don't need this check at all
+			perror("waitpid -1");
 		}
 	}
 	return (EXIT_SUCCESS);
 }
 
-static void	executor_cleanup(
+void	executor_cleanup(
 	t_minishell_data *const minishell_data,
 	t_exec_data *exec_data,
 	int *p_ids,
@@ -155,9 +155,9 @@ static void	executor_cleanup(
 	i = -1;
 	while (++i < minishell_data->command_count)
 		free_and_close_exec_data(&exec_data[i]);
-	ft_safe_free(p_ids);
-	ft_safe_free(p_exit_codes);
-	ft_safe_free(exec_data);
+	free(p_ids);
+	free(p_exit_codes);
+	free(exec_data);
 }
 //
 // Idea for recording the return value of pipeline:
@@ -192,7 +192,7 @@ int	executor(
 			// so current logic is that if pipe breaks it will stop further execution
 			// and adjust command_count so witpid oesnt wait for fake children
 			// feels kinda wacky, probably bad solutuibn
-			command_count = i + 1; // this is weird but it's for waiting
+			command_count = i; // this is weird but it's for waiting
 			break ;
 		}
 		p_ids[i] = execute_command(&exec_data[i], &command_io, minishell_data);

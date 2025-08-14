@@ -39,12 +39,12 @@ void	handle_signals_child_process(
 	void
 )
 {
-	struct sigaction	handle_sigign;
+	struct sigaction	handle_sigint;
 
-	sigemptyset(&handle_sigign.sa_mask);
-	handle_sigign.sa_handler = SIG_DFL;
-	handle_sigign.sa_flags = 0;
-	sigaction(SIGINT, &handle_sigign, NULL);
+	sigemptyset(&handle_sigint.sa_mask);
+	handle_sigint.sa_handler = SIG_DFL;
+	handle_sigint.sa_flags = 0;
+	sigaction(SIGINT, &handle_sigint, NULL);
 }
 
 void	handle_signals_non_interactive(
@@ -66,14 +66,16 @@ void	handle_signals_interactive(
 	struct sigaction	handle_sigint;
 	struct sigaction	handle_sigquit;
 
+	sigemptyset(&handle_sigint.sa_mask);
 	sigaddset(&handle_sigint.sa_mask, SIGINT);
 	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
 	handle_sigint.sa_handler = sigint_handler_interactive;
 	handle_sigint.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigint, NULL);
 
-	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
+	sigemptyset(&handle_sigquit.sa_mask);
 	sigaddset(&handle_sigquit.sa_mask, SIGINT);
+	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
 	handle_sigquit.sa_handler = SIG_IGN;
 	handle_sigquit.sa_flags = 0;
 	sigaction(SIGQUIT, &handle_sigquit, NULL);
