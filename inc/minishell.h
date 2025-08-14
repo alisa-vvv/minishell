@@ -49,8 +49,10 @@
 
 /**/
 
-
+// max value for environment variables
 # define MAX_ENV 4096
+// used to indicate that FD was already closed
+#define CLOSED_FD -1
 
 
 /*		Signal handling		*/

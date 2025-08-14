@@ -68,7 +68,10 @@ void	free_and_close_redir_list(
 			redirection->src_filename = NULL;
 		}
 		if (redirection->type == heredoc)
+		{
 			test_close(redirection->dest_fd);
+			redirection->dest_fd = CLOSED_FD;
+		}
 		free(redirection);
 		redirection = redirection->next;
 	}

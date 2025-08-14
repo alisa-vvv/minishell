@@ -26,9 +26,15 @@ static int	cleanup_in_parent_process(
 )
 {
 	if (command->input_is_pipe == true)
+	{
 		test_close(command_io->in_pipe[READ_END]);
+		command_io->in_pipe[READ_END] = CLOSED_FD;
+	}
 	if (command->output_is_pipe == true)
+	{
 		test_close(command_io->out_pipe[WRITE_END]);
+		command_io->out_pipe[WRITE_END] = CLOSED_FD;
+	}
 	free_and_close_exec_data(command);
 	return (0);
 }
@@ -143,9 +149,10 @@ static int	wait_for_children(
 	return (EXIT_SUCCESS);
 }
 
-void	executor_cleanup(
+static void	executor_cleanup(
 	t_minishell_data *const minishell_data,
 	t_exec_data *exec_data,
+	t_command_io *command_io,
 	int *p_ids,
 	int *p_exit_codes
 )
@@ -154,7 +161,20 @@ void	executor_cleanup(
 
 	i = -1;
 	while (++i < minishell_data->command_count)
+	{
 		free_and_close_exec_data(&exec_data[i]);
+		if (command_io[i].here_docs > 0)
+			test_close(command_io[i].here_docs);
+		if (command_io[i].in_pipe[0] > 2)
+			test_close(command_io[i].in_pipe[0]);
+		if (command_io[i].in_pipe[1] > 2)
+			test_close(command_io[i].in_pipe[1]);
+		if (command_io[i].out_pipe[0] > 2)
+			test_close(command_io[i].out_pipe[0]);
+		if (command_io[i].out_pipe[1] > 2)
+			test_close(command_io[i].out_pipe[1]);
+	}
+	free(command_io);
 	free(p_ids);
 	free(p_exit_codes);
 	free(exec_data);
@@ -175,11 +195,14 @@ int	executor(
 )
 {
 	int				i;
-	int				*p_ids = ft_calloc(sizeof(int), command_count);
-	int				*p_exit_codes = ft_calloc(sizeof(int), command_count);
-	t_command_io	command_io;
+	int				*p_id;
+	int				*p_exit_codes;
+	t_command_io	*command_io; // this most likely needs to be an array to handle closes on error.
 
-	if (!p_ids || !p_exit_codes)
+	p_id = ft_calloc(sizeof(int), command_count);
+	p_exit_codes = ft_calloc(sizeof(int), command_count);
+	command_io = ft_calloc(sizeof(t_command_io), command_count);
+	if (!p_id || !p_exit_codes)
 	{
 		minishell_data->last_pipeline_return = errno;
 		perror_and_return(NULL, MALLOC_ERR, extern_err, errno);
@@ -187,22 +210,20 @@ int	executor(
 	i = -1;
 	while (++i < command_count)
 	{
-		if (prepare_command_io(&exec_data[i], &command_io) < 0)
+		if (prepare_command_io(&exec_data[i], &command_io[i]) < 0)
 		{
-			// so current logic is that if pipe breaks it will stop further execution
-			// and adjust command_count so witpid oesnt wait for fake children
-			// feels kinda wacky, probably bad solutuibn
+			// add broken pipe error message/code?
 			command_count = i; // this is weird but it's for waiting
 			break ;
 		}
-		p_ids[i] = execute_command(&exec_data[i], &command_io, minishell_data);
+		p_id[i] = execute_command(&exec_data[i], &command_io[i], minishell_data);
 	}
 	minishell_data->last_pipeline_return = 0;
 	// will wait only if there is more than 1 command and/or of the one command is not builtin
 	// question: should single commands be executed in shell?
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->is_builtin == false))
-		wait_for_children(command_count, minishell_data, p_ids, p_exit_codes);
-	executor_cleanup(minishell_data, exec_data, p_ids, p_exit_codes);
+		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);
+	executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
 	return(EXIT_SUCCESS);
 }
