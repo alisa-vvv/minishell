@@ -140,7 +140,7 @@ static int	wait_for_children(
 					ft_putstr_fd("Core dumped\n", STDERR_FILENO);
 			}
 		}
-		else // this entire thing is questionable. i dont understand this
+		else
 		{
 			// we probably don't need this check at all
 			perror("waitpid -1");
@@ -188,6 +188,7 @@ static void	executor_cleanup(
 // while wait()ing, record the specific pid value in an array of return values
 // then iterate through array from right to left until an error is found
 // if no errors, return 0
+// question: go back to setting up the pipeline first, then running everything?
 int	executor(
 	t_exec_data *exec_data,
 	int command_count,
