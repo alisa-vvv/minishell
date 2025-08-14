@@ -29,7 +29,7 @@ static int	cleanup_in_parent_process(
 		test_close(command_io->in_pipe[READ_END]);
 	if (command->output_is_pipe == true)
 		test_close(command_io->out_pipe[WRITE_END]);
-	free_and_close_exec_data(*command);
+	free_and_close_exec_data(command);
 	return (0);
 }
 
@@ -146,22 +146,18 @@ static int	wait_for_children(
 static void	executor_cleanup(
 	t_minishell_data *const minishell_data,
 	t_exec_data *exec_data,
-	int *const p_ids,
-	int *const p_exit_codes
+	int *p_ids,
+	int *p_exit_codes
 )
 {
 	int	i;
 
 	i = -1;
-	printf("command count: %d\n", minishell_data->command_count);
 	while (++i < minishell_data->command_count)
-	{
-		printf("here?\n");
-		free_and_close_exec_data(exec_data[i]);
-	}
-	free(p_ids);
-	free(p_exit_codes);
-	free(exec_data);
+		free_and_close_exec_data(&exec_data[i]);
+	ft_safe_free(p_ids);
+	ft_safe_free(p_exit_codes);
+	ft_safe_free(exec_data);
 }
 //
 // Idea for recording the return value of pipeline:
@@ -179,8 +175,8 @@ int	executor(
 )
 {
 	int				i;
-	int				*const p_ids = ft_calloc(sizeof(int), command_count);
-	int				*const p_exit_codes = ft_calloc(sizeof(int), command_count);
+	int				*p_ids = ft_calloc(sizeof(int), command_count);
+	int				*p_exit_codes = ft_calloc(sizeof(int), command_count);
 	t_command_io	command_io;
 
 	if (!p_ids || !p_exit_codes)
@@ -207,10 +203,6 @@ int	executor(
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->is_builtin == false))
 		wait_for_children(command_count, minishell_data, p_ids, p_exit_codes);
-	//	somehow freeing exec_data here causes UB. FIGURE OUT
-//	executor_cleanup(minishell_data, exec_data, p_ids, p_exit_codes);
-	free(p_ids);
-	free(p_exit_codes);
-	free(exec_data);
+	executor_cleanup(minishell_data, exec_data, p_ids, p_exit_codes);
 	return(EXIT_SUCCESS);
 }

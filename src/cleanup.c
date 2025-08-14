@@ -29,17 +29,15 @@ void	clean_exit(
 		{
 			i = -1;
 			while (++i < minishell_data->command_count)
-			{
-				write(STDOUT_FILENO, "cringe\n", 7);
-				free_and_close_exec_data(minishell_data->exec_data[i]);
-			}
-			free(minishell_data->exec_data);
+				free_and_close_exec_data(&minishell_data->exec_data[i]);
+			ft_safe_free(minishell_data->exec_data);
+			minishell_data->exec_data = NULL;
 		}
 		if (minishell_data->env)
 			free_2d_arr((void **) minishell_data->env);
 	}
 	if (read_line)
-		free(read_line);
+		ft_safe_free(read_line);
 	// this should msybe have a check if we are in  child process
 
 	write(STDOUT_FILENO, "exit\n", 5);
@@ -53,35 +51,37 @@ void	free_and_close_redir_list(
 	while (redirection != NULL)
 	{
 		if (redirection->dest_filename)
-			free(redirection->dest_filename);
+		{
+			ft_safe_free(redirection->dest_filename);
+			redirection->dest_filename = NULL;
+		}
 		if (redirection->src_filename)
-			free(redirection->src_filename);
+		{
+			ft_safe_free(redirection->src_filename);
+			redirection->src_filename = NULL;
+		}
 		if (redirection->heredoc_delim)
-			free(redirection->src_filename);
+			ft_safe_free(redirection->src_filename);
 		if (redirection->type == heredoc)
 			test_close(redirection->dest_fd);
-		free (redirection);
+		ft_safe_free(redirection);
 		redirection = redirection->next;
 	}
 }
 
 void	free_and_close_exec_data(
-	t_exec_data	exec_data
+	t_exec_data	*exec_data
 )
 {
 	int	i;
 
-	if (exec_data.redirections)
-		free_and_close_redir_list(exec_data.redirections);
+	if (exec_data->redirections)
+		free_and_close_redir_list(exec_data->redirections);
 	i = -1;
-	if (exec_data.argv)
+	if (exec_data->argv)
 	{
-		while (exec_data.argv[++i])
-		{
-			free(exec_data.argv[i]);
-			exec_data.argv[i] = NULL;
-		}
-		free(exec_data.argv);
-		exec_data.argv = NULL;
+		while (exec_data->argv[++i])
+			ft_safe_free(exec_data->argv[i]);
+		ft_safe_free(exec_data->argv);
 	}
 }

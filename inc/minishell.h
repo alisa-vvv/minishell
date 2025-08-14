@@ -152,7 +152,7 @@ typedef struct	minishell_data
 }	t_minishell_data;
 
 void	free_and_close_exec_data(
-	t_exec_data	exec_data
+	t_exec_data	*exec_data
 );
 
 /**/
