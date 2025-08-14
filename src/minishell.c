@@ -58,7 +58,10 @@ int	main(void)
 		handle_signals_interactive();
 		read_line = readline("minishell$ ");
 		if (!read_line)
+		{
+			printf("is it this?\n");
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
+		}
 	//	if (g_msh_signal == SIGINT)
 	//	{
 	//		if (read_line)

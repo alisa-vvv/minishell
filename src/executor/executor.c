@@ -28,12 +28,12 @@ static int	cleanup_in_parent_process(
 	if (command->input_is_pipe == true)
 	{
 		test_close(command_io->in_pipe[READ_END]);
-		command_io->in_pipe[READ_END] = CLOSED_FD;
+		//command_io->in_pipe[READ_END] = CLOSED_FD;
 	}
 	if (command->output_is_pipe == true)
 	{
 		test_close(command_io->out_pipe[WRITE_END]);
-		command_io->out_pipe[WRITE_END] = CLOSED_FD;
+		//command_io->out_pipe[WRITE_END] = CLOSED_FD;
 	}
 	free_and_close_exec_data(command);
 	return (0);
@@ -163,16 +163,16 @@ static void	executor_cleanup(
 	while (++i < minishell_data->command_count)
 	{
 		free_and_close_exec_data(&exec_data[i]);
-		if (command_io[i].here_docs > 0)
-			test_close(command_io[i].here_docs);
-		if (command_io[i].in_pipe[0] > 2)
-			test_close(command_io[i].in_pipe[0]);
-		if (command_io[i].in_pipe[1] > 2)
-			test_close(command_io[i].in_pipe[1]);
-		if (command_io[i].out_pipe[0] > 2)
-			test_close(command_io[i].out_pipe[0]);
-		if (command_io[i].out_pipe[1] > 2)
-			test_close(command_io[i].out_pipe[1]);
+	//	if (command_io[i].here_docs > 0)
+	//		test_close(command_io[i].here_docs);
+	//	if (command_io[i].in_pipe[0] > 2)
+	//		test_close(command_io[i].in_pipe[0]);
+	//	if (command_io[i].in_pipe[1] > 2)
+	//		test_close(command_io[i].in_pipe[1]);
+	//	if (command_io[i].out_pipe[0] > 2)
+	//		test_close(command_io[i].out_pipe[0]);
+	//	if (command_io[i].out_pipe[1] > 2)
+	//		test_close(command_io[i].out_pipe[1]);
 	}
 	free(command_io);
 	free(p_ids);

@@ -70,7 +70,7 @@ void	free_and_close_redir_list(
 		if (redirection->type == heredoc)
 		{
 			test_close(redirection->dest_fd);
-			redirection->dest_fd = CLOSED_FD;
+//			redirection->dest_fd = CLOSED_FD;
 		}
 		free(redirection);
 		redirection = redirection->next;
