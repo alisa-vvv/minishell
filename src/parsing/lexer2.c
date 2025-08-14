@@ -52,7 +52,22 @@ int	count_symbol(element *tokenlist, int pos, char symbol)
 	}
 	return (count);
 }
+//test token
+void test_tokens(element tokenlist)
+{
+	size_t i;
+	t_token	*token_test;
 
+	i = 0;
+	while (i < tokenlist.element_list.total)
+	{
+		token_test = tokenlist.element_list.tokens[i];
+		t_printf("Token value = %s$\n", token_test->value);
+		t_printf("Token type = %d$\n", token_test->type);
+		i++;
+	}
+	t_printf("\n");
+}
 //index lexer by traversing - not needed anymore
 int index_lexer(element **tokenlist)
 {
@@ -71,34 +86,21 @@ int index_lexer(element **tokenlist)
     return (0);
 }
 
-//check left and right from pipes and set as in or out
-int set_pipe_cm(element *tokenlist)
+int check_lexer(element *tokenlist, t_minishell_data *minishell_data)
 {
-	size_t i;
-	i = 0;
-
-	while (i < (size_t)tokenlist->element_list.total)
-	{
-		t_token *check_token;
-		t_token *tmp;
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (check_token->type == PIPE)
-		{
-			if (i > 0)
-			{
-				tmp = (t_token *)tokenlist->element_list.tokens[i - 1];
-				tmp->type = PIPE_IN;
-			}
-			if (i + 1 < (size_t)tokenlist->element_list.total)
-			{
-				tmp = (t_token *)tokenlist->element_list.tokens[i + 1];
-				tmp = PIPE_OUT;
-			}
-		}
-		i++;
-	}
+	test_tokens(*tokenlist);
+	exp_lexer(tokenlist, &minishell_data, PARAMETER);
+	exp_lexer(tokenlist, &minishell_data, SINGLE_Q);
+	exp_lexer(tokenlist, &minishell_data, DOUBLE_Q);
+	if (single_token(tokenlist) || val_redir(tokenlist))
+		return (write(1, "Wrong redirect\n", 15));
+	check_hyphens(tokenlist);
+//	set_pipe_cm(tokenlist);
+	t_printf("\nAfter expansion and rm quotes:\n");
+	test_tokens(*tokenlist);
 	return (0);
 }
+
 
 // check if left and right are args for pipe
 int	check_pipe_redirect(char *str, char symbol)

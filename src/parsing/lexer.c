@@ -182,20 +182,6 @@ int	fill_tokenlist(element *tokenlist, char *str)
 	return (0);
 }
 
-void test_tokens(element tokenlist)
-{
-	size_t i;
-	t_token	*token_test;
-
-	i = 0;
-	while (i < tokenlist.element_list.total)
-	{
-		token_test = tokenlist.element_list.tokens[i];
-		t_printf("Token value = %s$\n", token_test->value);
-		t_printf("Token type = %d$\n", token_test->type);
-		i++;
-	}
-}
 
 
 // default option to put trimmed input in tokenlist
@@ -218,16 +204,9 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	fill_tokenlist(&token_list, input_line);
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
-	test_tokens(token_list);
-	exp_lexer(&token_list, &minishell_data, PARAMETER);
-	exp_lexer(&token_list, &minishell_data, SINGLE_Q);
-	exp_lexer(&token_list, &minishell_data, DOUBLE_Q);
-	if (single_token(&token_list))
-		return (1);
-	val_redir(&token_list);
-	set_pipe_cm(&token_list);
-	t_printf("\nAfter expansion and rm quotes:\n");
-	test_tokens(token_list);
+	if (check_lexer(&token_list, minishell_data))
+		return (write(1, "Failed check types\n", 19));
+	
 	return (0);
 }
 

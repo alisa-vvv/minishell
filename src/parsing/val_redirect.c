@@ -51,7 +51,34 @@ int single_token(element *tokenlist)
     }
     return (0);
 }
+//check left and right from pipes and set as in or out
+int set_pipe_cm(element *tokenlist)
+{
+	size_t i;
+	i = 0;
 
+	while (i < (size_t)tokenlist->element_list.total)
+	{
+		t_token *check_token;
+		t_token *tmp;
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		if (check_token->type == PIPE)
+		{
+			if (i > 0)
+			{
+				tmp = (t_token *)tokenlist->element_list.tokens[i - 1];
+				tmp->type = PIPE_IN;
+			}
+			if (i + 1 < (size_t)tokenlist->element_list.total)
+			{
+				tmp = (t_token *)tokenlist->element_list.tokens[i + 1];
+				tmp->type = PIPE_OUT;
+			}
+		}
+		i++;
+	}
+	return (0);
+}
 
 //set values 
 int val_redir(element *tokenlist)
@@ -63,7 +90,7 @@ int val_redir(element *tokenlist)
     while (i < (size_t)tokenlist->element_list.total)
     {
         check_token = (t_token *)tokenlist->element_list.tokens[i];
-        if (check_token->type == HEREDOC)
+        if (check_token->type == HEREDOC && i + 1 <= (size_t)tokenlist->element_list.total)
         {
             check_token = (t_token *)tokenlist->element_list.tokens[i+1];
             check_token->type = HEREDOC_DEL;
@@ -71,14 +98,16 @@ int val_redir(element *tokenlist)
         }
         else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT)
         {
-            if (i + 1 < (size_t)tokenlist->element_list.total && lookahead(tokenlist, i)->type != FILENAME)
+            if (i + 1 <= (size_t)tokenlist->element_list.total)
             {
                 check_token = (t_token *)tokenlist->element_list.tokens[i+1];
-                check_token->type = FILENAME;
+                check_token->type = check_filename(check_token->value);
                 i++;
             }
         }
-        i++;
+        else 
+            i++;
     }
+//    t_printf("in val redirect\n");
     return (0);
 }

@@ -25,6 +25,7 @@ CFILES_VECLIB	=	vec_lib.c\
 CFILES_PARSER	=	debug.c\
 					lexer_match.c\
 					expansions.c\
+					hyphen_handler.c\
 					lexer.c\
 					lexer2.c\
 					quote_handler.c\

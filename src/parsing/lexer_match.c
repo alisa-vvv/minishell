@@ -38,17 +38,20 @@ int match_nonterminal(char *str_token)
         return (QUESTION_MARK);
     else if (str_token[0] == '!')
         return (EXCLAM_MARK);
-    return(UNKNOWN);
+    else 
+        return(UNKNOWN);
 }
 
-int check_filename(char *str_token)
+int check_filename(const char *str_token)
 {
     char *dot;
-    dot = ft_strchr(str_token, '.');
-    if (ft_strncmp(dot, ".txt", 5) || ft_strncmp(dot, ".doc", 5) || ft_strncmp(dot, ".sh", 4) )
-        return (FILENAME);
-    else 
-        return (STRING);
+    if (ft_strchr(str_token, '.') != NULL)
+    {
+        dot = ft_strchr(str_token, '.');
+        if (ft_strncmp(dot, ".txt", 5) || ft_strncmp(dot, ".doc", 5) || ft_strncmp(dot, ".sh", 4))
+            return (FILENAME);
+    }
+    return (STRING);
 }
 
 //check what commands are given
@@ -71,7 +74,7 @@ int match_string(char *str_token)
     else if (ft_strncmp(str_token, "exit", 5) == 0)
         exit(0);
     else if (ft_strchr(str_token, '.'))
-        check_filename(str_token);
+        return (check_filename(str_token));
     else
         return (STRING);
 }

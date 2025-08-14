@@ -54,6 +54,7 @@ enum
 	DOUBLE_DOT,
 	DOT,
 	HYPHEN,
+	HYPHEN_ARG,
 	PIPE,
 	PIPE_IN,
 	PIPE_OUT,
@@ -85,6 +86,8 @@ int			token_count(char *str);
 t_token		*new_token(char *str, int len);
 int			fill_tokenlist(element *tokenlist, char *str);
 void		ft_safefree(void *ptr);
+int			check_filename(const char *str_token);
+int			check_lexer(element *tokenlist, t_minishell_data *minishell_data);
 char		*ft_strchr(const char *s, int c);
 void		ft_free_arr(void **array);
 size_t		ft_strlcpy(char *dst, const char *src, size_t size);
@@ -108,8 +111,11 @@ int			match_string(char *str_token);
 int			expand_var(element **tokenlist, int pos,
 				t_minishell_data **minishell_data, bool quoted);
 int			rm_quotes(element *tokenlist, int pos, char symbol);
+int			all_num_alph(const char *str);
+void		check_hyphens(element *tokenlist);
 int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist,
 				int pos);
+int			set_pipe_cm(element *tokenlist);
 t_exec_data	*convert_data(element *tokenlist);
 
 #endif

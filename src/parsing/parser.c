@@ -39,38 +39,6 @@ t_token *lookahead(element *tokenlist, size_t index)
 	return (check_token);
 }
 
-// check lexer on expansion and quotes
-int	exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
-{
-	size_t	i;
-	t_token	*check_token;
-
-	i = 0;
-	while (i < (size_t)tokenlist->element_list.total)
-	{
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		// e_printf("TYPE = %d \n", (int)check_token->type);
-		if ((int)check_token->type == PARAMETER && type == PARAMETER
-			|| ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
-		{
-			rm_quotes(tokenlist, i, '"');
-			if (type == DOUBLE_Q && ft_strchr(check_token->value, '$') != NULL)
-			{
-				if (expand_var(&tokenlist, i, minishell_data, true))
-					i--;
-			}
-			else if (type == PARAMETER)
-			{
-				if (expand_var(&tokenlist, i, minishell_data, false))
-					i--;
-			}
-		}
-		else if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
-			rm_quotes(tokenlist, i, '\'');
-		i++;
-	}
-	return (0);
-}
 
 // push appropiate token to exec_data argv
 int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
@@ -92,8 +60,8 @@ int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
 		if (pos == 0)
 		{
 			(*comm_list)->redirections->dest_fd = -1;
-			(*comm_list)->redirections->dest_filename = -1;
-			(*comm_list)->redirections->src_fd = NULL;
+			(*comm_list)->redirections->dest_filename = NULL;
+			(*comm_list)->redirections->src_fd = -1;
 			(*comm_list)->redirections->src_filename = NULL;
 			(*comm_list)->redirections->next = NULL;
 		}
