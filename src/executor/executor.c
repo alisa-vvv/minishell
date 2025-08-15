@@ -245,7 +245,7 @@ int	executor(
 	p_id = ft_calloc(sizeof(int), command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
 	command_io = ft_calloc(sizeof(t_command_io), command_count);
-	if (!p_id || !p_exit_codes)
+	if (!p_id || !p_exit_codes || !command_io)
 	{
 		minishell_data->last_pipeline_return = errno;
 		perror_and_return(NULL, MALLOC_ERR, extern_err, errno);
