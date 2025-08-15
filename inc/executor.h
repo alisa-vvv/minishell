@@ -18,6 +18,9 @@
 # define PATH_MAX 4096
 # define READ_END 0
 # define WRITE_END 1
+# define CLOSED_FD -1
+// used to indicate that FD was already closed
+
 
 /*		Executor errors		*/
 
@@ -44,7 +47,8 @@ int	create_here_doc(
 /*		Sets up the input and output of the command		*/
 int	prepare_command_io(
 	const t_exec_data *command,
-	t_command_io *const command_io
+	t_command_io *const command_io,
+	int i
 );
 
 int	perform_redirections(

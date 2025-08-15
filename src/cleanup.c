@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell_testfuncs.h"
+
 #include "libft.h"
 #include "stdlib.h"
 #include "executor.h"
@@ -70,7 +72,7 @@ void	free_and_close_redir_list(
 		if (redirection->type == heredoc)
 		{
 			test_close(redirection->dest_fd);
-//			redirection->dest_fd = CLOSED_FD;
+			redirection->dest_fd = CLOSED_FD;
 		}
 		free(redirection);
 		redirection = redirection->next;
@@ -85,9 +87,10 @@ void	free_and_close_exec_data(
 
 	if (exec_data->redirections)
 		free_and_close_redir_list(exec_data->redirections);
-	i = -1;
+	exec_data->redirections = NULL;
 	if (exec_data->argv)
 	{
+		i = -1;
 		while (exec_data->argv[++i])
 		{
 			free(exec_data->argv[i]);

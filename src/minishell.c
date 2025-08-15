@@ -52,7 +52,7 @@ int	main(void)
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	rl_catch_signals = false;
 	setup_minishell_data(&minishell_data);
-	int	TEST_len = 3;
+	int	TEST_len = 2;
 	while (is_open != 0)
 	{
 		handle_signals_interactive();

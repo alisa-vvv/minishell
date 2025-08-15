@@ -28,12 +28,14 @@ static int	cleanup_in_parent_process(
 	if (command->input_is_pipe == true)
 	{
 		test_close(command_io->in_pipe[READ_END]);
-		//command_io->in_pipe[READ_END] = CLOSED_FD;
+		command_io->in_pipe[READ_END] = CLOSED_FD;
+		(command_io - 1)->out_pipe[READ_END] = CLOSED_FD;
 	}
 	if (command->output_is_pipe == true)
 	{
 		test_close(command_io->out_pipe[WRITE_END]);
-		//command_io->out_pipe[WRITE_END] = CLOSED_FD;
+		command_io->out_pipe[WRITE_END] = CLOSED_FD;
+		(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD;
 	}
 	free_and_close_exec_data(command);
 	return (0);
@@ -41,7 +43,7 @@ static int	cleanup_in_parent_process(
 
 static int	run_child_process(
 	t_exec_data *const command,
-	const t_command_io *const command_io,
+	t_command_io *const command_io,
 	t_minishell_data *const minishell_data
 )
 {
@@ -51,11 +53,13 @@ static int	run_child_process(
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
 		test_close(command_io->in_pipe[READ_END]);
+		command_io->in_pipe[READ_END] = CLOSED_FD;
 	}
 	if (command->output_is_pipe == true)
 	{
 		test_dup2(command_io->out_pipe[WRITE_END], STDOUT_FILENO);
 		test_close(command_io->out_pipe[WRITE_END]);
+		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 	}
 	err_check = perform_redirections(command->redirections, command_io);
 	if (command->is_builtin == false)
@@ -105,6 +109,8 @@ static int	execute_command(
 	return (err_check);
 }
 
+#define TESTDEF 3
+
 static int	wait_for_children(
 	const int command_count,
 	t_minishell_data *const minishell_data,
@@ -120,8 +126,6 @@ static int	wait_for_children(
 	printf("command count: %d\n", command_count);
 	while (++i < command_count)
 	{
-		//while (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) previously this was a loop, still not sure how waitpid works
-		//to be tested further
 		printf("\np_ids[%d]: %d\n", i, p_ids[i]);
 		printf("p_exit_codes[%d]: %d\n\n", i, p_exit_codes[i]);
 		if (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) // check if there's some exit signals or codes we need to handle here
@@ -162,17 +166,35 @@ static void	executor_cleanup(
 	i = -1;
 	while (++i < minishell_data->command_count)
 	{
+		//marking these as closed is most likely useless. remove unless proven otherwise.
 		free_and_close_exec_data(&exec_data[i]);
-	//	if (command_io[i].here_docs > 0)
-	//		test_close(command_io[i].here_docs);
-	//	if (command_io[i].in_pipe[0] > 2)
-	//		test_close(command_io[i].in_pipe[0]);
-	//	if (command_io[i].in_pipe[1] > 2)
-	//		test_close(command_io[i].in_pipe[1]);
-	//	if (command_io[i].out_pipe[0] > 2)
-	//		test_close(command_io[i].out_pipe[0]);
-	//	if (command_io[i].out_pipe[1] > 2)
-	//		test_close(command_io[i].out_pipe[1]);
+		if (command_io[i].here_docs > 0)
+		{
+			test_close(command_io[i].here_docs);
+			//command_io[i].here_docs = CLOSED_FD;
+		}
+		if (command_io[i].out_pipe[READ_END] > 2)
+		{
+			printf("which command: %d\n", i);
+			printf("is it this one?\n");
+			test_close(command_io[i].out_pipe[READ_END]);
+			//command_io[i].out_pipe[READ_END] = CLOSED_FD;
+		}
+		if (command_io[i].out_pipe[WRITE_END] > 2)
+		{
+			test_close(command_io[i].out_pipe[WRITE_END]);
+			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
+		}
+		if (command_io[i].in_pipe[READ_END] > 2)
+		{
+			test_close(command_io[i].in_pipe[READ_END]);
+			//command_io[i].in_pipe[READ_END] = CLOSED_FD;
+		}
+		if (command_io[i].in_pipe[WRITE_END] > 2)
+		{
+			test_close(command_io[i].in_pipe[WRITE_END]);
+			//command_io[i].in_pipe[WRITE_END] = CLOSED_FD;
+		}
 	}
 	free(command_io);
 	free(p_ids);
@@ -208,18 +230,23 @@ int	executor(
 		minishell_data->last_pipeline_return = errno;
 		perror_and_return(NULL, MALLOC_ERR, extern_err, errno);
 	}
+	minishell_data->last_pipeline_return = 0;
 	i = -1;
 	while (++i < command_count)
 	{
-		if (prepare_command_io(&exec_data[i], &command_io[i]) < 0)
+		if (prepare_command_io(&exec_data[i], command_io, i) < 0)
 		{
 			// add broken pipe error message/code?
 			command_count = i; // this is weird but it's for waiting
 			break ;
 		}
-		p_id[i] = execute_command(&exec_data[i], &command_io[i], minishell_data);
 	}
-	minishell_data->last_pipeline_return = 0;
+	i = -1;
+	// thiis while loop conditon is a bit of a crutch so that program doesnt execute when pipeline fails.
+	// replace it with proper error handling logic and split into functions.
+	while (command_count == minishell_data->command_count
+		&& (++i < command_count))
+		p_id[i] = execute_command(&exec_data[i], &command_io[i], minishell_data);
 	// will wait only if there is more than 1 command and/or of the one command is not builtin
 	// question: should single commands be executed in shell?
 	if (command_count > 1 ||
