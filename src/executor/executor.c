@@ -109,8 +109,6 @@ static int	execute_command(
 	return (err_check);
 }
 
-#define TESTDEF 3
-
 static int	wait_for_children(
 	const int command_count,
 	t_minishell_data *const minishell_data,
@@ -201,26 +199,48 @@ static void	executor_cleanup(
 	free(p_exit_codes);
 	free(exec_data);
 }
-//
-// Idea for recording the return value of pipeline:
-// do not free a command's exec_data. add a variable holding it's return value.
-// after executing the entire pipeline, iterate through exec_data to check ////
-// idea 2: use wait()
-// record PID of each process, associate it with the command.
-// while wait()ing, record the specific pid value in an array of return values
-// then iterate through array from right to left until an error is found
-// if no errors, return 0
-// question: go back to setting up the pipeline first, then running everything?
-int	executor(
+
+int	build_pipeline(
 	t_exec_data *exec_data,
-	int command_count,
-	t_minishell_data *const minishell_data
+	t_command_io *command_io,
+	int command_count
 )
 {
-	int				i;
+	int	i;
+
+	i = -1;
+	while (++i < command_count)
+	{
+		if (prepare_command_io(&exec_data[i], command_io, i) < 0)
+			return (i);
+	}
+	return (command_count);
+}
+
+void	execute_commands(
+	t_minishell_data *const minishell_data,
+	t_exec_data *command,
+	t_command_io *command_io,
+	int *p_id
+)
+{
+	int	i;
+
+	i = -1;
+	while (++i < minishell_data->command_count)
+		p_id[i] = execute_command(&command[i], &command_io[i], minishell_data);
+}
+
+int	executor(
+	t_minishell_data *const minishell_data,
+	t_exec_data *exec_data,
+	int command_count
+)
+{
 	int				*p_id;
 	int				*p_exit_codes;
-	t_command_io	*command_io; // this most likely needs to be an array to handle closes on error.
+	int				pipeline_elem_count;
+	t_command_io	*command_io;
 
 	p_id = ft_calloc(sizeof(int), command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
@@ -231,24 +251,9 @@ int	executor(
 		perror_and_return(NULL, MALLOC_ERR, extern_err, errno);
 	}
 	minishell_data->last_pipeline_return = 0;
-	i = -1;
-	while (++i < command_count)
-	{
-		if (prepare_command_io(&exec_data[i], command_io, i) < 0)
-		{
-			// add broken pipe error message/code?
-			command_count = i; // this is weird but it's for waiting
-			break ;
-		}
-	}
-	i = -1;
-	// thiis while loop conditon is a bit of a crutch so that program doesnt execute when pipeline fails.
-	// replace it with proper error handling logic and split into functions.
-	while (command_count == minishell_data->command_count
-		&& (++i < command_count))
-		p_id[i] = execute_command(&exec_data[i], &command_io[i], minishell_data);
-	// will wait only if there is more than 1 command and/or of the one command is not builtin
-	// question: should single commands be executed in shell?
+	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
+	if (pipeline_elem_count == command_count)
+		execute_commands(minishell_data, exec_data, command_io, p_id);
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->is_builtin == false))
 		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);

@@ -34,7 +34,8 @@ static void	setup_minishell_data(
 )
 {
 	reset_minishell_data(minishell_data);
-	minishell_data->env = clone_env(&minishell_data->env_var_count, &minishell_data->env_mem);
+	minishell_data->env = clone_env(&minishell_data->env_var_count,
+								 &minishell_data->env_mem);
 	if (!minishell_data->env)
 		exit(errno);
 }
@@ -50,9 +51,9 @@ int	main(void)
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
+	int	TEST_len = 2;
 	rl_catch_signals = false;
 	setup_minishell_data(&minishell_data);
-	int	TEST_len = 2;
 	while (is_open != 0)
 	{
 		handle_signals_interactive();
@@ -77,7 +78,7 @@ int	main(void)
 		{
 			handle_signals_non_interactive();
 			exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
-			err_check = executor(exec_data, TEST_len, &minishell_data);
+			err_check = executor(&minishell_data, exec_data, TEST_len);
 		}
 		else
 			printf("We entered: %s\n", read_line);
