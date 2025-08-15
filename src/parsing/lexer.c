@@ -12,12 +12,6 @@
 
 #include "parser.h"
 
-int	is_EOS(char *str, int i)
-{
-	if (i == ft_strlen(str))
-		return (1);
-	return (0);
-}
 
 int	skip_blanks(char *str, int pos)
 {

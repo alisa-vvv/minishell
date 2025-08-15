@@ -38,26 +38,14 @@ int all_num_alph(
     return(UNKNOWN);
 }
 
-void check_hyphens(
-    element *tokenlist
+int check_hyphens(
+    const char *str_token
 )
 {
-    size_t	i;
-    int alnum; 
-
-	t_token	*check_token;
-
-	i = 0;
-	while (i < (size_t)tokenlist->element_list.total)
-	{
-        check_token = (t_token *)tokenlist->element_list.tokens[i];
-        if (check_token->type == HYPHEN)
-        {
-            if (all_num_alph(check_token->value + 1) == STRING)
-                check_token->type = HYPHEN_ARG;
-            else 
-                check_token->type = all_num_alph(check_token->value +1);
-        }
-        i++;
-    }
+    if (str_token + 1 == (void*)0)
+        return (OPERATOR);
+    else if (all_num_alph(str_token + 1) == STRING)
+        return(HYPHEN);
+    else 
+        return (all_num_alph(str_token + 1));
 }

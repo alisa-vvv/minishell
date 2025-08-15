@@ -93,7 +93,7 @@ int	match_token(char *str_token)
 	else if (str_token[0] == '(' || str_token[0] == '{')
 		return (OPEN_BRACKET);
 	else if (str_token[0] == '-')
-		return (HYPHEN);
+		return (check_hyphens(str_token));
 	else if ((ft_strchr(str_token, '=') != NULL))
 		return (OPERATOR);
 	else if (str_token[0] == '/')
@@ -101,7 +101,7 @@ int	match_token(char *str_token)
 	else if (str_token[0] == '\\')
 		return (BACKW_SLASH);
 	else if (ft_isdigit(str_token[0]))
-		return (NUMBER);
+		return (all_num_alph(str_token));
 	else if (ft_isalpha(str_token[0]))
 		return (match_string(str_token));
 	else

@@ -94,8 +94,7 @@ int check_lexer(element *tokenlist, t_minishell_data *minishell_data)
 	exp_lexer(tokenlist, &minishell_data, DOUBLE_Q);
 	if (single_token(tokenlist) || val_redir(tokenlist))
 		return (write(1, "Wrong redirect\n", 15));
-	check_hyphens(tokenlist);
-//	set_pipe_cm(tokenlist);
+	set_pipe_cm(tokenlist);
 	t_printf("\nAfter expansion and rm quotes:\n");
 	test_tokens(*tokenlist);
 	return (0);

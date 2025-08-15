@@ -26,7 +26,8 @@ int single_token(element *tokenlist)
     return (0);
 }
 //check left and right from pipes and set as in or out
-int set_pipe_cm(element *tokenlist)
+int set_pipe_cm(
+    element *tokenlist)
 {
 	size_t i;
 	i = 0;
