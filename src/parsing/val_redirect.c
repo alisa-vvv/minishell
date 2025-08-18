@@ -25,34 +25,34 @@ int single_token(element *tokenlist)
     }
     return (0);
 }
-//check left and right from pipes and set as in or out
-int set_pipe_cm(
-    element *tokenlist)
+void set_pipe_cm(
+	element *tokenlist)
 {
 	size_t i;
-	i = 0;
+    t_token *c_token;
+    bool flag;
 
-	while (i < (size_t)tokenlist->element_list.total)
+	i = 0;
+	flag = true;
+	while(i < (size_t)tokenlist->element_list.total)
 	{
-		t_token *check_token;
-		t_token *tmp;
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (check_token->type == PIPE)
+		c_token = (t_token *)tokenlist->element_list.tokens[i];
+		if (i == 0 && c_token->type >= CAT && c_token->type <= UNSET)
 		{
-			if (i > 0)
-			{
-				tmp = (t_token *)tokenlist->element_list.tokens[i - 1];
-				tmp->type = PIPE_IN;
-			}
-			if (i + 1 < (size_t)tokenlist->element_list.total)
-			{
-				tmp = (t_token *)tokenlist->element_list.tokens[i + 1];
-				tmp->type = PIPE_OUT;
-			}
+			c_token->command = true;
+			flag = false;
 		}
+		else if (c_token->type == REDIRECT_IN || c_token->type == REDIRECT_OUT || c_token->type == REDIRECT_OUT_APP || c_token->type == PIPE || c_token->type == HEREDOC)
+			flag = true;
+		else if (flag == true)
+		{
+			c_token->command = true;
+			flag = false;
+		}
+		else
+			c_token->command = false; 
 		i++;
 	}
-	return (0);
 }
 
 //set values 

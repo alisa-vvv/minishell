@@ -32,6 +32,7 @@ typedef struct s_token
 {
 	int		type;
 	char	*value;
+	bool	command;
 	size_t	pos;
 
 }			t_token;
@@ -41,6 +42,7 @@ enum
 	COMMAND,
 	STRING,
 	NUMBER,
+	ARGUMENT,
 	OPERATOR,
 	PARAMETER,
 	FILENAME,
@@ -114,7 +116,7 @@ int			all_num_alph(const char *str);
 int			check_hyphens(const char *str_token);
 int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist,
 				int pos);
-int			set_pipe_cm(element *tokenlist);
-t_exec_data	*convert_data(element *tokenlist);
+void		set_pipe_cm(element *tokenlist);
+t_exec_data	*convert_data(element *tokenlist, size_t pos);
 
 #endif

@@ -40,6 +40,7 @@ t_token *lookahead(element *tokenlist, size_t index)
 }
 
 
+
 // push appropiate token to exec_data argv
 int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
 {
@@ -71,28 +72,64 @@ int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
 	return (0);
 }
 
-//convert the tokenlist to executable data 
-t_exec_data	*convert_data(element *tokenlist)
+int count_lists(
+	element *tokenlist)
 {
 	size_t		i;
+	size_t		count;
+	count = 0;
+	while (i < tokenlist->element_list.total)
+	{
+		t_token * check_token;
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		if (check_token->command)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+int count_next_pos(
+	element *tokenlist, 
+	int pos)
+{
+	size_t		i;
+	i = pos;
+	while (i < tokenlist->element_list.total)
+	{
+		t_token * check_token;
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		if (check_token->command)
+			return (check_token->pos);
+		i++;
+	}
+	return (pos);
+}
+
+//convert the tokenlist to executable data 
+t_exec_data	*convert_data(element *tokenlist, size_t pos)
+{
 	t_exec_data	*comm_list;
 
-	i = 0;
 	comm_list = malloc(sizeof(t_exec_data));
 	if (!comm_list)
 		return (NULL);
-	comm_list->argv = malloc(sizeof(char *) * tokenlist->element_list.total);
+	comm_list->argv = malloc(sizeof(char *) * count_next_pos(tokenlist, pos + 1));
 	if (!comm_list->argv)
 		return (NULL);
 	comm_list->argv[tokenlist->pf_element_total(tokenlist)] = NULL;
-	while (i < (size_t)tokenlist->element_list.total)
+	while (pos < (size_t)tokenlist->element_list.total)
 	{
-		if (!add_arg_to_list(&comm_list, tokenlist, i))
+		t_token* check_token;
+		check_token = tokenlist->pf_element_get(tokenlist, pos);
+		// if (check_token->command)
+		// 	convert_data(tokenlist, pos);
+		if (!add_arg_to_list(&comm_list, tokenlist, pos))
 		{
 			free_2d_arr((void *)comm_list->argv);
 			return (NULL);
 		}
-		i++;
+		pos++;
 	}
 	return (comm_list);
 }

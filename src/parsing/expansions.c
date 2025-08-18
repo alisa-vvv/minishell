@@ -85,6 +85,8 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
     char *name;
 
     name = refine_name_var(check_token->value, name);
+    if (ft_strncmp(name, "?", 2))
+        printf("%d\n", (*minishell_data)->last_pipeline_return);
     e_printf("\nNAME= %s \n", name);
     if (quoted || env_var_get_value((*minishell_data)->env, name))
     {

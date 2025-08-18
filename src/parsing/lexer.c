@@ -72,6 +72,7 @@ t_token	*new_token(char *str, int len)
 	if (!token->value)
 		return (NULL);
 	token->type = match_token(token->value);
+	token->command = false; 
 	return (token);
 }
 

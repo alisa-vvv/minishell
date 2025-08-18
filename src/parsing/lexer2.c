@@ -64,6 +64,7 @@ void test_tokens(element tokenlist)
 		token_test = tokenlist.element_list.tokens[i];
 		t_printf("Token value = %s$\n", token_test->value);
 		t_printf("Token type = %d$\n", token_test->type);
+		t_printf("Token_cm = %d$\n", token_test->command);
 		i++;
 	}
 	t_printf("\n");
@@ -73,7 +74,7 @@ int index_lexer(element **tokenlist)
 {
     size_t i;
     i = 0;
-	e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
+	//e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
 
     while (i < (size_t)(*tokenlist)->element_list.total)
     {
@@ -88,6 +89,8 @@ int index_lexer(element **tokenlist)
 
 int check_lexer(element *tokenlist, t_minishell_data *minishell_data)
 {
+	t_exec_data	*comm_list;
+
 	test_tokens(*tokenlist);
 	exp_lexer(tokenlist, &minishell_data, PARAMETER);
 	exp_lexer(tokenlist, &minishell_data, SINGLE_Q);
@@ -97,7 +100,8 @@ int check_lexer(element *tokenlist, t_minishell_data *minishell_data)
 	set_pipe_cm(tokenlist);
 	t_printf("\nAfter expansion and rm quotes:\n");
 	test_tokens(*tokenlist);
-	return (0);
+	comm_list = convert_data(tokenlist, 0);
+	return (0); 
 }
 
 
@@ -121,9 +125,6 @@ int	check_pipe_redirect(char *str, char symbol)
 		// check for single pipe or redirect
 		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i + 1 == '"' || !ft_isspace(str[i + 1])))
 			return (1);
-		//else if (str[i] == symbol && (str + i + 2 == (void *)0 || *str + i + 3 == '"' || !ft_isspace(str[i + 2])))
-		// 	return (1);
-		//t_printf("\nstring is:%c\n", str[i+1]);
 	}
     return (0);
 }
