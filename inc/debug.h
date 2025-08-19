@@ -23,11 +23,14 @@
 # include <stdio.h>
 # include "vec_lib.h"
 # include "parser.h"
+# include "minishell.h"
+
 
 void    e_printf(const char *str, ...);
 void    l_printf(const char *str, ...);
 void    t_printf(const char *str, ...);
 void    q_printf(const char *str, ...);
 void    test_tokens(element tokenlist);
+void    test_execdata(t_exec_data execdata);
 
 #endif

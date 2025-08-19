@@ -37,7 +37,7 @@ void set_pipe_cm(
 	while(i < (size_t)tokenlist->element_list.total)
 	{
 		c_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (i == 0 && c_token->type >= CAT && c_token->type <= UNSET)
+		if (i == 0 && c_token->type >= CAT && c_token->type <= UNSET || i == 0 && c_token->type == HEREDOC)
 		{
 			c_token->command = true;
 			flag = false;

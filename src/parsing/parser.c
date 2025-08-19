@@ -27,73 +27,163 @@
 //     - exit with no options
 
 
+int set_heredoc(t_exec_data** execdata, element *tokenlist, int pos)
+{
+	t_token *check_token;
+	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+	if (check_token->type == HEREDOC)
+	{
+		(*execdata)->redirections = malloc(sizeof(t_redir_list));
+		if (!(*execdata)->redirections)
+			return (write(1, MALLOC_ERR, 15));
+		if (pos == 0)
+		{
+			(*execdata)->redirections->dest_fd = -1;
+			(*execdata)->redirections->dest_filename = NULL;
+			(*execdata)->redirections->src_fd = -1;
+			(*execdata)->redirections->src_filename = NULL;
+			(*execdata)->redirections->next = NULL;
+		}
+	}
+	if (lookahead(tokenlist, pos)->type == HEREDOC_DEL)
+		(*execdata)->redirections->heredoc_delim = ft_strdup(check_token->value);
+	return (0);
+}
+
 // push appropiate token to exec_data argv
-int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
+int	add_arg_to_list(
+	t_exec_data **comm_list, 
+	element *tokenlist, 
+	int pos)
 {
 	t_token		*check_token;
 
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+	if (check_token->type == HEREDOC)
+		set_heredoc(comm_list, tokenlist, pos);
 	(*comm_list)->argv[pos] = ft_strdup(check_token->value);
 	if (!(*comm_list)->argv[pos])
 		return (write(1, MALLOC_ERR, 15));
-	if (check_token->command && check_token->type >= CAT && check_token->type <= UNSET)
-		(*comm_list)->is_builtin = check_token->type;
-	if ( pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
-		(*comm_list)->input_is_pipe = true;
-	if (check_token->type == HEREDOC)
+	if (check_token->command)
 	{
-		(*comm_list)->redirections = malloc(sizeof(t_redir_list));
-		if (!(*comm_list)->redirections)
-			return (write(1, MALLOC_ERR, 15));
-		if (pos == 0)
-		{
-			(*comm_list)->redirections->dest_fd = -1;
-			(*comm_list)->redirections->dest_filename = NULL;
-			(*comm_list)->redirections->src_fd = -1;
-			(*comm_list)->redirections->src_filename = NULL;
-			(*comm_list)->redirections->next = NULL;
-		}
-	}
-	if (check_token->type == HEREDOC_DEL)
-		(*comm_list)->redirections->heredoc_delim = ft_strdup(check_token->value);
+		if (check_token->type >= CAT && check_token->type <= UNSET)
+			(*comm_list)->is_builtin = check_token->type;
+		else 
+			(*comm_list)->is_builtin = 0;
+	} 
+	if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
+		(*comm_list)->input_is_pipe = true;
+
 	return (0);
 }
 
 
-//convert the tokenlist to executable data 
-t_exec_data	*convert_data(element *tokenlist, size_t pos)
+int fill_comm_list(
+	t_exec_data **execdata,
+	element *tokenlist,
+	int pos,
+	int pos_red
+)
 {
-	t_exec_data	*comm_list;
-
-	comm_list = malloc(sizeof(t_exec_data));
-	if (!comm_list)
-		return (NULL);
-	comm_list->argv = malloc(sizeof(char *) *count_next_cm(tokenlist, pos + 1));
-	if (!comm_list->argv)
-		return (NULL);
-	comm_list->argv[tokenlist->pf_element_total(tokenlist)] = NULL;
-	while (pos < (size_t)tokenlist->element_list.total)
+	int total;
+	t_token *check = (t_token *)tokenlist->element_list.tokens[pos];
+	if (pos_red <= pos)
+		total = tokenlist->element_list.total;
+	else if (check->type == HEREDOC)
+		total = pos_red + 1;
+	else
+		total = pos_red - 1;
+	while (pos < total)
 	{
 		t_token* check_token;
 		check_token = tokenlist->pf_element_get(tokenlist, pos);
-		if (check_token->command)
-			convert_data(tokenlist, pos);
-		if (!add_arg_to_list(&comm_list, tokenlist, pos))
+		if (add_arg_to_list(execdata, tokenlist, pos))
 		{
-			free_2d_arr((void *)comm_list->argv);
-			return (NULL);
+			free_2d_arr((void *)(*execdata)->argv);
+			return (write(1, MALLOC_ERR, 15));
 		}
 		pos++;
 	}
+	return (0);
+}
+
+//make an empty execdata
+t_exec_data *make_cm_list(
+	element *tokenlist, 
+	size_t pos)
+{
+	t_exec_data	*comm_list;
+	int pos_red;
+
+	pos_red = count_next_cm(tokenlist, pos);
+	comm_list = malloc(sizeof(t_exec_data));
+	if (!comm_list)
+		return (NULL);
+	// t_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
+	if (pos_red > 0)
+	{
+		pos_red = count_next_cm(tokenlist, pos);
+		comm_list->argv = malloc(sizeof(char *) * pos_red + 1);
+	}
+	else 
+		comm_list->argv = malloc(sizeof(char *) * (tokenlist->element_list.total + 1));
+	t_printf("IN HERE \n");
+	if (!comm_list->argv)
+		return (NULL);
+	if (pos_red > pos)
+		comm_list->argv[count_next_cm(tokenlist, pos)-1] = NULL;
+	else 
+		comm_list->argv[tokenlist->element_list.total] = NULL;
+	if (fill_comm_list(&comm_list, tokenlist, pos, pos_red))
+		return NULL;
 	return (comm_list);
 }
 
-// typedef struct	s_exec_data
+int add_redirect(
+	t_exec_data** execdata, 
+	element *tokenlist, 
+	int pos)
+{
+	t_token *check_token;
+	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	(*execdata)->redirections->type = check_token->type - 22;
+	(*execdata)->redirections->type = check_token->type;
+
+	return (0);
+}
+// typedef struct	s_redir_list
 // {
-// 	char			**argv;
-// 	int				is_builtin;
-// 	int				input_is_pipe;
-// 	int				output_is_pipe;
-// 	t_redir_list	*redirections;
-// }	t_exec_data;
+// 	t_redirect_type		type;
+// 	int					src_fd; // equal to -1 if fd not provided/not default
+// 	int					dest_fd; // equal to -1 if fd not provided/not default
+// 	char				*dest_filename; // equal to NULL if filename wasn't provided
+// 	char				*src_filename; // equal to NULL if filename wasn't provided
+// 	char				*heredoc_delim; // null or delim, will be used to check if input is heredoc
+// 	struct s_redir_list	*next;
+// }	t_redir_list;
+
+
+//convert the tokenlist to executable data 
+t_exec_data	*convert_data(
+	element *tokenlist, 
+	size_t pos)
+{
+	t_exec_data	*comm_list;
+
+	comm_list = make_cm_list(tokenlist, pos);
+	if (!comm_list)
+		return (NULL);
+	if (count_lists(tokenlist) > 1)
+	{
+		comm_list->redirections = malloc(sizeof(t_redir_list));
+		if (!comm_list->redirections)
+			return (NULL);
+		add_redirect(&comm_list, tokenlist, count_next_cm(tokenlist, pos) -1);
+	}
+	else 
+		comm_list->redirections = NULL;
+	t_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
+	
+	return (comm_list);
+}
 

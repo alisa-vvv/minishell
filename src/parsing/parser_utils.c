@@ -44,6 +44,23 @@ int	find_symbol(
 	}
 	return (-1);
 }
+int	find_token_type(
+	element *tokenlist, 
+	size_t pos, 
+	t_token_type type)
+{
+	t_token	*check_token;
+
+	while (pos < tokenlist->element_list.total)
+	{
+		check_token = (t_token *)tokenlist->element_list.tokens[pos];
+		if (check_token->type == type)
+			return (pos);
+		pos++;
+	}
+	return (-1);
+}
+
 
 //count how many exec data structs need to be made
 int count_lists(
@@ -69,7 +86,7 @@ int count_next_cm(
 	int pos)
 {
 	size_t		i;
-	i = pos;
+	i = pos + 1;
 	while (i < tokenlist->element_list.total)
 	{
 		t_token * check_token;
@@ -78,5 +95,5 @@ int count_next_cm(
 			return (check_token->pos);
 		i++;
 	}
-	return (pos);
+	return (-1);
 }

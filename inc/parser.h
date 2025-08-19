@@ -28,16 +28,7 @@
 
 # define MALLOC_ERR "Error! malloc()"
 
-typedef struct s_token
-{
-	int		type;
-	char	*value;
-	bool	command;
-	size_t	pos;
-
-}			t_token;
-
-enum 
+typedef enum	e_token_type
 {
 	COMMAND,
 	STRING,
@@ -56,19 +47,19 @@ enum
 	DOUBLE_DOT,
 	DOT,
 	HYPHEN,
-	PIPE,
-	PIPE_IN,
-	PIPE_OUT,
-	HEREDOC,
-	HEREDOC_DEL,
-	REDIRECT_OUT,
-	REDIRECT_OUT_APP,
-	REDIRECT_IN,
-
 	FORW_SLASH,
 	BACKW_SLASH,
 	QUESTION_MARK,
 	EXCLAM_MARK,
+	
+	PIPE,
+	PIPE_IN,
+	PIPE_OUT,
+	REDIRECT_IN,
+	HEREDOC,
+	HEREDOC_DEL,
+	REDIRECT_OUT,
+	REDIRECT_OUT_APP,
 
 	CAT,
 	CD,
@@ -80,14 +71,23 @@ enum
 
 	UNKNOWN
 
-};
+} t_token_type;
+
+typedef struct s_token
+{
+	t_token_type	type;
+	char		*value;
+	bool		command;
+	size_t		pos;
+}			t_token;
+
 
 int			default_lexer(char *input_line, t_minishell_data *minishell_data);
 int			token_count(char *str);
 t_token		*new_token(char *str, int len);
 int			fill_tokenlist(element *tokenlist, char *str);
 void		ft_safefree(void *ptr);
-const char* enum_to_str(int symbols);
+const char* enum_to_str(t_token_type symbols);
 int			check_filename(const char *str_token);
 int			check_lexer(element *tokenlist, t_minishell_data *minishell_data);
 char		*ft_strchr(const char *s, int c);
@@ -118,7 +118,9 @@ int			check_hyphens(const char *str_token);
 int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist,
 				int pos);
 void		set_pipe_cm(element *tokenlist);
+int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
+int			fill_comm_list(t_exec_data **execdata, element *tokenlist, int pos, int pos_red);
 t_exec_data	*convert_data(element *tokenlist, size_t pos);
 
 #endif

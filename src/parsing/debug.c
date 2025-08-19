@@ -54,7 +54,7 @@ void q_printf(const char *str, ...)
 }
 
 //print enums
-const char* enum_to_str(int symbols)
+const char* enum_to_str(t_token_type symbols)
 {
     switch (symbols)
     {
@@ -119,4 +119,37 @@ void test_tokens(
 	}
 	t_printf("\n");
 }
+
+void test_execdata(
+    t_exec_data execdata)
+{
+    size_t i;
+
+    i = 0;
+    t_printf("EXEC DATA IS:\n");
+    while (execdata.argv[i] != NULL)
+    {
+        t_printf("Value is = %s\n", execdata.argv[i]);    
+        i++;
+    }
+    t_printf("Is builtin = %s\n", enum_to_str(execdata.is_builtin));
+    if (execdata.input_is_pipe)
+        t_printf("Input is pipe = true\n");
+    else 
+        t_printf("Input is pipe = false\n");
+    if (execdata.output_is_pipe)
+        t_printf("Output is pipe = true\n");
+    else 
+        t_printf("Output is pipe = false\n");
+    t_printf("\n");
+}
+
+// typedef struct	s_exec_data
+// {
+// 	char			**argv;
+// 	int				is_builtin;
+// 	int				input_is_pipe;
+// 	int				output_is_pipe;
+// 	t_redir_list	*redirections;
+// }	t_exec_data;
 

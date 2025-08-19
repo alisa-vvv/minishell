@@ -84,7 +84,7 @@ typedef struct	s_redir_list
 typedef struct	s_exec_data
 {
 	char			**argv;
-	bool			is_builtin;
+	int				is_builtin;
 	bool			input_is_pipe;
 	bool			output_is_pipe;
 	t_redir_list	*redirections;
