@@ -31,6 +31,9 @@ int set_heredoc(t_exec_data** execdata, element *tokenlist, int pos)
 {
 	t_token *check_token;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+	(*execdata)->redirections = malloc(sizeof(t_redir_list));
+	if (!(*execdata)->redirections)
+		return (-1);
 	if (check_token->type == HEREDOC)
 	{
 		(*execdata)->redirections = malloc(sizeof(t_redir_list));
@@ -38,6 +41,7 @@ int set_heredoc(t_exec_data** execdata, element *tokenlist, int pos)
 			return (write(1, MALLOC_ERR, 15));
 		if (pos == 0)
 		{
+			(*execdata)->redirections->type = heredoc;
 			(*execdata)->redirections->dest_fd = -1;
 			(*execdata)->redirections->dest_filename = NULL;
 			(*execdata)->redirections->src_fd = -1;
@@ -61,7 +65,8 @@ int	add_arg_to_list(
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
 	if (check_token->type == HEREDOC)
 		set_heredoc(comm_list, tokenlist, pos);
-	(*comm_list)->argv[pos] = ft_strdup(check_token->value);
+	else 
+		(*comm_list)->argv[pos] = ft_strdup(check_token->value);
 	if (!(*comm_list)->argv[pos])
 		return (write(1, MALLOC_ERR, 15));
 	if (check_token->command)
@@ -90,7 +95,7 @@ int fill_comm_list(
 	if (pos_red <= pos)
 		total = tokenlist->element_list.total;
 	else if (check->type == HEREDOC)
-		total = pos_red + 1;
+		add_redirect(execdata, tokenlist, 0);
 	else
 		total = pos_red - 1;
 	while (pos < total)
@@ -127,7 +132,6 @@ t_exec_data *make_cm_list(
 	}
 	else 
 		comm_list->argv = malloc(sizeof(char *) * (tokenlist->element_list.total + 1));
-	t_printf("IN HERE \n");
 	if (!comm_list->argv)
 		return (NULL);
 	if (pos_red > pos)
@@ -146,9 +150,19 @@ int add_redirect(
 {
 	t_token *check_token;
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
-	(*execdata)->redirections->type = check_token->type - 22;
-	(*execdata)->redirections->type = check_token->type;
-
+	if (check_token->type == HEREDOC)
+		set_heredoc(execdata, tokenlist, 0);
+	else 
+	{
+		(*execdata)->redirections->type = (t_redirect_type)check_token->type - 22;
+		(*execdata)->redirections->src_fd = -1;
+		(*execdata)->redirections->dest_fd = -1;
+		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
+		if (check_token->value)
+			(*execdata)->redirections->src_filename = ft_strdup(check_token->value);
+		else 
+			(*execdata)->redirections->src_filename = NULL;
+	}
 	return (0);
 }
 // typedef struct	s_redir_list
@@ -169,7 +183,9 @@ t_exec_data	*convert_data(
 	size_t pos)
 {
 	t_exec_data	*comm_list;
+	t_token * check_token;
 
+	check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos);
 	comm_list = make_cm_list(tokenlist, pos);
 	if (!comm_list)
 		return (NULL);
@@ -178,7 +194,13 @@ t_exec_data	*convert_data(
 		comm_list->redirections = malloc(sizeof(t_redir_list));
 		if (!comm_list->redirections)
 			return (NULL);
-		add_redirect(&comm_list, tokenlist, count_next_cm(tokenlist, pos) -1);
+		if (pos > 0)
+			add_redirect(&comm_list, tokenlist, count_next_cm(tokenlist, pos) -1);
+		else if (add_redirect(&comm_list, tokenlist, pos))
+		{
+			write(1, "redirect error\n", 15);
+			return (NULL);
+		}
 	}
 	else 
 		comm_list->redirections = NULL;

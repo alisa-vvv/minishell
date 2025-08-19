@@ -53,7 +53,7 @@ void q_printf(const char *str, ...)
     va_end(args);
 }
 
-//print enums
+//print enums of tokens
 const char* enum_to_str(t_token_type symbols)
 {
     switch (symbols)
@@ -120,6 +120,27 @@ void test_tokens(
 	t_printf("\n");
 }
 
+const char* enum_red_type(t_redirect_type symbols)
+{
+    switch (symbols)
+    {
+        case 	input: return "INPUT";
+        case heredoc:  return "HEREDOC";
+        case append: return "APPEND";
+        case trunc: return "TRUNC";
+        // case PIPE: return "PIPE";
+        // case PIPE_IN: return "PIPE IN";
+        // case PIPE_OUT: return "PIPE OUT";
+        // case HEREDOC: return "Heredoc";
+        // case HEREDOC_DEL: return "Heredoc Delimeter";
+        // case REDIRECT_IN: return "Redirect In";
+        // case REDIRECT_OUT: return "Redirect Out";
+        // case REDIRECT_OUT_APP: return "Redirect Out Append";
+    }
+    return "???";
+}
+
+
 void test_execdata(
     t_exec_data execdata)
 {
@@ -132,7 +153,10 @@ void test_execdata(
         t_printf("Value is = %s\n", execdata.argv[i]);    
         i++;
     }
-    t_printf("Is builtin = %s\n", enum_to_str(execdata.is_builtin));
+    if (execdata.is_builtin == 0)
+        t_printf("Is builtin = false\n");
+    else 
+        t_printf("Is builtin = %s\n", enum_to_str(execdata.is_builtin));
     if (execdata.input_is_pipe)
         t_printf("Input is pipe = true\n");
     else 
@@ -141,6 +165,15 @@ void test_execdata(
         t_printf("Output is pipe = true\n");
     else 
         t_printf("Output is pipe = false\n");
+    if (execdata.redirections != NULL)
+    {
+        t_printf("Redirection Type = %s\n", enum_red_type(execdata.redirections->type));
+        t_printf("Redirection src_fd = %d\n", execdata.redirections->src_fd);
+        t_printf("Redirection dest_fd = %d\n", execdata.redirections->dest_fd);
+        t_printf("Redirection dest_filename = %s\n", execdata.redirections->dest_filename);
+        t_printf("Redirection src_filename = %s\n", execdata.redirections->src_filename);
+        t_printf("Redirection heredoc delimeter = %s\n", execdata.redirections->heredoc_delim);
+    }
     t_printf("\n");
 }
 
@@ -152,4 +185,5 @@ void test_execdata(
 // 	int				output_is_pipe;
 // 	t_redir_list	*redirections;
 // }	t_exec_data;
+
 

@@ -117,6 +117,7 @@ int			all_num_alph(const char *str);
 int			check_hyphens(const char *str_token);
 int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist,
 				int pos);
+int			add_redirect(t_exec_data** execdata, element *tokenlist, int pos);
 void		set_pipe_cm(element *tokenlist);
 int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
