@@ -37,7 +37,7 @@ typedef struct s_token
 
 }			t_token;
 
-enum
+enum 
 {
 	COMMAND,
 	STRING,
@@ -87,6 +87,7 @@ int			token_count(char *str);
 t_token		*new_token(char *str, int len);
 int			fill_tokenlist(element *tokenlist, char *str);
 void		ft_safefree(void *ptr);
+const char* enum_to_str(int symbols);
 int			check_filename(const char *str_token);
 int			check_lexer(element *tokenlist, t_minishell_data *minishell_data);
 char		*ft_strchr(const char *s, int c);
@@ -117,6 +118,7 @@ int			check_hyphens(const char *str_token);
 int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist,
 				int pos);
 void		set_pipe_cm(element *tokenlist);
+int			count_next_cm(element *tokenlist, int pos);
 t_exec_data	*convert_data(element *tokenlist, size_t pos);
 
 #endif

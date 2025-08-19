@@ -12,8 +12,9 @@
 
 #include "parser.h"
 
-
-int	skip_blanks(char *str, int pos)
+int	skip_blanks(
+	char *str, 
+	int pos)
 {
 	int	count;
 
@@ -29,7 +30,8 @@ int	skip_blanks(char *str, int pos)
 
 // trims input to have one space between tokens to ease validation
 // unless the input is quoted
-char	*trim_str_space(char *str)
+char	*trim_str_space(
+	char *str)
 {
 	int	i;
 	int	j;
@@ -58,7 +60,9 @@ char	*trim_str_space(char *str)
 }
 
 // make a new token in the array
-t_token	*new_token(char *str, int len)
+t_token	*new_token(
+	char *str, 
+	int len)
 {
 	t_token	*token;
 
@@ -76,7 +80,9 @@ t_token	*new_token(char *str, int len)
 	return (token);
 }
 
-int move_over_quote(char *str, int pos)
+int move_over_quote(
+	char *str, 
+	int pos)
 {
     int i;
     i = 0; 
@@ -103,7 +109,8 @@ int move_over_quote(char *str, int pos)
 }
 
 // counts args to size up elementlist
-int	token_count(char *str)
+int	token_count(
+	char *str)
 {
 	int	tokencount;
 	int	i;
@@ -130,11 +137,14 @@ int	token_count(char *str)
 }
 
 //add token to the list, if failed, release whole list
-int add_token(element *tokenlist, char *str, int i, size_t len)
+int add_token(
+	element *tokenlist, 
+	char *str, 
+	int i, 
+	size_t len)
 {
 	t_token	*token;
 	l_printf("len = %zu ", len);
-	
 	token = new_token(str + i - len, len + 1);
 	if (!token)
 		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
@@ -144,7 +154,9 @@ int add_token(element *tokenlist, char *str, int i, size_t len)
 }
 
 // pushes tokens in the elementlist from the back, immediately indexing
-int	fill_tokenlist(element *tokenlist, char *str)
+int	fill_tokenlist(
+	element *tokenlist, 
+	char *str)
 {
 	int		i;
 	size_t	len;
@@ -176,7 +188,6 @@ int	fill_tokenlist(element *tokenlist, char *str)
 	}
 	return (0);
 }
-
 
 
 // default option to put trimmed input in tokenlist

@@ -53,3 +53,70 @@ void q_printf(const char *str, ...)
     va_end(args);
 }
 
+//print enums
+const char* enum_to_str(int symbols)
+{
+    switch (symbols)
+    {
+        case STRING: return "String";
+        case COMMAND: return "Command";
+        case NUMBER: return "Number";
+        case ARGUMENT: return "Argument";
+        case OPERATOR: return "Operator";
+        case PARAMETER: return "Parameter";
+        case FILENAME: return "Filename";
+        case NON_TERMINAL: return "Non-terminal";
+        case SINGLE_Q: return "Single Quotations";
+        case DOUBLE_Q: return "Double Quotations";
+        case OPEN_BRACKET: return "Open Bracket";
+        case CLOSED_BRACKET: return "Closed Bracket";
+        case DOUBLE_DOT: return "Double Dot";
+        case DOT: return "Dot";
+        case HYPHEN: return "Hyphen";
+        case PIPE: return "PIPE";
+        case PIPE_IN: return "PIPE IN";
+        case PIPE_OUT: return "PIPE OUT";
+        case HEREDOC: return "Heredoc";
+        case HEREDOC_DEL: return "Heredoc Delimeter";
+        case REDIRECT_IN: return "Redirect In";
+        case REDIRECT_OUT: return "Redirect Out";
+        case REDIRECT_OUT_APP: return "Redirect Out Append";
+        case FORW_SLASH: return "Forward Slash";
+        case BACKW_SLASH: return "Backward Slash";
+        case QUESTION_MARK: return "Question Mark";
+        case EXCLAM_MARK: return "Exclamation Mark";
+        case CAT: return "CAT";
+        case CD: return "CD";
+        case ECHO: return "ECHO";
+        case ENV: return "ENV";
+        case EXPORT: return "EXPORT";
+        case PWD: return "PWD";
+        case UNSET: return "UNSET";
+        case UNKNOWN: return "Unknown";
+    }
+    return "???";
+}
+
+
+//test token
+void test_tokens(
+	element tokenlist)
+{
+	size_t i;
+	t_token	*token_test;
+
+	i = 0;
+	while (i < tokenlist.element_list.total)
+	{
+		token_test = tokenlist.element_list.tokens[i];
+		t_printf("Token value = %s$\n", token_test->value);
+		t_printf("Token type = %s\n", enum_to_str(token_test->type));
+		if (token_test->command)
+			t_printf("Token_cm = true\n");
+		else 
+			t_printf("Token_cm = false\n");
+		i++;
+	}
+	t_printf("\n");
+}
+

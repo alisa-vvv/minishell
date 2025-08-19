@@ -12,23 +12,11 @@
 
 #include "parser.h"
 
-// func to traverse list and find a spec symbol
-int	find_symbol(element *tokenlist, int pos, char symbol)
-{
-	t_token	*check_token;
-
-	while ((size_t)pos < tokenlist->element_list.total)
-	{
-		check_token = (t_token *)tokenlist->element_list.tokens[pos];
-		if (ft_strchr(check_token->value, symbol) != NULL)
-			return (pos);
-		pos++;
-	}
-	return (-1);
-}
-
 // count occurrence of spec symbol in array
-int	count_symbol(element *tokenlist, int pos, char symbol)
+int	count_symbol(
+	element *tokenlist, 
+	int pos, 
+	char symbol)
 {
 	int		count;
 	int		i;
@@ -52,30 +40,14 @@ int	count_symbol(element *tokenlist, int pos, char symbol)
 	}
 	return (count);
 }
-//test token
-void test_tokens(element tokenlist)
-{
-	size_t i;
-	t_token	*token_test;
 
-	i = 0;
-	while (i < tokenlist.element_list.total)
-	{
-		token_test = tokenlist.element_list.tokens[i];
-		t_printf("Token value = %s$\n", token_test->value);
-		t_printf("Token type = %d$\n", token_test->type);
-		t_printf("Token_cm = %d$\n", token_test->command);
-		i++;
-	}
-	t_printf("\n");
-}
 //index lexer by traversing - not needed anymore
-int index_lexer(element **tokenlist)
+int index_lexer(
+	element **tokenlist)
 {
     size_t i;
     i = 0;
 	//e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
-
     while (i < (size_t)(*tokenlist)->element_list.total)
     {
         t_token *check_token;
@@ -87,7 +59,9 @@ int index_lexer(element **tokenlist)
     return (0);
 }
 
-int check_lexer(element *tokenlist, t_minishell_data *minishell_data)
+int check_lexer(
+	element *tokenlist, 
+	t_minishell_data *minishell_data)
 {
 	t_exec_data	*comm_list;
 
@@ -98,15 +72,16 @@ int check_lexer(element *tokenlist, t_minishell_data *minishell_data)
 	if (single_token(tokenlist) || val_redir(tokenlist))
 		return (write(1, "Wrong redirect\n", 15));
 	set_pipe_cm(tokenlist);
-	t_printf("\nAfter expansion and rm quotes:\n");
+	t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	test_tokens(*tokenlist);
-	comm_list = convert_data(tokenlist, 0);
+	//comm_list = convert_data(tokenlist, 0);
 	return (0); 
 }
 
-
 // check if left and right are args for pipe
-int	check_pipe_redirect(char *str, char symbol)
+int	check_pipe_redirect(
+	char *str, 
+	char symbol)
 {
 	int	command;
     int i; 
@@ -130,7 +105,8 @@ int	check_pipe_redirect(char *str, char symbol)
 }
 
 // validate input on quotes, pipes
-int	val_inputline(char *str)
+int	val_inputline(
+	char *str)
 {
 	if (check_in_quote(str, ft_strlen(str) -1))
 	    return (write(1, "command not found\n", 18));

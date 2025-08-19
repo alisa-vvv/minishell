@@ -33,6 +33,7 @@ CFILES_PARSER	=	debug.c\
 					errors.c\
 					cleanup.c\
 					env_operations.c\
+					parser_utils.c\
 					parser.c
 CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\

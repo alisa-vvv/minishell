@@ -27,31 +27,18 @@
 //     - exit with no options
 
 
-// func returning next token type in the array
-t_token *lookahead(element *tokenlist, size_t index)
-{
-	t_token	*check_token;
-
-	check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index
-			+ 1);
-	if (!check_token)
-		return (NULL);
-	return (check_token);
-}
-
-
-
 // push appropiate token to exec_data argv
 int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
 {
 	t_token		*check_token;
+
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
 	(*comm_list)->argv[pos] = ft_strdup(check_token->value);
 	if (!(*comm_list)->argv[pos])
 		return (write(1, MALLOC_ERR, 15));
-	if (check_token->type >= CAT && check_token->type <= UNSET)
+	if (check_token->command && check_token->type >= CAT && check_token->type <= UNSET)
 		(*comm_list)->is_builtin = check_token->type;
-	if (lookahead(tokenlist, pos)->type == PIPE)
+	if ( pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
 		(*comm_list)->input_is_pipe = true;
 	if (check_token->type == HEREDOC)
 	{
@@ -72,39 +59,6 @@ int	add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int pos)
 	return (0);
 }
 
-int count_lists(
-	element *tokenlist)
-{
-	size_t		i;
-	size_t		count;
-	count = 0;
-	while (i < tokenlist->element_list.total)
-	{
-		t_token * check_token;
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (check_token->command)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-int count_next_pos(
-	element *tokenlist, 
-	int pos)
-{
-	size_t		i;
-	i = pos;
-	while (i < tokenlist->element_list.total)
-	{
-		t_token * check_token;
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (check_token->command)
-			return (check_token->pos);
-		i++;
-	}
-	return (pos);
-}
 
 //convert the tokenlist to executable data 
 t_exec_data	*convert_data(element *tokenlist, size_t pos)
@@ -114,7 +68,7 @@ t_exec_data	*convert_data(element *tokenlist, size_t pos)
 	comm_list = malloc(sizeof(t_exec_data));
 	if (!comm_list)
 		return (NULL);
-	comm_list->argv = malloc(sizeof(char *) * count_next_pos(tokenlist, pos + 1));
+	comm_list->argv = malloc(sizeof(char *) *count_next_cm(tokenlist, pos + 1));
 	if (!comm_list->argv)
 		return (NULL);
 	comm_list->argv[tokenlist->pf_element_total(tokenlist)] = NULL;
@@ -122,8 +76,8 @@ t_exec_data	*convert_data(element *tokenlist, size_t pos)
 	{
 		t_token* check_token;
 		check_token = tokenlist->pf_element_get(tokenlist, pos);
-		// if (check_token->command)
-		// 	convert_data(tokenlist, pos);
+		if (check_token->command)
+			convert_data(tokenlist, pos);
 		if (!add_arg_to_list(&comm_list, tokenlist, pos))
 		{
 			free_2d_arr((void *)comm_list->argv);
