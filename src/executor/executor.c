@@ -62,9 +62,9 @@ static int	run_child_process(
 		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 	}
 	err_check = perform_redirections(command->redirections, command_io);
-	if (command->is_builtin == false)
+	if (command->builtin_name == not_builtin)
 		err_check = try_execve(minishell_data->env, command->argv);
-	else if (command->is_builtin == true)
+	else
 		err_check = exec_builtin(command, minishell_data);
 	exit(err_check);
 }
@@ -81,7 +81,7 @@ static int	execute_command(
 	err_check = 0;
 	process_id = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true ||
-		command->is_builtin == false)
+		command->builtin_name == not_builtin)
 	{
 		process_id = fork();
 		if (process_id == 0)
@@ -100,7 +100,7 @@ static int	execute_command(
 		else if (process_id < 0)
 			perror_and_return(NULL, FORK_ERR, extern_err, -1);
 	}
-	else if (command->is_builtin == true)
+	else if (command->builtin_name != not_builtin)
 	{
 		err_check = exec_builtin(command, minishell_data);
 		return (err_check);
@@ -255,7 +255,7 @@ int	executor(
 	if (pipeline_elem_count == command_count)
 		execute_commands(minishell_data, exec_data, command_io, p_id);
 	if (command_count > 1 ||
-		(command_count == 1 && exec_data->is_builtin == false))
+		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);
 	executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
 	return(EXIT_SUCCESS);

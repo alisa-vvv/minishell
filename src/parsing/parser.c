@@ -66,9 +66,9 @@ int	add_arg_to_list(
 		if (check_token->type == HEREDOC)
 			set_heredoc(comm_list, tokenlist, pos);
 		else if (check_token->type >= CAT && check_token->type <= UNSET)
-			(*comm_list)->is_builtin = check_token->type;
+			(*comm_list)->builtin_name = check_token->type;
 		else 
-			(*comm_list)->is_builtin = 0;
+			(*comm_list)->builtin_name = 0;
 	}
 	if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
 		(*comm_list)->input_is_pipe = true;

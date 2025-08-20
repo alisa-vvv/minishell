@@ -155,10 +155,10 @@ void test_execdata(
         p_printf("Value is = %s\n", execdata.argv[i]);    
         i++;
     }
-    if (execdata.is_builtin == 0)
+    if (execdata.builtin_name == not_builtin)
         p_printf("Is builtin = false\n");
     else 
-        p_printf("Is builtin = %s\n", enum_to_str(execdata.is_builtin));
+        p_printf("Is builtin = %s\n", enum_to_str(execdata.builtin_name));
     if (execdata.input_is_pipe)
         p_printf("Input is pipe = true\n");
     else 

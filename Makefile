@@ -34,9 +34,6 @@ CFILES_PARSER	=	debug.c\
 					lexer2.c\
 					quote_handler.c\
 					val_redirect.c\
-					errors.c\
-					cleanup.c\
-					env_operations.c\
 					parser_utils.c\
 					parser.c
 CFILES_EXECUTOR	=	executor.c\
