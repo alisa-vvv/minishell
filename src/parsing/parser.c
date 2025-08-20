@@ -29,25 +29,23 @@
 
 int set_heredoc(t_exec_data** execdata, element *tokenlist, int pos)
 {
-	t_token *check_token;
+	t_token *check_token;	
+	t_redir_list *redir;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	(*execdata)->redirections = malloc(sizeof(t_redir_list));
+	redir = malloc(sizeof(t_redir_list));
+	(*execdata)->redirections = redir;
+	//(*execdata)->redirections = malloc(sizeof(t_redir_list));
 	if (!(*execdata)->redirections)
-		return (-1);
-	if (check_token->type == HEREDOC)
+		return (write(1, MALLOC_ERR, 15));
+	if (pos == 0)
 	{
-		(*execdata)->redirections = malloc(sizeof(t_redir_list));
-		if (!(*execdata)->redirections)
-			return (write(1, MALLOC_ERR, 15));
-		if (pos == 0)
-		{
-			(*execdata)->redirections->type = heredoc;
-			(*execdata)->redirections->dest_fd = -1;
-			(*execdata)->redirections->dest_filename = NULL;
-			(*execdata)->redirections->src_fd = -1;
-			(*execdata)->redirections->src_filename = NULL;
-			(*execdata)->redirections->next = NULL;
-		}
+		(*execdata)->argv[0] = NULL;
+		(*execdata)->redirections->type = heredoc;
+		(*execdata)->redirections->dest_fd = -1;
+		(*execdata)->redirections->dest_filename = NULL;
+		(*execdata)->redirections->src_fd = -1;
+		(*execdata)->redirections->src_filename = NULL;
+		(*execdata)->redirections->next = NULL;
 	}
 	if (lookahead(tokenlist, pos)->type == HEREDOC_DEL)
 		(*execdata)->redirections->heredoc_delim = ft_strdup(check_token->value);
@@ -63,22 +61,18 @@ int	add_arg_to_list(
 	t_token		*check_token;
 
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	if (check_token->type == HEREDOC)
-		set_heredoc(comm_list, tokenlist, pos);
-	else 
-		(*comm_list)->argv[pos] = ft_strdup(check_token->value);
-	if (!(*comm_list)->argv[pos])
-		return (write(1, MALLOC_ERR, 15));
 	if (check_token->command)
 	{
-		if (check_token->type >= CAT && check_token->type <= UNSET)
+		if (check_token->type == HEREDOC)
+			set_heredoc(comm_list, tokenlist, pos);
+		else if (check_token->type >= CAT && check_token->type <= UNSET)
 			(*comm_list)->is_builtin = check_token->type;
 		else 
 			(*comm_list)->is_builtin = 0;
-	} 
+	}
 	if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
 		(*comm_list)->input_is_pipe = true;
-
+	(*comm_list)->argv[pos] = ft_strdup(check_token->value);
 	return (0);
 }
 
@@ -124,7 +118,7 @@ t_exec_data *make_cm_list(
 	comm_list = malloc(sizeof(t_exec_data));
 	if (!comm_list)
 		return (NULL);
-	// t_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
+	// p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
 	if (pos_red > 0)
 	{
 		pos_red = count_next_cm(tokenlist, pos);
@@ -189,11 +183,12 @@ t_exec_data	*convert_data(
 	comm_list = make_cm_list(tokenlist, pos);
 	if (!comm_list)
 		return (NULL);
-	if (count_lists(tokenlist) > 1)
+	if (count_lists(tokenlist) > 0)
 	{
 		comm_list->redirections = malloc(sizeof(t_redir_list));
 		if (!comm_list->redirections)
 			return (NULL);
+		p_printf("IN HERE\n");
 		if (pos > 0)
 			add_redirect(&comm_list, tokenlist, count_next_cm(tokenlist, pos) -1);
 		else if (add_redirect(&comm_list, tokenlist, pos))
@@ -204,7 +199,7 @@ t_exec_data	*convert_data(
 	}
 	else 
 		comm_list->redirections = NULL;
-	t_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
+	p_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
 	
 	return (comm_list);
 }

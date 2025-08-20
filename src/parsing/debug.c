@@ -43,6 +43,16 @@ void t_printf(const char *str, ...)
     va_end(args);
 }
 
+void p_printf(const char *str, ...)
+{
+    if (!PARSE_ON)
+        return;
+    va_list args;
+    va_start(args, str);
+    vfprintf(stderr, str, args);
+    va_end(args);
+}
+
 void q_printf(const char *str, ...)
 {
     if (!QUOTE_ON)
@@ -128,14 +138,6 @@ const char* enum_red_type(t_redirect_type symbols)
         case heredoc:  return "HEREDOC";
         case append: return "APPEND";
         case trunc: return "TRUNC";
-        // case PIPE: return "PIPE";
-        // case PIPE_IN: return "PIPE IN";
-        // case PIPE_OUT: return "PIPE OUT";
-        // case HEREDOC: return "Heredoc";
-        // case HEREDOC_DEL: return "Heredoc Delimeter";
-        // case REDIRECT_IN: return "Redirect In";
-        // case REDIRECT_OUT: return "Redirect Out";
-        // case REDIRECT_OUT_APP: return "Redirect Out Append";
     }
     return "???";
 }
@@ -147,32 +149,32 @@ void test_execdata(
     size_t i;
 
     i = 0;
-    t_printf("EXEC DATA IS:\n");
+    p_printf("\nEXEC DATA IS:\n");
     while (execdata.argv[i] != NULL)
     {
-        t_printf("Value is = %s\n", execdata.argv[i]);    
+        p_printf("Value is = %s\n", execdata.argv[i]);    
         i++;
     }
     if (execdata.is_builtin == 0)
-        t_printf("Is builtin = false\n");
+        p_printf("Is builtin = false\n");
     else 
-        t_printf("Is builtin = %s\n", enum_to_str(execdata.is_builtin));
+        p_printf("Is builtin = %s\n", enum_to_str(execdata.is_builtin));
     if (execdata.input_is_pipe)
-        t_printf("Input is pipe = true\n");
+        p_printf("Input is pipe = true\n");
     else 
-        t_printf("Input is pipe = false\n");
+        p_printf("Input is pipe = false\n");
     if (execdata.output_is_pipe)
-        t_printf("Output is pipe = true\n");
+        p_printf("Output is pipe = true\n");
     else 
-        t_printf("Output is pipe = false\n");
-    if (execdata.redirections != NULL)
+        p_printf("Output is pipe = false\n");
+    if (execdata.redirections)
     {
-        t_printf("Redirection Type = %s\n", enum_red_type(execdata.redirections->type));
-        t_printf("Redirection src_fd = %d\n", execdata.redirections->src_fd);
-        t_printf("Redirection dest_fd = %d\n", execdata.redirections->dest_fd);
-        t_printf("Redirection dest_filename = %s\n", execdata.redirections->dest_filename);
-        t_printf("Redirection src_filename = %s\n", execdata.redirections->src_filename);
-        t_printf("Redirection heredoc delimeter = %s\n", execdata.redirections->heredoc_delim);
+        p_printf("Redirection Type = %s\n", enum_red_type(execdata.redirections->type));
+        p_printf("Redirection src_fd = %d\n", execdata.redirections->src_fd);
+        p_printf("Redirection dest_fd = %d\n", execdata.redirections->dest_fd);
+        p_printf("Redirection dest_filename = %s\n", execdata.redirections->dest_filename);
+        p_printf("Redirection src_filename = %s\n", execdata.redirections->src_filename);
+        p_printf("Redirection heredoc delimeter = %s\n", execdata.redirections->heredoc_delim);
     }
     t_printf("\n");
 }
