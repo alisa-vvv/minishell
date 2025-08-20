@@ -96,6 +96,7 @@ const char* enum_to_str(t_token_type symbols)
         case QUESTION_MARK: return "Question Mark";
         case EXCLAM_MARK: return "Exclamation Mark";
         case CAT: return "CAT";
+        case EXIT: return "EXIT";
         case CD: return "CD";
         case ECHO: return "ECHO";
         case ENV: return "ENV";
@@ -141,6 +142,21 @@ const char* enum_red_type(t_redirect_type symbols)
     }
     return "???";
 }
+const char* enum_builtin(t_builtin_name builtin)
+{
+    switch (builtin)
+    {
+        case builtin_cd: return "CD";
+        case builtin_echo:  return "ECHO";
+        case builtin_env: return "ENV";
+        case builtin_exit: return "EXIT";
+        case builtin_export: return "EXPORT";
+        case builtin_pwd: return "PWD";
+        case builtin_unset: return "UNSET";
+        case not_builtin: return "NOT BUILTIN";
+    }
+    return "???";
+}
 
 
 void test_execdata(
@@ -158,16 +174,17 @@ void test_execdata(
     if (execdata.builtin_name == not_builtin)
         p_printf("Is builtin = false\n");
     else 
-        p_printf("Is builtin = %s\n", enum_to_str(execdata.builtin_name));
+        p_printf("Is builtin = %s\n", enum_builtin(execdata.builtin_name));
     if (execdata.input_is_pipe)
         p_printf("Input is pipe = true\n");
     else 
         p_printf("Input is pipe = false\n");
     if (execdata.output_is_pipe)
         p_printf("Output is pipe = true\n");
-    else 
+    else
         p_printf("Output is pipe = false\n");
-    if (execdata.redirections)
+    p_printf("Got here\n");
+    if (execdata.redirections->type)
     {
         p_printf("Redirection Type = %s\n", enum_red_type(execdata.redirections->type));
         p_printf("Redirection src_fd = %d\n", execdata.redirections->src_fd);

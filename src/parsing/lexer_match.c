@@ -72,7 +72,7 @@ int match_string(char *str_token)
     else if (ft_strncmp(str_token, "unset", 6) == 0)
         return (UNSET);
     else if (ft_strncmp(str_token, "exit", 5) == 0)
-        exit(0);
+        return(EXIT);
     else if (ft_strchr(str_token, '.'))
         return (check_filename(str_token));
     else

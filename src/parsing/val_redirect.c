@@ -42,7 +42,7 @@ void set_pipe_cm(
 			c_token->command = true;
 			flag = false;
 		}
-		else if (c_token->type == REDIRECT_IN || c_token->type == REDIRECT_OUT || c_token->type == REDIRECT_OUT_APP || c_token->type == PIPE || c_token->type == HEREDOC)
+		else if (c_token->type == REDIRECT_IN || c_token->type == REDIRECT_OUT || c_token->type == REDIRECT_OUT_APP || c_token->type == PIPE || c_token->type == HEREDOC_DEL)
 			flag = true;
 		else if (flag == true)
 		{

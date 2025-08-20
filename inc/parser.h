@@ -65,6 +65,7 @@ typedef enum	e_token_type
 	CD,
 	ECHO,
 	ENV,
+	EXIT,
 	EXPORT,
 	PWD,
 	UNSET,
@@ -121,7 +122,8 @@ int			add_redirect(t_exec_data** execdata, element *tokenlist, int pos);
 void		set_pipe_cm(element *tokenlist);
 int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
-int			fill_comm_list(t_exec_data **execdata, element *tokenlist, int pos, int pos_red);
+int			fill_comm_list(t_exec_data **execdata, element *tokenlist, size_t pos, int pos_red);
+t_exec_data *make_cm_list(element *tokenlist, size_t pos, int pos_red);
 t_exec_data	*convert_data(element *tokenlist, size_t pos);
 
 #endif
