@@ -62,7 +62,7 @@ static int	run_child_process(
 		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 	}
 	err_check = perform_redirections(command->redirections, command_io);
-	if (command->builtin_name == not_builtin)
+	if (command->builtin_name == not_builtin && command->argv[0])
 		err_check = try_execve(minishell_data->env, command->argv);
 	else
 		err_check = exec_builtin(command, minishell_data);
@@ -105,7 +105,6 @@ static int	execute_command(
 		err_check = exec_builtin(command, minishell_data);
 		return (err_check);
 	}
-	// this should never reach unless error
 	return (err_check);
 }
 
@@ -166,11 +165,6 @@ static void	executor_cleanup(
 	{
 		//marking these as closed is most likely useless. remove unless proven otherwise.
 		free_and_close_exec_data(&exec_data[i]);
-		if (command_io[i].here_docs > 0)
-		{
-			test_close(command_io[i].here_docs);
-			//command_io[i].here_docs = CLOSED_FD;
-		}
 		if (command_io[i].out_pipe[READ_END] > 2)
 		{
 			printf("which command: %d\n", i);
@@ -254,6 +248,8 @@ int	executor(
 	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
 	if (pipeline_elem_count == command_count)
 		execute_commands(minishell_data, exec_data, command_io, p_id);
+	else
+		command_count = pipeline_elem_count;
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);

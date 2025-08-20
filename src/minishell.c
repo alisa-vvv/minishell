@@ -36,7 +36,6 @@ static void	reset_minishell_data(
 )
 {
 	minishell_data->exec_data = NULL;
-	minishell_data->last_pipeline_return = 0;
 	minishell_data->command_count = 0;
 }
 
@@ -62,7 +61,7 @@ int	main(void)
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
-	int	TEST_len = 2;
+	int	TEST_len = 1;
 	rl_catch_signals = false;
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)
@@ -71,7 +70,7 @@ int	main(void)
 		read_line = readline("minishell$ ");
 		if (!read_line)
 		{
-			printf("is it this?\n");
+			printf("read_line return NULL!\n");
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
 		}
 	//	if (g_msh_signal == SIGINT)
