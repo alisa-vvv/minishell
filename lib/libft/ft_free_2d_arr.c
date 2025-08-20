@@ -20,7 +20,11 @@ void	free_2d_arr(void **arr)
 	{
 		i = -1;
 		while (arr[++i])
+		{
 			free(arr[i]);
+			arr[i] = NULL;
+		}
 		free(arr);
+		arr = NULL;
 	}
 }

@@ -12,34 +12,30 @@
 
 #include "libft.h"
 #include "minishell.h"
+#include "minishell_env.h"
 #include "executor.h"
 #include <stdio.h>
+#include <errno.h>
 
-//aedit this to find p
-const char	*const *find_env_path(
+static const char	*const *split_path_var(
 	char **env
 )
 {
 	int		i;
+	char	*path_value;
 	char	**path_arr;
 
 	i = -1;
 	path_arr = NULL;
-	while (env[++i])
-	{
-		if (ft_strncmp(env[i], "PATH", 4) ==0)
-		{
-			path_arr = ft_split(&env[i][5], ':');
-			if (!path_arr)
-			{
-				perror(MALLOC_ERR);
-				return (NULL);
-			}
-			break ;
-		}
-	}
-	if (!path_arr)
+	path_value = env_var_get_value(env, "PATH");
+	if (!path_value)
 		return (NULL);
+	path_arr = ft_split(path_value, ':');
+	if (!path_arr)
+	{
+		perror(MALLOC_ERR);
+		return (NULL);
+	}
 	return ((const char *const *) path_arr);
 }
 
@@ -57,24 +53,26 @@ int	try_execve(
 	char *const argv[]
 )
 {
-	char	*tmp_slash;
-	char	*command_path;
-	const char *const *path = find_env_path(env);
+	char				*tmp_slash;
+	char				*command_path;
+	const char *const 	*path = split_path_var(env);
+	int					i;
 
-	if (execve(argv[0], argv, __environ) != -1)
+	if (execve(argv[0], argv, env) != -1)
 		return (0);
 	tmp_slash = ft_strjoin("/", argv[0]);
 	if (!tmp_slash)
-		return (perror_and_return(MALLOC_ERR, LIBFUNC_ERR, EXIT_FAILURE));
-	while (path)
+		return (perror_and_return(NULL, MALLOC_ERR, extern_err, errno));
+	i = -1;
+	while (path[++i])
 	{
-		command_path = ft_strjoin(*path, tmp_slash);
+		command_path = ft_strjoin(path[i], tmp_slash);
 		if (!command_path)
-			return (perror_and_return(MALLOC_ERR, LIBFUNC_ERR, EXIT_FAILURE));
-		if (execve(command_path, argv, __environ) == -1)
+			return (perror_and_return(NULL, MALLOC_ERR, extern_err, errno));
+		if (execve(command_path, argv, env) == -1)
 			free(command_path);
-		path++;
 	}
 	free(tmp_slash);
+	free_2d_arr((void **) path);
 	return (command_not_found(argv[0]));
 }

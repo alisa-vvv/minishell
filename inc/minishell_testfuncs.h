@@ -15,6 +15,8 @@
 
 #include "minishell.h"
 
+static int	TEST_counter_01;
+
 t_redir_list	*test_add_redirection(
 	const t_redir_list *first,
 	const t_redirect_type type,
@@ -24,6 +26,7 @@ t_redir_list	*test_add_redirection(
 );
 
 t_exec_data	*test_get_dummy_exec_data(
+	t_minishell_data	*minishell_data,
 	int len
 );
 

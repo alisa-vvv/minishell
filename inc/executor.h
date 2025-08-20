@@ -18,6 +18,9 @@
 # define PATH_MAX 4096
 # define READ_END 0
 # define WRITE_END 1
+# define CLOSED_FD -1
+// used to indicate that FD was already closed
+
 
 /*		Executor errors		*/
 
@@ -28,12 +31,10 @@ typedef struct	s_command_io
 	int	out_pipe[2];
 }	t_command_io;
 
-/*		Executor - temporary functions!		*/
-t_exec_data	*test_get_dummy_exec_data(int len);
 int	executor(
-	const t_exec_data *exec_data,
-	int command_count,
-	t_minishell_data *const minishell_data
+	t_minishell_data *const minishell_data,
+	t_exec_data *exec_data,
+	int command_count
 );
 /**/
 
@@ -46,7 +47,8 @@ int	create_here_doc(
 /*		Sets up the input and output of the command		*/
 int	prepare_command_io(
 	const t_exec_data *command,
-	t_command_io *const command_io
+	t_command_io *const command_io,
+	int i
 );
 
 int	perform_redirections(

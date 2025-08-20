@@ -22,6 +22,7 @@ void	test_close(int fd)
 	err_check = close(fd);
 	if (err_check != 0)
 	{
+		printf("this fd: %d\n", fd);
 		if (errno == EBADF)
 			perror("Check if doing weird closes");
 		if (errno == EIO)

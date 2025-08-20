@@ -10,22 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
 #include <errno.h>
 
 int	perror_and_return(
-	const char *error_msg,
-	int	msh_errno,
+	char *const error_prefix,
+	char *const error_msg,
+	t_error_relation relation,
 	int return_value
 )
 {
-	if (msh_errno == MINISHELL_ERR)
-	{
-		// PLACEHOLDER - FOR CUSTOM ERROR MESSSAGES NOT RELATED TO LIBRARY FUNCTIONS FAILING
-		printf("ADD A MINISHELL_PERROR\n");
-	}
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	if (error_prefix)
+		ft_putstr_fd(error_prefix, STDERR_FILENO);
+	if (!error_msg)
+		return (return_value);
+	if (relation == extern_err)
+		perror(error_msg); // figure this out
 	else
-		perror(error_msg);
-	return (msh_errno);
+	{
+		ft_putstr_fd(error_msg, STDERR_FILENO);
+		ft_putchar_fd('\n', STDERR_FILENO);
+	}
+	return (return_value);
 }

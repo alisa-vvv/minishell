@@ -6,7 +6,7 @@
 #    By: avaliull <avaliull@student.codam.nl>        +#+                       #
 #                                                   +#+                        #
 #    Created: 2025/07/22 19:01:25 by avaliull     #+#    #+#                   #
-#    Updated: 2025/07/22 19:22:37 by avaliull     ########   odam.nl           #
+#    Updated: 2025/08/06 15:25:10 by avaliull     ########   odam.nl           #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,15 @@
 
 NAME	=	minishell
 
-CFILES	=	$(CFILES_VECLIB)\
+CFILES	=	minishell.c\
+			signal_handlers.c\
+			errors.c\
+			cleanup.c\
+			env_operations.c\
+			$(CFILES_VECLIB)\
 			$(CFILES_PARSER)\
 			$(CFILES_EXECUTOR)\
 			$(CFILES_BUILTINS)\
-			minishell.c\
 			test_funcs.c
 CFILES_VECLIB	=	vec_lib.c\
 					vec_lib2.c
@@ -86,7 +90,7 @@ CC	= cc
 CPPFLAGS	= $(INCFLAGS) -MMD -MP
 
 INCFLAGS	= $(addprefix -I,$(INCLUDE))
-CFLAGS	= -Wall -Wextra -Werror
+CFLAGS	= -Wall -Wextra -Werror -fsanitize=undefined
 LDFLAGS	= -lreadline
 INPUT	=
 
@@ -127,12 +131,15 @@ gdb: fclean debug
 test: $(NAME) run
 run:
 	./$(NAME) $(INPUT)
+# the suppression file is still incomplete.
+# might not be worthwhile to have at all since we don't care about non-definite leaks?
+#
 leak:
 	$(MAKE) -s debug
 	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
-	--leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
+	-s --leak-check=full --show-leak-kinds=all ./$(NAME) $(INPUT)
 val:
-	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
-	--leak-check=full --show-leak-kinds=definite ./$(NAME) $(INPUT)
+	valgrind --track-fds=yes --track-origins=yes \
+	-s --leak-check=full --show-leak-kinds=all ./$(NAME) $(INPUT)
 
 .PHONY:	clangd all clean fclean re libs_clean test run leak debug gdb

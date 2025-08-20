@@ -29,23 +29,26 @@ static int	find_and_create_heredocs(
 	return (0);
 }
 
+//int g_TEST_IO;
 int	prepare_command_io(
 	const t_exec_data *command,
-	t_command_io *const command_io
+	t_command_io *const command_io,
+	int i
 )
 {
 	int	err_check;
 
+	//g_TEST_IO++;
 	if (command->input_is_pipe == true)
 	{
-		command_io->in_pipe[READ_END] = command_io->out_pipe[READ_END];
-		command_io->in_pipe[WRITE_END] = command_io->out_pipe[WRITE_END];
+		command_io[i].in_pipe[READ_END] = command_io[i - 1].out_pipe[READ_END];
+		command_io[i].in_pipe[WRITE_END] = command_io[i - 1].out_pipe[WRITE_END];
 	}
 	if (command->output_is_pipe == true)
 	{
-		err_check = pipe(command_io->out_pipe);
+		err_check = pipe(command_io[i].out_pipe);
 		if (err_check < 0)
-			perror_and_return(PIPE_ERR, LIBFUNC_ERR, EXIT_FAILURE);
+			perror_and_return(NULL, PIPE_ERR, extern_err, -1);
 	}
 	err_check = find_and_create_heredocs(command->redirections);
 	return (err_check);

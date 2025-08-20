@@ -17,44 +17,102 @@
 #include "minishell.h"
 #include "builtins.h"
 #include "minishell_env.h"
+#include <errno.h>
+
+static int truncate_var(
+	t_minishell_data *const minishell_data,
+	int var_index,
+	char *arg
+)
+{
+	if (var_index < minishell_data->env_var_count &&
+			minishell_data->env[var_index])
+		free(minishell_data->env[var_index]);
+	minishell_data->env[var_index] = ft_strdup(arg);
+	if (!minishell_data->env[var_index])
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+	return (0);
+}
+
+static int append_var(
+	t_minishell_data *const minishell_data,
+	int var_index,
+	char *arg,
+	char *identifier
+)
+{
+	char	*appended_var;
+
+	if (var_index == minishell_data->env_var_count)
+	{
+		*identifier = '\0';
+		appended_var = ft_strjoin(arg, identifier + 1);
+		*identifier = '+';
+		if (!appended_var)
+			perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+	}
+	else
+		appended_var = ft_strjoin(minishell_data->env[var_index], identifier + 2);
+	if (!appended_var)
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+	if (minishell_data->env[var_index])
+		free(minishell_data->env[var_index]);
+	minishell_data->env[var_index] = appended_var;
+	return (0);
+}
 
 int	minishell_export(
 	char *const *argv,
 	t_minishell_data *const minishell_data
 )
 {
-	int		var_index;
+	int		var_i;
+	int		arg_i;
 	char	*identifier;
+	int		err_check;
 
-//	printf("\n\n\nPRE EXPORT\n\n\n");
-//	minishell_env(minishell_data);
-//	printf("\n\n\nENDPRE\n\n\n");
+	printf("\n\n\nPRE EXPORT\n\n\n");
+	minishell_env(minishell_data);
+	printf("\n\n\nENDPRE\n\n\n");
 
 	if (!*argv)
-		minishell_env(minishell_data);
-	while (*argv)
+		return (minishell_env(minishell_data));
+	arg_i = -1;
+	while (argv[++arg_i])
 	{
-		identifier = env_var_find_identifier(*argv);
+		
+		printf("arg_i: %d\n", arg_i);
+		identifier = env_var_find_identifier(argv[arg_i]);
 		if (!identifier)
-			return (-1);
-		var_index = env_var_find_index(minishell_data->env, *argv, identifier);
+		{
+			printf("this should be entered twice\n");
+			continue ;
+		}
+		printf("indentifier: %s\n", identifier);
+		var_i = env_var_find_index(minishell_data->env, argv[arg_i], identifier);
 
-		assert(var_index <= minishell_data->env_var_count); // REMOVE ASSERT
+		assert(var_i <= minishell_data->env_var_count); // REMOVE ASSERT
     	
-		if (var_index == minishell_data->env_mem - 1)
-			env_var_realloc(minishell_data, *argv);
-		if (var_index == minishell_data->env_var_count)
+		// CHANGE ENV_VAR_REALLOC
+		// checks if env mem needs to be expanded, and if we='re adding or modifyig a var
+		if (var_i == minishell_data->env_mem - 1)
+			env_var_realloc(minishell_data);
+		if (*identifier == '=')
+			err_check = truncate_var(minishell_data, var_i, argv[arg_i]);
+		if (*identifier == '+')
+			err_check = append_var(minishell_data, var_i, argv[arg_i], identifier);
+		if (err_check < 0)
+		{
+			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+			return (-1);
+		}
+		if (var_i == minishell_data->env_var_count)
 			minishell_data->env_var_count += 1; 
-		else if (var_index < minishell_data->env_var_count)
-			free(minishell_data->env[var_index]);
-		minishell_data->env[var_index] = ft_strdup(*argv);
-		if (!minishell_data->env[var_index])
-			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, -1);
-		argv++;
 	}
 
-	//printf("\n\n\nPOST EXPORT\n\n\n");
-	//minishell_env(minishell_data);
+	
+//	printf("\n\n\nPOST EXPORT\n\n\n");
+//	minishell_env(minishell_data);
 
 	//char **test_unset = ft_calloc(2, sizeof(char *));
 	//test_unset[0] = "var";

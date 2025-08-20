@@ -16,7 +16,7 @@
 #include "minishell.h"
 
 int	exec_builtin(
-	const t_exec_data *command,
+	t_exec_data *const command,
 	t_minishell_data *const minishell_data
 );
 
@@ -24,7 +24,7 @@ int	minishell_echo(
 	char **arguments
 );
 int	minishell_cd(
-	const char *path,
+	char *const arg,
 	t_minishell_data *const minishell_data
 );
 int	minishell_pwd(
@@ -41,8 +41,8 @@ int	minishell_unset(
 	char **argv,
 	t_minishell_data *minishell_data
 );
-void	minishell_exit(
-	const t_exec_data *const command,
+int	minishell_exit(
+	t_exec_data *command,
 	t_minishell_data *const minishell_data
 );
 

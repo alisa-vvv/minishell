@@ -54,19 +54,18 @@ char	**clone_env(
 }
 
 int env_var_realloc(
-	t_minishell_data *minishell_data,
-	char *var_string
+	t_minishell_data *minishell_data
 )
 {
 	char	**new_env;
 	int		i;
 
 	if (minishell_data->env_mem * 2 > MAX_ENV)
-		perror_and_return("Environment variable limit reached", MINISHELL_ERR, 1);
+		perror_and_return(NULL, "Environment variable limit reached", extern_err, 1);
 	minishell_data->env_mem *= 2;
 	new_env = ft_calloc(minishell_data->env_mem, sizeof(char *));
 	if (!new_env)
-		perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
 	i = -1;
 	while (minishell_data->env[++i])
 	{
@@ -74,10 +73,9 @@ int env_var_realloc(
 		if (!new_env)
 		{
 			free_2d_arr((void **) new_env);
-			perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 1);
+			perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
 		}
 	}
-	new_env[i] = var_string;
 	free_2d_arr((void **) minishell_data->env);
 	minishell_data->env = new_env;
 	return (0);
@@ -89,12 +87,15 @@ char	*env_var_find_identifier(
 {
 	while (*arg)
 	{
-		if (*arg == '=')
+		if (*arg == '=' || (*arg == '+' && *(arg + 1) == '='))
 			return (arg);
 		else if (!ft_isalnum(*arg) && *arg != '_')
 		{
-			perror_and_return(INVALID_IDENTIFIER, MINISHELL_ERR, 0);
-			break ;
+			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+			ft_putstr_fd(INVALID_IDENTIFIER, STDERR_FILENO);
+			ft_putstr_fd(arg, STDERR_FILENO);
+			ft_putchar_fd('\n', STDERR_FILENO);
+			return (NULL);
 		}
 		arg++;
 	}
@@ -144,7 +145,7 @@ char	*env_var_get_value(
 			value = ft_strdup(&env[i][name_len + 1]);
 			// add exit on malloc error?
 			if (!value)
-				perror_and_return(MALLOC_ERR, LIBFUNC_ERR, 0);
+				perror_and_return(NULL, MALLOC_ERR, extern_err, 0);
 			return (value);
 		}
 		else

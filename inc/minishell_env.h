@@ -16,7 +16,7 @@
 #include "minishell.h"
 
 /*		Environment errors		*/
-# define INVALID_IDENTIFIER "not a valid identifier"
+# define INVALID_IDENTIFIER "not a valid identifier: "
 /**/
 
 char	**clone_env(
@@ -24,9 +24,8 @@ char	**clone_env(
 	int *env_mem
 );
 
-int	env_var_realloc(
-	t_minishell_data *minishell_data,
-	char *var_string
+int env_var_realloc(
+	t_minishell_data *minishell_data
 );
 
 int	env_var_find_index(
