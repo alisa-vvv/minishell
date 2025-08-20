@@ -61,13 +61,14 @@ int	main(void)
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
-	int	TEST_len = 1;
 	rl_catch_signals = false;
+	int	TEST_len = 1;
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)
 	{
 		handle_signals_interactive();
 		read_line = readline("minishell$ ");
+		rl_catch_signals = false;
 		if (!read_line)
 		{
 			printf("read_line return NULL!\n");

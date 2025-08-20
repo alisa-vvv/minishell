@@ -16,6 +16,13 @@
 #include <unistd.h>
 #include <readline/readline.h>
 
+void	sigint_handler_heredoc(
+	int sig
+)
+{
+	g_msh_signal = SIGINT;
+}
+
 void	sigint_handler_interactive(
 	int sig
 )

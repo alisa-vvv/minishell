@@ -40,6 +40,7 @@ int	create_here_doc(
 		ft_putchar_fd('\n', here_doc[WRITE_END]);
 		free(input_str);
 		input_str = readline("heredoc> ");
+		rl_catch_signals = false;
 		if (input_str == NULL)
 			perror_and_return(NULL, READLINE_ERR, extern_err, -1);
 	}
