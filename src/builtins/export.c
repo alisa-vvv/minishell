@@ -71,24 +71,19 @@ int	minishell_export(
 	char	*identifier;
 	int		err_check;
 
-	printf("\n\n\nPRE EXPORT\n\n\n");
-	minishell_env(minishell_data);
-	printf("\n\n\nENDPRE\n\n\n");
-
+//	printf("\n\n\nPRE EXPORT\n\n\n");
+//	minishell_env(minishell_data);
+//	printf("\n\n\nENDPRE\n\n\n");
+//
 	if (!*argv)
 		return (minishell_env(minishell_data));
 	arg_i = -1;
 	while (argv[++arg_i])
 	{
 		
-		printf("arg_i: %d\n", arg_i);
 		identifier = env_var_find_identifier(argv[arg_i]);
 		if (!identifier)
-		{
-			printf("this should be entered twice\n");
 			continue ;
-		}
-		printf("indentifier: %s\n", identifier);
 		var_i = env_var_find_index(minishell_data->env, argv[arg_i], identifier);
 
 		assert(var_i <= minishell_data->env_var_count); // REMOVE ASSERT

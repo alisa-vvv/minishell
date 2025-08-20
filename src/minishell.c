@@ -91,7 +91,7 @@ int	main(void)
 			err_check = executor(&minishell_data, exec_data, TEST_len);
 		}
 		else if (default_lexer(read_line, &minishell_data))
-				is_open = false;
+			is_open = false;
 		else
 			printf("We entered: %s\n", read_line);
 		if (read_line)

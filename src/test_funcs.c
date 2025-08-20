@@ -134,13 +134,24 @@ t_exec_data	*test_get_dummy_exec_data(
 //	exec_data[i].redirections = NULL;
 //	i++;
 
-	// BASIC_TEST_04: just heredhoc
+//	// BASIC_TEST_04: just heredhoc
+//	//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].builtin_name = not_builtin;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
+//	i++;
+//
+	// BASIC_TEST_05: a builtin
 	//
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].builtin_name = not_builtin;
+	exec_data[i].argv[0] = ft_strdup("cd");
+	exec_data[i].argv[1] = ft_strdup("");
+	exec_data[i].builtin_name = builtin_cd;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = false;
-	exec_data[i].redirections = test_add_redirection(exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
+	exec_data[i].redirections = NULL;
 	i++;
 
 	return (exec_data);
