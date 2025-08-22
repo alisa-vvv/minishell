@@ -62,13 +62,12 @@ int	main(void)
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	rl_catch_signals = false;
-	int	TEST_len = 1;
+	int	TEST_len = 2;
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)
 	{
 		handle_signals_interactive();
 		read_line = readline("minishell$ ");
-		rl_catch_signals = false;
 		if (!read_line)
 		{
 			printf("read_line return NULL!\n");
