@@ -84,6 +84,36 @@ int add_token(
 	return (0);
 }
 
+//break up func to make smaller 
+int set_len(char *str, int i)
+{
+	int len;
+	len = 0;
+	if ((str[i] == '\'' || str[i] == '"') && str[i])
+	{
+		len = move_over_quote(str, i);
+		i += len;
+	}
+	else if ((len == 0 && str[i]) && !ft_isspace(str[i]) && !str_is_red(str[i]))
+	{
+		while (str[i] && !ft_isspace(str[i]) && !str_is_red(str[i]))
+		{
+			len++;
+			i++;
+		}
+	}
+	else if (len == 0 && str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+	{
+		while(str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+		{
+			len++;
+			i++;
+		}
+	}
+	return (len);
+}
+
+
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(
 	element *tokenlist, 
@@ -95,28 +125,8 @@ int	fill_tokenlist(
 	i = 0;
 	while (str[i])
 	{
-		len = 0;
-        if ((str[i] == '\'' || str[i] == '"') && str[i])
-        {
-            len = move_over_quote(str, i);
-            i += len;
-        }
-		else if ((len == 0 && str[i]) && !ft_isspace(str[i]) && !str_is_red(str[i]))
-        {
-            while (str[i] && !ft_isspace(str[i]) && !str_is_red(str[i]))
-			{
-                len++;
-				i++;
-			}
-        }
-		else if (len == 0 && str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
-		{
-			while(str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
-			{
-				len++;
-				i++;
-			}
-		}
+		len = set_len(str, i);
+		i += len;
 		if (len > 0)
 		{
 			if (add_token(tokenlist, str, i, len))
@@ -127,7 +137,6 @@ int	fill_tokenlist(
 	}
 	return (0);
 }
-
 
 // default option to put trimmed input in tokenlist
 int	default_lexer(char *input_line, t_minishell_data *minishell_data)
