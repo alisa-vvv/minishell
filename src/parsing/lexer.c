@@ -110,6 +110,7 @@ int set_len(char *str, int i)
 			i++;
 		}
 	}
+	t_printf("Len = %d\n", len);
 	return (len);
 }
 
@@ -160,7 +161,6 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (check_lexer(&token_list, minishell_data))
 		return (write(1, "Failed check types\n", 19));
-	
 	return (0);
 }
 

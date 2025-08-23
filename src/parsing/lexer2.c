@@ -82,7 +82,7 @@ int	check_pipe_redirect(
 		if (!command && symbol == '|')
 			return (1);
 		// check for single pipe or redirect
-		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i + 1 == '"' || !ft_isspace(str[i + 1])))
+		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i + 1 == '"'))
 			return (1);
 	}
     return (0);

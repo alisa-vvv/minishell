@@ -56,25 +56,6 @@ void set_pipe_cm(
 	}
 }
 
-// int sep_redir(
-//     element *tokenlist, 
-//     size_t pos,
-//     char symbol)
-// {
-//     t_token *check_token;
-//     int i;
-//     i = 0;
-//     check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos);
-//     while (check_token->value[i])
-//     {
-//         if (check_token->value[i] == symbol)
-//             tokenlist->pf_element_add.
-//         i++;
-//     }
-//     return (0);
-// }
-
-
 
 //set values 
 int val_redir(element *tokenlist)
