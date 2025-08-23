@@ -21,7 +21,7 @@ int single_token(element *tokenlist)
     if ((int)tokenlist->element_list.total == 1)
     {
         if (check_token->type == HEREDOC || check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_IN)
-            return (write(1, "Command not found\n", 18));
+            return (1);
     }
     return (0);
 }
@@ -75,13 +75,6 @@ int val_redir(element *tokenlist)
         }
         else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_IN)
         {
-            // if (check_token->value[0] != '>' )
-            //     sep_redir(tokenlist, i, '>');
-            // else if (check_token->value[0] != '<' )
-            //     sep_redir(tokenlist, i, '<');
-            // else if (check_token->value[0] != '|')
-            //     sep_redir(tokenlist, i, '|');
-            
             if (i + 1 <= (size_t)tokenlist->element_list.total)
             {
                 check_token = (t_token *)tokenlist->element_list.tokens[i+1];

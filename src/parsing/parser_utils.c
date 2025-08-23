@@ -13,7 +13,9 @@
 #include "parser.h"
 
 // func returning next token type in the array
-t_token	*lookahead(element *tokenlist, size_t index)
+t_token	*lookahead(
+	element *tokenlist, 
+	size_t index)
 {
 	t_token	*check_token;
 
@@ -23,8 +25,7 @@ t_token	*lookahead(element *tokenlist, size_t index)
 	return (check_token);
 }
 
-bool str_is_red(
-	char c)
+bool str_is_red(char c)
 {
 	if (c == '<' || c == '>' || c == '|')
 		return (1);

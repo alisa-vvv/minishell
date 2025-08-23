@@ -33,6 +33,23 @@ t_token	*new_token(
 	return (token);
 }
 
+//add token to the list, if failed, release whole list
+int add_token(
+	element *tokenlist, 
+	char *str, 
+	int i, 
+	size_t len)
+{
+	t_token	*token;
+	l_printf("len = %zu ", len);
+	token = new_token(str + i - len, len + 1);
+	if (!token)
+		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
+	token->pos = tokenlist->element_list.total;
+	tokenlist->pf_element_add(tokenlist, token);
+	return (0);
+}
+
 // counts args to size up elementlist
 int	token_count(
 	char *str)
@@ -66,54 +83,6 @@ int	token_count(
     t_printf("token count = %d\n", tokencount);
 	return (tokencount);
 }
-
-//add token to the list, if failed, release whole list
-int add_token(
-	element *tokenlist, 
-	char *str, 
-	int i, 
-	size_t len)
-{
-	t_token	*token;
-	l_printf("len = %zu ", len);
-	token = new_token(str + i - len, len + 1);
-	if (!token)
-		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
-	token->pos = tokenlist->element_list.total;
-	tokenlist->pf_element_add(tokenlist, token);
-	return (0);
-}
-
-//break up func to make smaller 
-int set_len(char *str, int i)
-{
-	int len;
-	len = 0;
-	if ((str[i] == '\'' || str[i] == '"') && str[i])
-	{
-		len = move_over_quote(str, i);
-		i += len;
-	}
-	else if ((len == 0 && str[i]) && !ft_isspace(str[i]) && !str_is_red(str[i]))
-	{
-		while (str[i] && !ft_isspace(str[i]) && !str_is_red(str[i]))
-		{
-			len++;
-			i++;
-		}
-	}
-	else if (len == 0 && str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
-	{
-		while(str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
-		{
-			len++;
-			i++;
-		}
-	}
-	t_printf("Len = %d\n", len);
-	return (len);
-}
-
 
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(

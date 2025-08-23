@@ -86,6 +86,7 @@ typedef struct s_token
 int			default_lexer(char *input_line, t_minishell_data *minishell_data);
 int			token_count(char *str);
 t_token		*new_token(char *str, int len);
+int			set_len(char *str, int i);
 bool		str_is_red(char c);
 int			move_over_quote(char *str, int pos);
 int			fill_tokenlist(element *tokenlist, char *str);

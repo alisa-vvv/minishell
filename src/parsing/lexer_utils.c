@@ -28,8 +28,7 @@ int	skip_blanks(
 	return (count);
 }
 
-// trims input to have one space between tokens to ease validation
-// unless the input is quoted
+// trims input to have 1 space
 char	*trim_str_space(
 	char *str)
 {
@@ -87,6 +86,35 @@ int move_over_quote(
     if (i > 0)
         i += 2;
     return(i);
+}
+
+//returns len of tokens
+int set_len(char *str, int i)
+{
+	int len;
+	len = 0;
+	if ((str[i] == '\'' || str[i] == '"') && str[i])
+	{
+		len = move_over_quote(str, i);
+		i += len;
+	}
+	else if ((len == 0 && str[i]) && !ft_isspace(str[i]) && !str_is_red(str[i]))
+	{
+		while (str[i] && !ft_isspace(str[i]) && !str_is_red(str[i]))
+		{
+			len++;
+			i++;
+		}
+	}
+	else if (len == 0 && str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+	{
+		while(str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+		{
+			len++;
+			i++;
+		}
+	}
+	return (len);
 }
 
 //index lexer by traversing - not needed anymore
