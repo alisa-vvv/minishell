@@ -41,23 +41,6 @@ int	count_symbol(
 	return (count);
 }
 
-//index lexer by traversing - not needed anymore
-int index_lexer(
-	element **tokenlist)
-{
-    size_t i;
-    i = 0;
-	//e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
-    while (i < (size_t)(*tokenlist)->element_list.total)
-    {
-        t_token *check_token;
-		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
-		check_token->pos = i;
-		//e_printf("POS= %d \n", check_token->pos);
-        i++;
-    }
-    return (0);
-}
 
 int check_lexer(
 	element *tokenlist, 
@@ -74,8 +57,8 @@ int check_lexer(
 	set_pipe_cm(tokenlist);
 	t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	test_tokens(*tokenlist);
-	comm_list = convert_data(tokenlist, 0);
-	test_execdata(*comm_list);
+	//comm_list = convert_data(tokenlist, 0);
+	//test_execdata(*comm_list);
 	return (0); 
 }
 

@@ -80,6 +80,8 @@ void	element_init(element *e, int size)
 	e->pf_element_total = element_total;
 	e->pf_element_resize = element_resize;
 	e->pf_element_add = element_push_back;
+	e->pf_element_swap = element_swap;
+	e->pf_element_insert = element_insert;
 	e->pf_element_set = element_set;
 	e->pf_element_get = element_get;
 	e->pf_element_free = element_free;

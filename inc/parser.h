@@ -86,6 +86,8 @@ typedef struct s_token
 int			default_lexer(char *input_line, t_minishell_data *minishell_data);
 int			token_count(char *str);
 t_token		*new_token(char *str, int len);
+bool		str_is_red(char c);
+int			move_over_quote(char *str, int pos);
 int			fill_tokenlist(element *tokenlist, char *str);
 void		ft_safefree(void *ptr);
 const char* enum_to_str(t_token_type symbols);
@@ -116,12 +118,12 @@ int			expand_var(element **tokenlist, int pos,
 int			rm_quotes(element *tokenlist, int pos, char symbol);
 int			all_num_alph(const char *str);
 int			check_hyphens(const char *str_token);
-int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist,
-				int pos);
+int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist, size_t pos, int pos_red);
 int			add_redirect(t_exec_data** execdata, element *tokenlist, int pos);
 void		set_pipe_cm(element *tokenlist);
 int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
+bool		token_is_redirect(t_token *check_token);
 int			fill_comm_list(t_exec_data **execdata, element *tokenlist, size_t pos, int pos_red);
 t_exec_data *make_cm_list(element *tokenlist, size_t pos, int pos_red);
 t_exec_data	*convert_data(element *tokenlist, size_t pos);

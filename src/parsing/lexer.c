@@ -12,53 +12,6 @@
 
 #include "parser.h"
 
-int	skip_blanks(
-	char *str, 
-	int pos)
-{
-	int	count;
-
-	count = 0;
-	while (!check_in_quote(str, pos) && ft_isspace(*str))
-	{
-		count++;
-		str++;
-	}
-    // l_printf("%d\n", count);
-	return (count);
-}
-
-// trims input to have one space between tokens to ease validation
-// unless the input is quoted
-char	*trim_str_space(
-	char *str)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = ft_strlen(str) - 1;
-	while (ft_isspace(str[j] && (str[j] != '\'' || str[j] != '"')))
-	{
-		str[j] = '\0';
-		j--;
-	}
-	j = 0;
-	while (str[j])
-	{
-		if ((i == 0 && skip_blanks(str, j) >= 1))
-			j += skip_blanks(str, j);
-		else if (skip_blanks(str, j) > 1)
-			j += skip_blanks(str, j + 1);
-		str[i] = str[j];
-		i++;
-		j++;
-	}
-	str[i] = '\0';
-    l_printf("trimmed str = %s$\n", str);
-	return (str);
-}
-
 // make a new token in the array
 t_token	*new_token(
 	char *str, 
@@ -80,34 +33,6 @@ t_token	*new_token(
 	return (token);
 }
 
-int move_over_quote(
-	char *str, 
-	int pos)
-{
-    int i;
-    i = 0; 
-    if (str[pos] == '"' || str[pos] == '\'')
-	{
-        char quote = str[pos];
-        pos++;
-        while (str[pos] && str[pos] != quote)
-        {
-            i++;
-            pos++;
-        }
-        if (str[pos] == quote)
-            pos++;
-		while (str[pos] && !ft_isspace(str[pos]))
-		{
-			i++;
-			pos++;
-		}
-    }
-    if (i > 0)
-        i += 2;
-    return(i);
-}
-
 // counts args to size up elementlist
 int	token_count(
 	char *str)
@@ -123,13 +48,19 @@ int	token_count(
 			tokencount++;
             i += move_over_quote(str, i);
 		}
-		else if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && str[i]))
+		else if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && !str_is_red(str[i]) && str[i]))
 		{
 			tokencount++;
-			while (!ft_isspace(str[i]) && str[i])
+			while (!ft_isspace(str[i]) && !str_is_red(str[i]) && str[i])
 				i++;
 		}
-        else 
+		else if (str_is_red(str[i]) && str[i] && !ft_isspace(str[i]))
+		{
+			tokencount++;
+			while(str_is_red(str[i]) && str[i] && !ft_isspace(str[i]))
+				i++;
+		}
+        else
             i++;
 	}
     t_printf("token count = %d\n", tokencount);
@@ -170,14 +101,22 @@ int	fill_tokenlist(
             len = move_over_quote(str, i);
             i += len;
         }
-		else if ((len == 0 && str[i]) && !ft_isspace(str[i]))
+		else if ((len == 0 && str[i]) && !ft_isspace(str[i]) && !str_is_red(str[i]))
         {
-            while (str[i] && !ft_isspace(str[i]))
+            while (str[i] && !ft_isspace(str[i]) && !str_is_red(str[i]))
 			{
                 len++;
 				i++;
 			}
         }
+		else if (len == 0 && str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+		{
+			while(str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+			{
+				len++;
+				i++;
+			}
+		}
 		if (len > 0)
 		{
 			if (add_token(tokenlist, str, i, len))

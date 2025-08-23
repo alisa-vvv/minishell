@@ -32,6 +32,8 @@ struct s_element
     int (*pf_element_total)(element *);
     int (*pf_element_resize)(element *, int, int);
     int (*pf_element_add)(element *, void *);
+    int (*pf_element_swap)(element *, void *, size_t pos1, size_t pos2);
+    int (*pf_element_insert)(element *, void *, int pos);
     int (*pf_element_set)(element *, int, void *);
     void *(*pf_element_get)(element *, int);
     int (*pf_element_delete)(element *, int);
@@ -41,6 +43,8 @@ struct s_element
 int element_total(element *e);
 int element_resize(element *e, int oldsize, int newsize);
 int element_push_back(element *e, void *token);
+int element_swap(element *e, void *token, size_t pos1, size_t pos2);
+int element_insert(element *e, void *token, int pos);
 int element_set(element *e, int index, void *token);
 void *element_get(element *e, int index);
 int element_delete(element *e, int index);

@@ -46,13 +46,11 @@ int set_heredoc(
 	{	
 		check_token = (t_token *)tokenlist->element_list.tokens[pos];
 		if (check_token->type == HEREDOC_DEL)
-		{
 			(*execdata)->redirections->heredoc_delim = ft_strdup(check_token->value);
-			pos++;
-		}
 		else 
 			(*execdata)->redirections->heredoc_delim = NULL;
-		(*execdata)->argv[i] = ft_strdup(check_token->value);
+		if (!token_is_redirect(check_token) && check_token->type != HEREDOC_DEL)
+			(*execdata)->argv[i] = ft_strdup(check_token->value);
 		pos++;
 		i++;
 	}
@@ -79,25 +77,57 @@ t_builtin_name set_builtins(t_token_type tokentype)
 		return(not_builtin);
 }
 
+// int set_redirect(
+// 	t_exec_data **comm_list, 
+// 	element *tokenlist, 
+// 	size_t pos,
+// 	int pos_red)
+// {
+// 	t_token		*check_token;
+// 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+// 	while (pos_red > 0 && pos < pos_red)
+// 	{
+// 		if (check_token->command)
+// 		{
+// 			if (lookahead(tokenlist, pos -2) == PIPE)
+// 				set_pipe_ls(comm_list, tokenlist, pos);
+// 			else if (lookahead(tokenlist, pos -2) == REDIRECT_IN)
+// 				set_redin_ls(comm_list, tokenlist, pos);
+// 			else if (lookahead(tokenlist, pos -2) == REDIRECT_OUT_APP)
+// 				set_redapp_ls(comm_list, tokenlist, pos);
+// 			else if (lookahead(tokenlist, pos -2) == REDIRECT_OUT)
+// 				set_redout_ls(comm_list, tokenlist, pos);
+// 			else 	
+// 				return (write(1, "redirect error", 14));
+// 		}
+// 	}
+// 	return (0);
+// }
 
 // push appropiate token to exec_data argv
 int	add_arg_to_list(
 	t_exec_data **comm_list, 
 	element *tokenlist, 
-	int pos)
+	size_t pos,
+	int pos_red)
 {
 	t_token		*check_token;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	if (check_token->command)
+	while (pos < tokenlist->element_list.total)
 	{
-		if (check_token->type == HEREDOC)
-			return (set_heredoc(comm_list, tokenlist, pos));
-		(*comm_list)->builtin_name = set_builtins(check_token->type);
+		if (check_token->command)
+		{
+			if (check_token->type == HEREDOC)
+				return (set_heredoc(comm_list, tokenlist, pos));
+			if (pos > 0 && lookahead(tokenlist, pos -2)->type == PIPE)
+				(*comm_list)->input_is_pipe = true;
+			(*comm_list)->builtin_name = set_builtins(check_token->type);
+		}
+		if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
+			(*comm_list)->output_is_pipe = true;
+		if (pos_red > 0 && pos < pos_red && !token_is_redirect(check_token))
+			(*comm_list)->argv[pos] = ft_strdup(check_token->value);
 	}
-	if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
-		(*comm_list)->output_is_pipe = true;
-	
-	(*comm_list)->argv[pos] = ft_strdup(check_token->value);
 	return (0);
 }
 
@@ -114,14 +144,12 @@ int fill_comm_list(
 	if (pos_red <= pos)
 		total = tokenlist->element_list.total;
 	else if (check->type == HEREDOC)
-		return (add_redirect(execdata, tokenlist, 0));
+		return (add_redirect(execdata, tokenlist, pos));
 	else
 		total = pos_red - 1;
 	while (pos < total)
 	{
-		t_token* check_token;
-		check_token = tokenlist->pf_element_get(tokenlist, pos);
-		if (add_arg_to_list(execdata, tokenlist, pos))
+		if (add_arg_to_list(execdata, tokenlist, pos, pos_red))
 		{
 			free_2d_arr((void *)(*execdata)->argv);
 			return (write(1, MALLOC_ERR, 15));
@@ -169,8 +197,9 @@ int add_redirect(
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
 	if (check_token->type == HEREDOC)
 		return (set_heredoc(execdata, tokenlist, pos));
-	else 
+	else if (check_token->type == PIPE)
 	{
+		(*execdata)->redirections->type = input;
 		(*execdata)->redirections->src_fd = -1;
 		(*execdata)->redirections->dest_fd = -1;
 		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
@@ -207,19 +236,22 @@ t_exec_data	*convert_data(
 	comm_list = make_cm_list(tokenlist, pos, pos_red);
 	if (!comm_list)
 		return (NULL);
+	int b;
+	b = count_lists(tokenlist);
+	p_printf("Count list = %d\n", b);
 	if (count_lists(tokenlist) > 0)
 	{
 		comm_list->redirections = malloc(sizeof(t_redir_list));
 		if (!comm_list->redirections)
 			return (NULL);
 		p_printf("IN HERE\n");
-		if (pos > 0)
-			add_redirect(&comm_list, tokenlist, count_next_cm(tokenlist, pos) -1);
-		else if (add_redirect(&comm_list, tokenlist, pos))
-		{
-			write(1, "redirect error\n", 15);
-			return (NULL);
-		}
+		// if (pos > 0)
+		// 	add_redirect(&comm_list, tokenlist, count_next_cm(tokenlist, pos) -1);
+		// else if (add_redirect(&comm_list, tokenlist, pos))
+		// {
+		// 	write(1, "redirect error\n", 15);
+		// 	return (NULL);
+		// }
 	}
 	else 
 		comm_list->redirections = NULL;

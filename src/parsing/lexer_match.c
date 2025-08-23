@@ -15,31 +15,31 @@
 //check what kind of non-terminal for further action
 int match_nonterminal(char *str_token)
 {
+    char *str_sym;
     if (str_token[0] == str_token[1])
     {
         if (str_token[0] == '<')
-            return (HEREDOC);
+            return HEREDOC;
         else if (str_token[0] == '>')
             return (REDIRECT_OUT_APP);
         else if (str_token[0] == '.')
-            return (DOUBLE_DOT);
+            return(DOUBLE_DOT);
     }
-    if (str_token[0] == '<')
+    else if (str_token[0] == '<')
         return (REDIRECT_IN);
     else if (str_token[0] == '>')
         return (REDIRECT_OUT);
+    else if (str_token[0] == '.')
+        return (DOT);
     else if (ft_strchr(str_token, '$') != NULL)
         return (PARAMETER); 
-    else if (str_token[0] == '|')
+    else if (ft_strchr(str_token, '|') != NULL)
         return (PIPE);
-    else if (str_token[0] == '.')
-            return (DOT);
     else if (str_token[0] == '?')
         return (QUESTION_MARK);
     else if (str_token[0] == '!')
         return (EXCLAM_MARK);
-    else 
-        return(UNKNOWN);
+    return(UNKNOWN);
 }
 
 int check_filename(const char *str_token)
@@ -86,9 +86,7 @@ int	match_token(char *str_token)
 		return (SINGLE_Q);
     else if (str_token[0] == '"')
 		return (DOUBLE_Q);
-    else if ((str_token[0] == '>') || (str_token[0] == '<')
-		|| (ft_strchr(str_token, '$') != NULL) || (str_token[0] == '|')
-		|| (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
+    else if (str_token[0] == '>' || str_token[0] == '<'	|| (str_token[0] == '$') || str_token[0] == '|' || (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
 		return (match_nonterminal(str_token));
 	else if (str_token[0] == '(' || str_token[0] == '{')
 		return (OPEN_BRACKET);

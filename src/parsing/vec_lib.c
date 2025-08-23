@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "vec_lib.h"
 
 // realloc for shrink and expand size
 void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
@@ -36,13 +37,6 @@ void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 		i++;
 	}
 	return (free(ptr), n_ptr);
-}
-
-int	element_total(element *e)
-{
-	if (e)
-		return (e->element_list.total);
-	return (-1);
 }
 
 int	element_resize(element *e, int oldsize, int newsize)

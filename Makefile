@@ -25,9 +25,11 @@ CFILES	=	minishell.c\
 			$(CFILES_BUILTINS)\
 			test_funcs.c
 CFILES_VECLIB	=	vec_lib.c\
-					vec_lib2.c
+					vec_lib2.c\
+					vec_lib3.c
 CFILES_PARSER	=	debug.c\
 					lexer_match.c\
+					lexer_utils.c\
 					expansions.c\
 					hyphen_handler.c\
 					lexer.c\
