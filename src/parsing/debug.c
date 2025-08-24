@@ -185,7 +185,8 @@ void test_execdata(
         p_printf("Output is pipe = false\n");
 
     if (execdata.redirections->type)
-    {   p_printf("Got here\n");
+    {   
+        //p_printf("Got here\n");
         p_printf("Redirection Type = %s\n", enum_red_type(execdata.redirections->type));
         p_printf("Redirection src_fd = %d\n", execdata.redirections->src_fd);
         p_printf("Redirection dest_fd = %d\n", execdata.redirections->dest_fd);
