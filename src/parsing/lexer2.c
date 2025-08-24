@@ -57,8 +57,8 @@ int check_lexer(
 	set_pipe_cm(tokenlist);
 	t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	test_tokens(*tokenlist);
-	//comm_list = convert_data(tokenlist, 0);
-	//test_execdata(*comm_list);
+	comm_list = convert_data(tokenlist, 0);
+	test_execdata(*comm_list);
 	return (0); 
 }
 

@@ -26,22 +26,36 @@
 //     - env with no options or arguments
 //     - exit with no options
 
-// set heredoc 
-int set_heredoc(
+int set_heredoc_red(
 	t_exec_data** execdata, 
 	element *tokenlist, 
-	int pos)
+	int pos,
+	int pos_red)
 {
-	t_token *check_token;	
-	size_t i;
-	i = 0;
 	
 	(*execdata)->redirections->type = heredoc;
 	(*execdata)->redirections->dest_fd = -1;
 	(*execdata)->redirections->dest_filename = NULL;
 	(*execdata)->redirections->src_fd = -1;
 	(*execdata)->redirections->src_filename = NULL;
-	(*execdata)->redirections->next = NULL;
+	if ((*execdata)->output_is_pipe)
+		add_redirect(execdata, tokenlist, pos_red -1, pos_red);
+	else 
+		(*execdata)->redirections->next = NULL;
+	return (0);
+}
+
+// set heredoc 
+int set_heredoc(
+	t_exec_data** execdata, 
+	element *tokenlist, 
+	int pos,
+	int pos_red)
+{
+	t_token *check_token;	
+	size_t i;
+	i = 0;
+
 	while (pos < tokenlist->element_list.total)
 	{	
 		check_token = (t_token *)tokenlist->element_list.tokens[pos];
@@ -51,9 +65,18 @@ int set_heredoc(
 			(*execdata)->redirections->heredoc_delim = NULL;
 		if (!token_is_redirect(check_token) && check_token->type != HEREDOC_DEL)
 			(*execdata)->argv[i] = ft_strdup(check_token->value);
+		else 
+			(*execdata)->argv[i] = NULL;
 		pos++;
 		i++;
 	}
+	if (pos_red > 0)
+		(*execdata)->output_is_pipe = true;
+	else 
+		(*execdata)->output_is_pipe = false;
+	(*execdata)->builtin_name = not_builtin;
+	(*execdata)->input_is_pipe = false;
+	set_heredoc_red(execdata, tokenlist, pos, pos_red);
 	return (0);
 }
 
@@ -118,15 +141,20 @@ int	add_arg_to_list(
 		if (check_token->command)
 		{
 			if (check_token->type == HEREDOC)
-				return (set_heredoc(comm_list, tokenlist, pos));
+				return (set_heredoc(comm_list, tokenlist, pos, pos_red));
 			if (pos > 0 && lookahead(tokenlist, pos -2)->type == PIPE)
 				(*comm_list)->input_is_pipe = true;
 			(*comm_list)->builtin_name = set_builtins(check_token->type);
 		}
-		if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
-			(*comm_list)->output_is_pipe = true;
 		if (pos_red > 0 && pos < pos_red && !token_is_redirect(check_token))
 			(*comm_list)->argv[pos] = ft_strdup(check_token->value);
+		if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
+		{
+			(*comm_list)->output_is_pipe = true;
+			add_redirect(comm_list, tokenlist, pos, pos_red);
+			return (0);
+		}
+		pos++;
 	}
 	return (0);
 }
@@ -136,15 +164,14 @@ int fill_comm_list(
 	t_exec_data **execdata,
 	element *tokenlist,
 	size_t pos,
-	int pos_red
-)
+	int pos_red)
 {
 	int total;
 	t_token *check = (t_token *)tokenlist->element_list.tokens[pos];
 	if (pos_red <= pos)
 		total = tokenlist->element_list.total;
 	else if (check->type == HEREDOC)
-		return (add_redirect(execdata, tokenlist, pos));
+		return (add_redirect(execdata, tokenlist, pos, pos_red));
 	else
 		total = pos_red - 1;
 	while (pos < total)
@@ -186,30 +213,64 @@ t_exec_data *make_cm_list(
 	return (comm_list);
 }
 
-
-//add re
-int add_redirect(
-	t_exec_data** execdata, 
+int set_pipe(
+	t_redir_list **redirlist, 
 	element *tokenlist, 
-	int pos)
+	int pos,
+	int pos_red)
 {
 	t_token *check_token;
-	check_token = tokenlist->pf_element_get(tokenlist, pos);
-	if (check_token->type == HEREDOC)
-		return (set_heredoc(execdata, tokenlist, pos));
-	else if (check_token->type == PIPE)
-	{
-		(*execdata)->redirections->type = input;
-		(*execdata)->redirections->src_fd = -1;
-		(*execdata)->redirections->dest_fd = -1;
+
+	(*redirlist)->type = input;
+	(*redirlist)->src_fd = -1;
+	(*redirlist)->dest_fd = -1;
+	if (pos > 1)
 		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
-		if (check_token->value)
-			(*execdata)->redirections->src_filename = ft_strdup(check_token->value);
-		else 
-			(*execdata)->redirections->src_filename = NULL;
+	if (check_token->type == STRING)
+		(*redirlist)->src_filename = ft_strdup(check_token->value);
+	else 
+		(*redirlist)->src_filename = NULL;
+	if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
+	{
+		add_redirect(redirlist, tokenlist, pos, pos_red);
 	}
 	return (0);
 }
+
+//add re
+int add_redirect(
+	t_exec_data **execdata,
+	element *tokenlist, 
+	int pos,
+	int pos_red)
+{
+	t_token *check_token;
+	t_redir_list *redirlist;
+	
+	redirlist = malloc(sizeof(t_redir_list));
+	if (!redirlist)
+		return (write(1, MALLOC_ERR, 15));
+	redirlist->next = NULL;
+	if ((*execdata)->redirections == NULL)
+		(*execdata)->redirections = redirlist;
+	else
+	{
+		t_redir_list *next;
+		next = (*execdata)->redirections->next;
+		while (next)
+		{
+			next = next->next;
+		}
+		next = redirlist;
+	}
+	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	if (check_token->type == HEREDOC)
+		return (set_heredoc(execdata, tokenlist, pos, pos_red));
+	else if (check_token->type == PIPE)
+		set_pipe(&redirlist, tokenlist, pos, pos_red);
+	return (0);
+}
+
 // typedef struct	s_redir_list
 // {
 // 	t_redirect_type		type;
@@ -239,22 +300,9 @@ t_exec_data	*convert_data(
 	int b;
 	b = count_lists(tokenlist);
 	p_printf("Count list = %d\n", b);
+	comm_list->redirections = NULL;
 	if (count_lists(tokenlist) > 0)
-	{
-		comm_list->redirections = malloc(sizeof(t_redir_list));
-		if (!comm_list->redirections)
-			return (NULL);
-		p_printf("IN HERE\n");
-		// if (pos > 0)
-		// 	add_redirect(&comm_list, tokenlist, count_next_cm(tokenlist, pos) -1);
-		// else if (add_redirect(&comm_list, tokenlist, pos))
-		// {
-		// 	write(1, "redirect error\n", 15);
-		// 	return (NULL);
-		// }
-	}
-	else 
-		comm_list->redirections = NULL;
+		add_redirect(&comm_list, tokenlist, pos, pos_red);
 	if (fill_comm_list(&comm_list, tokenlist, pos, pos_red))
 		return NULL;
 	p_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
