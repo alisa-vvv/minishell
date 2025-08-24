@@ -69,6 +69,8 @@ int set_heredoc(
 		}
 		pos++;
 	}
+	if (i == 0)
+		ft_free_arr((void*)(*execdata)->argv);
 	(*execdata)->argv[i] = NULL;
 	if (pos_red > 0)
 		(*execdata)->output_is_pipe = true;
