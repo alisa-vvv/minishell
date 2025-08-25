@@ -16,6 +16,19 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+static void	handle_sigint_heredoc(
+)
+{
+	if (g_msh_signal == SIGINT)
+	{
+		g_msh_signal = 0;
+		return ;
+	}
+	g_msh_signal = SIGINT;
+	rl_catch_signals = false;
+	ft_putstr_fd("are we looping here?\n", STDOUT_FILENO);			
+	kill(0, SIGINT);
+}
 // make this more general
 static void handle_signals_heredoc(
 )
@@ -26,7 +39,7 @@ static void handle_signals_heredoc(
 	sigemptyset(&handle_sigint.sa_mask);
 	sigaddset(&handle_sigint.sa_mask, SIGINT);
 	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
-	handle_sigint.sa_handler = SIG_DFL;
+	handle_sigint.sa_handler = handle_sigint_heredoc;
 	handle_sigint.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigint, NULL);
 //	sigemptyset(&handle_sigquit.sa_mask);
@@ -46,6 +59,7 @@ int	heredoc_readline_loop(
 	const size_t	delim_len = ft_strlen(heredoc_delim);
 	char			*input_str;
 
+	rl_catch_signals = false;
 	handle_signals_heredoc();
 	while (1)
 	{
@@ -106,8 +120,6 @@ int	create_here_doc(
 	pid = fork();
 	if (pid == 0)
 	{
-		rl_catch_signals = true;
-		handle_signals_heredoc();
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		exit (0);
 	}
