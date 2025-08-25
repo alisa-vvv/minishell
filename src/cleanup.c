@@ -82,10 +82,8 @@ void	free_and_close_exec_data(
 {
 	int	i;
 
-	printf("is exec data null before thing? %p\n", exec_data->redirections);
 	if (exec_data->redirections)
-		clean_redir_list(exec_data->redirections, *(exec_data->redirections));
-	printf("is exec data null after thing? %p\n", exec_data->redirections);
+		clean_redir_list(&exec_data->redirections, exec_data->redirections);
 	if (exec_data->argv)
 	{
 		i = -1;

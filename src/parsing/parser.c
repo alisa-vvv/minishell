@@ -33,22 +33,22 @@ int set_heredoc(t_exec_data** execdata, element *tokenlist, int pos)
 	t_redir_list *redir;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
 	redir = malloc(sizeof(t_redir_list));
-	(*(*execdata)->redirections) = redir;
+	(*execdata)->redirections = redir;
 	//(*execdata)->redirections = malloc(sizeof(t_redir_list));
 	if (!(*execdata)->redirections)
 		return (write(1, MALLOC_ERR, 15));
 	if (pos == 0)
 	{
 		(*execdata)->argv[0] = NULL;
-		(*(*execdata)->redirections)->type = heredoc;
-		(*(*execdata)->redirections)->dest_fd = -1;
-		(*(*execdata)->redirections)->dest_filename = NULL;
-		(*(*execdata)->redirections)->src_fd = -1;
-		(*(*execdata)->redirections)->src_filename = NULL;
-		(*(*execdata)->redirections)->next = NULL;
+		(*execdata)->redirections->type = heredoc;
+		(*execdata)->redirections->dest_fd = -1;
+		(*execdata)->redirections->dest_filename = NULL;
+		(*execdata)->redirections->src_fd = -1;
+		(*execdata)->redirections->src_filename = NULL;
+		(*execdata)->redirections->next = NULL;
 	}
 	if (lookahead(tokenlist, pos)->type == HEREDOC_DEL)
-		(*(*execdata)->redirections)->heredoc_delim = ft_strdup(check_token->value);
+		(*execdata)->redirections->heredoc_delim = ft_strdup(check_token->value);
 	return (0);
 }
 
@@ -148,14 +148,14 @@ int add_redirect(
 		set_heredoc(execdata, tokenlist, 0);
 	else 
 	{
-		(*(*execdata)->redirections)->type = (t_redirect_type)check_token->type - 22;
-		(*(*execdata)->redirections)->src_fd = -1;
-		(*(*execdata)->redirections)->dest_fd = -1;
+		(*execdata)->redirections->type = (t_redirect_type)check_token->type - 22;
+		(*execdata)->redirections->src_fd = -1;
+		(*execdata)->redirections->dest_fd = -1;
 		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
 		if (check_token->value)
-			(*(*execdata)->redirections)->src_filename = ft_strdup(check_token->value);
+			(*execdata)->redirections->src_filename = ft_strdup(check_token->value);
 		else 
-			(*(*execdata)->redirections)->src_filename = NULL;
+			(*execdata)->redirections->src_filename = NULL;
 	}
 	return (0);
 }

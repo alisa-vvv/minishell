@@ -128,7 +128,7 @@ typedef struct	s_exec_data
 	t_builtin_name	builtin_name;
 	bool			input_is_pipe;
 	bool			output_is_pipe;
-	t_redir_list	**redirections;
+	t_redir_list	*redirections;
 }	t_exec_data;
 
 // This struct contains data that maybe accessed and modified by both parsing

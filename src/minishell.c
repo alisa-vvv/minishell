@@ -43,7 +43,12 @@ static void	setup_minishell_data(
 	t_minishell_data *minishell_data
 )
 {
-	reset_minishell_data(minishell_data);
+	minishell_data->env = NULL;
+	minishell_data->env_var_count = 0;
+	minishell_data->env_mem = 0;
+	minishell_data->last_pipeline_return = 0;
+	minishell_data->exec_data = NULL;
+	minishell_data->command_count = 0;
 	minishell_data->env = clone_env(&minishell_data->env_var_count,
 								 &minishell_data->env_mem);
 	if (!minishell_data->env)
@@ -83,7 +88,7 @@ int	main(void)
 		if (read_line)
 			add_history(read_line);
 		if (strcmp(read_line, "exit") == 0)
-			is_open = false;
+			clean_exit(&minishell_data, read_line, EXIT_SUCCESS);
 		else if (strcmp(read_line, "executor") == 0)
 		{
 			handle_signals_non_interactive();

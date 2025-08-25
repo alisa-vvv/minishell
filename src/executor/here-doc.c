@@ -15,8 +15,6 @@
 #include "executor.h"
 #include <stdio.h>
 #include <fcntl.h>
-#include <curses.h>
-#include <term.h>
 
 // make this more general
 static void handle_signals_heredoc(
@@ -48,23 +46,14 @@ int	heredoc_readline_loop(
 	const size_t	delim_len = ft_strlen(heredoc_delim);
 	char			*input_str;
 
-	input_str = readline("heredoc> ");
-	if (input_str == NULL)
-		perror_and_return(NULL, READLINE_ERR, extern_err, -1); // this should have unioque error text
-	if (g_msh_signal == SIGINT)
+	handle_signals_heredoc();
+	while (1)
 	{
-		printf("have we exited?\n");
-		g_msh_signal = 0;
-		exit (0); // test
-	}
-	while (input_str && ft_strncmp(input_str, heredoc_delim, delim_len) != 0)
-	{
-		if (g_msh_signal == SIGINT)
-		{
-			printf("have we exited?\n");
-			g_msh_signal = 0;
-			exit (0); // test
-		}
+		input_str = readline("heredoc> ");
+		if (input_str == NULL)
+			perror_and_return(NULL, READLINE_ERR, extern_err, -1); // this should have unioque error text
+		if (ft_strncmp(input_str, heredoc_delim, delim_len) == 0)
+			break ;
 		ft_putstr_fd(input_str, here_doc[WRITE_END]);
 		ft_putchar_fd('\n', here_doc[WRITE_END]);
 		free(input_str);
@@ -72,6 +61,7 @@ int	heredoc_readline_loop(
 		if (input_str == NULL)
 			perror_and_return(NULL, READLINE_ERR, extern_err, -1); // this should have unioque error text
 	}
+	handle_signals_non_interactive();
 	return (0);
 }
 

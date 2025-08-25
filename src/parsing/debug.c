@@ -147,8 +147,6 @@ void test_execdata(
     t_exec_data execdata)
 {
     size_t i;
-	t_redir_list	**redir_head;
-	t_redir_list	*cur_redirection;
 
     i = 0;
     p_printf("\nEXEC DATA IS:\n");
@@ -171,13 +169,12 @@ void test_execdata(
         p_printf("Output is pipe = false\n");
     if (execdata.redirections)
     {
-		cur_redirection = *(execdata.redirections);//*redir_head;
-        p_printf("Redirection Type = %s\n", enum_red_type(cur_redirection->type));
-        p_printf("Redirection src_fd = %d\n", cur_redirection->src_fd);
-        p_printf("Redirection dest_fd = %d\n", cur_redirection->dest_fd);
-        p_printf("Redirection dest_filename = %s\n", cur_redirection->dest_filename);
-        p_printf("Redirection src_filename = %s\n", cur_redirection->src_filename);
-        p_printf("Redirection heredoc delimeter = %s\n", cur_redirection->heredoc_delim);
+        p_printf("Redirection Type = %s\n", enum_red_type(execdata.redirections->type));
+        p_printf("Redirection src_fd = %d\n", execdata.redirections->src_fd);
+        p_printf("Redirection dest_fd = %d\n", execdata.redirections->dest_fd);
+        p_printf("Redirection dest_filename = %s\n", execdata.redirections->dest_filename);
+        p_printf("Redirection src_filename = %s\n", execdata.redirections->src_filename);
+        p_printf("Redirection heredoc delimeter = %s\n", execdata.redirections->heredoc_delim);
     }
     t_printf("\n");
 }

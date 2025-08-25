@@ -18,11 +18,11 @@
 static int	TEST_counter_01;
 
 t_redir_list	*test_add_redirection(
-	const t_redir_list *first,
-	const t_redirect_type type,
-	const int src,
-	const char *dest,
-	const char *heredoc_delim
+	t_redir_list **first,
+	t_redirect_type type,
+	int src,
+	char *dest,
+	char *heredoc_delim
 );
 
 t_exec_data	*test_get_dummy_exec_data(
