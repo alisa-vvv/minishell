@@ -48,35 +48,32 @@ void	clean_exit(
 	exit (exit_code);
 }
 
-void	free_and_close_redir_list(
-	t_redir_list *redirection
+void	clean_redir_list(
+	t_redir_list **head,
+	t_redir_list *cur_node
 )
 {
-	while (redirection != NULL)
+	t_redir_list	*next_node;
+
+	while (cur_node != NULL)
 	{
-		if (redirection->dest_filename)
-		{
-			free(redirection->dest_filename);
-			redirection->dest_filename = NULL;
-		}
-		if (redirection->src_filename)
-		{
-			free(redirection->src_filename);
-			redirection->src_filename = NULL;
-		}
-		if (redirection->heredoc_delim)
-		{
-			free(redirection->src_filename);
-			redirection->src_filename = NULL;
-		}
-		if (redirection->type == heredoc)
-		{
-			test_close(redirection->dest_fd);
-			redirection->dest_fd = CLOSED_FD;
-		}
-		free(redirection);
-		redirection = redirection->next;
+		next_node = cur_node->next;
+		if (cur_node->dest_filename)
+			free(cur_node->dest_filename);
+		if (cur_node->src_filename)
+			free(cur_node->src_filename);
+		if (cur_node->heredoc_delim)
+			free(cur_node->heredoc_delim);
+		if (cur_node->type == heredoc)
+			test_close(cur_node->dest_fd);
+		cur_node->dest_filename = NULL;
+		cur_node->src_filename = NULL;
+		cur_node->heredoc_delim = NULL;
+		cur_node->dest_fd = CLOSED_FD;
+		free(cur_node);
+		cur_node = next_node;
 	}
+	*head = NULL;
 }
 
 void	free_and_close_exec_data(
@@ -85,9 +82,10 @@ void	free_and_close_exec_data(
 {
 	int	i;
 
+	printf("is exec data null before thing? %p\n", exec_data->redirections);
 	if (exec_data->redirections)
-		free_and_close_redir_list(exec_data->redirections);
-	exec_data->redirections = NULL;
+		clean_redir_list(exec_data->redirections, *(exec_data->redirections));
+	printf("is exec data null after thing? %p\n", exec_data->redirections);
 	if (exec_data->argv)
 	{
 		i = -1;

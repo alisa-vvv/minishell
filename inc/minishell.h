@@ -94,8 +94,9 @@ typedef struct	s_redir_list
 	struct s_redir_list	*next;
 }	t_redir_list;
 
-void	free_and_close_redir_list(
-	t_redir_list *redirection
+void	clean_redir_list(
+	t_redir_list **head,
+	t_redir_list *cur_node
 );
 
 // Since parser will read the builtin name, makes sense to save name in enum
@@ -127,7 +128,7 @@ typedef struct	s_exec_data
 	t_builtin_name	builtin_name;
 	bool			input_is_pipe;
 	bool			output_is_pipe;
-	t_redir_list	*redirections;
+	t_redir_list	**redirections;
 }	t_exec_data;
 
 // This struct contains data that maybe accessed and modified by both parsing

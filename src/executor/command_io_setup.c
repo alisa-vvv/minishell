@@ -50,7 +50,8 @@ int	prepare_command_io(
 		if (err_check < 0)
 			perror_and_return(NULL, PIPE_ERR, extern_err, -1);
 	}
-	err_check = find_and_create_heredocs(command->redirections);
+	if (command->redirections)
+		err_check = find_and_create_heredocs(*(command->redirections));
 	//if (g_TEST_IO == 1)
 	//	return (-1);
 	return (err_check);

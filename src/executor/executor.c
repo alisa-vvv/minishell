@@ -61,7 +61,8 @@ static int	run_child_process(
 		test_close(command_io->out_pipe[WRITE_END]);
 		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 	}
-	err_check = perform_redirections(command->redirections, command_io);
+	if (command->redirections)
+		err_check = perform_redirections(*(command->redirections), command_io);
 	if (command->builtin_name == not_builtin && command->argv[0])
 		err_check = try_execve(minishell_data->env, command->argv);
 	else

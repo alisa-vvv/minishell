@@ -109,6 +109,7 @@ int	create_here_doc(
 	int				here_doc[2];
 	int				pid;
 
+	err_check = 0;
 	err_check = pipe(here_doc);
 	if (err_check < 0)
 		perror_and_return(NULL, PIPE_ERR, extern_err, -1);
