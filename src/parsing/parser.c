@@ -337,10 +337,11 @@ t_exec_data	*convert_data(
 	t_exec_data	*comm_list;
 	t_token *check_token;
 	check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos);
-	make_cm_list(tokenlist, minishell_data, pos, pos_red);
-	if (!comm_list)
+
+	if (make_cm_list(tokenlist, minishell_data, pos, pos_red))
 		return (NULL);
 	comm_list->redirections = NULL;
+	
 	if (pos_red > 0)
 		add_redirect(&comm_list, tokenlist, pos, pos_red);
 	if (fill_comm_list(&comm_list, tokenlist, pos, pos_red))
