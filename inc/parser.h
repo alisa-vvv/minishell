@@ -127,7 +127,8 @@ int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
 bool		token_is_redirect(t_token *check_token);
 int			fill_comm_list(t_exec_data **execdata, element *tokenlist, size_t pos, int pos_red);
-t_exec_data *make_cm_list(element *tokenlist, size_t pos, int pos_red);
-t_exec_data	*convert_data(element *tokenlist, size_t pos);
+int			make_cm_list(element *tokenlist, t_minishell_data *minishell_data, size_t pos, int pos_red);
+int			pass_comm(element *tokenlist, t_minishell_data *minishell_data);
+t_exec_data	*convert_data(element *tokenlist, t_minishell_data *minishell_data, size_t pos, int pos_red);
 
 #endif

@@ -46,6 +46,8 @@ int check_lexer(
 	element *tokenlist, 
 	t_minishell_data *minishell_data)
 {
+	int i;
+	i = 0;
 	t_exec_data	*comm_list;
 
 	test_tokens(*tokenlist);
@@ -57,8 +59,13 @@ int check_lexer(
 	set_pipe_cm(tokenlist);
 	t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	test_tokens(*tokenlist);
-	comm_list = convert_data(tokenlist, 0);
-	test_execdata(*comm_list);
+	pass_comm(tokenlist, minishell_data);
+	while (minishell_data->exec_data[i].argv != NULL)
+	{
+		*comm_list = minishell_data->exec_data[i];
+		test_execdata(*comm_list);
+		i++;
+	}
 	return (0); 
 }
 
