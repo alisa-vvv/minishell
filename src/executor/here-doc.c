@@ -16,21 +16,27 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-static void	handle_sigint_heredoc(
+static void	ignore_sigint(
 )
 {
-	if (g_msh_signal == SIGINT)
-	{
-		g_msh_signal = -1;
-		return ;
-	}
-	g_msh_signal = SIGINT;
-	rl_catch_signals = true;
-	ft_putstr_fd("are we looping here?\n", STDOUT_FILENO);			
-	kill(0, SIGINT);
+	struct sigaction	handle_sigint;
+	struct sigaction	handle_sigquit;
+
+	sigemptyset(&handle_sigint.sa_mask);
+	sigaddset(&handle_sigint.sa_mask, SIGINT);
+	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
+	handle_sigint.sa_handler = SIG_IGN;
+	handle_sigint.sa_flags = 0;
+	sigaction(SIGINT, &handle_sigint, NULL);
+	sigemptyset(&handle_sigquit.sa_mask);
+	sigaddset(&handle_sigquit.sa_mask, SIGINT);
+	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
+	handle_sigquit.sa_handler = SIG_IGN;
+	handle_sigquit.sa_flags = 0;
+	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
-// make this more general
-static void handle_signals_heredoc(
+
+static void allow_sigint_heredoc(
 )
 {
 	struct sigaction	handle_sigint;
@@ -39,15 +45,43 @@ static void handle_signals_heredoc(
 	sigemptyset(&handle_sigint.sa_mask);
 	sigaddset(&handle_sigint.sa_mask, SIGINT);
 	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
+	handle_sigint.sa_handler = SIG_DFL;
+	handle_sigint.sa_flags = 0;
+	sigaction(SIGINT, &handle_sigint, NULL);
+}
+static void	handle_sigint_heredoc(
+)
+{
+	//kill(0, SIGQUIT);
+	g_msh_signal = SIGINT;
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	write(STDIN_FILENO, "\n", 1);
+	read(STDIN_FILENO, "\n", 1);
+	rl_redisplay();
+	//*rl_line_buffer = NULL;
+	rl_done = 1;
+	//ft_putstr_fd("are we looping here?\n", STDOUT_FILENO);			
+}
+// make this more general
+static void handle_signals_heredoc(
+)
+{
+	struct sigaction	handle_sigint;
+	struct sigaction	handle_sigquit;
+
+	sigemptyset(&handle_sigint.sa_mask);
+	sigaddset(&handle_sigint.sa_mask, SIGINT);
+	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
 	handle_sigint.sa_handler = handle_sigint_heredoc;
 	handle_sigint.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigint, NULL);
-//	sigemptyset(&handle_sigquit.sa_mask);
-//	sigaddset(&handle_sigquit.sa_mask, SIGINT);
-//	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
-//	handle_sigquit.sa_handler = SIG_IGN;
-//	handle_sigquit.sa_flags = 0;
-//	sigaction(SIGQUIT, &handle_sigquit, NULL);
+	sigemptyset(&handle_sigquit.sa_mask);
+	sigaddset(&handle_sigquit.sa_mask, SIGINT);
+	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
+	handle_sigquit.sa_handler = SIG_IGN;
+	handle_sigquit.sa_flags = 0;
+	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
 
 int	heredoc_readline_loop(
@@ -66,8 +100,10 @@ int	heredoc_readline_loop(
 		input_str = readline("heredoc> ");
 		if (input_str == NULL)
 			perror_and_return(NULL, READLINE_ERR, extern_err, -1); // this should have unioque error text
-		if (g_msh_signal == -1)
+		if (g_msh_signal == SIGINT)
 		{
+			printf("do we get here?\n");
+			rl_done = 1;
 			g_msh_signal = 0;
 			return (-1);
 		}
@@ -127,7 +163,9 @@ int	create_here_doc(
 	}
 	else if (pid > 0)
 	{
+		ignore_sigint();
 		err_check = heredoc_wait_for_child(pid);
+		handle_signals_non_interactive();
 		test_close(here_doc[WRITE_END]);
 	}
 	if (err_check != 0)
