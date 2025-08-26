@@ -49,20 +49,20 @@ static void allow_sigint_heredoc(
 	handle_sigint.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigint, NULL);
 }
+
 static void	handle_sigint_heredoc(
 )
 {
 	//kill(0, SIGQUIT);
-	g_msh_signal = SIGINT;
+//	g_msh_signal = SIGINT;
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	write(STDIN_FILENO, "\n", 1);
-	read(STDIN_FILENO, "\n", 1);
 	rl_redisplay();
 	//*rl_line_buffer = NULL;
-	rl_done = 1;
 	//ft_putstr_fd("are we looping here?\n", STDOUT_FILENO);			
 }
+//
 // make this more general
 static void handle_signals_heredoc(
 )
@@ -70,6 +70,7 @@ static void handle_signals_heredoc(
 	struct sigaction	handle_sigint;
 	struct sigaction	handle_sigquit;
 
+	rl_catch_signals = false;
 	sigemptyset(&handle_sigint.sa_mask);
 	sigaddset(&handle_sigint.sa_mask, SIGINT);
 	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
@@ -93,26 +94,20 @@ int	heredoc_readline_loop(
 	const size_t	delim_len = ft_strlen(heredoc_delim);
 	char			*input_str;
 
-	rl_catch_signals = false;
 	handle_signals_heredoc();
 	while (1)
 	{
 		input_str = readline("heredoc> ");
 		if (input_str == NULL)
-			perror_and_return(NULL, READLINE_ERR, extern_err, -1); // this should have unioque error text
-		if (g_msh_signal == SIGINT)
-		{
-			printf("do we get here?\n");
-			rl_done = 1;
-			g_msh_signal = 0;
-			return (-1);
-		}
+			perror_and_return(NULL, "uniq text\n", extern_err, -1); // this should have unioque error text
 		if (ft_strncmp(input_str, heredoc_delim, delim_len) == 0)
 			break ;
 		ft_putstr_fd(input_str, here_doc[WRITE_END]);
 		ft_putchar_fd('\n', here_doc[WRITE_END]);
 		free(input_str);
 	}
+	if (input_str)
+		free(input_str);
 	handle_signals_non_interactive();
 	return (0);
 }
@@ -159,14 +154,16 @@ int	create_here_doc(
 	if (pid == 0)
 	{
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
-		exit (0);
+		test_close(here_doc[READ_END]); // double check how this works just in case
+		test_close(here_doc[WRITE_END]);
+		return (err_check);
 	}
 	else if (pid > 0)
 	{
+		test_close(here_doc[WRITE_END]);
 		ignore_sigint();
 		err_check = heredoc_wait_for_child(pid);
 		handle_signals_non_interactive();
-		test_close(here_doc[WRITE_END]);
 	}
 	if (err_check != 0)
 	{

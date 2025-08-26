@@ -94,6 +94,8 @@ int	main(void)
 			handle_signals_non_interactive();
 			exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
 			err_check = executor(&minishell_data, exec_data, TEST_len);
+			if (err_check == -2)
+				clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
 		}
 		else if (default_lexer(read_line, &minishell_data))
 			is_open = false;

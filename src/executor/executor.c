@@ -201,13 +201,19 @@ int	build_pipeline(
 	int command_count
 )
 {
+	int	err_check;
 	int	i;
 
 	i = -1;
 	while (++i < command_count)
 	{
-		if (prepare_command_io(&exec_data[i], command_io, i) < 0)
+		err_check = prepare_command_io(&exec_data[i], command_io, i) < 0;
+		if (err_check < 0)
+		{
+			if (err_check == -2) // this is the case where we exit a heredoc child
+				return (-2); // please add calrity to this this is DOGSHIT
 			return (i);
+		}
 	}
 	return (command_count);
 }
@@ -226,6 +232,27 @@ void	execute_commands(
 		p_id[i] = execute_command(&command[i], &command_io[i], minishell_data);
 }
 
+void	handle_unusual_exit(
+	t_minishell_data *minishell_data,
+	t_command_io *command_io,
+	int code
+)
+{
+	if (code == -1)
+	{
+		printf("PLACEHOLDER, EXIT ON ERROR\n");
+		return ;
+	}
+	if (code == -2)
+	{
+		printf("activating special heredoc exit protocol\n"); // silly
+		command_io->in_pipe[0] = -1;
+		command_io->in_pipe[1] = -1;
+		command_io->out_pipe[0] = -1;
+		command_io->out_pipe[1] = -1;
+	}
+}
+
 int	executor(
 	t_minishell_data *const minishell_data,
 	t_exec_data *exec_data,
@@ -236,6 +263,7 @@ int	executor(
 	int				*p_exit_codes;
 	int				pipeline_elem_count;
 	t_command_io	*command_io;
+	int				exit_type;
 
 	p_id = ft_calloc(sizeof(int), command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
@@ -249,11 +277,15 @@ int	executor(
 	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
 	if (pipeline_elem_count == command_count)
 		execute_commands(minishell_data, exec_data, command_io, p_id);
+	else if (pipeline_elem_count < 0)
+		handle_unusual_exit(minishell_data, command_io, pipeline_elem_count);
 	else
 		command_count = pipeline_elem_count;
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);
 	executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
+	if (pipeline_elem_count < 0)
+		return (pipeline_elem_count);
 	return(EXIT_SUCCESS);
 }
