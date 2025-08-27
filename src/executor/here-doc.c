@@ -70,7 +70,6 @@ static void handle_signals_heredoc(
 	struct sigaction	handle_sigint;
 	struct sigaction	handle_sigquit;
 
-	rl_catch_signals = false;
 	sigemptyset(&handle_sigint.sa_mask);
 	sigaddset(&handle_sigint.sa_mask, SIGINT);
 	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
@@ -93,13 +92,17 @@ int	heredoc_readline_loop(
 {
 	const size_t	delim_len = ft_strlen(heredoc_delim);
 	char			*input_str;
+	bool			forced_end;
 
 	handle_signals_heredoc();
 	while (1)
 	{
 		input_str = readline("heredoc> ");
-		if (input_str == NULL)
-			perror_and_return(NULL, "uniq text\n", extern_err, -1); // this should have unioque error text
+		if (!input_str)
+		{
+			ft_putstr_fd("PLACEHOLDER: ctrl-D'd the heredoc\n", STDERR_FILENO); // make bash like i guess
+			break ;
+		}
 		if (ft_strncmp(input_str, heredoc_delim, delim_len) == 0)
 			break ;
 		ft_putstr_fd(input_str, here_doc[WRITE_END]);
@@ -108,7 +111,6 @@ int	heredoc_readline_loop(
 	}
 	if (input_str)
 		free(input_str);
-	handle_signals_non_interactive();
 	return (0);
 }
 
@@ -153,10 +155,10 @@ int	create_here_doc(
 	pid = fork();
 	if (pid == 0)
 	{
-		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		test_close(here_doc[READ_END]); // double check how this works just in case
+		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		test_close(here_doc[WRITE_END]);
-		return (err_check);
+		return (HEREDOC_CHILD);
 	}
 	else if (pid > 0)
 	{

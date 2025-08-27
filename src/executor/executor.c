@@ -121,11 +121,11 @@ static int	wait_for_children(
 	int	error_check;
 
 	i = -1;
-	printf("command count: %d\n", command_count);
+	//printf("command count: %d\n", command_count);
 	while (++i < command_count)
 	{
-		printf("\np_ids[%d]: %d\n", i, p_ids[i]);
-		printf("p_exit_codes[%d]: %d\n\n", i, p_exit_codes[i]);
+	//	printf("\np_ids[%d]: %d\n", i, p_ids[i]);
+	//	printf("p_exit_codes[%d]: %d\n\n", i, p_exit_codes[i]);
 		if (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) // check if there's some exit signals or codes we need to handle here
 		{
 			//https://tldp.org/LDP/abs/html/exitcodes.html - good source for exit codes testing
@@ -151,7 +151,7 @@ static int	wait_for_children(
 	return (EXIT_SUCCESS);
 }
 
-static void	executor_cleanup(
+void	heredoc_cleanup(
 	t_minishell_data *const minishell_data,
 	t_exec_data *exec_data,
 	t_command_io *command_io,
@@ -168,8 +168,6 @@ static void	executor_cleanup(
 		free_and_close_exec_data(&exec_data[i]);
 		if (command_io[i].out_pipe[READ_END] > 2)
 		{
-			printf("which command: %d\n", i);
-			printf("is it this one?\n");
 			test_close(command_io[i].out_pipe[READ_END]);
 			//command_io[i].out_pipe[READ_END] = CLOSED_FD;
 		}
@@ -178,16 +176,49 @@ static void	executor_cleanup(
 			test_close(command_io[i].out_pipe[WRITE_END]);
 			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
 		}
-		if (command_io[i].in_pipe[READ_END] > 2)
+	}
+	free(command_io);
+	free(p_ids);
+	free(p_exit_codes);
+	free(exec_data);
+}
+
+static void	executor_cleanup(
+	t_minishell_data *const minishell_data,
+	t_exec_data *exec_data,
+	t_command_io *command_io,
+	int *p_ids,
+	int *p_exit_codes
+)
+{
+	int	i;
+
+	i = -1;
+	// question: can;t we omit clising in_pipes? they are always fro melft to right
+	// and alwats equal to prevoius out_pipes right?
+	while (++i < minishell_data->command_count)
+	{
+		free_and_close_exec_data(&exec_data[i]);
+		if (command_io[i].out_pipe[READ_END] > 2)
 		{
-			test_close(command_io[i].in_pipe[READ_END]);
-			//command_io[i].in_pipe[READ_END] = CLOSED_FD;
+			test_close(command_io[i].out_pipe[READ_END]);
+			//command_io[i].out_pipe[READ_END] = CLOSED_FD;
 		}
-		if (command_io[i].in_pipe[WRITE_END] > 2)
+		if (command_io[i].out_pipe[WRITE_END] > 2)
 		{
-			test_close(command_io[i].in_pipe[WRITE_END]);
-			//command_io[i].in_pipe[WRITE_END] = CLOSED_FD;
+			test_close(command_io[i].out_pipe[WRITE_END]);
+			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
 		}
+		//if (command_io[i].in_pipe[READ_END] > 2)
+		//{
+		//	test_close(command_io[i].in_pipe[READ_END]);
+		//	//command_io[i].in_pipe[READ_END] = CLOSED_FD;
+		//}
+		//if (command_io[i].in_pipe[WRITE_END] > 2)
+		//{
+		//	test_close(command_io[i].in_pipe[WRITE_END]);
+		//	//command_io[i].in_pipe[WRITE_END] = CLOSED_FD;
+		//}
 	}
 	free(command_io);
 	free(p_ids);
@@ -201,17 +232,17 @@ int	build_pipeline(
 	int command_count
 )
 {
-	int	err_check;
+	int	status_check; // change name?
 	int	i;
 
 	i = -1;
 	while (++i < command_count)
 	{
-		err_check = prepare_command_io(&exec_data[i], command_io, i) < 0;
-		if (err_check < 0)
+		status_check = prepare_command_io(&exec_data[i], command_io, i);
+		if (status_check < 0)
 		{
-			if (err_check == -2) // this is the case where we exit a heredoc child
-				return (-2); // please add calrity to this this is DOGSHIT
+			if (status_check == HEREDOC_CHILD)
+				return (HEREDOC_CHILD);
 			return (i);
 		}
 	}
@@ -232,27 +263,7 @@ void	execute_commands(
 		p_id[i] = execute_command(&command[i], &command_io[i], minishell_data);
 }
 
-void	handle_unusual_exit(
-	t_minishell_data *minishell_data,
-	t_command_io *command_io,
-	int code
-)
-{
-	if (code == -1)
-	{
-		printf("PLACEHOLDER, EXIT ON ERROR\n");
-		return ;
-	}
-	if (code == -2)
-	{
-		printf("activating special heredoc exit protocol\n"); // silly
-		command_io->in_pipe[0] = -1;
-		command_io->in_pipe[1] = -1;
-		command_io->out_pipe[0] = -1;
-		command_io->out_pipe[1] = -1;
-	}
-}
-
+// maybe rework this for more clarity on what happens on different exit situations
 int	executor(
 	t_minishell_data *const minishell_data,
 	t_exec_data *exec_data,
@@ -277,14 +288,15 @@ int	executor(
 	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
 	if (pipeline_elem_count == command_count)
 		execute_commands(minishell_data, exec_data, command_io, p_id);
-	else if (pipeline_elem_count < 0)
-		handle_unusual_exit(minishell_data, command_io, pipeline_elem_count);
 	else
 		command_count = pipeline_elem_count;
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);
-	executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
+	if (command_count == HEREDOC_CHILD)
+		heredoc_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
+	else 
+		executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
 	if (pipeline_elem_count < 0)
 		return (pipeline_elem_count);
 	return(EXIT_SUCCESS);

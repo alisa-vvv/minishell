@@ -52,6 +52,10 @@
 // max value for environment variables
 # define MAX_ENV 4096
 
+// this value is returned in a child process that only exists to create heredoc
+// doesn't need to be -2
+# define HEREDOC_CHILD -2
+
 /*		Signal handling		*/
 
 static int	g_msh_signal;
@@ -185,7 +189,8 @@ int	perror_and_return(
 void	clean_exit(
 	t_minishell_data *minishell_data,
 	char *read_line,
-	int exit_code
+	int exit_code,
+	bool silent_exit
 );
 
 /**/

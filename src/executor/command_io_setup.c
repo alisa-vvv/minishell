@@ -18,12 +18,19 @@ static int	find_and_create_heredocs(
 	t_redir_list *redirection
 )	
 {
+	int	fd_or_exit_code;
+
 	while (redirection != NULL)
 	{
 		if (redirection->type == heredoc)
-			redirection->dest_fd = create_here_doc(redirection->heredoc_delim);
-		if (redirection->dest_fd < 0)
-			return (-1);
+			fd_or_exit_code = create_here_doc(redirection->heredoc_delim);	
+		if (fd_or_exit_code > 0)
+			redirection->dest_fd = fd_or_exit_code;
+		else if (fd_or_exit_code == HEREDOC_CHILD) // arbitrary but descriptive elif
+			return (HEREDOC_CHILD);
+		else
+			return (fd_or_exit_code);
+		// should probably only exit when it's equal to HEREDOC_CHILD
 		redirection = redirection->next;
 	}
 	return (0);
@@ -36,13 +43,15 @@ int	prepare_command_io(
 	int i
 )
 {
-	int	err_check;
+	int	err_check; // probably also change name
 
 	//g_TEST_IO++;
 	if (command->input_is_pipe == true)
 	{
 		command_io[i].in_pipe[READ_END] = command_io[i - 1].out_pipe[READ_END];
 		command_io[i].in_pipe[WRITE_END] = command_io[i - 1].out_pipe[WRITE_END];
+		printf("pipe fds? %d\n", command_io[i].in_pipe[READ_END]);
+		printf("pipe fds write? %d\n", command_io[i].in_pipe[WRITE_END]);
 	}
 	if (command->output_is_pipe == true)
 	{

@@ -19,7 +19,8 @@
 void	clean_exit(
 	t_minishell_data *minishell_data,
 	char *read_line,
-	int exit_code
+	int exit_code,
+	bool silent_exit
 )
 {
 	int	i;
@@ -44,7 +45,8 @@ void	clean_exit(
 	}
 	if (read_line)
 		free(read_line);
-	write(STDOUT_FILENO, "exit\n", 5); // this should msybe have a check if we are in  child process
+	if (silent_exit == false)
+		write(STDOUT_FILENO, "exit\n", 5); // this should msybe have a check if we are in  child process
 	exit (exit_code);
 }
 
