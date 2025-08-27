@@ -137,6 +137,8 @@ int	add_arg_to_list(
 	int pos_red)
 {
 	t_token		*check_token;
+	int i;
+	i = 0;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
 	while (pos < tokenlist->element_list.total)
 	{
@@ -148,14 +150,14 @@ int	add_arg_to_list(
 				(*comm_list)->input_is_pipe = true;
 			(*comm_list)->builtin_name = set_builtins(check_token->type);
 		}
-		if (pos_red > 0 && pos < pos_red && !token_is_redirect(check_token))
-			(*comm_list)->argv[pos] = ft_strdup(check_token->value);
-		if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
+		if (!token_is_redirect(check_token))
+			(*comm_list)->argv[i] = ft_strdup(check_token->value);
+		if (pos + 1 <= tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
 		{
 			(*comm_list)->output_is_pipe = true;
-			add_redirect(comm_list, tokenlist, pos, pos_red);
 			return (0);
 		}
+		i++;
 		pos++;
 	}
 	return (0);
@@ -163,94 +165,97 @@ int	add_arg_to_list(
 
 
 int fill_comm_list(
-	t_exec_data **execdata,
+	t_exec_data **exec_data,
 	element *tokenlist,
 	size_t pos,
 	int pos_red)
 {
 	int total;
 	t_token *check = (t_token *)tokenlist->element_list.tokens[pos];
-	if (pos_red <= pos)
-		total = tokenlist->element_list.total;
+	if (pos_red < 0)
+		total = tokenlist->element_list.total - pos;
 	else if (check->type == HEREDOC)
-		return (add_redirect(execdata, tokenlist, pos, pos_red));
+		return (0);
 	else
-		total = pos_red - 1;
+		total = pos_red -1;
 	while (pos < total)
 	{
-		if (add_arg_to_list(execdata, tokenlist, pos, pos_red))
+		if (add_arg_to_list(exec_data, tokenlist, pos, pos_red))
 		{
-			free_2d_arr((void *)(*execdata)->argv);
+			free_2d_arr((void *)(*exec_data)->argv);
 			return (write(1, MALLOC_ERR, 15));
 		}
 		pos++;
 	}
+	p_printf("\ntotal = %d\n", total);
+//	p_printf("Token list total = %d\n", tokenlist->element_list.total);
 	return (0);
 }
 
 //make an empty execdata
 int make_cm_list(
 	element *tokenlist,
-	t_minishell_data *minishell_data,
+	t_exec_data **comm_list,
 	size_t pos,
 	int pos_red)
 {
-	// t_exec_data	*comm_list;
-	// comm_list = ft_calloc(1, sizeof(t_exec_data));
-	// if (!comm_list)
-	// 	return (NULL);
-	// p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
-	minishell_data->exec_data->argv = ft_calloc(tokenlist->element_list.total + 1, sizeof(char *));
+
+	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
+//	(*comm_list)->argv = ft_calloc(tokenlist->element_list.total + 1, sizeof(char *));
 	if (pos_red > 0)
 	{
 		pos_red = count_next_cm(tokenlist, pos);
-		minishell_data->exec_data->argv = ft_calloc(pos_red + 1, sizeof(char *));
+		(*comm_list)->argv = malloc(sizeof(char *) * pos_red + 1);
 	}
 	else 
-		minishell_data->exec_data->argv = ft_calloc(tokenlist->element_list.total + 1, sizeof(char *));
-	if (!minishell_data->exec_data->argv)
+		(*comm_list)->argv = malloc(sizeof(char *)* tokenlist->element_list.total + 1 - pos);
+	if (!(*comm_list)->argv)
 		return (write(1, MALLOC_ERR, 15));
 	if (pos_red > pos)
-		minishell_data->exec_data->argv[count_next_cm(tokenlist, pos)-1] = NULL;
+		(*comm_list)->argv[count_next_cm(tokenlist, pos)] = NULL;
 	else 
-		minishell_data->exec_data->argv[tokenlist->element_list.total] = NULL;
+		(*comm_list)->argv[tokenlist->element_list.total - pos] = NULL;
 	return (0);
 }
 
-int set_pipe(
-	t_exec_data **execdata, 
-	element *tokenlist, 
-	int pos,
-	int pos_red)
+
+
+
+int set_redirect(
+	t_exec_data **execdata,
+	element *tokenlist,
+	int pos, 
+	int pos_red
+)
 {
 	t_token *check_token;
-	t_redir_list *redirlist;
-
-	if (pos > 1)
+	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	if (check_token->type == REDIRECT_IN)
 	{
-		redirlist = (*execdata)->redirections->next;
-		while (redirlist->next)
-		{
-			redirlist = redirlist->next;
-		}
-		redirlist->type = input;
-		redirlist->src_fd = -1;
-		redirlist->dest_fd = -1;
-		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
+		(*execdata)->redirections->type = input;
+		(*execdata)->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos -2)->value);
+		(*execdata)->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 	}
-	redirlist = (*execdata)->redirections;
-	if (check_token->type == STRING)
-		redirlist->src_filename = ft_strdup(check_token->value);
-	else 
-		redirlist->src_filename = NULL;
-	if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
+	else if (check_token->type == REDIRECT_OUT_APP)
 	{
-		add_redirect(execdata, tokenlist, pos, pos_red);
+		(*execdata)->redirections->type = append;
+		(*execdata)->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
+		(*execdata)->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos -2)->value);
 	}
+	else if (check_token->type == REDIRECT_OUT)
+	{
+		
+		(*execdata)->redirections->type = trunc;
+		(*execdata)->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
+		(*execdata)->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos -2)->value);
+	}
+	(*execdata)->redirections->heredoc_delim = NULL;
+	(*execdata)->redirections->src_fd = -1;
+	(*execdata)->redirections->dest_fd = -1;
 	return (0);
 }
 
-//add re
+//add redirect to list of execdata
 int add_redirect(
 	t_exec_data **execdata,
 	element *tokenlist, 
@@ -263,12 +268,12 @@ int add_redirect(
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));
-	redirlist->next = NULL;
 	if ((*execdata)->redirections == NULL)
 		(*execdata)->redirections = redirlist;
 	else
 	{
 		t_redir_list *next;
+		
 		next = (*execdata)->redirections->next;
 		while (next)
 		{
@@ -277,10 +282,8 @@ int add_redirect(
 		next = redirlist;
 	}
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
-	if (check_token->type == HEREDOC)
-		return (set_heredoc(execdata, tokenlist, pos, pos_red));
-	else if (check_token->type == PIPE)
-		set_pipe(execdata, tokenlist, pos, pos_red);
+	if (token_is_redirect(check_token))
+		set_redirect(execdata,tokenlist, pos, pos_red);		
 	return (0);
 }
 
@@ -316,11 +319,12 @@ int pass_comm(
 	while (n_list > 0)
 	{
 		pos_red = count_next_cm(tokenlist, pos);
-		minishell_data->exec_data[i] = *convert_data(tokenlist, minishell_data, pos, pos_red);
+		convert_data(tokenlist, minishell_data, i, pos, pos_red);
 		if (pos_red > 0)
 		{
-			pos = pos_red - 1;
+			pos = pos_red;
 		}
+		
 		i++;
 		n_list--;
 	}
@@ -328,26 +332,24 @@ int pass_comm(
 }
 
 //convert the tokenlist to executable data 
-t_exec_data	*convert_data(
+int convert_data(
 	element *tokenlist,
 	t_minishell_data *minishell_data,
+	int i,
 	size_t pos,
 	int pos_red)
 {
 	t_exec_data	*comm_list;
-	t_token *check_token;
-	check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos);
+	minishell_data->exec_data[i] = *comm_list;
 
-	if (make_cm_list(tokenlist, minishell_data, pos, pos_red))
-		return (NULL);
+	if (make_cm_list(tokenlist, &comm_list, pos, pos_red))
+		return (write(1, "Command list failed\n", 20));
 	comm_list->redirections = NULL;
-	
 	if (pos_red > 0)
 		add_redirect(&comm_list, tokenlist, pos, pos_red);
 	if (fill_comm_list(&comm_list, tokenlist, pos, pos_red))
-		return NULL;
-
+		return (write(1, "Fill list failed\n", 17));
 	p_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
-	return (comm_list);
+	return (0);
 }
 
