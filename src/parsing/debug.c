@@ -183,8 +183,7 @@ void test_execdata(
         p_printf("Output is pipe = true\n");
     else
         p_printf("Output is pipe = false\n");
-
-    if (execdata.redirections->type)
+    if (execdata.redirections)
     {   
         //p_printf("Got here\n");
         p_printf("Redirection Type = %s\n", enum_red_type(execdata.redirections->type));

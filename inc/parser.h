@@ -119,7 +119,7 @@ int			expand_var(element **tokenlist, int pos,
 int			rm_quotes(element *tokenlist, int pos, char symbol);
 int			all_num_alph(const char *str);
 int			check_hyphens(const char *str_token);
-int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist, size_t pos, int pos_red);
+int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int *i, size_t pos, int pos_red);
 int			add_redirect(t_exec_data** execdata, element *tokenlist, int pos, int pos_red);
 int			set_heredoc(t_exec_data** execdata, element *tokenlist, int pos, int pos_red);
 void		set_pipe_cm(element *tokenlist);
