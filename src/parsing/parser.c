@@ -113,7 +113,6 @@ int	add_arg_to_list(
 {
 	t_token		*check_token;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	(*comm_list)->output_is_pipe = false;
 	if (check_token->command)
 	{
 		if (check_token->type == HEREDOC)
@@ -125,15 +124,17 @@ int	add_arg_to_list(
 	if (token_is_redirect(check_token))
 	{
 		*i -= 1;
-		add_redirect(comm_list, tokenlist, pos, pos_red);
+		if (check_token->type == PIPE)
+		{
+			(*comm_list)->output_is_pipe = true;
+			return (0);
+		}
+		else 
+			add_redirect(comm_list, tokenlist, pos, pos_red);
 	}
 	else
 		(*comm_list)->argv[*i] = ft_strdup(check_token->value);
-	if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
-	{
-		(*comm_list)->output_is_pipe = true;
-		return (0);
-	}
+	(*comm_list)->output_is_pipe = false;
 //	p_printf("arg[%d]: %s\n", *i, (*comm_list)->argv[*i]);
 	return (0);
 }

@@ -60,7 +60,7 @@ int check_lexer(
 	t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	test_tokens(*tokenlist);
 	pass_comm(tokenlist, minishell_data);
-	while (i < 2 && minishell_data->exec_data)
+	while (i < count_lists(tokenlist))
 	{
 		comm_list = minishell_data->exec_data + i;
 		test_execdata(*comm_list);

@@ -18,8 +18,8 @@ t_token	*lookahead(
 	size_t index)
 {
 	t_token	*check_token;
-
-	check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index + 1);
+	if (index + 1 < tokenlist->element_list.total)
+		check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index + 1);
 	if (!check_token)
 		return (NULL);
 	return (check_token);
