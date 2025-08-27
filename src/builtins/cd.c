@@ -119,6 +119,11 @@ static int find_target_path(
 	return (0);
 }
 
+// i hate this
+// there is no way to write this in one file of 5 functions with 25 lines or less
+// in a way that isn't objectively worse than just having one ~100 line function (at most)
+// it's so linear and conssist of mostly non-repeatable code there's just no reason to split it up like that
+// i hate norm
 int	minishell_cd(
 	char *const arg,
 	t_minishell_data *const minishell_data

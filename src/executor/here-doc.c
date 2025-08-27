@@ -114,7 +114,7 @@ int	heredoc_readline_loop(
 	return (0);
 }
 
-static int heredoc_wait_for_child(
+static int heredoc_wait_for_child( // this is probably completely not needed and we can just wait(NULL)
 	int pid
 )
 {

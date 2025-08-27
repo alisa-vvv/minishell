@@ -293,10 +293,12 @@ int	executor(
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);
-	if (command_count == HEREDOC_CHILD)
-		heredoc_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
-	else 
-		executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
+	// the lines below are probably redundant
+	//if (command_count == HEREDOC_CHILD)
+	//	heredoc_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
+	//else 
+	//	executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
+	executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
 	if (pipeline_elem_count < 0)
 		return (pipeline_elem_count);
 	return(EXIT_SUCCESS);
