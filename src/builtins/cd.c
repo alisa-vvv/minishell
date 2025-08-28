@@ -19,64 +19,46 @@
 
 #include <stdio.h>
 
-static void cd_free(
-	char *path,
-	char *new_wd,
-	char *new_old_wd,
-	char *cur_wd_value
+static void	free_variables(
+	char **variables
 )
 {
-	if (path)
-		free(path);
-	if (new_wd)
-		free(new_wd);
-	if (new_old_wd)
-		free(new_old_wd);
-	if (cur_wd_value)
-		free(cur_wd_value);
-}
-
-static int	record_dirs(
-	char *path,
-	char **new_wd,
-	char **new_old_wd,
-	char *cur_wd_value
-)
-{
-	*new_old_wd = ft_strjoin("OLDPWD=", cur_wd_value);
-	*new_wd = ft_strjoin("PWD=", path);
-	if (!new_wd || !new_old_wd)
+	if (variables)
 	{
-		cd_free(path, *new_wd, *new_old_wd, cur_wd_value);
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (-1);
+		if (variables[0])
+			free(variables[0]);
+		if (variables[1])
+			free(variables[1]);
+		free(variables);
 	}
-	return (0);
 }
 
 static int	set_env_vars(
 	t_minishell_data *const minishell_data,
-	char *const new_wd,
-	char *const new_old_wd,
-	char *const cur_wd
+	char *cwd,
+	char *path
 )
 {
-	int	err_check;
+	int		err_check;
+	char	**variables;
 
-	printf("new_wd: %s\n", new_wd);
-	printf("new_old_wd: %s\n", new_old_wd);
-	err_check = minishell_export(&new_wd, minishell_data);
+	variables = ft_calloc(3, sizeof (char *));
+	if (!variables)
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+	variables[0] = ft_strjoin("OLDPWD=", cwd);
+	variables[1] = ft_strjoin("PWD=", path);
+	if (!variables[0] || !variables[1])
+	{
+		free_variables(variables);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+	}
+	err_check = minishell_export(variables, minishell_data);
 	if (err_check < 0)
 	{
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
 		return (err_check);
 	}
-	err_check = minishell_export(&new_old_wd, minishell_data);
-	if (err_check < 0)
-	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (err_check);
-	}
+	free_variables(variables);
 	return (0);
 }
 
@@ -113,7 +95,7 @@ static int find_target_path(
 	{
 		free(path);
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		perror_and_return(NULL, FD_ERR, extern_err, -1);
+		perror_and_return(NULL, "cd: ", extern_err, -1);
 	}
 	*path_pointer = path;
 	return (0);
@@ -131,32 +113,17 @@ int	minishell_cd(
 {
 	int		err_check;
 	char	*path;
-	char	*new_wd;
-	char	*new_old_wd;
 	char	*const cwd = ft_calloc(PATH_MAX, sizeof(char));
-
-	// look for OLD_PWD and PWD variables // probably don't actually need to look for OLD_PWD cause we always export it
-	// if they exist, change values
-	// otherwise export them
-	//
-	new_wd = NULL;
-	new_old_wd = NULL;
-	path = NULL;
-	getcwd(cwd, PATH_MAX);
 
 	printf("\n\n\nbefore:\n\n\n");
 	minishell_pwd();
 
+	path = NULL;
+	getcwd(cwd, PATH_MAX);
 	err_check = find_target_path(arg, minishell_data, cwd, &path);
 	if (err_check != 0)
 	{
 		free(cwd);
-		return (err_check);
-	}
-	err_check = record_dirs(path, &new_wd, &new_old_wd, cwd);
-	if (err_check < 0)
-	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
 		return (err_check);
 	}
 	err_check = chdir(path);
@@ -166,13 +133,14 @@ int	minishell_cd(
 		perror_and_return("cd: ", NULL, extern_err, -1);
 	}
 	else
-		err_check = set_env_vars(minishell_data, new_wd, new_old_wd, cwd);
-	cd_free(path, new_wd, new_old_wd, cwd);
+		err_check = set_env_vars(minishell_data, cwd, path);
+	free(path);
+	free(cwd);
 
 	printf("\n\n\nafter:\n\n\n");
 	minishell_pwd();
-	//printf("\n\n\nvars:\n\n\n");
-	//minishell_env(minishell_data);
+	printf("\n\n\nvars:\n\n\n");
+	minishell_env(minishell_data);
 
 	return (err_check);
 }

@@ -46,6 +46,7 @@ int	prepare_command_io(
 	int	err_check; // probably also change name
 
 	//g_TEST_IO++;
+	err_check = 0;
 	if (command->input_is_pipe == true)
 	{
 		command_io[i].in_pipe[READ_END] = command_io[i - 1].out_pipe[READ_END];
