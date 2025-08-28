@@ -12,38 +12,75 @@
 
 #include "parser.h"
 
+int set_dest(t_exec_data **execdata,
+	element *tokenlist,
+	int pos)
+{
+
+	if (lookahead(tokenlist, pos)->type == NUMBER)
+	{
+		(*execdata)->redirections->dest_fd = ft_atoi((lookahead(tokenlist, pos)->value));
+		(*execdata)->redirections->dest_filename = NULL;
+	}
+	else
+	{
+		(*execdata)->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
+		(*execdata)->redirections->dest_fd = -1;
+	}
+	return (0);
+}
+
+int set_src(t_exec_data **execdata,
+	element *tokenlist,
+	int pos)
+{
+	t_token *check_token;
+	if (pos > 0)
+		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
+	else 
+	{
+		(*execdata)->redirections->src_fd = -1;
+		(*execdata)->redirections->src_filename = NULL;
+	}
+	if (check_token->type == NUMBER)
+	{
+		(*execdata)->redirections->src_fd = ft_atoi(check_token->value);
+		(*execdata)->redirections->src_filename = NULL;
+	}
+	else if (check_token->type == STRING || check_token->type == UNKNOWN)
+	{
+		(*execdata)->redirections->src_filename = ft_strdup(check_token->value);
+		(*execdata)->redirections->src_fd = -1;
+	}
+	return(0);
+}
 
 int set_redirect(
 	t_exec_data **execdata,
 	element *tokenlist,
-	int pos, 
-	int pos_red
+	int pos
 )
 {
 	t_token *check_token;
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	(*execdata)->redirections->heredoc_delim = NULL;
 	if (check_token->type == REDIRECT_IN)
 	{
 		(*execdata)->redirections->type = input;
-		(*execdata)->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos -2)->value);
+		t_token *r_token;
+		r_token = tokenlist->pf_element_get(tokenlist, pos-1);
+		(*execdata)->redirections->dest_filename = ft_strdup(r_token->value);
 		(*execdata)->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 	}
-	else if (check_token->type == REDIRECT_OUT_APP)
+	else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT)
 	{
-		(*execdata)->redirections->type = append;
-		(*execdata)->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
-		(*execdata)->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos -2)->value);
+		if (check_token->type == REDIRECT_OUT_APP)
+			(*execdata)->redirections->type = append;
+	 	else 
+			(*execdata)->redirections->type = trunc;
+		set_src(execdata, tokenlist, pos);
+		set_dest(execdata, tokenlist, pos);
 	}
-	else if (check_token->type == REDIRECT_OUT)
-	{
-		
-		(*execdata)->redirections->type = trunc;
-		(*execdata)->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
-		(*execdata)->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos -2)->value);
-	}
-	(*execdata)->redirections->heredoc_delim = NULL;
-	(*execdata)->redirections->src_fd = -1;
-	(*execdata)->redirections->dest_fd = -1;
 	return (0);
 }
 
@@ -77,6 +114,6 @@ int add_redirect(
 		next = redirlist;
 	}
 	if (token_is_redirect(check_token))
-		set_redirect(execdata,tokenlist, pos, pos_red);		
+		set_redirect(execdata,tokenlist, pos);		
 	return (0);
 }

@@ -92,7 +92,8 @@ int			move_over_quote(char *str, int pos);
 int			fill_tokenlist(element *tokenlist, char *str);
 void		ft_safefree(void *ptr);
 const char* enum_to_str(t_token_type symbols);
-int			check_filename(const char *str_token);
+int 		all_num_alph(const char *str);
+int			check_file(const char *str_token);
 int			check_lexer(element *tokenlist, t_minishell_data *minishell_data);
 char		*ft_strchr(const char *s, int c);
 void		ft_free_arr(void **array);
@@ -111,7 +112,6 @@ int			single_token(element *tokenlist);
 int			val_inputline(char *str);
 int			val_redir(element *tokenlist);
 int			find_symbol(element *tokenlist, int pos, char symbol);
-int			count_symbol(element *tokenlist, int pos, char symbol);
 int			match_nonterminal(char *str_token);
 int			match_string(char *str_token);
 int			expand_var(element **tokenlist, int pos,

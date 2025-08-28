@@ -53,7 +53,6 @@ char *exp_str_token(char *str_token, char *name, char *value)
     return (new_str);
 }
 
-
 //get name of env var from token_name
 char *refine_name_var(char *token_name, char *result)
 {

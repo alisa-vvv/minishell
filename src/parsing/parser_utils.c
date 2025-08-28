@@ -63,7 +63,7 @@ int	find_token_type(element *tokenlist, size_t pos, t_token_type type)
 
 	while (pos < tokenlist->element_list.total)
 	{
-		check_token = (t_token *)tokenlist->element_list.tokens[pos];
+		check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos);
 		if (check_token->type == type)
 			return (pos);
 		pos++;

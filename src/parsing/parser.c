@@ -37,7 +37,19 @@
 // 	struct s_redir_list	*next;
 // }	t_redir_list;
 
-
+int set_exec_def(
+	t_exec_data **execdata, 
+	element *tokenlist,
+	size_t pos)
+{
+	t_token *check_token;
+	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	(*execdata)->builtin_name = set_builtins(check_token->type);
+	(*execdata)->input_is_pipe = false;
+	(*execdata)->output_is_pipe = false;
+	(*execdata)->redirections = NULL;
+	return (0);
+}
 
 // push appropiate token to exec_data argv
 int	add_arg_to_list(
@@ -70,7 +82,6 @@ int	add_arg_to_list(
 	}
 	else
 		(*comm_list)->argv[*i] = ft_strdup(check_token->value);
-	(*comm_list)->output_is_pipe = false;
 //	p_printf("arg[%d]: %s\n", *i, (*comm_list)->argv[*i]);
 	return (0);
 }
@@ -85,7 +96,9 @@ int fill_comm_list(
 	int total;
 	int i;
 	i = 0;
+
 	t_token *check = (t_token *)tokenlist->element_list.tokens[pos];
+	set_exec_def(exec_data, tokenlist, pos);
 	if (pos_red < 0)
 		total = tokenlist->element_list.total;
 	else
@@ -129,7 +142,6 @@ int make_cm_list(
 		(*comm_list)->argv[tokenlist->element_list.total - pos] = NULL;
 	return (0);
 }
-
 
 
 //start conversion by making lists of commands
@@ -177,7 +189,7 @@ int convert_data(
 	if (make_cm_list(tokenlist, &comm_list, pos, pos_red))
 		return (write(1, "Command list failed\n", 20));
 	comm_list->redirections = NULL;
-	if (find_token_type(tokenlist, pos, HEREDOC) > 0)
+	if (find_token_type(tokenlist, pos, HEREDOC) != -1)
 		set_heredoc(&comm_list, tokenlist, pos, pos_red);
 	else if (fill_comm_list(&comm_list, tokenlist, pos, pos_red))
 		return (write(1, "Fill list failed\n", 17));

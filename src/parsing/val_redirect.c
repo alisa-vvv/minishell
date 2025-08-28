@@ -22,6 +22,8 @@ int single_token(element *tokenlist)
     {
         if (check_token->type == HEREDOC || check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_IN)
             return (1);
+        else 
+            check_token->command = true;
     }
     return (0);
 }
@@ -35,7 +37,7 @@ void set_pipe_cm(
 
 	i = 0;
 	flag = true;
-	while(i < (size_t)tokenlist->element_list.total)
+	while(i < (size_t)tokenlist->element_list.total && (size_t)tokenlist->element_list.total > 1)
 	{
 		c_token = (t_token *)tokenlist->element_list.tokens[i];
 		if (i == 0 && lookahead(tokenlist, i)->type != HEREDOC && c_token->type >= CAT && c_token->type <= UNSET || (i == 0 && c_token->type == HEREDOC) || (i == tokenlist->element_list.total - 1 && c_token->type == HEREDOC_DEL))
@@ -57,6 +59,24 @@ void set_pipe_cm(
 }
 
 
+int val_redir_out(
+    element *tokenlist, int pos)
+{
+    t_token * check_token;
+    int status;
+    status = -1;
+    check_token = (t_token *)tokenlist->element_list.tokens[pos];
+    check_token->type = check_file(check_token->value);
+    if (pos + 2 < (size_t)tokenlist->element_list.total)
+    {
+        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos +2);
+        check_token->type = check_file(check_token->value);
+        status = 0;
+    }
+    return (status);
+}
+
+
 //set values 
 int val_redir(element *tokenlist)
 {
@@ -66,23 +86,20 @@ int val_redir(element *tokenlist)
 
     while (i < (size_t)tokenlist->element_list.total)
     {
-        check_token = (t_token *)tokenlist->element_list.tokens[i];
-        if (check_token->type == HEREDOC && i + 1 <= (size_t)tokenlist->element_list.total)
+        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);
+        if (check_token->type == HEREDOC && i + 1 < (size_t)tokenlist->element_list.total)
         {
             check_token = (t_token *)tokenlist->element_list.tokens[i+1];
             check_token->type = HEREDOC_DEL;
             i++;
         }
-        else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_IN)
+        else if (lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type == REDIRECT_OUT_APP || lookahead(tokenlist, i)->type == REDIRECT_OUT || lookahead(tokenlist, i)->type == REDIRECT_IN)
         {
-            if (i + 1 <= (size_t)tokenlist->element_list.total)
-            {
-                check_token = (t_token *)tokenlist->element_list.tokens[i+1];
-                check_token->type = check_filename(check_token->value);
-                i++;
-            }
+            if (val_redir_out(tokenlist, i))
+                return(1);
+            i++;
         }
-        else 
+        else
             i++;
     }
 //    t_printf("in val redirect\n");

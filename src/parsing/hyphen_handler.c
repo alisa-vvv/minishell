@@ -25,15 +25,19 @@ int all_num_alph(
     {
         while(str[i] && ft_isalpha(str[i]))
             i++;
-        if (!str[i])
+        if (str[i] == '\0')
             return (STRING);
+        else 
+            return (UNKNOWN);
     } 
     else if (ft_isdigit(str[i]))
     { 
         while (str[i] && ft_isdigit(str[i]))
-        i++;
-        if (!str[i])
+            i++;
+        if (str[i] == '\0')
             return (NUMBER);
+        else 
+            return(UNKNOWN);
     }
     return(UNKNOWN);
 }
