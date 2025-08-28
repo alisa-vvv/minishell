@@ -61,18 +61,22 @@ static int	perform_output_redirection(
 }
 
 // QUESTION: DO WE NEED TO EXIT ON REDIRECTION FAIL? (I ASSUME NO)
+// turns out the answer is YES. lmao
 int	perform_redirections(
 	t_redir_list *redirections,
 	const t_command_io *command_io
 )
 {
+	int	err_check;
+
+	err_check = 0;
 	while (redirections != NULL)
 	{
 		if (redirections->type == input || redirections->type == heredoc)
-			perform_input_redirection(redirections);
+			err_check = perform_input_redirection(redirections);
 		else
-			perform_output_redirection(redirections);
+			err_check = perform_output_redirection(redirections);
 		redirections = redirections->next;
 	}
-	return (0);
+	return (err_check);
 }

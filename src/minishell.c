@@ -67,7 +67,7 @@ int	main(void)
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	rl_catch_signals = false;
-	int	TEST_len = 1;
+	int	TEST_len = 2;
 	printf("pid of parrent: %d\n", getpid());
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)

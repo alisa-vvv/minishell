@@ -17,7 +17,6 @@
 #include "minishell.h"
 #include "builtins.h"
 #include "minishell_env.h"
-#include <errno.h>
 
 static int truncate_var(
 	t_minishell_data *const minishell_data,
@@ -90,6 +89,7 @@ int	minishell_export(
     	
 		// CHANGE ENV_VAR_REALLOC
 		// checks if env mem needs to be expanded, and if we='re adding or modifyig a var
+		// ? confusion
 		if (var_i == minishell_data->env_mem - 1)
 			env_var_realloc(minishell_data);
 		if (*identifier == '=')

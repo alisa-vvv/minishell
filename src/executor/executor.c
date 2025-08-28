@@ -63,6 +63,12 @@ static int	run_child_process(
 	}
 	if (command->redirections)
 		err_check = perform_redirections(command->redirections, command_io);
+	if (err_check < 0) // it looks like the processs does not run if it fails
+	// to redirect stuff, so we need to clean and propogate to exit
+	{
+		printf("PLACHOLDER, ADD ERROR MANAGEMENT\n");
+		return (-1);
+	}
 	if (command->builtin_name == not_builtin && command->argv[0])
 		err_check = try_execve(minishell_data->env, command->argv);
 	else

@@ -20,12 +20,15 @@ static int	find_and_create_heredocs(
 {
 	int	fd_or_exit_code;
 
+	fd_or_exit_code = 0;
 	while (redirection != NULL)
 	{
 		if (redirection->type == heredoc)
+		{
 			fd_or_exit_code = create_here_doc(redirection->heredoc_delim);	
-		if (fd_or_exit_code > 0)
-			redirection->dest_fd = fd_or_exit_code;
+			if (fd_or_exit_code > 0)
+				redirection->dest_fd = fd_or_exit_code;
+		}
 		else if (fd_or_exit_code == HEREDOC_CHILD) // arbitrary but descriptive elif
 			return (HEREDOC_CHILD);
 		else
