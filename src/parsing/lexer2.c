@@ -50,7 +50,6 @@ int check_lexer(
 	i = 0;
 	t_exec_data	*comm_list;
 
-	test_tokens(*tokenlist);
 	exp_lexer(tokenlist, &minishell_data, PARAMETER);
 	exp_lexer(tokenlist, &minishell_data, SINGLE_Q);
 	exp_lexer(tokenlist, &minishell_data, DOUBLE_Q);

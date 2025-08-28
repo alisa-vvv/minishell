@@ -37,6 +37,8 @@ CFILES_PARSER	=	debug.c\
 					quote_handler.c\
 					val_redirect.c\
 					parser_utils.c\
+					parser_redirects.c\
+					parser_heredoc.c\
 					parser.c
 CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\
