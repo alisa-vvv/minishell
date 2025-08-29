@@ -61,8 +61,9 @@ int	find_token_type(element *tokenlist, size_t pos, t_token_type type)
 {
 	t_token	*check_token;
 
-	while (pos < tokenlist->element_list.total)
+	while (pos < (size_t)tokenlist->element_list.total)
 	{
+		//p_printf("total = %d\n, pos = %d\n", tokenlist->element_list.total, pos);
 		check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos);
 		if (check_token->type == type)
 			return (pos);
@@ -96,7 +97,7 @@ int	count_lists(element *tokenlist)
 int	count_next_cm(element *tokenlist, int pos)
 {
 	size_t	i;
-		t_token *check_token;
+	t_token *check_token;
 
 	i = pos + 1;
 	while (i < tokenlist->element_list.total)
