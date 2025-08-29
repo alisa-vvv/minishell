@@ -106,6 +106,8 @@ int	main(void)
 		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
 		if (err_check == HEREDOC_CHILD)
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
+		else if (err_check < 0)
+			clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);
 	}
 	clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);
 }

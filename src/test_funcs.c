@@ -108,8 +108,8 @@ t_exec_data	*test_get_dummy_exec_data(
 	i++;
 
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].argv[1] = ft_strdup("-b");
+	exec_data[i].argv[0] = ft_strdup("sleep");
+	exec_data[i].argv[1] = ft_strdup("2");
 	exec_data[i].builtin_name = not_builtin;
 	exec_data[i].input_is_pipe = true;
 	exec_data[i].output_is_pipe = false;

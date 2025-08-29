@@ -44,7 +44,7 @@ static int	perform_output_redirection(
 			redirection->dest_fd = open(redirection->dest_filename, app_f, 0664);
 	}
 	if (redirection->dest_fd < 0)
-		perror_and_return(NULL, FD_ERR, extern_err, -1);
+		return (perror_and_return(NULL, FD_ERR, extern_err, -1));
 	if (redirection->src_filename != NULL)
 	{
 		//this is for special cases only, refer to bash manual
@@ -53,7 +53,7 @@ static int	perform_output_redirection(
 	if (redirection->src_fd < 0)
 	{
 		test_close(redirection->dest_fd);
-		perror_and_return(NULL, FD_ERR, extern_err, -1);
+		return (perror_and_return(NULL, FD_ERR, extern_err, -1));
 	}
 	test_dup2(redirection->dest_fd, redirection->src_fd);
 	test_close(redirection->dest_fd);

@@ -25,12 +25,13 @@ static int	cleanup_in_parent_process(
 	t_command_io *const command_io
 )
 {
-	if (command->input_is_pipe == true)
-	{
-		test_close(command_io->in_pipe[READ_END]);
-		command_io->in_pipe[READ_END] = CLOSED_FD;
-		(command_io - 1)->out_pipe[READ_END] = CLOSED_FD;
-	}
+	// again, (likely) no reason to actuallly free in pipes
+	//if (command->input_is_pipe == true)
+	//{
+	//	test_close(command_io->in_pipe[READ_END]);
+	//	command_io->in_pipe[READ_END] = CLOSED_FD;
+	//	(command_io - 1)->out_pipe[READ_END] = CLOSED_FD;
+	//}
 	if (command->output_is_pipe == true)
 	{
 		test_close(command_io->out_pipe[WRITE_END]);
@@ -63,6 +64,7 @@ static int	run_child_process(
 	}
 	if (command->redirections)
 		err_check = perform_redirections(command->redirections, command_io);
+	printf("what is error check here? %d\n", err_check);
 	if (err_check < 0) // it looks like the processs does not run if it fails
 	// to redirect stuff, so we need to clean and propogate to exit
 	{
@@ -255,7 +257,7 @@ int	build_pipeline(
 	return (command_count);
 }
 
-void	execute_commands(
+int	execute_commands(
 	t_minishell_data *const minishell_data,
 	t_exec_data *command,
 	t_command_io *command_io,
@@ -266,7 +268,12 @@ void	execute_commands(
 
 	i = -1;
 	while (++i < minishell_data->command_count)
+	{
 		p_id[i] = execute_command(&command[i], &command_io[i], minishell_data);
+		if (p_id[i] < 0)
+			return (-1);
+	}
+	return (0);
 }
 
 // maybe rework this for more clarity on what happens on different exit situations
@@ -280,7 +287,7 @@ int	executor(
 	int				*p_exit_codes;
 	int				pipeline_elem_count;
 	t_command_io	*command_io;
-	int				exit_type;
+	int				if_err;
 
 	p_id = ft_calloc(sizeof(int), command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
@@ -293,10 +300,12 @@ int	executor(
 	minishell_data->last_pipeline_return = 0;
 	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
 	if (pipeline_elem_count == command_count)
-		execute_commands(minishell_data, exec_data, command_io, p_id);
+		if_err = execute_commands(minishell_data, exec_data, command_io, p_id);
 	else
 		command_count = pipeline_elem_count;
-	if (command_count > 1 ||
+	if (if_err < 0)
+		pipeline_elem_count = if_err;
+	else if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);
 	// the lines below are probably redundant
