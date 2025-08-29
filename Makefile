@@ -79,7 +79,7 @@ LIBFT	= $(LIBFT_DIR)libft.a
 INCLUDE = $(INCDIR) $(LIBFT_DIR)
 
 RM	= rm -rf
-CC	= cc
+CC	= cc -g
 
 # this apparently achieves dependency gen on per-file basis, on compilation
 # without relying on hacky solutions like the one on GNU Makefile docs

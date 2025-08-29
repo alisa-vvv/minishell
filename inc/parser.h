@@ -84,7 +84,7 @@ typedef struct s_token
 
 
 int			default_lexer(char *input_line, t_minishell_data *minishell_data);
-int			token_count(char *str);
+int			token_count(char *str, int i);
 t_token		*new_token(char *str, int len);
 int			set_len(char *str, int i);
 bool		str_is_red(char c);
@@ -130,7 +130,7 @@ t_builtin_name set_builtins(t_token_type tokentype);
 int			find_token_type(element *tokenlist, size_t pos, t_token_type type);
 int			fill_comm_list(t_exec_data **execdata, element *tokenlist, size_t pos, int pos_red);
 int			make_cm_list(element *tokenlist, t_exec_data **comm_list, size_t pos, int pos_red);
-int			pass_comm(element *tokenlist, t_minishell_data *minishell_data);
+int			pass_comm(element *tokenlist, t_minishell_data *minishell_data, int i);
 int			convert_data(element *tokenlist, t_minishell_data *minishell_data, int i, size_t pos, int pos_red);
 
 #endif

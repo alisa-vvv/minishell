@@ -12,37 +12,7 @@
 
 #include "parser.h"
 
-// // count occurrence of spec symbol in array
-// int	count_symbol(
-// 	element *tokenlist, 
-// 	int pos, 
-// 	char symbol)
-// {
-// 	int		count;
-// 	int		i;
-// 	t_token	*check_token;
-
-// 	check_token = tokenlist->pf_element_get(tokenlist, pos);
-// 	count = 0;
-// 	i = 0;
-// 	while ((size_t)pos < tokenlist->element_list.total)
-// 	{
-// 		if (find_symbol(tokenlist, pos, symbol) > -1)
-// 		{
-// 			while (check_token->value[i])
-// 			{
-// 				if (check_token->value[i] == symbol)
-// 					count++;
-// 				i++;
-// 			}
-// 		}
-// 		pos++;
-// 	}
-// 	return (count);
-// }
-
-
-
+//go through lexer and clean up data 
 int check_lexer(
 	element *tokenlist, 
 	t_minishell_data *minishell_data)
@@ -50,11 +20,10 @@ int check_lexer(
 	int i;
 	i = 0;
 	t_exec_data	*comm_list;
-
 	exp_lexer(tokenlist, &minishell_data, PARAMETER);
 	exp_lexer(tokenlist, &minishell_data, SINGLE_Q);
 	exp_lexer(tokenlist, &minishell_data, DOUBLE_Q);
-	if (tokenlist->pf_element_total(tokenlist) < 2)
+	if (tokenlist->element_list.total < 2)
 	{
 		if (single_token(tokenlist))
 			return(write(1, "Wrong redirect\n", 15));
@@ -64,7 +33,7 @@ int check_lexer(
 	set_pipe_cm(tokenlist);
 	t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	test_tokens(*tokenlist);
-	pass_comm(tokenlist, minishell_data);
+	pass_comm(tokenlist, minishell_data, 0);
 	while (i < count_lists(tokenlist))
 	{
 		comm_list = minishell_data->exec_data + i;

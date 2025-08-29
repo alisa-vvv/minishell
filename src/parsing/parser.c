@@ -16,7 +16,6 @@
 // first() and follow() funcs
 // lookahead func for check next token
 // match function to check and expand on aliases
-
 // Your shell must implement the following built-in commands:
 //     - echo with option -n
 //     - cd with only a relative or absolute path
@@ -63,8 +62,10 @@ int	add_arg_to_list(
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
 	if (check_token->command)
 	{
-		if (check_token->type == HEREDOC)
-			return (set_heredoc(comm_list, tokenlist, pos, count_next_cm(tokenlist, pos)));
+		// if (check_token->type == HEREDOC)
+		// 	return (set_heredoc(comm_list, tokenlist, pos, count_next_cm(tokenlist, pos)));
+		if (token_is_redirect(lookahead(tokenlist, pos)))
+			check_token = (t_token *)tokenlist->element_list.tokens[pos + 2];
 		if (pos > 2 && lookahead(tokenlist, pos -2)->type == PIPE)
 			(*comm_list)->input_is_pipe = true;
 		(*comm_list)->builtin_name = set_builtins(check_token->type);
@@ -147,15 +148,16 @@ int make_cm_list(
 //start conversion by making lists of commands
 int pass_comm(
 	element *tokenlist, 
-	t_minishell_data *minishell_data)
+	t_minishell_data *minishell_data,
+	int i)
 {
 	int n_list;
-	int i;
 	size_t pos;
 	int pos_red;
 
-	i = 0;
 	pos = 0;
+	if (count_lists(tokenlist) == -1)
+		return (write(1, "Wrong pipe command\n", 19));
 	n_list = count_lists(tokenlist);
 	minishell_data->exec_data = ft_calloc(n_list, sizeof(t_exec_data));
 	p_printf("List count = %d\n", n_list);

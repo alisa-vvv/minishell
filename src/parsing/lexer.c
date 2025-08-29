@@ -52,11 +52,10 @@ int add_token(
 
 // counts args to size up elementlist
 int	token_count(
-	char *str)
+	char *str,
+	int i)
 {
 	int	tokencount;
-	int	i;
-	i = 0;
 	tokencount = 0;
 	while (str[i])
 	{
@@ -80,7 +79,7 @@ int	token_count(
         else
             i++;
 	}
-    t_printf("token count = %d\n", tokencount);
+    t_printf("Token count = %d\n", tokencount);
 	return (tokencount);
 }
 
@@ -109,7 +108,9 @@ int	fill_tokenlist(
 }
 
 // default option to put trimmed input in tokenlist
-int	default_lexer(char *input_line, t_minishell_data *minishell_data)
+int	default_lexer(
+	char *input_line, 
+	t_minishell_data *minishell_data)
 {
 	int		token_c;
 	size_t	i;
@@ -121,7 +122,7 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	input_line = trim_str_space(input_line);
 	if (val_inputline(input_line))
         return (1);
-	token_c = token_count(input_line);
+	token_c = token_count(input_line, 0);
 	if (!token_c)
 		return (write(1, "Failed to count tokens\n", 23));
 	TOKEN_INIT(token_list, token_c);
@@ -129,7 +130,11 @@ int	default_lexer(char *input_line, t_minishell_data *minishell_data)
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (check_lexer(&token_list, minishell_data))
+	{
+		token_list.pf_element_free(&token_list);
 		return (write(1, "Failed check types\n", 19));
+	}
+	//token_list.pf_element_free(&token_list);
 	return (0);
 }
 

@@ -87,9 +87,10 @@ int	count_lists(element *tokenlist)
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
 		if (check_token->type == PIPE)
 			count++;
+		if (i == tokenlist->element_list.total -1 && check_token->type == PIPE)
+			return(-1);
 		i++;
 	}
-
 	return (count);
 }
 
