@@ -80,20 +80,15 @@ int	count_lists(element *tokenlist)
 	int flag;
 
 	i = 0;
-	count = 0;
-	flag = 0;
-
+	count = 1;
 	while (i < tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (check_token->command)
+		if (check_token->type == PIPE)
 			count++;
-		if (check_token->type == HEREDOC)
-			flag++;
 		i++;
 	}
-	if (count > 1 && flag > 0)
-		count -= flag;
+
 	return (count);
 }
 

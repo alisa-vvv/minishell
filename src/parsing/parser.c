@@ -165,10 +165,10 @@ int pass_comm(
 	{
 		pos_red = count_next_cm(tokenlist, pos);
 		convert_data(tokenlist, minishell_data, i, pos, pos_red);
-		if (pos_red > 0)
-		{
+		if (pos_red > 0 && find_token_type(tokenlist, pos, HEREDOC) == -1)
 			pos = pos_red;
-		}
+		else
+			pos = count_next_cm(tokenlist, pos_red);
 		i++;
 		n_list--;
 	}
