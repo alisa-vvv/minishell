@@ -55,6 +55,19 @@ int set_src(t_exec_data **execdata,
 	return(0);
 }
 
+int set_redir_def(t_exec_data **execdata)
+{
+	(*execdata)->redirections->heredoc_delim = NULL;
+	
+	(*execdata)->redirections->type = 0;
+	(*execdata)->redirections->src_fd = -1;
+	(*execdata)->redirections->dest_fd = -1;
+	(*execdata)->redirections->dest_filename= NULL;
+	(*execdata)->redirections->src_filename = NULL;
+	(*execdata)->redirections->next = NULL;
+}
+
+
 int set_redirect(
 	t_exec_data **execdata,
 	element *tokenlist,
@@ -63,13 +76,11 @@ int set_redirect(
 {
 	t_token *check_token;
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
-	(*execdata)->redirections->heredoc_delim = NULL;
+	set_redir_def(execdata);
 	if (check_token->type == REDIRECT_IN)
 	{
 		(*execdata)->redirections->type = input;
-		t_token *r_token;
-		r_token = tokenlist->pf_element_get(tokenlist, pos-1);
-		(*execdata)->redirections->dest_filename = ft_strdup(r_token->value);
+		(*execdata)->redirections->dest_filename = ft_strdup(lookbehind(tokenlist, pos)->value);
 		(*execdata)->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 	}
 	else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT)
@@ -95,8 +106,8 @@ int add_redirect(
 	t_redir_list *redirlist;
 	
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
-	if (check_token->type == PIPE)
-		return (0);
+	// if (check_token->type == PIPE)
+	// 	return (0);
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));

@@ -50,7 +50,7 @@ bool	token_is_redirect(
 {
 	if (check_token->type == HEREDOC || check_token->type == REDIRECT_IN
 		|| check_token->type == REDIRECT_OUT
-		|| check_token->type == REDIRECT_OUT_APP || check_token->type == PIPE)
+		|| check_token->type == REDIRECT_OUT_APP)
 		return (true);
 	return (false);
 }
@@ -120,14 +120,13 @@ int count_args(
 		check_token = (t_token *)tokenlist->element_list.tokens[pos];
 		if (token_is_redirect(check_token))
 		{
-			if (check_token->type != PIPE)
-			{
-				if (pos > 0 && lookbehind(tokenlist, pos)->type != PIPE)
-					redir++;
-				if (lookahead(tokenlist, pos))
-					redir++;
+			// if (check_token->type != PIPE)
+			// {
+			if (pos > 0 && lookbehind(tokenlist, pos)->type != PIPE)
 				redir++;
-			}
+			if (lookahead(tokenlist, pos))
+				redir++;
+			redir++;
 		}
 		pos++;
 	}

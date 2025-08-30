@@ -60,6 +60,8 @@ int	add_arg_to_list(
 {
 	t_token		*check_token;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+	if (pos + 1 < tokenlist->element_list.total && token_is_redirect(lookahead(tokenlist, pos)) || pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
+		*i -= 1;
 	if (check_token->command)
 	{
 		if (pos + 1 < tokenlist->element_list.total && token_is_redirect(lookahead(tokenlist, pos)))
@@ -72,21 +74,15 @@ int	add_arg_to_list(
 		(*comm_list)->builtin_name = set_builtins(check_token->type);
 	}
 	if (token_is_redirect(check_token))
+		add_redirect(comm_list, tokenlist, pos, pos_red);
+	else if (check_token->type == PIPE)
 	{
-		*i -= 1;
-		if (check_token->type == PIPE)
-		{
-			(*comm_list)->output_is_pipe = true;
-			return (0);
-		}
-		// else 
-		// 	add_redirect(comm_list, tokenlist, pos, pos_red);
+		(*comm_list)->output_is_pipe = true;
+		return (0);
 	}
-	else if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)) && (lookbehind(tokenlist, pos)->type != PIPE))
-		*i -= 1;
 	else
 		(*comm_list)->argv[*i] = ft_strdup(check_token->value);
-//	p_printf("arg[%d]: %s\n", *i, (*comm_list)->argv[*i]);
+//	p_printf("arg[%d]: %s\n", *i, (*comm_list)->argv[*i]);'
 	return (0);
 }
 
