@@ -101,6 +101,7 @@ size_t		ft_strlcpy(char *dst, const char *src, size_t size);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 int			index_lexer(element **tokenlist);
 t_token		*lookahead(element *tokenlist, size_t index);
+t_token		*lookbehind(element *tokenlist, size_t index);
 int			exp_lexer(element *tokenlist, t_minishell_data **minishell_data,
 				int type);
 int			skip_blanks(char *str, int pos);

@@ -166,10 +166,13 @@ void test_execdata(
 
     i = 0;
     p_printf("\nEXEC DATA IS:\n");
-    while (execdata.argv[i] != NULL)
+    if (execdata.argv != NULL)
     {
-        p_printf("Value is = %s\n", execdata.argv[i]);    
-        i++;
+        while (execdata.argv[i] != NULL)
+        {
+            p_printf("Value is = %s\n", execdata.argv[i]);    
+            i++;
+        }
     }
     if (execdata.builtin_name == not_builtin)
         p_printf("Is builtin = false\n");

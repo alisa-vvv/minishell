@@ -64,8 +64,8 @@ int	add_arg_to_list(
 	{
 		// if (check_token->type == HEREDOC)
 		// 	return (set_heredoc(comm_list, tokenlist, pos, count_next_cm(tokenlist, pos)));
-		// if (token_is_redirect(lookahead(tokenlist, pos)))
-		// 	check_token = (t_token *)tokenlist->element_list.tokens[pos + 2];
+		if (pos + 1 < tokenlist->element_list.total && token_is_redirect(lookahead(tokenlist, pos)))
+			*i -= 1;
 		if (pos > 2 && lookahead(tokenlist, pos -2)->type == PIPE)
 			(*comm_list)->input_is_pipe = true;
 		(*comm_list)->builtin_name = set_builtins(check_token->type);
@@ -81,7 +81,9 @@ int	add_arg_to_list(
 		else 
 			add_redirect(comm_list, tokenlist, pos, pos_red);
 	}
-	else if (pos > 2 && !token_is_redirect(lookahead(tokenlist, pos -2)))
+	else if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
+		*i -= 1;
+	else
 		(*comm_list)->argv[*i] = ft_strdup(check_token->value);
 //	p_printf("arg[%d]: %s\n", *i, (*comm_list)->argv[*i]);
 	return (0);
@@ -134,13 +136,18 @@ int make_cm_list(
 		total = count_args(tokenlist, pos, pos_red);
 	else
 		total = count_args(tokenlist, pos, tokenlist->element_list.total);
+	if (total == 0)
+	{
+		(*comm_list)->argv = NULL;
+		return (0);
+	}
 	(*comm_list)->argv = malloc(sizeof(char *) * total + 1);
 	if (!(*comm_list)->argv)
 		return (write(1, MALLOC_ERR, 15));
-	if (pos_red > pos)
-		(*comm_list)->argv[total - 1] = NULL;
-	else
-		(*comm_list)->argv[total - 1] = NULL;
+	// if (pos_red > pos)
+	// 	(*comm_list)->argv[total - 1] = NULL;
+	// else
+	(*comm_list)->argv[total - 1] = NULL;
 	return (0);
 }
 
