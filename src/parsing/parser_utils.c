@@ -119,20 +119,18 @@ int count_args(
 	redir = 0;
 	while (i < total)
 	{
-		check_token = (t_token *)tokenlist->element_list.tokens[pos];
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
 		if (token_is_redirect(check_token))
 		{
-			// if (check_token->type != PIPE)
-			// {
-			if (pos > 0 && lookbehind(tokenlist, pos)->type != PIPE)
+			if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
 				redir++;
-			if (lookahead(tokenlist, pos))
+			if (lookahead(tokenlist, i))
 				redir++;
 			redir++;
 		}
 		i++;
 	}
-//	p_printf("TOTAL = %d\nRedir = %d\nPOS = %d\n", total, redir, pos);
+	p_printf("TOTAL = %d\nRedir = %d\nPOS = %d\n", total, redir, pos);
 	if (redir)
 		total -= redir;
 	else 

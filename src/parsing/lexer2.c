@@ -23,6 +23,7 @@ int check_lexer(
 	exp_lexer(tokenlist, &minishell_data, PARAMETER);
 	exp_lexer(tokenlist, &minishell_data, SINGLE_Q);
 	exp_lexer(tokenlist, &minishell_data, DOUBLE_Q);
+	index_lexer(&tokenlist);
 	if (tokenlist->element_list.total < 2)
 	{
 		if (single_token(tokenlist))
