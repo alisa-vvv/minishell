@@ -60,7 +60,8 @@ void set_pipe_cm(
 
 
 int val_redir_out(
-    element *tokenlist, int pos)
+    element *tokenlist, 
+    int pos)
 {
     t_token * check_token;
     int status;
@@ -99,6 +100,8 @@ int val_redir(element *tokenlist)
                 return(1);
             i++;
         }
+        else if (!lookahead(tokenlist, i))
+            return (1);
         else
             i++;
     }

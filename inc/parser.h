@@ -123,6 +123,7 @@ int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int *i, size_
 int			add_redirect(t_exec_data** execdata, element *tokenlist, int pos, int pos_red);
 int			set_heredoc(t_exec_data** execdata, element *tokenlist, int pos, int pos_red);
 void		set_pipe_cm(element *tokenlist);
+int 		count_args(element *tokenlist, int pos, int total);
 int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
 bool		token_is_redirect(t_token *check_token);

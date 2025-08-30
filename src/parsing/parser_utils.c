@@ -25,6 +25,18 @@ t_token	*lookahead(
 	return (check_token);
 }
 
+t_token	*lookbehind(
+	element *tokenlist, 
+	size_t index)
+{
+	t_token	*check_token;
+	if (index > 0)
+		check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index -1);
+	if (!check_token)
+		return (NULL);
+	return (check_token);
+}
+
 bool str_is_red(char c)
 {
 	if (c == '<' || c == '>' || c == '|')
@@ -94,16 +106,49 @@ int	count_lists(element *tokenlist)
 	return (count);
 }
 
+
+int count_args(
+	element *tokenlist, 
+	int pos, 
+	int total)
+{
+	int redir;
+	t_token *check_token;
+	redir = 0;
+
+	while (pos < total)
+	{
+		check_token = (t_token *)tokenlist->element_list.tokens[pos];
+		if (token_is_redirect(check_token))
+		{
+			if (check_token->type != PIPE)
+			{
+				if (pos > 0 && lookbehind(tokenlist, pos)->type != PIPE)
+					redir++;
+				if (lookahead(tokenlist, pos))
+					redir++;
+				redir++;
+			}
+		}
+		pos++;
+	}
+	return(total - redir);
+}
+
+
 // count until the next pos that is a command
 int	count_next_cm(element *tokenlist, int pos)
 {
-	size_t	i;
+	int redir;
+	int i;
 	t_token *check_token;
 
-	i = pos + 1;
+	i = pos +1;
+	redir = 0;
 	while (i < tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		
 		if (check_token->command)
 			return (check_token->pos);
 		i++;
