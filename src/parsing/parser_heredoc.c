@@ -78,14 +78,10 @@ int set_heredoc_red(
         }
 		pos++;
 	}
-    // if (i == 0)
-	// 	ft_free_arr((void*)(*execdata)->argv);
 	if ((*execdata)->argv)
 		(*execdata)->argv[i] = NULL;
 	if ((*execdata)->output_is_pipe)
 		add_redirect(execdata, tokenlist, pos_red -1, pos + 1);
-	else 
-		(*execdata)->redirections->next = NULL;
 	return (0);
 }
 

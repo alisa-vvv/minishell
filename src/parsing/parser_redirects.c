@@ -105,8 +105,6 @@ int add_redirect(
 	t_redir_list *redirlist;
 	
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
-	// if (check_token->type == PIPE)
-	// 	return (0);
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));

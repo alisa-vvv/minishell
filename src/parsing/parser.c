@@ -62,19 +62,24 @@ int	add_arg_to_list(
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
 	if (pos + 1 < tokenlist->element_list.total && token_is_redirect(lookahead(tokenlist, pos)) || pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
 		*i -= 1;
-	if (check_token->command)
+	else if (check_token->command)
 	{
-		if (pos + 1 < tokenlist->element_list.total && token_is_redirect(lookahead(tokenlist, pos)))
-			*i -= 1;
 		if (pos > 1 && lookbehind(tokenlist, pos)->type == PIPE)
 		{
 			(*comm_list)->argv[*i] = ft_strdup(check_token->value);
 			(*comm_list)->input_is_pipe = true;
 		}
+		else
+			(*comm_list)->argv[*i] = ft_strdup(check_token->value);
 		(*comm_list)->builtin_name = set_builtins(check_token->type);
+		
 	}
-	if (token_is_redirect(check_token))
+	else if (token_is_redirect(check_token))
+	{
+		*i -= 1;
 		add_redirect(comm_list, tokenlist, pos, pos_red);
+		return (0);
+	}
 	else if (check_token->type == PIPE)
 	{
 		(*comm_list)->output_is_pipe = true;
@@ -127,7 +132,6 @@ int make_cm_list(
 {
 	int total;
 //	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
-	
 	if (pos_red > 0)
 		total = count_args(tokenlist, pos, pos_red);
 	else
