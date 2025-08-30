@@ -131,14 +131,12 @@ int count_args(
 		}
 		pos++;
 	}
-	p_printf("TOTAL = %d\nRedir = %d\nPOS = %d\n", total, redir, pos);
+//	p_printf("TOTAL = %d\nRedir = %d\nPOS = %d\n", total, redir, pos);
 	if (redir)
 		total -= redir;
 	else 
 		total -= pos;
-	if (total == 0)
-		total = 1;
-	return(total);
+	return(total + 1);
 }
 
 

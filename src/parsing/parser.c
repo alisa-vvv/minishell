@@ -81,7 +81,7 @@ int	add_arg_to_list(
 		else 
 			add_redirect(comm_list, tokenlist, pos, pos_red);
 	}
-	else if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
+	else if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)) && (lookbehind(tokenlist, pos)->type != PIPE))
 		*i -= 1;
 	else
 		(*comm_list)->argv[*i] = ft_strdup(check_token->value);
@@ -130,7 +130,6 @@ int make_cm_list(
 {
 	int total;
 //	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
-//	(*comm_list)->argv = ft_calloc(tokenlist->element_list.total + 1, sizeof(char *));
 	
 	if (pos_red > 0)
 		total = count_args(tokenlist, pos, pos_red);
@@ -144,9 +143,6 @@ int make_cm_list(
 	(*comm_list)->argv = malloc(sizeof(char *) * total + 1);
 	if (!(*comm_list)->argv)
 		return (write(1, MALLOC_ERR, 15));
-	// if (pos_red > pos)
-	// 	(*comm_list)->argv[total - 1] = NULL;
-	// else
 	(*comm_list)->argv[total - 1] = NULL;
 	return (0);
 }
