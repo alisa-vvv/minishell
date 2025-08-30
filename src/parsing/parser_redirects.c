@@ -55,10 +55,9 @@ int set_src(t_exec_data **execdata,
 	return(0);
 }
 
-int set_redir_def(t_exec_data **execdata)
+void set_redir_def(t_exec_data **execdata)
 {
 	(*execdata)->redirections->heredoc_delim = NULL;
-	
 	(*execdata)->redirections->type = 0;
 	(*execdata)->redirections->src_fd = -1;
 	(*execdata)->redirections->dest_fd = -1;
