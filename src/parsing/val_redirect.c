@@ -105,7 +105,6 @@ int val_redir(element *tokenlist)
         else
             i++;
     }
-   
 //    t_printf("in val redirect\n");
     return (0);
 }

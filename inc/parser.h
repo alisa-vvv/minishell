@@ -129,7 +129,7 @@ int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
 bool		token_is_redirect(t_token *check_token);
 t_builtin_name set_builtins(t_token_type tokentype);
-int			find_token_type(element *tokenlist, size_t pos, t_token_type type);
+int			find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type type);
 int			fill_comm_list(t_exec_data **execdata, element *tokenlist, size_t pos, int pos_red);
 int			make_cm_list(element *tokenlist, t_exec_data **comm_list, size_t pos, int pos_red);
 int			pass_comm(element *tokenlist, t_minishell_data *minishell_data, int i);

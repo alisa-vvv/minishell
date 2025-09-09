@@ -170,11 +170,13 @@ int pass_comm(
 	while (n_list > 0)
 	{
 		pos_red = count_next_cm(tokenlist, pos);
+		if (pos_red > 0 && lookahead(tokenlist, pos)->type == HEREDOC)
+			pos_red = count_next_cm(tokenlist, pos + 1);
 		convert_data(tokenlist, minishell_data, i, pos, pos_red);
-		if (pos_red > 0 && find_token_type(tokenlist, pos, HEREDOC) == -1)
+		if (pos_red > 0 && find_token_type(tokenlist, pos, find_token_type(tokenlist, pos, pos_red, PIPE), HEREDOC) == -1)
 			pos = pos_red;
-		else if (pos_red > 0 && find_token_type(tokenlist, pos, PIPE) != -1)
-			pos = find_token_type(tokenlist, pos, PIPE) + 1;
+		else if (pos_red > 0 && find_token_type(tokenlist, pos, pos_red, PIPE) != -1)
+			pos = find_token_type(tokenlist, pos, pos_red, PIPE) + 1;
 		else 
 			pos = count_next_cm(tokenlist, pos_red);
 		i++;
@@ -198,7 +200,7 @@ int convert_data(
 	if (make_cm_list(tokenlist, &comm_list, pos, pos_red))
 		return (write(1, "Command list failed\n", 20));
 	comm_list->redirections = NULL;
-	if (find_token_type(tokenlist, pos, HEREDOC) != -1)
+	if (find_token_type(tokenlist, pos, pos_red, HEREDOC) != -1)
 		set_heredoc(&comm_list, tokenlist, pos, pos_red);
 	else if (fill_comm_list(&comm_list, tokenlist, pos, pos_red))
 		return (write(1, "Fill list failed\n", 17));

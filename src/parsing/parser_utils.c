@@ -71,11 +71,17 @@ int	find_symbol(element *tokenlist, int pos, char symbol)
 	}
 	return (-1);
 }
-int	find_token_type(element *tokenlist, size_t pos, t_token_type type)
+int	find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type type)
 {
 	t_token	*check_token;
+	size_t total;
+	total = 0;
 
-	while (pos < (size_t)tokenlist->element_list.total)
+	if (pos_red == -1)
+		total = (size_t)tokenlist->element_list.total;
+	else 
+		total = pos_red;
+	while (pos < total)
 	{
 		//p_printf("total = %d\n, pos = %d\n", tokenlist->element_list.total, pos);
 		check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos);
