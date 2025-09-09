@@ -173,7 +173,9 @@ int pass_comm(
 		convert_data(tokenlist, minishell_data, i, pos, pos_red);
 		if (pos_red > 0 && find_token_type(tokenlist, pos, HEREDOC) == -1)
 			pos = pos_red;
-		else
+		else if (pos_red > 0 && find_token_type(tokenlist, pos, PIPE) != -1)
+			pos = find_token_type(tokenlist, pos, PIPE) + 1;
+		else 
 			pos = count_next_cm(tokenlist, pos_red);
 		i++;
 		n_list--;
@@ -192,6 +194,7 @@ int convert_data(
 	t_exec_data	*comm_list;
 	comm_list = minishell_data->exec_data + i;
 	
+	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
 	if (make_cm_list(tokenlist, &comm_list, pos, pos_red))
 		return (write(1, "Command list failed\n", 20));
 	comm_list->redirections = NULL;

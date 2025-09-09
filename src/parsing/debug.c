@@ -12,6 +12,7 @@
 
 
 #include "debug.h"
+#include <stdarg.h>
 
 void e_printf(const char *str, ...)
 {

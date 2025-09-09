@@ -48,6 +48,8 @@ bool str_is_red(char c)
 bool	token_is_redirect(
 	t_token *check_token)
 {
+	if (!check_token)
+		return (NULL);
 	if (check_token->type == HEREDOC || check_token->type == REDIRECT_IN
 		|| check_token->type == REDIRECT_OUT
 		|| check_token->type == REDIRECT_OUT_APP)
@@ -119,7 +121,7 @@ int count_args(
 	redir = 0;
 	while (i < total)
 	{
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);
 		if (token_is_redirect(check_token))
 		{
 			if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
@@ -130,11 +132,12 @@ int count_args(
 		}
 		i++;
 	}
-//	p_printf("TOTAL = %d\nRedir = %d\nPOS = %d\n", total, redir, pos);
+	p_printf("\nPOS = %d\nRedir = %d\nTOTAL = %d\n", pos, redir, total);
 	if (redir)
 		total -= redir;
 	else 
 		total -= pos;
+	p_printf("total = %d\n", total +1);
 	return(total + 1);
 }
 

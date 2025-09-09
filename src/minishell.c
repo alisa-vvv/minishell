@@ -20,9 +20,10 @@
 #include "parser.h"
 #include <string.h>
 #include <stdio.h> /*	readline	*/
-#include <readline/readline.h>
+#include <readline/readline.h> // Needed for rl_catch_signals
 #include <readline/history.h>
 #include <unistd.h> /* isatty */
+
 /* for waits	*/
 #include <sys/types.h>
 #include <sys/time.h>
@@ -63,7 +64,7 @@ int	main(void)
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	int	TEST_len = 2;
-	rl_catch_signals = false;
+	// rl_catch_signals = false; // Commented out - not available on all systems
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)
 	{

@@ -80,8 +80,8 @@ int set_heredoc_red(
 	}
 	if ((*execdata)->argv)
 		(*execdata)->argv[i] = NULL;
-	if ((*execdata)->output_is_pipe)
-		add_redirect(execdata, tokenlist, pos_red -1, pos + 1);
+	// if ((*execdata)->output_is_pipe)
+	// 	add_redirect(execdata, tokenlist, pos_red, pos + 1);
 	return (0);
 }
 

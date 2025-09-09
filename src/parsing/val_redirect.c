@@ -87,8 +87,8 @@ int val_redir(element *tokenlist)
 
     while (i < (size_t)tokenlist->element_list.total)
     {
-        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);
-        if (check_token->type == HEREDOC && i + 1 < (size_t)tokenlist->element_list.total)
+        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i); 
+        if (check_token->type == HEREDOC && i + 1 < tokenlist->pf_element_total(tokenlist))
         {
             check_token = (t_token *)tokenlist->element_list.tokens[i+1];
             check_token->type = HEREDOC_DEL;
@@ -105,6 +105,7 @@ int val_redir(element *tokenlist)
         else
             i++;
     }
+   
 //    t_printf("in val redirect\n");
     return (0);
 }
