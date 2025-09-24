@@ -36,7 +36,7 @@ t_builtin_name set_builtins(t_token_type tokentype)
 //set defaults of heredoc
 void set_heredoc_def(t_exec_data** execdata)
 {
-	// (*execdata)->argv = NULL;
+	
 	(*execdata)->builtin_name = not_builtin;
     (*execdata)->output_is_pipe = false;
 	(*execdata)->input_is_pipe = false;
@@ -52,16 +52,18 @@ int set_heredoc_red(
 	t_exec_data** execdata, 
 	element *tokenlist, 
 	int pos,
-	int pos_red)
+	int pos_red,
+	int i)
 {
     t_token *check_token;
-    int i;
-    i = 0; 	
-    
 	while (pos < tokenlist->element_list.total)
 	{	
+		
         check_token = (t_token *)tokenlist->element_list.tokens[pos];
-        if (check_token->type != HEREDOC && lookahead(tokenlist, pos)->type == HEREDOC)
+		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
+			(*execdata)->input_is_pipe = true;
+		// p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
+        if (check_token->type != HEREDOC && pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == HEREDOC)
             (*execdata)->redirections->dest_filename = ft_strdup(check_token->value);
 		if (check_token->type == HEREDOC_DEL)
 			(*execdata)->redirections->heredoc_delim = ft_strdup(check_token->value);
@@ -71,7 +73,7 @@ int set_heredoc_red(
             (*execdata)->builtin_name = set_builtins(check_token->type);
 			i++;
 		}
-        if (lookahead(tokenlist, pos)->type == PIPE)
+        if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
         {
             (*execdata)->output_is_pipe = true;
             break;
@@ -80,8 +82,6 @@ int set_heredoc_red(
 	}
 	if ((*execdata)->argv)
 		(*execdata)->argv[i] = NULL;
-	// if ((*execdata)->output_is_pipe)
-	// 	add_redirect(execdata, tokenlist, pos_red, pos + 1);
 	return (0);
 }
 
@@ -92,19 +92,16 @@ int set_heredoc(
 	int pos,
 	int pos_red)
 {
-	t_token *check_token;	
-	size_t i;
     t_redir_list *redirlist;
-
-	i = 0;
+	
     redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));
 	if ((*execdata)->redirections == NULL)
 		(*execdata)->redirections = redirlist;
 	set_heredoc_def(execdata);
-    set_heredoc_red(execdata, tokenlist, pos, pos_red);
-    p_printf("POS_RED = %d\n", pos_red);
+    set_heredoc_red(execdata, tokenlist, pos, pos_red, 0);
+   // p_printf("POS_RED = %d\n", pos_red);
 	return (0);
 }
 

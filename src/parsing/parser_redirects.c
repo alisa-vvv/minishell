@@ -70,8 +70,7 @@ void set_redir_def(t_exec_data **execdata)
 int set_redirect(
 	t_exec_data **execdata,
 	element *tokenlist,
-	int pos
-)
+	int pos)
 {
 	t_token *check_token;
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
@@ -121,7 +120,9 @@ int add_redirect(
 		}
 		next = redirlist;
 	}
-	if (token_is_redirect(check_token))
+	if (check_token->type == HEREDOC)
+		set_heredoc(execdata, tokenlist, pos, pos_red);
+	else if (token_is_redirect(check_token))
 		set_redirect(execdata,tokenlist, pos);		
 	return (0);
 }
