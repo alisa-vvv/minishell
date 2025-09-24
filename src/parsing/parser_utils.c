@@ -136,10 +136,12 @@ int count_args(
 				redir++;
 			redir++;
 		}
+		else if (check_token->type == PIPE)
+			redir += 2;
 		i++;
 	}
 	if (redir)
-		total = total - redir - pos;
+		total = total - (redir + pos);
 	else 
 		total -= pos;
 	p_printf("total = %d\n", total +1);
