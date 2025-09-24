@@ -171,7 +171,7 @@ int pass_comm(
 			pos_red = count_next_cm(tokenlist, pos + 1);
 		convert_data(tokenlist, minishell_data, i, pos, pos_red);
 		if (pos_red > 0 && find_token_type(tokenlist, pos, find_token_type(tokenlist, pos, pos_red, PIPE), HEREDOC) == -1)
-			pos = pos_red-1;
+			pos = pos_red;
 		else if (pos_red > 0 && find_token_type(tokenlist, pos, pos_red, PIPE) != -1)
 			pos = find_token_type(tokenlist, pos, pos_red, PIPE) + 1;
 		else 
