@@ -143,8 +143,8 @@ int count_args(
 	if (redir)
 		total = total - (redir + pos);
 	else 
-		total -= pos;
-	p_printf("total = %d\n", total +1);
+		total -= (pos + 1);
+	p_printf("total = %d\n position is: %d\n", total +1, pos);
 	return(total + 1);
 }
 
@@ -161,7 +161,8 @@ int	count_next_cm(element *tokenlist, int pos)
 	while (i < tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		
+		if (check_token->type == PIPE)
+			return (check_token->pos + 1);
 		if (check_token->command)
 			return (check_token->pos);
 		i++;

@@ -75,6 +75,8 @@ int set_redirect(
 	t_token *check_token;
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
 	set_redir_def(execdata);
+	if (pos > 1 && lookbehind(tokenlist, pos-1)->type == PIPE)
+		(*execdata)->input_is_pipe = true;
 	if (check_token->type == REDIRECT_IN)
 	{
 		(*execdata)->redirections->type = input;
@@ -122,7 +124,7 @@ int add_redirect(
 	}
 	if (check_token->type == HEREDOC)
 		set_heredoc(execdata, tokenlist, pos, pos_red);
-	else if (token_is_redirect(check_token))
+	else 
 		set_redirect(execdata,tokenlist, pos);		
 	return (0);
 }
