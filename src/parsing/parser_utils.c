@@ -144,7 +144,7 @@ int count_args(
 		total = total - (redir + pos);
 	else 
 		total -= (pos + 1);
-	p_printf("total = %d\n position is: %d\n", total +1, pos);
+	p_printf("total = %d\n", total +1);
 	return(total + 1);
 }
 
