@@ -19,7 +19,6 @@
 #include <readline/history.h>
 
 void	sigint_handler_interactive(
-	int sig
 )
 {
 	write(STDOUT_FILENO, "\n", 1);
@@ -30,11 +29,10 @@ void	sigint_handler_interactive(
 }
 
 void	sigint_handler_non_interactive(
-	int sig
 )
 {
 	kill(0, SIGINT);
-	sigint_handler_interactive(sig);
+	sigint_handler_interactive();
 }
 
 void	handle_signals_child_process(

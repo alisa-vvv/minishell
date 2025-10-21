@@ -16,10 +16,12 @@
 // realloc for shrink and expand size
 void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 {
-	int				i;
+	unsigned int	i;
 	unsigned int	copy_size;
 	void			*n_ptr;
 
+	n_ptr = NULL;
+	i = 0;
 	if (newsize == 0)
 		return (ft_safefree(n_ptr), NULL);
 	if (oldsize > newsize)
@@ -80,7 +82,7 @@ int	element_push_back(element *e, void *token)
 	return (status);
 }
 
-int	element_set(element *e, int index, void *token)
+int	element_set(element *e, size_t index, void *token)
 {
 	if (e)
 	{
@@ -93,14 +95,14 @@ int	element_set(element *e, int index, void *token)
 	return (-1);
 }
 
-void	*element_get(element *e, int index)
+void	*element_get(element *e, size_t index)
 {
 	void	*token_data;
 
 	token_data = NULL;
 	if (e)
 	{
-		if ((index >= 0) && ((size_t)index < e->element_list.total))
+		if ((index >= 0) && (index < e->element_list.total))
 			token_data = e->element_list.tokens[index];
 	}
 	return (token_data);

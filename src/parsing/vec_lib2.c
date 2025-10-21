@@ -35,9 +35,9 @@ void	ft_free_arr(void **array)
 	}
 }
 
-int	element_delete(element *e, int index)
+int	element_delete(element *e, size_t index)
 {
-	int	i;
+	unsigned long	i;
 	int	status;
 
 	i = 0;

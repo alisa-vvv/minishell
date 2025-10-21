@@ -20,8 +20,8 @@ int	minishell_exit(
 {
 	char	*const *const args = &command->argv[1];
 	int		exit_code;
-	int		i;
 
+	exit_code = 0;
 	if (args[0] == NULL)
 		clean_exit(minishell_data, NULL, 0, false);
 	else if (args[1] != NULL)

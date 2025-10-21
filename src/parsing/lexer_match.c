@@ -15,7 +15,6 @@
 //check what kind of non-terminal for further action
 int match_nonterminal(char *str_token)
 {
-    char *str_sym;
     if (str_token[0] == str_token[1])
     {
         if (str_token[0] == '<')

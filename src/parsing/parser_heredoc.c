@@ -51,21 +51,19 @@ void set_heredoc_def(t_exec_data** execdata)
 int set_heredoc_red(
 	t_exec_data** execdata, 
 	element *tokenlist, 
-	int pos,
-	int pos_red,
+	size_t pos,
 	int i)
 {
     t_token *check_token;
 	while (pos < tokenlist->element_list.total)
 	{	
-		
         check_token = (t_token *)tokenlist->element_list.tokens[pos];
 		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 			(*execdata)->input_is_pipe = true;
 		// p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
         if (check_token->type != HEREDOC && pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == HEREDOC)
             (*execdata)->redirections->dest_filename = ft_strdup(check_token->value);
-		if (check_token->type == HEREDOC_DEL)
+		if (check_token->type == (size_t) HEREDOC_DEL)
 			(*execdata)->redirections->heredoc_delim = ft_strdup(check_token->value);
 		if (!token_is_redirect(check_token) && check_token->type != HEREDOC_DEL && lookahead(tokenlist, pos)->type != HEREDOC)
 		{
@@ -100,7 +98,7 @@ int set_heredoc(
 	if ((*execdata)->redirections == NULL)
 		(*execdata)->redirections = redirlist;
 	set_heredoc_def(execdata);
-    set_heredoc_red(execdata, tokenlist, pos, pos_red, 0);
+    set_heredoc_red(execdata, tokenlist, pos, pos_red);
    // p_printf("POS_RED = %d\n", pos_red);
 	return (0);
 }

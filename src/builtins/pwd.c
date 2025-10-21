@@ -22,6 +22,7 @@ int	minishell_pwd(
 	char *const	dir = ft_calloc(PATH_MAX, sizeof(char));
 	int			err_check;
 	
+	err_check = 0;
 	getcwd(dir, PATH_MAX);
 	if (!dir)
 	{

@@ -40,7 +40,10 @@ void set_pipe_cm(
 	while(i < (size_t)tokenlist->element_list.total && (size_t)tokenlist->element_list.total > 1)
 	{
 		c_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (i == 0 && lookahead(tokenlist, i)->type != HEREDOC && c_token->type >= CAT && c_token->type <= UNSET || (i == 0 && c_token->type == HEREDOC) || (i == tokenlist->element_list.total - 1 && c_token->type == HEREDOC_DEL))
+		if ((i == 0 && lookahead(tokenlist, i)->type != HEREDOC
+			&& c_token->type >= CAT && c_token->type <= UNSET)
+			|| (i == 0 && c_token->type == HEREDOC)
+			|| (i == tokenlist->element_list.total - 1 && c_token->type == HEREDOC_DEL))
 		{
 			c_token->command = true;
 			flag = false;
@@ -59,12 +62,13 @@ void set_pipe_cm(
 }
 
 
-int val_redir_out(
+static int val_redir_out(
     element *tokenlist, 
-    int pos)
+    size_t pos)
 {
     t_token * check_token;
     int status;
+
     status = -1;
     check_token = (t_token *)tokenlist->element_list.tokens[pos];
     check_token->type = check_file(check_token->value);
@@ -78,7 +82,7 @@ int val_redir_out(
 }
 
 
-int check_heredoc(element *tokenlist, int pos)
+static int check_heredoc(element *tokenlist, size_t pos)
 {
     t_token *check_token;
 
@@ -95,11 +99,12 @@ int val_redir(element *tokenlist)
 {
     size_t i;
     t_token *check_token;
+
     i = 0;
-    while (i < (size_t)tokenlist->element_list.total)
+    while (i < tokenlist->element_list.total)
     {
         check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i); 
-        if (check_token->type == HEREDOC && i + 1 < tokenlist->pf_element_total(tokenlist))
+        if (check_token->type == HEREDOC && i + 1 < tokenlist->element_list.total)
         {
             if (check_heredoc(tokenlist, i +1))
                 i++;

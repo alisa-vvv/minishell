@@ -35,6 +35,8 @@ int set_src(t_exec_data **execdata,
 	int pos)
 {
 	t_token *check_token;
+
+	check_token = NULL;
 	if (pos > 0)
 		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
 	else 

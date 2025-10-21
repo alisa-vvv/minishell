@@ -83,6 +83,7 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
     check_token = (t_token *)(*tokenlist)->element_list.tokens[pos];
     char *name;
 
+	name = NULL;
     name = refine_name_var(check_token->value, name);
     if (ft_strncmp(name, "?", 2))
         printf("%d\n", (*minishell_data)->last_pipeline_return);
@@ -113,7 +114,7 @@ int	exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
 		// e_printf("TYPE = %d \n", (int)check_token->type);
-		if ((int)check_token->type == PARAMETER && type == PARAMETER
+		if (((int)check_token->type == PARAMETER && type == PARAMETER)
 			|| ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
 		{
 			rm_quotes(tokenlist, i, '"');

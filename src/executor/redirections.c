@@ -63,8 +63,7 @@ static int	perform_output_redirection(
 // QUESTION: DO WE NEED TO EXIT ON REDIRECTION FAIL? (I ASSUME NO)
 // turns out the answer is YES. lmao
 int	perform_redirections(
-	t_redir_list *redirections,
-	const t_command_io *command_io
+	t_redir_list *redirections
 )
 {
 	int	err_check;

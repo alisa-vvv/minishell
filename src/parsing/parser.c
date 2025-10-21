@@ -60,7 +60,9 @@ int	add_arg_to_list(
 {
 	t_token		*check_token;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	if (pos + 1 < tokenlist->element_list.total && token_is_redirect(lookahead(tokenlist, pos)) || pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
+	if ((pos + 1 < tokenlist->element_list.total
+		&& token_is_redirect(lookahead(tokenlist, pos)))
+		|| (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos))))
 		*i -= 1;
 	else if (check_token->command)
 	{
@@ -97,11 +99,10 @@ int fill_comm_list(
 	size_t pos,
 	int pos_red)
 {
-	int total;
+	size_t total;
 	int i;
 	i = 0;
 
-	t_token *check = (t_token *)tokenlist->element_list.tokens[pos];
 	set_exec_def(exec_data, tokenlist, pos);
 	if (pos_red < 0)
 		total = tokenlist->element_list.total;

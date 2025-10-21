@@ -113,8 +113,6 @@ int	default_lexer(
 	t_minishell_data *minishell_data)
 {
 	int		token_c;
-	size_t	i;
-	t_token	*token_test;
 
 	token_c = 0;
 	if (!input_line)

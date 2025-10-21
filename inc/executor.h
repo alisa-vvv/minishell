@@ -51,8 +51,7 @@ int	prepare_command_io(
 );
 
 int	perform_redirections(
-	t_redir_list *redirections,
-	const t_command_io *command_io
+	t_redir_list *redirections
 );
 /**/
 

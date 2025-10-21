@@ -50,6 +50,7 @@ static int	run_child_process(
 {
 	int				err_check;
 
+	err_check = 0;
 	if (command->input_is_pipe == true)
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
@@ -63,7 +64,7 @@ static int	run_child_process(
 		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 	}
 	if (command->redirections)
-		err_check = perform_redirections(command->redirections, command_io);
+		err_check = perform_redirections(command->redirections);
 	printf("what is error check here? %d\n", err_check);
 	if (err_check < 0) // it looks like the processs does not run if it fails
 	// to redirect stuff, so we need to clean and propogate to exit
@@ -126,7 +127,6 @@ static int	wait_for_children(
 {
 	int	last_exit;
 	int	i;
-	int	error_check;
 
 	i = -1;
 	//printf("command count: %d\n", command_count);
@@ -289,6 +289,7 @@ int	executor(
 	t_command_io	*command_io;
 	int				if_err;
 
+	if_err = 0;
 	p_id = ft_calloc(sizeof(int), command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
 	command_io = ft_calloc(sizeof(t_command_io), command_count);

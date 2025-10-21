@@ -36,20 +36,20 @@ static void	ignore_sigint(
 	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
 
-static void allow_sigint_heredoc(
-)
-{
-	struct sigaction	handle_sigint;
-//	struct sigaction	handle_sigquit;
-
-	sigemptyset(&handle_sigint.sa_mask);
-	sigaddset(&handle_sigint.sa_mask, SIGINT);
-	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
-	handle_sigint.sa_handler = SIG_DFL;
-	handle_sigint.sa_flags = 0;
-	sigaction(SIGINT, &handle_sigint, NULL);
-}
-
+//static void allow_sigint_heredoc(
+//)
+//{
+//	struct sigaction	handle_sigint;
+////	struct sigaction	handle_sigquit;
+//
+//	sigemptyset(&handle_sigint.sa_mask);
+//	sigaddset(&handle_sigint.sa_mask, SIGINT);
+//	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
+//	handle_sigint.sa_handler = SIG_DFL;
+//	handle_sigint.sa_flags = 0;
+//	sigaction(SIGINT, &handle_sigint, NULL);
+//}
+//
 static void	handle_sigint_heredoc(
 )
 {
@@ -92,7 +92,7 @@ int	heredoc_readline_loop(
 {
 	const size_t	delim_len = ft_strlen(heredoc_delim);
 	char			*input_str;
-	bool			forced_end;
+//	bool			forced_end;
 
 	handle_signals_heredoc();
 	while (1)
@@ -121,6 +121,7 @@ static int heredoc_wait_for_child( // this is probably completely not needed and
 	int	w_status;
 	int	exit_code;
 
+	exit_code = 0;
 	if (waitpid(pid, &w_status, 0) > 0) // check if there's some exit signals or codes we need to handle here
 	{
 		if (WIFEXITED(w_status) == true)

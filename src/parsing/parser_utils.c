@@ -18,6 +18,8 @@ t_token	*lookahead(
 	size_t index)
 {
 	t_token	*check_token;
+
+	check_token = NULL;
 	if (index + 1 < tokenlist->element_list.total)
 		check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index + 1);
 	if (!check_token)
@@ -30,6 +32,8 @@ t_token	*lookbehind(
 	size_t index)
 {
 	t_token	*check_token;
+
+	check_token = NULL;
 	if (index > 0)
 		check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index -1);
 	if (!check_token)
@@ -98,7 +102,6 @@ int	count_lists(element *tokenlist)
 	size_t	i;
 	size_t	count;
 	t_token *check_token;
-	int flag;
 
 	i = 0;
 	count = 1;
@@ -153,7 +156,7 @@ int count_args(
 int	count_next_cm(element *tokenlist, int pos)
 {
 	int redir;
-	int i;
+	size_t i;
 	t_token *check_token;
 
 	i = pos +1;

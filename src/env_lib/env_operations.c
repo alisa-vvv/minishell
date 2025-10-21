@@ -24,7 +24,6 @@ char	**clone_env(
 	// SET A MAX VALUE FOR ALLOC SIZE
 	char		**env;
 	int			i;
-	int			len;
 	int			alloc_size;
 
 	alloc_size = 128;

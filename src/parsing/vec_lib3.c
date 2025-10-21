@@ -22,7 +22,6 @@ int	element_total(element *e)
 int element_swap(element *e, void *token, size_t pos_dest, size_t pos_src)
 {
     int status; 
-    void *tmp;
 
     status = -1;
     while (pos_src > pos_dest)

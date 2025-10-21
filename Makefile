@@ -101,7 +101,7 @@ INPUT	=
 # builds .d files, then builds .o files based on .d.
 # skips files that weren't changed (see CPPFLAGS)
 $(BUILDDIR)%.o: %.c $(INCLUDE) | $(BUILDDIR)
-	$(CC) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 $(LIBFT):
 	$(MAKE) all -C $(LIBFT_DIR)
