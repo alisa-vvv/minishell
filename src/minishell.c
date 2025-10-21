@@ -89,6 +89,7 @@ int	main(void)
 	//		g_msh_signal = 0;
 	//		continue ;
 	//	}
+		int	TEST_lexer_return;
 		if (read_line)
 			add_history(read_line);
 		if (strcmp(read_line, "exit") == 0)
@@ -99,10 +100,13 @@ int	main(void)
 			exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
 			err_check = executor(&minishell_data, exec_data, TEST_len);
 		}
-		else if (default_lexer(read_line, &minishell_data))
-			is_open = false;
 		else
-			printf("We entered: %s\n", read_line);
+		{
+			TEST_lexer_return = default_lexer(read_line, &minishell_data);
+			if (TEST_lexer_return != 0)
+				printf("PLACEHOLDER ERROR\n");
+			err_check = executor(&minishell_data, exec_data, minishell_data.command_count);
+		}
 		if (read_line)
 			free(read_line);
 		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
