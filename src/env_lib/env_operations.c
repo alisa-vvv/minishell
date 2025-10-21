@@ -91,10 +91,7 @@ char	*env_var_find_identifier(
 			return (arg);
 		else if (!ft_isalnum(*arg) && *arg != '_')
 		{
-			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
 			ft_putstr_fd(INVALID_IDENTIFIER, STDERR_FILENO);
-			ft_putstr_fd(arg, STDERR_FILENO);
-			ft_putchar_fd('\n', STDERR_FILENO);
 			return (NULL);
 		}
 		arg++;

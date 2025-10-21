@@ -17,7 +17,6 @@
 #include "minishell.h"
 #include "builtins.h"
 #include "minishell_env.h"
-#include <errno.h>
 
 static int truncate_var(
 	t_minishell_data *const minishell_data,
@@ -71,30 +70,26 @@ int	minishell_export(
 	char	*identifier;
 	int		err_check;
 
-	printf("\n\n\nPRE EXPORT\n\n\n");
-	minishell_env(minishell_data);
-	printf("\n\n\nENDPRE\n\n\n");
-
+//	printf("\n\n\nPRE EXPORT\n\n\n");
+//	minishell_env(minishell_data);
+//	printf("\n\n\nENDPRE\n\n\n");
+//
 	if (!*argv)
 		return (minishell_env(minishell_data));
 	arg_i = -1;
 	while (argv[++arg_i])
 	{
 		
-		printf("arg_i: %d\n", arg_i);
 		identifier = env_var_find_identifier(argv[arg_i]);
 		if (!identifier)
-		{
-			printf("this should be entered twice\n");
 			continue ;
-		}
-		printf("indentifier: %s\n", identifier);
 		var_i = env_var_find_index(minishell_data->env, argv[arg_i], identifier);
 
 		assert(var_i <= minishell_data->env_var_count); // REMOVE ASSERT
     	
 		// CHANGE ENV_VAR_REALLOC
 		// checks if env mem needs to be expanded, and if we='re adding or modifyig a var
+		// ? confusion
 		if (var_i == minishell_data->env_mem - 1)
 			env_var_realloc(minishell_data);
 		if (*identifier == '=')

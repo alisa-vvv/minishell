@@ -14,71 +14,98 @@
 #include "minishell.h"
 #include "executor.h"
 #include "builtins.h"
+#include "minishell_env.h"
 #include <unistd.h>
 
 #include <stdio.h>
 
-//figure out if you actually want to record oldpwd
-static void cd_free(
-	char *path,
-	char *new_pwd,
-	char *new_old_pwd,
-	char *cur_pwd_value
+static void	free_variables(
+	char **variables
 )
 {
-	if (path)
-		free(path);
-	if (new_pwd)
-		free(new_pwd);
-	if (new_old_pwd)
-		free(new_old_pwd);
-	if (cur_pwd_value)
-		free(cur_pwd_value);
-}
-static int	record_dirs(
-	char *path,
-	char **new_pwd,
-	char **new_old_pwd,
-	char *cur_pwd_value
-)
-{
-	*new_old_pwd = ft_strjoin("OLDPWD=", cur_pwd_value);
-	*new_pwd = ft_strjoin("PWD=", path);
-	if (!new_pwd || !new_old_pwd)
+	if (variables)
 	{
-		cd_free(path, *new_pwd, *new_old_pwd, cur_pwd_value);
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (-1);
+		if (variables[0])
+			free(variables[0]);
+		if (variables[1])
+			free(variables[1]);
+		free(variables);
 	}
-	return (0);
 }
 
 static int	set_env_vars(
 	t_minishell_data *const minishell_data,
-	char *const new_pwd,
-	char *const new_old_pwd,
-	char *const cur_pwd
+	char *cwd,
+	char *path
 )
 {
-	int	err_check;
+	int		err_check;
+	char	**variables;
 
-	printf("new_pwd: %s\n", new_pwd);
-	printf("new_old_pwd: %s\n", new_old_pwd);
-	err_check = minishell_export(&new_pwd, minishell_data);
+	variables = ft_calloc(3, sizeof (char *));
+	if (!variables)
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+	variables[0] = ft_strjoin("OLDPWD=", cwd);
+	variables[1] = ft_strjoin("PWD=", path);
+	if (!variables[0] || !variables[1])
+	{
+		free_variables(variables);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+	}
+	err_check = minishell_export(variables, minishell_data);
 	if (err_check < 0)
 	{
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
 		return (err_check);
 	}
-	err_check = minishell_export(&new_old_pwd, minishell_data);
-	if (err_check < 0)
-	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (err_check);
-	}
+	free_variables(variables);
 	return (0);
 }
 
+static int find_target_path(
+	char *const arg,
+	t_minishell_data *const minishell_data,
+	char *const cwd,
+	char **path_pointer
+)
+{
+	char	*arg_with_slash;
+	char	*path;
+
+	if (!arg || arg[0] == '\0')
+	{
+		path = env_var_get_value(minishell_data->env, "HOME");
+		if (!path)
+		{
+			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+			printf("what do we return in cases like this?\n");
+			perror_and_return("cd: ", "HOME not set", exec_err, 1);
+		}
+	}
+	else
+	{
+		// ADD A FUNCTION THAT ADDS SLASH AND JOINS. AAAAAAAA
+		arg_with_slash = ft_strjoin("/", arg);
+		path = ft_strjoin(cwd, arg_with_slash);
+		free(arg_with_slash);
+		if (!path)
+			perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+	}
+	if (access(path, F_OK))
+	{
+		free(path);
+		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+		perror_and_return(NULL, "cd: ", extern_err, -1);
+	}
+	*path_pointer = path;
+	return (0);
+}
+
+// i hate this
+// there is no way to write this in one file of 5 functions with 25 lines or less
+// in a way that isn't objectively worse than just having one ~100 line function (at most)
+// it's so linear and conssist of mostly non-repeatable code there's just no reason to split it up like that
+// i hate norm
 int	minishell_cd(
 	char *const arg,
 	t_minishell_data *const minishell_data
@@ -86,42 +113,17 @@ int	minishell_cd(
 {
 	int		err_check;
 	char	*path;
-	char	*new_pwd;
-	char	*new_old_pwd;
-	char	*const cur_pwd = ft_calloc(PATH_MAX, sizeof(char));
-
-	// look for OLD_PWD and PWD variables // probably don't actually need to look for OLD_PWD cause we always export it
-	// if they exist, change values
-	// otherwise export them
-	//
-	new_pwd = NULL;
-	new_old_pwd = NULL;
+	char	*const cwd = ft_calloc(PATH_MAX, sizeof(char));
 
 	printf("\n\n\nbefore:\n\n\n");
 	minishell_pwd();
 
-	// GOD I HATE THIS
-	char *arg_with_slash = ft_strjoin("/", arg);
-
-	getcwd(cur_pwd, PATH_MAX);
-	path = ft_strjoin(cur_pwd, arg_with_slash);
-	free(arg_with_slash);
-	if (!path)
+	path = NULL;
+	getcwd(cwd, PATH_MAX);
+	err_check = find_target_path(arg, minishell_data, cwd, &path);
+	if (err_check != 0)
 	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
-	}
-	int check = access(path, F_OK);
-	if (check != 0)
-	{
-		perror("which access error");
-		free(path);
-		path = ft_strdup(arg);
-	}
-	err_check = record_dirs(path, &new_pwd, &new_old_pwd, cur_pwd);
-	if (err_check < 0)
-	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+		free(cwd);
 		return (err_check);
 	}
 	err_check = chdir(path);
@@ -131,8 +133,9 @@ int	minishell_cd(
 		perror_and_return("cd: ", NULL, extern_err, -1);
 	}
 	else
-		err_check = set_env_vars(minishell_data, new_pwd, new_old_pwd, cur_pwd);
-	cd_free(path, new_pwd, new_old_pwd, cur_pwd);
+		err_check = set_env_vars(minishell_data, cwd, path);
+	free(path);
+	free(cwd);
 
 	printf("\n\n\nafter:\n\n\n");
 	minishell_pwd();

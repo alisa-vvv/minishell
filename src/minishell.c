@@ -36,7 +36,6 @@ static void	reset_minishell_data(
 )
 {
 	minishell_data->exec_data = NULL;
-	minishell_data->last_pipeline_return = 0;
 	minishell_data->command_count = 0;
 }
 
@@ -44,7 +43,12 @@ static void	setup_minishell_data(
 	t_minishell_data *minishell_data
 )
 {
-	reset_minishell_data(minishell_data);
+	minishell_data->env = NULL;
+	minishell_data->env_var_count = 0;
+	minishell_data->env_mem = 0;
+	minishell_data->last_pipeline_return = 0;
+	minishell_data->exec_data = NULL;
+	minishell_data->command_count = 0;
 	minishell_data->env = clone_env(&minishell_data->env_var_count,
 								 &minishell_data->env_mem);
 	if (!minishell_data->env)
@@ -62,8 +66,9 @@ int	main(void)
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
-	int	TEST_len = 2;
 	rl_catch_signals = false;
+	int	TEST_len = 2;
+	printf("pid of parrent: %d\n", getpid());
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)
 	{
@@ -71,8 +76,9 @@ int	main(void)
 		read_line = readline("minishell$ ");
 		if (!read_line)
 		{
-			printf("is it this?\n");
-			clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
+			printf("pid of of null return: %d\n", getpid());
+			printf("read_line return NULL!\n");
+			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);
 		}
 	//	if (g_msh_signal == SIGINT)
 	//	{
@@ -84,7 +90,7 @@ int	main(void)
 		if (read_line)
 			add_history(read_line);
 		if (strcmp(read_line, "exit") == 0)
-			is_open = false;
+			clean_exit(&minishell_data, read_line, EXIT_SUCCESS, false);
 		else if (strcmp(read_line, "executor") == 0)
 		{
 			handle_signals_non_interactive();
@@ -92,13 +98,16 @@ int	main(void)
 			err_check = executor(&minishell_data, exec_data, TEST_len);
 		}
 		else if (default_lexer(read_line, &minishell_data))
-				is_open = false;
+			is_open = false;
 		else
 			printf("We entered: %s\n", read_line);
 		if (read_line)
 			free(read_line);
 		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
+		if (err_check == HEREDOC_CHILD)
+			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
+		else if (err_check < 0)
+			clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);
 	}
-	clean_exit(&minishell_data, NULL, EXIT_SUCCESS);
-	return (0);
+	clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);
 }
