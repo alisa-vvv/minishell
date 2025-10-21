@@ -34,7 +34,7 @@ int check_lexer(
 	set_pipe_cm(tokenlist);
 	t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	test_tokens(*tokenlist);
-	pass_comm(tokenlist, minishell_data, 0);
+	pass_comm(tokenlist, minishell_data, 0, 0);
 	while (i < count_lists(tokenlist))
 	{
 		comm_list = minishell_data->exec_data + i;

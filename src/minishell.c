@@ -20,9 +20,10 @@
 #include "parser.h"
 #include <string.h>
 #include <stdio.h> /*	readline	*/
-#include <readline/readline.h>
+#include <readline/readline.h> // Needed for rl_catch_signals
 #include <readline/history.h>
 #include <unistd.h> /* isatty */
+
 /* for waits	*/
 #include <sys/types.h>
 #include <sys/time.h>
@@ -66,6 +67,7 @@ int	main(void)
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
+	//
 	rl_catch_signals = false;
 	int	TEST_len = 2;
 	printf("pid of parrent: %d\n", getpid());

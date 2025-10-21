@@ -14,6 +14,8 @@
 #include "minishell.h"
 #include "minishell_env.h"
 
+extern char **environ;
+
 char	**clone_env(
 	int *env_var_count,
 	int *env_mem
@@ -30,7 +32,7 @@ char	**clone_env(
 	if (!env)
 		return (NULL);
 	i = -1;
-	while(__environ[++i])
+	while(environ[++i])
 	{
 		if (i == alloc_size)
 		{
@@ -41,7 +43,7 @@ char	**clone_env(
 				return (NULL);
 			i = 0;
 		}
-		env[i] = ft_strdup(__environ[i]);
+		env[i] = ft_strdup(environ[i]);
 		if (!env[i])
 		{
 			free_2d_arr((void **) env);

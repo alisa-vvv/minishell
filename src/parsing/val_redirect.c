@@ -78,30 +78,42 @@ int val_redir_out(
 }
 
 
+int check_heredoc(element *tokenlist, int pos)
+{
+    t_token *check_token;
+
+    check_token = (t_token *)tokenlist->element_list.tokens[pos];
+    check_token->type = HEREDOC_DEL;
+    if (pos == tokenlist->element_list.total -1)
+        return (0);
+    else
+        return (1);
+}
+
 //set values 
 int val_redir(element *tokenlist)
 {
     size_t i;
     t_token *check_token;
     i = 0;
-
     while (i < (size_t)tokenlist->element_list.total)
     {
-        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);
-        if (check_token->type == HEREDOC && i + 1 < (size_t)tokenlist->element_list.total)
+        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i); 
+        if (check_token->type == HEREDOC && i + 1 < tokenlist->pf_element_total(tokenlist))
         {
-            check_token = (t_token *)tokenlist->element_list.tokens[i+1];
-            check_token->type = HEREDOC_DEL;
-            i++;
+            if (check_heredoc(tokenlist, i +1))
+                i++;
+            else 
+                return (0);
         }
-        else if (lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type == REDIRECT_OUT_APP || lookahead(tokenlist, i)->type == REDIRECT_OUT || lookahead(tokenlist, i)->type == REDIRECT_IN)
+        else if (!lookahead(tokenlist, i))
+            return (1);
+        else if (lookahead(tokenlist, i) != NULL && (lookahead(tokenlist, i)->type == REDIRECT_OUT_APP || lookahead(tokenlist, i)->type == REDIRECT_OUT || lookahead(tokenlist, i)->type == REDIRECT_IN))
         {
             if (val_redir_out(tokenlist, i))
                 return(1);
             i++;
         }
-        else if (!lookahead(tokenlist, i))
-            return (1);
         else
             i++;
     }
