@@ -118,8 +118,9 @@ int fill_comm_list(
 		i++;
 		pos++;
 	}
-	(*exec_data)->argv[i] = NULL;
-//	p_printf("Token list total = %d\n", tokenlist->element_list.total);
+//	p_printf("Token list total = %d\n Token list i = %d\n", total, i);
+	if (i > 0)
+		(*exec_data)->argv[i] = NULL;
 	return (0);
 }
 
@@ -144,7 +145,7 @@ int make_cm_list(
 	(*comm_list)->argv = malloc(sizeof(char *) * total + 1);
 	if (!(*comm_list)->argv)
 		return (write(1, MALLOC_ERR, 15));
-	(*comm_list)->argv[total ] = NULL;
+	(*comm_list)->argv[total] = NULL;
 	return (0);
 }
 
