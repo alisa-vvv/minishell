@@ -164,7 +164,6 @@ int pass_comm(
 	n_list = count_lists(tokenlist);
 	minishell_data->exec_data = ft_calloc(n_list, sizeof(t_exec_data));
 	minishell_data->command_count = n_list;
-//	p_printf("List count = %d\n", n_list);
 	if (!minishell_data->exec_data)
 		return(write(1, MALLOC_ERR, 15));
 	while (n_list > 0)
@@ -195,7 +194,6 @@ int convert_data(
 {
 	t_exec_data	*comm_list;
 	comm_list = minishell_data->exec_data + i;
-	
 //	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
 	if (make_cm_list(tokenlist, &comm_list, pos, pos_red))
 		return (write(1, "Command list failed\n", 20));
