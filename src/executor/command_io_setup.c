@@ -29,8 +29,8 @@ static int	find_and_create_heredocs(
 			if (fd_or_exit_code > 0)
 				redirection->dest_fd = fd_or_exit_code;
 		}
-		else if (fd_or_exit_code == HEREDOC_CHILD) // arbitrary but descriptive elif
-			return (HEREDOC_CHILD);
+		else if (fd_or_exit_code == child_heredoc) // arbitrary but descriptive elif
+			return (child_heredoc);
 		else
 			return (fd_or_exit_code);
 		// should probably only exit when it's equal to HEREDOC_CHILD

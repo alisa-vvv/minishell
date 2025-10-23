@@ -65,18 +65,18 @@ static int	run_child_process(
 	}
 	if (command->redirections)
 		err_check = perform_redirections(command->redirections);
-	printf("what is error check here? %d\n", err_check);
-	if (err_check < 0) // it looks like the processs does not run if it fails
-	// to redirect stuff, so we need to clean and propogate to exit
+	if (err_check != success) // it looks like the processs does not run if it fails
 	{
-		printf("PLACHOLDER, ADD ERROR MANAGEMENT\n");
-		return (-1);
+		if (err_check == fd_err) // add reasnable system for just adding child process
+			return (child_fd_err);
 	}
+	// to redirect stuff, so we need to clean and propogate to exit
 	if (command->builtin_name == not_builtin && command->argv[0])
 		err_check = try_execve(minishell_data->env, command->argv);
 	else
 		err_check = exec_builtin(command, minishell_data);
-	exit(err_check);
+	exit(err_check); // this needs to return for proper cleanup i think
+	// double check
 }
 
 static int	execute_command(
@@ -90,12 +90,19 @@ static int	execute_command(
 
 	err_check = 0;
 	process_id = 0;
-	if (command->input_is_pipe == true || command->output_is_pipe == true ||
-		command->builtin_name == not_builtin)
+	if (command->input_is_pipe == true || command->output_is_pipe == true
+		|| command->builtin_name == not_builtin)
 	{
 		process_id = fork();
+		// this handle child process
 		if (process_id == 0)
+		{
 			err_check = run_child_process(command, command_io, minishell_data);
+			if (err_check == child_fd_err) // replace with a function that amtches all return error cases
+				return (err_check);
+		}
+		// endof handle child process
+		// this is handle parent process
 		else if (process_id > 0)
 		{
 			err_check = cleanup_in_parent_process(command, command_io);
@@ -107,13 +114,15 @@ static int	execute_command(
 				return (err_check);
 			}
 		}
+		// endof handle parent process
 		else if (process_id < 0)
 			perror_and_return(NULL, FORK_ERR, extern_err, -1);
 	}
 	else if (command->builtin_name != not_builtin)
 	{
-		err_check = exec_builtin(command, minishell_data);
-		return (err_check);
+		//err_check = exec_builtin(command, minishell_data);
+		//here we probably don't exit either. check.
+		//most likely we send an error msg locally and then proceed with execution
 	}
 	return (err_check);
 }
@@ -240,7 +249,7 @@ int	build_pipeline(
 	int command_count
 )
 {
-	int	status_check; // change name?
+	int	status_check; // change name? / why?
 	int	i;
 
 	i = -1;
@@ -249,8 +258,8 @@ int	build_pipeline(
 		status_check = prepare_command_io(&exec_data[i], command_io, i);
 		if (status_check < 0)
 		{
-			if (status_check == HEREDOC_CHILD)
-				return (HEREDOC_CHILD);
+			if (status_check == child_heredoc)
+				return (child_heredoc);
 			return (i);
 		}
 	}
@@ -261,19 +270,31 @@ int	execute_commands(
 	t_minishell_data *const minishell_data,
 	t_exec_data *command,
 	t_command_io *command_io,
-	int *p_id
+	int *p_id_arr // replace with pid_t
 )
 {
-	int	i;
+	int			i;
+	t_msh_errno	err_check;
 
 	i = -1;
 	while (++i < minishell_data->command_count)
 	{
-		p_id[i] = execute_command(&command[i], &command_io[i], minishell_data);
-		if (p_id[i] < 0)
-			return (-1);
+		// should ptobably have a separate type
+		// and encode information for if it's a parent of a child error
+		err_check = execute_command(&command[i], &command_io[i], minishell_data);
+		printf("executed command's child id: %d\n", err_check);
+		if (err_check < 0)
+		{
+			//p_id_arr[i] = -1;
+			if (err_check == child_fd_err)
+				return (err_check);
+			//printf("PLACEHOLDER, ADD PROPER ERROR MANAGEMENT\n");
+			// here, should check for when we actually need to stop. never questionmark?
+		}
+		else
+			p_id_arr[i] = err_check;
 	}
-	return (0);
+	return (success);
 }
 
 // maybe rework this for more clarity on what happens on different exit situations
@@ -283,39 +304,40 @@ int	executor(
 	int command_count
 )
 {
-	int				*p_id;
+	int				*p_id_arr;
 	int				*p_exit_codes;
 	int				pipeline_elem_count;
 	t_command_io	*command_io;
-	int				if_err;
+	int				err;
 
-	if_err = 0;
-	p_id = ft_calloc(sizeof(int), command_count);
+	err = success;
+	p_id_arr = ft_calloc(sizeof(int), command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
 	command_io = ft_calloc(sizeof(t_command_io), command_count);
-	if (!p_id || !p_exit_codes || !command_io)
+	if (!p_id_arr || !p_exit_codes || !command_io)
 	{
 		minishell_data->last_pipeline_return = errno;
 		perror_and_return(NULL, MALLOC_ERR, extern_err, errno);
 	}
 	minishell_data->last_pipeline_return = 0;
+	/*	please explain to me this nonsense, past me	*/
 	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
 	if (pipeline_elem_count == command_count)
-		if_err = execute_commands(minishell_data, exec_data, command_io, p_id);
+		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
 	else
 		command_count = pipeline_elem_count;
-	if (if_err < 0)
-		pipeline_elem_count = if_err;
+	if (err != success)
+	{
+		printf("do we reach\n");
+		executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
+		return (err);
+	}
+	/*	endof explain nonsense	*/
 	else if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
-		wait_for_children(command_count, minishell_data, p_id, p_exit_codes);
-	// the lines below are probably redundant
-	//if (command_count == HEREDOC_CHILD)
-	//	heredoc_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
-	//else 
-	//	executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
-	executor_cleanup(minishell_data, exec_data, command_io, p_id, p_exit_codes);
+		wait_for_children(command_count, minishell_data, p_id_arr, p_exit_codes);
+	executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
 	if (pipeline_elem_count < 0)
 		return (pipeline_elem_count);
-	return(EXIT_SUCCESS);
+	return(success);
 }

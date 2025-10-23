@@ -69,7 +69,7 @@ int	main(void)
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	//
 	rl_catch_signals = false;
-	int	TEST_len = 2;
+	int	TEST_len = 3;
 	printf("pid of parrent: %d\n", getpid());
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)
@@ -94,12 +94,15 @@ int	main(void)
 			add_history(read_line);
 		if (strcmp(read_line, "exit") == 0)
 			clean_exit(&minishell_data, read_line, EXIT_SUCCESS, false);
+		/*	Test Executor */
 		else if (strcmp(read_line, "executor") == 0)
 		{
 			handle_signals_non_interactive();
 			exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
 			err_check = executor(&minishell_data, exec_data, TEST_len);
 		}
+		/*	endof Test Executor*/
+		/*	Test Lexer */
 		else
 		{
 			TEST_lexer_return = default_lexer(read_line, &minishell_data);
@@ -107,13 +110,17 @@ int	main(void)
 				printf("PLACEHOLDER ERROR\n");
 			err_check = executor(&minishell_data, exec_data, minishell_data.command_count);
 		}
+		/*	endof Test Lexer*/
 		if (read_line)
 			free(read_line);
 		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
-		if (err_check == HEREDOC_CHILD)
+		if (err_check == child_heredoc)
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
 		else if (err_check < 0)
+		{
+			printf("clean exit out of child hopefully, id: %d\n", getpid());
 			clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);
+		}
 	}
 	clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);
 }

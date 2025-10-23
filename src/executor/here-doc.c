@@ -159,7 +159,7 @@ int	create_here_doc(
 		test_close(here_doc[READ_END]); // double check how this works just in case
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		test_close(here_doc[WRITE_END]);
-		return (HEREDOC_CHILD);
+		return (child_heredoc);
 	}
 	else if (pid > 0)
 	{
