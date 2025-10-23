@@ -203,7 +203,7 @@ void test_execdata(
     size_t i;
 
     i = 0;
-    p_printf("\nEXEC DATA %d IS :\n", n);
+    p_printf("\nEXEC DATA %d IS:\n", n);
     if (execdata.argv != NULL)
     {
         while (execdata.argv[i] != NULL)

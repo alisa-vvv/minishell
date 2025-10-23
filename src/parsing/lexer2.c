@@ -17,8 +17,8 @@ int check_lexer(
 	element *tokenlist, 
 	t_minishell_data *minishell_data)
 {
-	int i;
-	i = 0;
+	// int i;
+	// i = 0;
 	exp_lexer(tokenlist, &minishell_data, PARAMETER);
 	exp_lexer(tokenlist, &minishell_data, SINGLE_Q);
 	exp_lexer(tokenlist, &minishell_data, DOUBLE_Q);
@@ -28,13 +28,12 @@ int check_lexer(
 		if (single_token(tokenlist))
 			return(write(1, "Wrong redirect\n", 15));
 	}
-	else if (val_redir(tokenlist))
+	else if (val_redir(tokenlist, 0))
 		return (write(1, "Wrong redirect\n", 15));
-	set_pipe_cm(tokenlist);
+	set_pipe_cm(tokenlist, 0);
 	// t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	// test_tokens(*tokenlist);
 	pass_comm(tokenlist, minishell_data, 0, 0);
-
 	return (0); 
 }
 
