@@ -103,17 +103,17 @@ int val_redir(element *tokenlist)
     i = 0;
     while (i < tokenlist->element_list.total)
     {
-        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i); 
+        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);
         if (check_token->type == HEREDOC && i + 1 < tokenlist->element_list.total)
         {
-            if (check_heredoc(tokenlist, i +1))
+            if (check_heredoc(tokenlist, i + 1))
                 i++;
             else 
                 return (0);
         }
-        else if (!lookahead(tokenlist, i))
+        else if (token_is_redirect(check_token) && !lookahead(tokenlist, i))
             return (1);
-        else if (lookahead(tokenlist, i) != NULL && (lookahead(tokenlist, i)->type == REDIRECT_OUT_APP || lookahead(tokenlist, i)->type == REDIRECT_OUT || lookahead(tokenlist, i)->type == REDIRECT_IN))
+        else if (lookahead(tokenlist, i) != NULL && token_is_redirect(lookahead(tokenlist, i)))
         {
             if (val_redir_out(tokenlist, i))
                 return(1);
@@ -122,6 +122,5 @@ int val_redir(element *tokenlist)
         else
             i++;
     }
-//    t_printf("in val redirect\n");
     return (0);
 }
