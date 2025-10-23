@@ -20,7 +20,7 @@ int single_token(element *tokenlist)
     check_token = (t_token *)tokenlist->element_list.tokens[0];
     if ((int)tokenlist->element_list.total == 1)
     {
-        if (check_token->type == HEREDOC || check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_IN)
+        if (token_is_redirect(check_token))
             return (1);
         else 
             check_token->command = true;
@@ -41,7 +41,7 @@ void set_pipe_cm(
 	{
 		c_token = (t_token *)tokenlist->element_list.tokens[i];
 		if ((i == 0 && lookahead(tokenlist, i)->type != HEREDOC
-			&& c_token->type >= CAT && c_token->type <= UNSET)
+			&& (c_token->type >= CAT && c_token->type <= UNSET))
 			|| (i == 0 && c_token->type == HEREDOC)
 			|| (i == tokenlist->element_list.total - 1 && c_token->type == HEREDOC_DEL))
 		{
@@ -50,7 +50,7 @@ void set_pipe_cm(
 		}
 		else if (c_token->type == PIPE || c_token->type == HEREDOC_DEL)
 			flag = true;
-		else if (flag == true && lookahead(tokenlist, i)->type != HEREDOC)
+		else if (flag == true && lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type != HEREDOC)
 		{
 			c_token->command = true;
 			flag = false;
@@ -111,7 +111,7 @@ int val_redir(element *tokenlist)
             else 
                 return (0);
         }
-        else if (token_is_redirect(check_token) && !lookahead(tokenlist, i))
+        else if ((token_is_redirect(check_token) || check_token->type == PIPE) && !lookahead(tokenlist, i))
             return (1);
         else if (lookahead(tokenlist, i) != NULL && token_is_redirect(lookahead(tokenlist, i)))
         {

@@ -144,7 +144,7 @@ int make_cm_list(
 	(*comm_list)->argv = malloc(sizeof(char *) * total + 1);
 	if (!(*comm_list)->argv)
 		return (write(1, MALLOC_ERR, 15));
-	(*comm_list)->argv[total - 1] = NULL;
+	(*comm_list)->argv[total ] = NULL;
 	return (0);
 }
 

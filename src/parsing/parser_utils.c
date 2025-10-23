@@ -41,25 +41,6 @@ t_token	*lookbehind(
 	return (check_token);
 }
 
-bool str_is_red(char c)
-{
-	if (c == '<' || c == '>' || c == '|')
-		return (1);
-	return (0);
-}
-
-//check if redirect
-bool	token_is_redirect(
-	t_token *check_token)
-{
-	if (!check_token)
-		return (NULL);
-	if (check_token->type == HEREDOC || check_token->type == REDIRECT_IN
-		|| check_token->type == REDIRECT_OUT
-		|| check_token->type == REDIRECT_OUT_APP)
-		return (true);
-	return (false);
-}
 
 // func to traverse list and find a spec symbol
 int	find_symbol(element *tokenlist, int pos, char symbol)
