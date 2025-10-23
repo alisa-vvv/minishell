@@ -34,11 +34,7 @@ int check_lexer(
 	// t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	// test_tokens(*tokenlist);
 	pass_comm(tokenlist, minishell_data, 0, 0);
-	while (i < count_lists(tokenlist))
-	{
-		test_execdata(*(minishell_data->exec_data + i));
-		i++;
-	}
+
 	return (0); 
 }
 
@@ -61,7 +57,6 @@ int	check_pipe_redirect(
 		}
 		if (!command && symbol == '|')
 			return (1);
-		// check for single pipe or redirect
 		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i + 1 == '"'))
 			return (1);
 	}

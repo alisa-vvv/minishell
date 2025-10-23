@@ -66,7 +66,7 @@ int	add_arg_to_list(
 		*i -= 1;
 	else if (check_token->command)
 	{
-		if (pos > 1 && lookbehind(tokenlist, pos)->type == PIPE)
+		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 		{
 			(*comm_list)->argv[*i] = ft_strdup(check_token->value);
 			(*comm_list)->input_is_pipe = true;
@@ -118,7 +118,7 @@ int fill_comm_list(
 		i++;
 		pos++;
 	}
-//	p_printf("Token list total = %d\n Token list i = %d\n", total, i);
+	p_printf("Token list total = %d\n Token list i = %d\n", total, i);
 	if (i > 1)
 		(*exec_data)->argv[i] = NULL;
 	return (0);

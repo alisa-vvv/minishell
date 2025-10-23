@@ -159,14 +159,51 @@ const char* enum_builtin(t_builtin_name builtin)
     return "???";
 }
 
+// typedef struct	minishell_data
+// {
+// 	char		**env;
+// 	int			env_var_count;
+// 	int			env_mem;
+// 	t_exec_data	*exec_data;
+// 	int			command_count;
+// 	int			last_pipeline_return;
+// }	t_minishell_data;
+
+void test_minishelldata(t_minishell_data minishell_data)
+{
+    size_t i;
+    size_t j;
+
+    i = 0;
+    j = 0; 
+    p_printf("\nMINISHELL DATA IS:");
+    if (minishell_data.command_count != 0)
+    {
+        while (i < (size_t)minishell_data.command_count)
+        {
+            test_execdata(*(minishell_data.exec_data + i), i);
+            i++;
+        }
+        printf("\n");
+    }
+    i = 0;
+    while (i < (size_t)minishell_data.env_var_count)
+    {
+        p_printf("Env %d = %s\n", i, minishell_data.env[i]);
+        i++;
+    }
+    p_printf("Last pipeline return = %d\n", minishell_data.last_pipeline_return);
+    p_printf("\n");
+}
+
 
 void test_execdata(
-    t_exec_data execdata)
+    t_exec_data execdata, size_t n)
 {
     size_t i;
 
     i = 0;
-    p_printf("\nEXEC DATA IS:\n");
+    p_printf("\nEXEC DATA %d IS :\n", n);
     if (execdata.argv != NULL)
     {
         while (execdata.argv[i] != NULL)
