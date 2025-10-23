@@ -200,13 +200,5 @@ void test_execdata(
     t_printf("\n");
 }
 
-// typedef struct	s_exec_data
-// {
-// 	char			**argv;
-// 	int				is_builtin;
-// 	int				input_is_pipe;
-// 	int				output_is_pipe;
-// 	t_redir_list	*redirections;
-// }	t_exec_data;
 
 

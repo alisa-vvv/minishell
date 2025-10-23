@@ -231,7 +231,7 @@ static void	executor_cleanup(
 	free(command_io);
 	free(p_ids);
 	free(p_exit_codes);
-	free(exec_data);
+	//free(exec_data);
 }
 
 int	build_pipeline(

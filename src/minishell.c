@@ -103,9 +103,10 @@ int	main(void)
 		else
 		{
 			TEST_lexer_return = default_lexer(read_line, &minishell_data);
+			printf("Parsing COMPLETE\n");
 			if (TEST_lexer_return != 0)
 				printf("PLACEHOLDER ERROR\n");
-			err_check = executor(&minishell_data, exec_data, minishell_data.command_count);
+			err_check = executor(&minishell_data, minishell_data.exec_data, minishell_data.command_count);
 		}
 		if (read_line)
 			free(read_line);
