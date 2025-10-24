@@ -18,7 +18,7 @@ int	minishell_pwd(
 	void
 )
 {
-	// alloc this variable in advance?
+	// alloc this variable in advance? // why
 	char *const	dir = ft_calloc(PATH_MAX, sizeof(char));
 	int			err_check;
 	

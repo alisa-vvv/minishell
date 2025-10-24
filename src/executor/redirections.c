@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
+
 #include "minishell.h"
 #include "executor.h"
 #include <stdio.h>
@@ -22,8 +24,8 @@ static int	perform_input_redirection(
 {
 	if (redirection->dest_filename != NULL)
 		redirection->dest_fd = open(redirection->dest_filename, O_RDONLY);
-	if (redirection->dest_fd < 0)
-		perror_and_return(NULL, FD_ERR, extern_err, -1);
+	if (redirection->dest_fd != 0)
+		perror_and_return(NULL, FD_ERR, extern_err, fd_err);
 	test_dup2(redirection->dest_fd, STDIN_FILENO);
 	test_close(redirection->dest_fd);
 	return (0);
@@ -44,7 +46,7 @@ static int	perform_output_redirection(
 			redirection->dest_fd = open(redirection->dest_filename, app_f, 0664);
 	}
 	if (redirection->dest_fd < 0)
-		return (perror_and_return(NULL, FD_ERR, extern_err, -1));
+		return (perror_and_return(NULL, FD_ERR, extern_err, fd_err));
 	if (redirection->src_filename != NULL)
 	{
 		//this is for special cases only, refer to bash manual
@@ -53,7 +55,7 @@ static int	perform_output_redirection(
 	if (redirection->src_fd < 0)
 	{
 		test_close(redirection->dest_fd);
-		return (perror_and_return(NULL, FD_ERR, extern_err, -1));
+		return (perror_and_return(NULL, FD_ERR, extern_err, fd_err));
 	}
 	test_dup2(redirection->dest_fd, redirection->src_fd);
 	test_close(redirection->dest_fd);
@@ -62,6 +64,7 @@ static int	perform_output_redirection(
 
 // QUESTION: DO WE NEED TO EXIT ON REDIRECTION FAIL? (I ASSUME NO)
 // turns out the answer is YES. lmao
+// add a check for if this is child process
 int	perform_redirections(
 	t_redir_list *redirections
 )
@@ -75,6 +78,9 @@ int	perform_redirections(
 			err_check = perform_input_redirection(redirections);
 		else
 			err_check = perform_output_redirection(redirections);
+		// do we stop after first error or do we try them all?
+		if (err_check != success)
+			return (err_check);
 		redirections = redirections->next;
 	}
 	return (err_check);

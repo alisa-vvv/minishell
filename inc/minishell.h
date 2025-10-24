@@ -39,6 +39,23 @@
 # define DUP2_ERR "Error! dup2()"
 # define FD_ERR "Error! Wrong file descriptor"
 
+typedef enum	e_msh_errno // can define specific values later
+{
+	success,
+	malloc_err = -1,
+	pipe_err = -2,
+	fork_err = -3,
+	readline_err = -4,
+	path_err = -5,
+	dup_err = -6,
+	dup2_err = -7,
+	fd_err = -8,
+	child_error_delim = -9,
+	child_fd_err = -10,
+	child_heredoc = -11,
+}	t_msh_errno;
+
+
 # define LIBFUNC_ERR 0
 # define MINISHELL_ERR 1
 
@@ -54,7 +71,6 @@
 
 // this value is returned in a child process that only exists to create heredoc
 // doesn't need to be -2
-# define HEREDOC_CHILD -2
 
 /*		Signal handling		*/
 
@@ -164,11 +180,6 @@ void	free_and_close_exec_data(
 // generic_err is for an error that doesn't need specific prefix
 // other two values are for parse_err and exec_err
 /*		Error Mananagement Structures	*/
-typedef enum	e_msh_errno
-{
-	TEST_PLACEHOLDER,
-}	t_msh_errno;
-
 typedef enum	e_error_relation
 {
 	extern_err,

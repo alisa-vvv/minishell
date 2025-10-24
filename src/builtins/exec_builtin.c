@@ -11,19 +11,7 @@
 /* ************************************************************************** */
 
 #include "builtins.h"
-#include "libft.h"
 
-// replace strncmps enum later based on what parsing does
-//
-// required:
-// 1 - DONE, NEEDS ADJ. echo with option -n;
-// 2. cd - with relative or absolute path
-// 3 - DONE. pwd with no options
-// 4. export with no options
-// 5. unset with no options
-// 6. env with no options or arguments
-// 7. exit with no options
-//
 int	exec_builtin(
 	t_exec_data *const command,
 	t_minishell_data *const minishell_data

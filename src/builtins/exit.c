@@ -18,8 +18,8 @@ int	minishell_exit(
 	t_minishell_data *const minishell_data
 )
 {
-	char	*const *const args = &command->argv[1];
-	int		exit_code;
+	char *const *const	args = &command->argv[1];
+	int					exit_code;
 
 	exit_code = 0;
 	if (args[0] == NULL)
