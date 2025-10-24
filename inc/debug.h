@@ -34,6 +34,6 @@ void    p_printf(const char *str, ...);
 void    q_printf(const char *str, ...);
 void    test_tokens(element tokenlist);
 void    test_execdata(t_exec_data execdata, size_t n);
-void    test_minishelldata(t_minishell_data minishell_data);
+void    TEST_MINISHELLDATA(t_minishell_data minishell_data);
 
 #endif

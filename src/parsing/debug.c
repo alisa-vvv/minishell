@@ -169,7 +169,7 @@ const char* enum_builtin(t_builtin_name builtin)
 // 	int			last_pipeline_return;
 // }	t_minishell_data;
 
-void test_minishelldata(t_minishell_data minishell_data)
+void TEST_MINISHELLDATA(t_minishell_data minishell_data)
 {
     size_t i;
     size_t j;
