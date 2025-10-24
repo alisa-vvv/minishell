@@ -136,6 +136,7 @@ static int	wait_for_children(
 {
 	int	last_exit;
 	int	i;
+	int	err_check;
 
 	i = -1;
 	//printf("command count: %d\n", command_count);
@@ -143,7 +144,10 @@ static int	wait_for_children(
 	{
 	//	printf("\np_ids[%d]: %d\n", i, p_ids[i]);
 	//	printf("p_exit_codes[%d]: %d\n\n", i, p_exit_codes[i]);
-		if (waitpid(p_ids[i], &p_exit_codes[i], 0) > 0) // check if there's some exit signals or codes we need to handle here
+		if (p_ids[i] < 0)
+			continue ;
+		err_check = waitpid(p_ids[i], &p_exit_codes[i], 0);
+		if (err_check > 0) // check if there's some exit signals or codes we need to handle here
 		{
 			//https://tldp.org/LDP/abs/html/exitcodes.html - good source for exit codes testing
 			if (WIFEXITED(p_exit_codes[i]) == true)
@@ -237,10 +241,15 @@ static void	executor_cleanup(
 		//	//command_io[i].in_pipe[WRITE_END] = CLOSED_FD;
 		//}
 	}
+	//(void) (command_io);
+	//(void) (p_ids);
+	//(void) (p_exit_codes);
+	//(void) (exec_data);
+
 	free(command_io);
 	free(p_ids);
 	free(p_exit_codes);
-	//free(exec_data);
+	free(exec_data);
 }
 
 int	build_pipeline(
@@ -282,17 +291,15 @@ int	execute_commands(
 		// should ptobably have a separate type
 		// and encode information for if it's a parent of a child error
 		err_check = execute_command(&command[i], &command_io[i], minishell_data);
-		printf("executed command's child id: %d\n", err_check);
+		printf("\033[36mexecuted command's child id: %d\033[0m\n", err_check);
+		p_id_arr[i] = err_check;
 		if (err_check < 0)
 		{
-			//p_id_arr[i] = -1;
 			if (err_check == child_fd_err)
 				return (err_check);
 			//printf("PLACEHOLDER, ADD PROPER ERROR MANAGEMENT\n");
 			// here, should check for when we actually need to stop. never questionmark?
 		}
-		else
-			p_id_arr[i] = err_check;
 	}
 	return (success);
 }
@@ -328,7 +335,7 @@ int	executor(
 		command_count = pipeline_elem_count;
 	if (err != success)
 	{
-		printf("do we reach\n");
+		printf("\033[31error during command execution\033[0m\n");
 		executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
 		return (err);
 	}

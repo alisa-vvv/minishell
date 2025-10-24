@@ -198,7 +198,3 @@ t_exec_data	*test_get_dummy_exec_data(
 
 	return (exec_data);
 }
-
-void	test_func(void){
-	printf("test\n");
-}

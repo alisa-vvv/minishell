@@ -62,7 +62,7 @@ int	main(void)
 	int					is_open = true;
 	int					err_check;
 	t_minishell_data	minishell_data;
-	t_exec_data			*exec_data;
+//	t_exec_data			*exec_data;
 
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
@@ -98,8 +98,8 @@ int	main(void)
 		else if (strcmp(read_line, "executor") == 0)
 		{
 			handle_signals_non_interactive();
-			exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
-			err_check = executor(&minishell_data, exec_data, TEST_len);
+			minishell_data.exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
+			err_check = executor(&minishell_data, minishell_data.exec_data, TEST_len);
 		}
 		/*	endof Test Executor*/
 		/*	Test Lexer */

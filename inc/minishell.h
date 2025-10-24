@@ -203,7 +203,14 @@ void	clean_exit(
 	int exit_code,
 	bool silent_exit
 );
-
 /**/
+
+/*	TEST macros	*/	
+# define RED "\033[31"
+# define GREEN "\033[32"
+# define BLUE "\033[34"
+# define YEL "\033[34"
+# define CYAN "\033[36"
+# define NCLR "\033[0m"
 
 #endif

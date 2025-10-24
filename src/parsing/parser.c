@@ -193,7 +193,8 @@ int convert_data(
 	int pos_red)
 {
 	t_exec_data	*comm_list;
-	comm_list = minishell_data->exec_data + i;
+
+	comm_list = minishell_data->exec_data + (i * sizeof(t_exec_data));
 //	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
 	if (make_cm_list(tokenlist, &comm_list, pos, pos_red))
 		return (write(1, "Command list failed\n", 20));

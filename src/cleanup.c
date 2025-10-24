@@ -91,6 +91,7 @@ void	free_and_close_exec_data(
 		i = -1;
 		while (exec_data->argv[++i])
 		{
+			printf("\033[36mfreeing data: %s at index: %d\33[0m\n", exec_data->argv[i], i);
 			free(exec_data->argv[i]);
 			exec_data->argv[i] = NULL;
 		}
