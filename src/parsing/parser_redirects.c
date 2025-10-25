@@ -12,25 +12,24 @@
 
 #include "parser.h"
 
-int set_dest(t_exec_data **execdata,
+int set_dest(t_exec_data *execdata,
 	element *tokenlist,
 	int pos)
 {
-
 	if (lookahead(tokenlist, pos)->type == NUMBER)
 	{
-		(*execdata)->redirections->dest_fd = ft_atoi((lookahead(tokenlist, pos)->value));
-		(*execdata)->redirections->dest_filename = NULL;
+		execdata->redirections->dest_fd = ft_atoi((lookahead(tokenlist, pos)->value));
+		execdata->redirections->dest_filename = NULL;
 	}
 	else
 	{
-		(*execdata)->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
-		(*execdata)->redirections->dest_fd = -1;
+		execdata->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
+		execdata->redirections->dest_fd = -1;
 	}
 	return (0);
 }
 
-int set_src(t_exec_data **execdata,
+int set_src(t_exec_data *execdata,
 	element *tokenlist,
 	int pos)
 {
@@ -41,36 +40,36 @@ int set_src(t_exec_data **execdata,
 		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
 	else 
 	{
-		(*execdata)->redirections->src_fd = -1;
-		(*execdata)->redirections->src_filename = NULL;
+		execdata->redirections->src_fd = -1;
+		execdata->redirections->src_filename = NULL;
 	}
 	if (check_token->type == NUMBER)
 	{
-		(*execdata)->redirections->src_fd = ft_atoi(check_token->value);
-		(*execdata)->redirections->src_filename = NULL;
+		execdata->redirections->src_fd = ft_atoi(check_token->value);
+		execdata->redirections->src_filename = NULL;
 	}
 	else if (check_token->type == STRING || check_token->type == UNKNOWN)
 	{
-		(*execdata)->redirections->src_filename = ft_strdup(check_token->value);
-		(*execdata)->redirections->src_fd = -1;
+		execdata->redirections->src_filename = ft_strdup(check_token->value);
+		execdata->redirections->src_fd = -1;
 	}
 	return(0);
 }
 
-void set_redir_def(t_exec_data **execdata)
+void set_redir_def(t_exec_data *execdata)
 {
-	(*execdata)->redirections->heredoc_delim = NULL;
-	(*execdata)->redirections->type = 0;
-	(*execdata)->redirections->src_fd = -1;
-	(*execdata)->redirections->dest_fd = -1;
-	(*execdata)->redirections->dest_filename= NULL;
-	(*execdata)->redirections->src_filename = NULL;
-	(*execdata)->redirections->next = NULL;
+	execdata->redirections->heredoc_delim = NULL;
+	execdata->redirections->type = 0;
+	execdata->redirections->src_fd = -1;
+	execdata->redirections->dest_fd = -1;
+	execdata->redirections->dest_filename= NULL;
+	execdata->redirections->src_filename = NULL;
+	execdata->redirections->next = NULL;
 }
 
 
 int set_redirect(
-	t_exec_data **execdata,
+	t_exec_data *execdata,
 	element *tokenlist,
 	int pos)
 {
@@ -78,19 +77,19 @@ int set_redirect(
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
 	set_redir_def(execdata);
 	if (pos > 0 && lookbehind(tokenlist, pos-1)->type == PIPE)
-		(*execdata)->input_is_pipe = true;
+		execdata->input_is_pipe = true;
 	if (check_token->type == REDIRECT_IN)
 	{
-		(*execdata)->redirections->type = input;
-		(*execdata)->redirections->dest_filename = ft_strdup(lookbehind(tokenlist, pos)->value);
-		(*execdata)->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos)->value);
+		execdata->redirections->type = input;
+		execdata->redirections->dest_filename = ft_strdup(lookbehind(tokenlist, pos)->value);
+		execdata->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 	}
 	else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT)
 	{
 		if (check_token->type == REDIRECT_OUT_APP)
-			(*execdata)->redirections->type = append;
+			execdata->redirections->type = append;
 	 	else 
-			(*execdata)->redirections->type = trunc;
+			execdata->redirections->type = trunc;
 		set_src(execdata, tokenlist, pos);
 		set_dest(execdata, tokenlist, pos);
 	}
@@ -99,7 +98,7 @@ int set_redirect(
 
 //add redirect to list of execdata
 int add_redirect(
-	t_exec_data **execdata,
+	t_exec_data *execdata,
 	element *tokenlist, 
 	int pos,
 	int pos_red)
@@ -111,13 +110,13 @@ int add_redirect(
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));
-	if ((*execdata)->redirections == NULL)
-		(*execdata)->redirections = redirlist;
+	if (execdata->redirections == NULL)
+		execdata->redirections = redirlist;
 	else
 	{
 		t_redir_list *next;
 		
-		next = (*execdata)->redirections->next;
+		next = execdata->redirections->next;
 		while (next)
 		{
 			next = next->next;

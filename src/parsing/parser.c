@@ -37,22 +37,22 @@
 // }	t_redir_list;
 
 int set_exec_def(
-	t_exec_data **execdata, 
+	t_exec_data *execdata, 
 	element *tokenlist,
 	size_t pos)
 {
 	t_token *check_token;
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
-	(*execdata)->builtin_name = set_builtins(check_token->type);
-	(*execdata)->input_is_pipe = false;
-	(*execdata)->output_is_pipe = false;
-	(*execdata)->redirections = NULL;
+	execdata->builtin_name = set_builtins(check_token->type);
+	execdata->input_is_pipe = false;
+	execdata->output_is_pipe = false;
+	execdata->redirections = NULL;
 	return (0);
 }
 
 // push appropiate token to argv skipping redirects and heredoc delim 
 int	add_arg_to_list(
-	t_exec_data **comm_list, 
+	t_exec_data *comm_list, 
 	element *tokenlist,
 	int *i,
 	size_t pos,
@@ -60,7 +60,7 @@ int	add_arg_to_list(
 {
 	t_token		*check_token;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	if ((pos + 1 < tokenlist->element_list.total
+	if ((pos + 1 < tokenlist->element_list.total        
 		&& token_is_redirect(lookahead(tokenlist, pos)))
 		|| (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos))))
 		*i -= 1;
@@ -68,12 +68,12 @@ int	add_arg_to_list(
 	{
 		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 		{
-			(*comm_list)->argv[*i] = ft_strdup(check_token->value);
-			(*comm_list)->input_is_pipe = true;
+			comm_list->argv[*i] = ft_strdup(check_token->value);
+			comm_list->input_is_pipe = true;
 		}
 		else
-			(*comm_list)->argv[*i] = ft_strdup(check_token->value);
-		(*comm_list)->builtin_name = set_builtins(check_token->type);
+			comm_list->argv[*i] = ft_strdup(check_token->value);
+		comm_list->builtin_name = set_builtins(check_token->type);
 	}
 	else if (token_is_redirect(check_token))
 	{
@@ -83,18 +83,18 @@ int	add_arg_to_list(
 	}
 	else if (check_token->type == PIPE)
 	{
-		(*comm_list)->output_is_pipe = true;
+		comm_list->output_is_pipe = true;
 		return (0);
 	}
 	else
-		(*comm_list)->argv[*i] = ft_strdup(check_token->value);
+		comm_list->argv[*i] = ft_strdup(check_token->value);
 //	p_printf("arg[%d]: %s\n", *i, (*comm_list)->argv[*i]);'
 	return (0);
 }
 
 
 int fill_comm_list(
-	t_exec_data **exec_data,
+	t_exec_data *exec_data,
 	element *tokenlist,
 	size_t pos,
 	int pos_red)
@@ -112,7 +112,7 @@ int fill_comm_list(
 	{
 		if (add_arg_to_list(exec_data, tokenlist, &i, pos, pos_red))
 		{
-			free_2d_arr((void *)(*exec_data)->argv);
+			free_2d_arr((void *)exec_data->argv);
 			return (write(1, MALLOC_ERR, 15));
 		}
 		i++;
@@ -120,14 +120,14 @@ int fill_comm_list(
 	}
 	p_printf("Token list total = %d\n Token list i = %d\n", total, i);
 	if (i > 1)
-		(*exec_data)->argv[i] = NULL;
+		exec_data->argv[i] = NULL;
 	return (0);
 }
 
 //make an empty execdata
 int make_cm_list(
 	element *tokenlist,
-	t_exec_data **comm_list,
+	t_exec_data *comm_list,
 	size_t pos,
 	int pos_red)
 {
@@ -139,13 +139,13 @@ int make_cm_list(
 		total = count_args(tokenlist, pos, tokenlist->element_list.total);
 	if (total == 0)
 	{
-		(*comm_list)->argv = NULL;
+		comm_list->argv = NULL;
 		return (0);
 	}
-	(*comm_list)->argv = malloc(sizeof(char *) * total + 1);
-	if (!(*comm_list)->argv)
+	comm_list->argv = malloc(sizeof(char *) * (total + 1));
+	if (!comm_list->argv)
 		return (write(1, MALLOC_ERR, 15));
-	(*comm_list)->argv[total] = NULL;
+	comm_list->argv[total] = NULL;
 	return (0);
 }
 
@@ -193,14 +193,14 @@ int convert_data(
 	int pos_red)
 {
 	t_exec_data	*comm_list;
-	comm_list = minishell_data->exec_data + i;
+	comm_list = minishell_data->exec_data + (i * sizeof(t_exec_data));
 //	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
-	if (make_cm_list(tokenlist, &comm_list, pos, pos_red))
+	if (make_cm_list(tokenlist, comm_list, pos, pos_red))
 		return (write(1, "Command list failed\n", 20));
 	comm_list->redirections = NULL;
 	if (find_token_type(tokenlist, pos, pos_red, HEREDOC) != -1)
-		set_heredoc(&comm_list, tokenlist, pos, pos_red);
-	else if (fill_comm_list(&comm_list, tokenlist, pos, pos_red))
+		set_heredoc(comm_list, tokenlist, pos, pos_red);
+	else if (fill_comm_list(comm_list, tokenlist, pos, pos_red))
 		return (write(1, "Fill list failed\n", 17));
 //	p_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
 	return (0);
