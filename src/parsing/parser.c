@@ -88,7 +88,7 @@ int	add_arg_to_list(
 	}
 	else
 		comm_list->argv[*i] = ft_strdup(check_token->value);
-//	p_printf("arg[%d]: %s\n", *i, (*comm_list)->argv[*i]);'
+//	p_printf("arg[%d]: %s\n", *i, comm_list->argv[*i]);
 	return (0);
 }
 
@@ -119,8 +119,8 @@ int fill_comm_list(
 		pos++;
 	}
 	p_printf("Token list total = %d\n Token list i = %d\n", total, i);
-	if (i > 1)
-		exec_data->argv[i] = NULL;
+	// if (i > 1)
+	// 	exec_data->argv[i] = NULL;
 	return (0);
 }
 
@@ -145,6 +145,7 @@ int make_cm_list(
 	comm_list->argv = malloc(sizeof(char *) * (total + 1));
 	if (!comm_list->argv)
 		return (write(1, MALLOC_ERR, 15));
+
 	comm_list->argv[total] = NULL;
 	return (0);
 }
@@ -193,7 +194,7 @@ int convert_data(
 	int pos_red)
 {
 	t_exec_data	*comm_list;
-	comm_list = minishell_data->exec_data + (i * sizeof(t_exec_data));
+	comm_list = minishell_data->exec_data + i;
 //	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
 	if (make_cm_list(tokenlist, comm_list, pos, pos_red))
 		return (write(1, "Command list failed\n", 20));

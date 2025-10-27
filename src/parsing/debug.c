@@ -172,10 +172,8 @@ const char* enum_builtin(t_builtin_name builtin)
 void TEST_MINISHELLDATA(t_minishell_data minishell_data)
 {
     size_t i;
-    size_t j;
 
     i = 0;
-    j = 0; 
     p_printf("\nMINISHELL DATA IS:");
     if (minishell_data.command_count != 0)
     {

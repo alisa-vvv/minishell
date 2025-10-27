@@ -132,7 +132,7 @@ int	default_lexer(
 		token_list.pf_element_free(&token_list);
 		return (write(1, "Failed check types\n", 19));
 	}
-	//token_list.pf_element_free(&token_list);
+	token_list.pf_element_free(&token_list);
 	return (0);
 }
 

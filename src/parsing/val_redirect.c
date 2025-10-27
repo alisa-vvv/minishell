@@ -48,9 +48,14 @@ void set_pipe_cm(
 		}
 		else if (c_token->type == PIPE || c_token->type == HEREDOC_DEL)
 			flag = true;
-		else if (flag == true && lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type != HEREDOC)
+		else if (flag == true)
 		{
-			c_token->command = true;
+            if (lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type == HEREDOC)
+            {
+			    c_token->command = false;
+            }
+            else 
+                c_token->command = true; 
 			flag = false;
 		}
 		else
