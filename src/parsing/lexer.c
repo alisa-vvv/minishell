@@ -29,7 +29,7 @@ t_token	*new_token(
 	if (!token->value)
 		return (NULL);
 	token->type = match_token(token->value);
-	token->command = false; 
+	token->command = false;
 	return (token);
 }
 
@@ -125,6 +125,7 @@ int	default_lexer(
 		return (write(1, "Failed to count tokens\n", 23));
 	TOKEN_INIT(token_list, token_c);
 	fill_tokenlist(&token_list, input_line);
+	token_list.element_list.tokens[token_c] = NULL; 
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (check_lexer(&token_list, minishell_data))

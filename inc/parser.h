@@ -85,13 +85,12 @@ typedef struct s_token
 
 int			default_lexer(char *input_line, t_minishell_data *minishell_data);
 int			token_count(char *str, int i);
-t_token		*new_token(char *str, int len);
+t_token * 	new_token(char *str, int len);
 int			set_len(char *str, int i);
 bool		str_is_red(char c);
 bool		token_is_redirect(t_token *check_token);
 int			move_over_quote(char *str, int pos);
 int			fill_tokenlist(element *tokenlist, char *str);
-void		ft_safefree(void *ptr);
 const char* enum_to_str(t_token_type symbols);
 int 		all_num_alph(const char *str);
 int			check_file(const char *str_token);

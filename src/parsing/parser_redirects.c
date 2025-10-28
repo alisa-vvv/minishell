@@ -76,9 +76,8 @@ int set_redirect(
 	t_token *check_token;
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
 	set_redir_def(execdata);
-	if (pos > 0 && lookbehind(tokenlist, pos-1)->type == PIPE)
+	if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 		execdata->input_is_pipe = true;
-	p_printf("DOES IT GET HERE \n");
 	if (check_token->type == REDIRECT_IN)
 	{
 		execdata->redirections->type = input;

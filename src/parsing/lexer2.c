@@ -32,7 +32,8 @@ int check_lexer(
 	set_pipe_cm(tokenlist, 0);
 	// t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	//test_tokens(*tokenlist);
-	pass_comm(tokenlist, minishell_data, 0, 0);
+	if (pass_comm(tokenlist, minishell_data, 0, 0))
+		return(write(1, "Failed passing exec data\n", 25));
 	return (0); 
 }
 
