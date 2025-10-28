@@ -288,8 +288,6 @@ int	execute_commands(
 	i = -1;
 	while (++i < minishell_data->command_count)
 	{
-		// should ptobably have a separate type
-		// and encode information for if it's a parent of a child error
 		err_check = execute_command(&command[i], &command_io[i], minishell_data);
 		printf("\033[36mexecuted command's child id: %d\033[0m\n", err_check);
 		p_id_arr[i] = err_check;
@@ -318,7 +316,8 @@ int	executor(
 	int				err;
 
 	err = success;
-	p_id_arr = ft_calloc(sizeof(int), command_count);
+	p_id_arr = malloc(sizeof(int) * command_count);
+	ft_memset(p_id_arr, -1, command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
 	command_io = ft_calloc(sizeof(t_command_io), command_count);
 	if (!p_id_arr || !p_exit_codes || !command_io)
@@ -328,14 +327,14 @@ int	executor(
 	}
 	minishell_data->last_pipeline_return = 0;
 	/*	please explain to me this nonsense, past me	*/
-	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
+	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count); // this bad
 	if (pipeline_elem_count == command_count)
-		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
+		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr); // very bad
 	else
 		command_count = pipeline_elem_count;
 	if (err != success)
 	{
-		printf("\033[31error during command execution\033[0m\n");
+		printf("\033[31error during command execution\033[0m\n"); // please kill me	
 		executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
 		return (err);
 	}
