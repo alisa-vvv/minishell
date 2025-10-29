@@ -21,7 +21,7 @@ t_token	*new_token(
 
 	if (!*str)
 		return (NULL);
-	token = malloc(1 * sizeof(t_token));
+	token = calloc(1, sizeof(t_token));
 	if (!token)
 		return (NULL);
 	token->value = malloc((len + 1) * sizeof(char));
@@ -29,7 +29,7 @@ t_token	*new_token(
 	if (!token->value)
 		return (NULL);
 	token->type = match_token(token->value);
-	token->command = false; 
+	token->command = false;
 	return (token);
 }
 
@@ -41,12 +41,14 @@ int add_token(
 	size_t len)
 {
 	t_token	*token;
+	token = NULL;
 	l_printf("len = %zu ", len);
 	token = new_token(str + i - len, len + 1);
 	if (!token)
 		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
 	token->pos = tokenlist->element_list.total;
 	tokenlist->pf_element_add(tokenlist, token);
+	//ft_safe_free((unsigned char **)token);
 	return (0);
 }
 
@@ -125,6 +127,7 @@ int	default_lexer(
 		return (write(1, "Failed to count tokens\n", 23));
 	TOKEN_INIT(token_list, token_c);
 	fill_tokenlist(&token_list, input_line);
+	token_list.element_list.tokens[token_c] = NULL; 
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (check_lexer(&token_list, minishell_data))
@@ -132,7 +135,7 @@ int	default_lexer(
 		token_list.pf_element_free(&token_list);
 		return (write(1, "Failed check types\n", 19));
 	}
-	//token_list.pf_element_free(&token_list);
+	token_list.pf_element_free(&token_list);
 	return (0);
 }
 

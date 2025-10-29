@@ -29,13 +29,11 @@ int single_token(element *tokenlist)
 }
 
 void set_pipe_cm(
-	element *tokenlist)
+	element *tokenlist, size_t i)
 {
-	size_t i;
     t_token *c_token;
     bool flag;
 
-	i = 0;
 	flag = true;
 	while(i < (size_t)tokenlist->element_list.total && (size_t)tokenlist->element_list.total > 1)
 	{
@@ -50,9 +48,14 @@ void set_pipe_cm(
 		}
 		else if (c_token->type == PIPE || c_token->type == HEREDOC_DEL)
 			flag = true;
-		else if (flag == true && lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type != HEREDOC)
+		else if (flag == true)
 		{
-			c_token->command = true;
+            if (lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type == HEREDOC)
+            {
+			    c_token->command = false;
+            }
+            else 
+                c_token->command = true; 
 			flag = false;
 		}
 		else
@@ -95,12 +98,9 @@ static int check_heredoc(element *tokenlist, size_t pos)
 }
 
 //set values 
-int val_redir(element *tokenlist)
+int val_redir(element *tokenlist, size_t i)
 {
-    size_t i;
     t_token *check_token;
-
-    i = 0;
     while (i < tokenlist->element_list.total)
     {
         check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);

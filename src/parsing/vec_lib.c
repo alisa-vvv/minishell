@@ -23,7 +23,7 @@ void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 	n_ptr = NULL;
 	i = 0;
 	if (newsize == 0)
-		return (ft_safefree(n_ptr), NULL);
+		return (ft_safe_free((unsigned char **)&n_ptr), NULL);
 	if (oldsize > newsize)
 		copy_size = oldsize;
 	else

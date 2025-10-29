@@ -12,16 +12,6 @@
 
 #include "parser.h"
 
-void	ft_safefree(void *ptr)
-{
-	if (ptr)
-	{
-		free(ptr);
-		ptr = NULL;
-	}
-	return ;
-}
-
 void	ft_free_arr(void **array)
 {
 	int	i;
@@ -30,8 +20,8 @@ void	ft_free_arr(void **array)
 	{
 		i = -1;
 		while (array[++i])
-			ft_safefree(array[i]);
-		ft_safefree(array);
+			ft_safe_free((unsigned char **)&array[i]);
+		ft_safe_free((unsigned char**)array);
 	}
 }
 

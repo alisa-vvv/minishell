@@ -169,13 +169,11 @@ const char* enum_builtin(t_builtin_name builtin)
 // 	int			last_pipeline_return;
 // }	t_minishell_data;
 
-void test_minishelldata(t_minishell_data minishell_data)
+void TEST_MINISHELLDATA(t_minishell_data minishell_data)
 {
     size_t i;
-    size_t j;
 
     i = 0;
-    j = 0; 
     p_printf("\nMINISHELL DATA IS:");
     if (minishell_data.command_count != 0)
     {
@@ -203,7 +201,7 @@ void test_execdata(
     size_t i;
 
     i = 0;
-    p_printf("\nEXEC DATA %d IS :\n", n);
+    p_printf("\nEXEC DATA %d IS:\n", n);
     if (execdata.argv != NULL)
     {
         while (execdata.argv[i] != NULL)

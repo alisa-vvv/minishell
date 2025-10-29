@@ -85,13 +85,12 @@ typedef struct s_token
 
 int			default_lexer(char *input_line, t_minishell_data *minishell_data);
 int			token_count(char *str, int i);
-t_token		*new_token(char *str, int len);
+t_token * 	new_token(char *str, int len);
 int			set_len(char *str, int i);
 bool		str_is_red(char c);
 bool		token_is_redirect(t_token *check_token);
 int			move_over_quote(char *str, int pos);
 int			fill_tokenlist(element *tokenlist, char *str);
-void		ft_safefree(void *ptr);
 const char* enum_to_str(t_token_type symbols);
 int 		all_num_alph(const char *str);
 int			check_file(const char *str_token);
@@ -112,7 +111,7 @@ int			check_pipe_redirect(char *str, char symbol);
 int			check_in_quote(char *str, int pos);
 int			single_token(element *tokenlist);
 int			val_inputline(char *str);
-int			val_redir(element *tokenlist);
+int			val_redir(element *tokenlist, size_t i);
 int			find_symbol(element *tokenlist, int pos, char symbol);
 int			match_nonterminal(char *str_token);
 int			match_string(char *str_token);
@@ -121,17 +120,17 @@ int			expand_var(element **tokenlist, int pos,
 int			rm_quotes(element *tokenlist, int pos, char symbol);
 int			all_num_alph(const char *str);
 int			check_hyphens(const char *str_token);
-int			add_arg_to_list(t_exec_data **comm_list, element *tokenlist, int *i, size_t pos, int pos_red);
-int			add_redirect(t_exec_data** execdata, element *tokenlist, int pos, int pos_red);
-int			set_heredoc(t_exec_data** execdata, element *tokenlist, int pos, int pos_red);
-void		set_pipe_cm(element *tokenlist);
+int			add_arg_to_list(t_exec_data *comm_list, element *tokenlist, int *i, size_t pos, int pos_red);
+int			add_redirect(t_exec_data* execdata, element *tokenlist, int pos, int pos_red);
+int			set_heredoc(t_exec_data* execdata, element *tokenlist, int pos, int pos_red);
+void		set_pipe_cm(element *tokenlist, size_t i);
 int 		count_args(element *tokenlist, int pos, int total);
 int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
 t_builtin_name set_builtins(t_token_type tokentype);
 int			find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type type);
-int			fill_comm_list(t_exec_data **execdata, element *tokenlist, size_t pos, int pos_red);
-int			make_cm_list(element *tokenlist, t_exec_data **comm_list, size_t pos, int pos_red);
+int			fill_comm_list(t_exec_data *execdata, element *tokenlist, size_t pos, int pos_red);
+int			make_cm_list(element *tokenlist, t_exec_data *comm_list, size_t pos, int pos_red);
 int			pass_comm(element *tokenlist, t_minishell_data *minishell_data, int i, int pos);
 int			convert_data(element *tokenlist, t_minishell_data *minishell_data, int i, size_t pos, int pos_red);
 
