@@ -19,42 +19,42 @@ int	element_total(element *e)
 	return (-1);
 }
 
-int element_swap(element *e, void *token, size_t pos_dest, size_t pos_src)
-{
-    int status; 
+// int element_swap(element *e, void *token, size_t pos_dest, size_t pos_src)
+// {
+//     int status; 
 
-    status = -1;
-    while (pos_src > pos_dest)
-    {
-        e->element_list.tokens[pos_src -1] = e->element_list.tokens[pos_src + 1];
-        pos_src--;
-    }
-    e->element_list.tokens[pos_dest] = token;
-    return (0);
-}
+//     status = -1;
+//     while (pos_src > pos_dest)
+//     {
+//         e->element_list.tokens[pos_src -1] = e->element_list.tokens[pos_src + 1];
+//         pos_src--;
+//     }
+//     e->element_list.tokens[pos_dest] = token;
+//     return (0);
+// }
 
 
 //insert into 
-int	element_insert(element *e, void *token, int pos)
-{
-	int	status;
+// int	element_insert(element *e, void *token, int pos)
+// {
+// 	int	status;
 
-	status = -1;
-	if (e)
-	{
-		if (e->element_list.size == e->element_list.total)
-		{
-			status = element_resize(e, e->element_list.size, e->element_list.size
-					* 2);
-			if (status == -1)
-				e->element_list.tokens[e->element_list.total++] = token;
-		}
-		else
-		{
-			e->element_list.tokens[e->element_list.total++] = token;
-            element_swap(e, e->element_list.tokens[e->element_list.total], pos + 1, (size_t)e->element_list.total);
-			status = 0;
-		}
-	}
-	return (status);
-}
+// 	status = -1;
+// 	if (e)
+// 	{
+// 		if (e->element_list.size == e->element_list.total)
+// 		{
+// 			status = element_resize(e, e->element_list.size, e->element_list.size
+// 					* 2);
+// 			if (status == -1)
+// 				e->element_list.tokens[e->element_list.total++] = token;
+// 		}
+// 		else
+// 		{
+// 			e->element_list.tokens[e->element_list.total++] = token;
+//             element_swap(e, e->element_list.tokens[e->element_list.total], pos + 1, (size_t)e->element_list.total);
+// 			status = 0;
+// 		}
+// 	}
+// 	return (status);
+// }
