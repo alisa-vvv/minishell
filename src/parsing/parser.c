@@ -25,17 +25,6 @@
 //     - env with no options or arguments
 //     - exit with no options
 
-// typedef struct	s_redir_list
-// {
-// 	t_redirect_type		type;
-// 	int					src_fd; // equal to -1 if fd not provided/not default
-// 	int					dest_fd; // equal to -1 if fd not provided/not default
-// 	char				*dest_filename; // equal to NULL if filename wasn't provided
-// 	char				*src_filename; // equal to NULL if filename wasn't provided
-// 	char				*heredoc_delim; // null or delim, will be used to check if input is heredoc
-// 	struct s_redir_list	*next;
-// }	t_redir_list;
-
 int set_exec_def(
 	t_exec_data *execdata, 
 	element *tokenlist,
@@ -161,7 +150,7 @@ int pass_comm(
 	int n_list;
 	int pos_red;
 	if (count_lists(tokenlist) == -1)
-		return (write(1, "Wrong pipe command\n", 19));
+		return (write(1, "No lists counted\n", 17));
 	n_list = count_lists(tokenlist);
 	minishell_data->exec_data = ft_calloc(n_list, sizeof(t_exec_data));
 	minishell_data->command_count = n_list;

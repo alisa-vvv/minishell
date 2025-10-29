@@ -21,7 +21,7 @@ t_token	*new_token(
 
 	if (!*str)
 		return (NULL);
-	token = malloc(1 * sizeof(t_token));
+	token = calloc(1, sizeof(t_token));
 	if (!token)
 		return (NULL);
 	token->value = malloc((len + 1) * sizeof(char));
@@ -41,12 +41,14 @@ int add_token(
 	size_t len)
 {
 	t_token	*token;
+	token = NULL;
 	l_printf("len = %zu ", len);
 	token = new_token(str + i - len, len + 1);
 	if (!token)
 		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
 	token->pos = tokenlist->element_list.total;
 	tokenlist->pf_element_add(tokenlist, token);
+	//ft_safe_free((unsigned char **)token);
 	return (0);
 }
 
