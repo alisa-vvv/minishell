@@ -303,6 +303,40 @@ int	execute_commands(
 }
 
 // maybe rework this for more clarity on what happens on different exit situations
+static int	execute_pipeline(
+	t_minishell_data *const minishell_data,
+	int				*p_id_arr,
+	int				*p_exit_codes,
+	t_command_io	*command_io
+)
+{
+	int			pipeline_elem_count;
+	t_exec_data	*exec_data;
+	int			command_count = minishell_data->command_count;
+	int			err;
+
+	exec_data = minishell_data->exec_data;
+	err = success;
+	// while we are building pipeline, it reaturns either 
+	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
+	if (pipeline_elem_count == command_count)
+		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
+	else
+		command_count = pipeline_elem_count;
+	if (err != success)
+	{
+		printf("\033[31error during command execution\033[0m\n"); // please kill me	
+		executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
+		return (err);
+	}
+	else if (command_count > 1 ||
+		(command_count == 1 && exec_data->builtin_name == not_builtin))
+		wait_for_children(command_count, minishell_data, p_id_arr, p_exit_codes);
+	if (pipeline_elem_count < 0)
+		return (pipeline_elem_count);
+	return (err);
+}
+
 int	executor(
 	t_minishell_data *const minishell_data,
 	t_exec_data *exec_data,
@@ -311,11 +345,9 @@ int	executor(
 {
 	int				*p_id_arr;
 	int				*p_exit_codes;
-	int				pipeline_elem_count;
 	t_command_io	*command_io;
 	int				err;
 
-	err = success;
 	p_id_arr = malloc(sizeof(int) * command_count);
 	ft_memset(p_id_arr, -1, command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
@@ -326,24 +358,9 @@ int	executor(
 		perror_and_return(NULL, MALLOC_ERR, extern_err, errno);
 	}
 	minishell_data->last_pipeline_return = 0;
-	/*	please explain to me this nonsense, past me	*/
-	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count); // this bad
-	if (pipeline_elem_count == command_count)
-		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr); // very bad
-	else
-		command_count = pipeline_elem_count;
+	err = execute_pipeline(minishell_data, p_id_arr, p_exit_codes, command_io);
 	if (err != success)
-	{
-		printf("\033[31error during command execution\033[0m\n"); // please kill me	
-		executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
 		return (err);
-	}
-	/*	endof explain nonsense	*/
-	else if (command_count > 1 ||
-		(command_count == 1 && exec_data->builtin_name == not_builtin))
-		wait_for_children(command_count, minishell_data, p_id_arr, p_exit_codes);
 	executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
-	if (pipeline_elem_count < 0)
-		return (pipeline_elem_count);
 	return(success);
 }

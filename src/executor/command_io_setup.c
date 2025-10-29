@@ -54,14 +54,14 @@ int	prepare_command_io(
 	{
 		command_io[i].in_pipe[READ_END] = command_io[i - 1].out_pipe[READ_END];
 		command_io[i].in_pipe[WRITE_END] = command_io[i - 1].out_pipe[WRITE_END];
-		printf("\033[36mpipe fds? %d\033[0m\n", command_io[i].in_pipe[READ_END]);
-		printf("\033[36mpipe fds write? %d\033[0m\n", command_io[i].in_pipe[WRITE_END]);
+		//printf("\033[36mpipe fds? %d\033[0m\n", command_io[i].in_pipe[READ_END]);
+		//printf("\033[36mpipe fds write? %d\033[0m\n", command_io[i].in_pipe[WRITE_END]);
 	}
 	if (command->output_is_pipe == true)
 	{
 		err_check = pipe(command_io[i].out_pipe);
 		if (err_check < 0)
-			perror_and_return(NULL, PIPE_ERR, extern_err, -1);
+			perror_and_return(NULL, PIPE_ERR, extern_err, pipe_err);
 	}
 	if (command->redirections)
 		err_check = find_and_create_heredocs(command->redirections);
