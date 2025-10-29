@@ -99,7 +99,7 @@ int	main(void)
 		{
 			handle_signals_non_interactive();
 			minishell_data.exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
-			err_check = executor(&minishell_data, minishell_data.exec_data, TEST_len);
+			err_check = executor(&minishell_data, TEST_len);
 		}
 		/*	endof Test Executor*/
 		/*	Test Lexer */
@@ -110,7 +110,7 @@ int	main(void)
 			TEST_MINISHELLDATA(minishell_data);
 			if (TEST_lexer_return != 0)
 				printf("PLACEHOLDER ERROR\n");
-			err_check = executor(&minishell_data, minishell_data.exec_data, minishell_data.command_count);
+			err_check = executor(&minishell_data, minishell_data.command_count);
 		}
 		/*	endof Test Lexer*/
 		if (read_line)
