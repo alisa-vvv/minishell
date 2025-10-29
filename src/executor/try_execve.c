@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-static const char	*const *split_path_var(
+static const char *const	*split_path_var(
 	char **env
 )
 {

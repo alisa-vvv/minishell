@@ -32,7 +32,6 @@ typedef struct	s_command_io
 
 int	executor(
 	t_minishell_data *const minishell_data,
-	t_exec_data *exec_data,
 	int command_count
 );
 /**/

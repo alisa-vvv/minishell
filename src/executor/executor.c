@@ -116,10 +116,11 @@ static int	execute_command(
 		}
 		// endof handle parent process
 		else if (process_id < 0)
-			perror_and_return(NULL, FORK_ERR, extern_err, -1);
+			return (perror_and_return(NULL, FORK_ERR, extern_err, -1)); // check prefix
 	}
 	else if (command->builtin_name != not_builtin)
 	{
+		// command not found! wooo! (add error)
 		//err_check = exec_builtin(command, minishell_data);
 		//here we probably don't exit either. check.
 		//most likely we send an error msg locally and then proceed with execution
@@ -206,7 +207,6 @@ void	heredoc_cleanup(
 
 static void	executor_cleanup(
 	t_minishell_data *const minishell_data,
-	t_exec_data *exec_data,
 	t_command_io *command_io,
 	int *p_ids,
 	int *p_exit_codes
@@ -217,9 +217,11 @@ static void	executor_cleanup(
 	i = -1;
 	// question: can;t we omit clising in_pipes? they are always fro melft to right
 	// and alwats equal to prevoius out_pipes right?
+	// we can answer this question once we know what the behavior is on pipeline
+	// fail i guess?
 	while (++i < minishell_data->command_count)
 	{
-		free_and_close_exec_data(&exec_data[i]);
+		free_and_close_exec_data(&minishell_data->exec_data[i]);
 		if (command_io[i].out_pipe[READ_END] > 2)
 		{
 			test_close(command_io[i].out_pipe[READ_END]);
@@ -249,16 +251,21 @@ static void	executor_cleanup(
 	free(command_io);
 	free(p_ids);
 	free(p_exit_codes);
-	free(exec_data);
+	free(minishell_data->exec_data);
 }
 
+// this functiohn will return either the amount of commands in the pipeline,
+// or an error code.
+// if a pipe creation fails, it will return the number of pipes built.
+// this will tell the caller function that not all pipes were created.
+// currently, what happens on fail is unclear
 int	build_pipeline(
 	t_exec_data *exec_data,
 	t_command_io *command_io,
 	int command_count
 )
 {
-	int	status_check; // change name? / why?
+	int	status_check;
 	int	i;
 
 	i = -1;
@@ -317,29 +324,25 @@ static int	execute_pipeline(
 
 	exec_data = minishell_data->exec_data;
 	err = success;
-	// while we are building pipeline, it reaturns either 
 	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
 	if (pipeline_elem_count == command_count)
 		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
 	else
-		command_count = pipeline_elem_count;
+		return (pipeline_elem_count); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
 	if (err != success)
 	{
 		printf("\033[31error during command execution\033[0m\n"); // please kill me	
-		executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
+		executor_cleanup(minishell_data, command_io, p_id_arr, p_exit_codes);
 		return (err);
 	}
 	else if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
-		wait_for_children(command_count, minishell_data, p_id_arr, p_exit_codes);
-	if (pipeline_elem_count < 0)
-		return (pipeline_elem_count);
+		wait_for_children(pipeline_elem_count, minishell_data, p_id_arr, p_exit_codes);
 	return (err);
 }
 
 int	executor(
 	t_minishell_data *const minishell_data,
-	t_exec_data *exec_data,
 	int command_count
 )
 {
@@ -355,12 +358,13 @@ int	executor(
 	if (!p_id_arr || !p_exit_codes || !command_io)
 	{
 		minishell_data->last_pipeline_return = errno;
-		perror_and_return(NULL, MALLOC_ERR, extern_err, errno);
+		executor_cleanup(minishell_data, command_io, p_id_arr, p_exit_codes);
+		return (perror_and_return(NULL, MALLOC_ERR, extern_err, errno));
 	}
 	minishell_data->last_pipeline_return = 0;
 	err = execute_pipeline(minishell_data, p_id_arr, p_exit_codes, command_io);
 	if (err != success)
 		return (err);
-	executor_cleanup(minishell_data, exec_data, command_io, p_id_arr, p_exit_codes);
-	return(success);
+	executor_cleanup(minishell_data, command_io, p_id_arr, p_exit_codes);
+	return (success);
 }

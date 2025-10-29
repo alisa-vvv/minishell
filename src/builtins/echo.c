@@ -14,6 +14,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include <stdio.h>
+
 int	minishell_echo(
 	char **arguments
 )
@@ -23,16 +25,14 @@ int	minishell_echo(
 
 	i = 0;
 	put_nl = true;
-	while (arguments[++i])
+	if (ft_strncmp(arguments[0], "-n", 3) == 0)
+		put_nl = false;
+	while (arguments[i])
 	{
-		if (ft_strncmp(arguments[i], "-n", 3) != 0)
-			put_nl = false;
-		else
-		{
-			ft_putstr_fd(arguments[i], STDOUT_FILENO);
-			if (arguments[i + 1])
-				ft_putchar_fd(' ', STDOUT_FILENO);
-		}
+		ft_putstr_fd(arguments[i], STDOUT_FILENO);
+		if (arguments[i + 1])
+			ft_putchar_fd(' ', STDOUT_FILENO);
+		i++;	
 	}
 	if (put_nl == true)
 		ft_putchar_fd('\n', STDOUT_FILENO);
