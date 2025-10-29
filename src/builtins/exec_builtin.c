@@ -20,7 +20,7 @@ int	exec_builtin(
 	int			err_check;
 	char		**builtin_args;
 
-	builtin_args = &command->argv[1];
+	builtin_args = &command->argv[1]; // weird, check this for being normal
 	err_check = 0;
 	if (command->builtin_name == builtin_echo)
 		err_check = minishell_echo(builtin_args);

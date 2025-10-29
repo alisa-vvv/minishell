@@ -71,7 +71,7 @@ static int	run_child_process(
 			return (child_fd_err);
 	}
 	// to redirect stuff, so we need to clean and propogate to exit
-	if (command->builtin_name == not_builtin && command->argv[0])
+	if (command->builtin_name == not_builtin && command->argv) // whats up with sechond condition>?
 		err_check = try_execve(minishell_data->env, command->argv);
 	else
 		err_check = exec_builtin(command, minishell_data);
