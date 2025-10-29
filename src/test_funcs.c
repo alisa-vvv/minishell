@@ -99,32 +99,32 @@ t_exec_data	*test_get_dummy_exec_data(
 	// {
 	// BASIC_TEST_02: ls cat
 	//
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].argv[1] = ft_strdup("-e");
-	exec_data[i].builtin_name = not_builtin;
-	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = true;
-	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "", NULL);
-	i++;
+	//exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	//exec_data[i].argv[0] = ft_strdup("cat");
+	//exec_data[i].argv[1] = ft_strdup("-e");
+	//exec_data[i].builtin_name = not_builtin;
+	//exec_data[i].input_is_pipe = false;
+	//exec_data[i].output_is_pipe = true;
+	//test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "", NULL);
+	//i++;
 
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("ls");
-	exec_data[i].argv[1] = ft_strdup("-l");
-	exec_data[i].builtin_name = not_builtin;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = true;
-	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+	//exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	//exec_data[i].argv[0] = ft_strdup("ls");
+	//exec_data[i].argv[1] = ft_strdup("-l");
+	//exec_data[i].builtin_name = not_builtin;
+	//exec_data[i].input_is_pipe = true;
+	//exec_data[i].output_is_pipe = true;
+	//test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+	////exec_data[i].redirections = NULL;
+	//i++;
+
+	//exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	//exec_data[i].argv[0] = ft_strdup("ls");
+	//exec_data[i].builtin_name = not_builtin;
+	//exec_data[i].input_is_pipe = true;
+	//exec_data[i].output_is_pipe = false;
 	//exec_data[i].redirections = NULL;
-	i++;
-
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("ls");
-	exec_data[i].builtin_name = not_builtin;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = false;
-	exec_data[i].redirections = NULL;
-	i++;
+	//i++;
 	//	}
 
 //	// {
@@ -172,6 +172,29 @@ t_exec_data	*test_get_dummy_exec_data(
 //	exec_data[i].redirections = NULL;
 //	i++;
 //	//	}
+
+	// {
+	// BASIC_TEST_06: echo echo
+	//
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	exec_data[i].argv[0] = ft_strdup("echo");
+	exec_data[i].argv[1] = ft_strdup("aaa");
+	exec_data[i].builtin_name = builtin_echo;
+	exec_data[i].input_is_pipe = false;
+	exec_data[i].output_is_pipe = true;
+	exec_data[i].redirections = NULL;
+	i++;
+
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	exec_data[i].argv[0] = ft_strdup("echo");
+	exec_data[i].argv[1] = ft_strdup("baa");
+	exec_data[i].builtin_name = builtin_echo;
+	exec_data[i].input_is_pipe = true;
+	exec_data[i].output_is_pipe = false;
+	exec_data[i].redirections = NULL;
+	i++;
+
+	//	}
 
 //	// {
 //	// BASIC_TEST_03: ls (irr.) | heredoc cat
