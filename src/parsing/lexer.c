@@ -45,7 +45,7 @@ int add_token(
 	l_printf("len = %zu ", len);
 	token = new_token(str + i - len, len + 1);
 	if (!token)
-		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
+		return (tokenlist->pf_element_free(tokenlist, tokenlist->element_list.total -1), write(1, MALLOC_ERR, 15));
 	token->pos = tokenlist->element_list.total;
 	tokenlist->pf_element_add(tokenlist, token);
 	//ft_safe_free((unsigned char **)token);
@@ -132,10 +132,10 @@ int	default_lexer(
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (check_lexer(&token_list, minishell_data))
 	{
-		token_list.pf_element_free(&token_list);
+		token_list.pf_element_free(&token_list, token_c);
 		return (write(1, "Failed check types\n", 19));
 	}
-	token_list.pf_element_free(&token_list);
+	token_list.pf_element_free(&token_list, token_c);
 	return (0);
 }
 

@@ -53,10 +53,30 @@ int	element_delete(element *e, size_t index)
 	return (status);
 }
 
-int	element_free(element *e)
+int ft_free_tokens(void **token, int count)
+{
+	int i;
+	t_token **tokens;
+	i = 0;
+
+	tokens = (t_token **)token; 
+	if (tokens)
+	{
+		while(i < count)
+		{
+			ft_safe_free((unsigned char **)&tokens[i]->value);
+			i++;
+		}
+		//ft_safe_free((unsigned char **)&tokens);
+	}
+	return (0);
+}
+
+int	element_free(element *e, int count)
 {
 	if (e)
 	{
+		ft_free_tokens(e->element_list.tokens, count);
 		ft_free_arr(e->element_list.tokens);
 		e->element_list.total = 0;
 		e->element_list.tokens = NULL;
@@ -70,8 +90,8 @@ void	element_init(element *e, int size)
 	e->pf_element_total = element_total;
 	e->pf_element_resize = element_resize;
 	e->pf_element_add = element_push_back;
-	e->pf_element_swap = element_swap;
-	e->pf_element_insert = element_insert;
+	// e->pf_element_swap = element_swap;
+	// e->pf_element_insert = element_insert;
 	e->pf_element_set = element_set;
 	e->pf_element_get = element_get;
 	e->pf_element_free = element_free;
