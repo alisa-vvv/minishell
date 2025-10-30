@@ -24,10 +24,13 @@ void	clean_exit(
 )
 {
 	int	i;
+
 	if (minishell_data)
 	{
 		if (exit_code == 0)
 			exit_code = minishell_data->last_pipeline_return;
+		if (minishell_data->cur_dir)
+			free(minishell_data->cur_dir);
 		if (minishell_data->exec_data)
 		{
 			i = -1;
@@ -89,7 +92,7 @@ void	free_and_close_exec_data(
 	if (exec_data->argv)
 	{
 		i = -1;
-		while (exec_data->argv[++i]) // huuuhhh??
+		while (exec_data->argv[++i])
 		{
 			printf("\033[36mfreeing data: %s at index: %d\33[0m\n", exec_data->argv[i], i);
 			free(exec_data->argv[i]);

@@ -27,7 +27,7 @@ int	exec_builtin(
 	else if (command->builtin_name == builtin_cd)
 		err_check = minishell_cd(builtin_args[0], minishell_data);
 	else if (command->builtin_name == builtin_pwd)
-		err_check = minishell_pwd();
+		err_check = minishell_pwd(minishell_data);
 	else if (command->builtin_name == builtin_env)
 		err_check = minishell_env(minishell_data);
 	else if (command->builtin_name == builtin_export)

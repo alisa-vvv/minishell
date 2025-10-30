@@ -120,8 +120,7 @@ static int	execute_command(
 	}
 	else if (command->builtin_name != not_builtin)
 	{
-		// command not found! wooo! (add error)
-		//err_check = exec_builtin(command, minishell_data);
+		err_check = exec_builtin(command, minishell_data);
 		//here we probably don't exit either. check.
 		//most likely we send an error msg locally and then proceed with execution
 	}
@@ -326,7 +325,9 @@ static int	execute_pipeline(
 	err = success;
 	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
 	if (pipeline_elem_count == command_count)
+	{
 		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
+	}
 	else
 		return (pipeline_elem_count); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
 	if (err != success)

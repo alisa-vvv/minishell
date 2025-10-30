@@ -12,10 +12,11 @@
 
 #include "libft.h"
 #include "executor.h"
+#include "minishell_env.h"
 #include <stdio.h>
 
 int	minishell_pwd(
-	void
+	t_minishell_data *const minishell_data
 )
 {
 	// alloc this variable in advance? // why
@@ -24,12 +25,17 @@ int	minishell_pwd(
 	
 	err_check = 0;
 	getcwd(dir, PATH_MAX);
-	if (!dir)
+	//if (!dir)
+	//{
+	//	printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n"); // do we need to error manage?
+	//	return (-1);
+	//}
+	if (!getcwd(dir, PATH_MAX) || dir[0] == '\0') // manage the errors?
+		printf("%s\n", minishell_data->cur_dir);
+	else
 	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (-1);
+		printf("%s\n", dir);
+		free(dir);
 	}
-	printf("%s\n", dir);
-	free(dir);
 	return (err_check);
 }

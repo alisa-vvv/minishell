@@ -53,7 +53,14 @@ static void	setup_minishell_data(
 	minishell_data->env = clone_env(&minishell_data->env_var_count,
 								 &minishell_data->env_mem);
 	if (!minishell_data->env)
-		exit(errno);
+		exit(errno); // add error message
+	minishell_data->cur_dir = ft_calloc(sizeof(char), PATH_MAX + 1);
+	if (!minishell_data->cur_dir)
+		clean_exit(minishell_data, NULL, errno, true); // add error message
+	getcwd(minishell_data->cur_dir, PATH_MAX); // ADD ERROR CHECKING!
+	printf("did we get it? %s\n", minishell_data->cur_dir);
+	if (minishell_data->cur_dir[0] == '\0')
+		minishell_data->cur_dir[0] = '/';
 }
 
 int	main(void)
@@ -110,6 +117,7 @@ int	main(void)
 			TEST_MINISHELLDATA(minishell_data);
 			if (TEST_lexer_return != 0)
 				printf("PLACEHOLDER ERROR\n");
+			printf("cur dir post parsing: %s\n", minishell_data.cur_dir);
 			err_check = executor(&minishell_data, minishell_data.command_count);
 		}
 		/*	endof Test Lexer*/

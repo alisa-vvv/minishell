@@ -79,7 +79,7 @@ static int find_target_path(
 		{
 			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
 			printf("what do we return in cases like this?\n");
-			perror_and_return("cd: ", "HOME not set", exec_err, 1);
+			return(perror_and_return("cd: ", "HOME not set", exec_err, 1));
 		}
 	}
 	else
@@ -89,18 +89,19 @@ static int find_target_path(
 		path = ft_strjoin(cwd, arg_with_slash);
 		free(arg_with_slash);
 		if (!path)
-			perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+			return (perror_and_return(NULL, MALLOC_ERR, extern_err, -1));
 	}
 	if (access(path, F_OK))
 	{
 		free(path);
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		perror_and_return(NULL, "cd: ", extern_err, -1);
+		return (perror_and_return(NULL, "cd: ", extern_err, -1));
 	}
 	*path_pointer = path;
 	return (0);
 }
 
+// add case for when directory was removed
 int	minishell_cd(
 	char *const arg,
 	t_minishell_data *const minishell_data
@@ -109,11 +110,12 @@ int	minishell_cd(
 	int			err_check;
 	char		*path;
 	char *const	cwd = ft_calloc(PATH_MAX, sizeof(char));
-
-	printf("\n\n\nbefore:\n\n\n");
-	minishell_pwd();
-
+//
+//	printf("\n\n\nbefore:\n\n\n");
+//	minishell_pwd(minishell_data);
+//
 	path = NULL;
+	//add check for if path does not exist
 	getcwd(cwd, PATH_MAX);
 	err_check = find_target_path(arg, minishell_data, cwd, &path);
 	if (err_check != 0)
@@ -129,13 +131,15 @@ int	minishell_cd(
 	}
 	else
 		err_check = set_env_vars(minishell_data, cwd, path);
+	ft_bzero(minishell_data->cur_dir, PATH_MAX);
+	getcwd(minishell_data->cur_dir, PATH_MAX);
 	free(path);
 	free(cwd);
-
-	printf("\n\n\nafter:\n\n\n");
-	minishell_pwd();
-	printf("\n\n\nvars:\n\n\n");
-	minishell_env(minishell_data);
-
+//
+//	printf("\n\n\nafter:\n\n\n");
+//	minishell_pwd(minishell_data);
+//	printf("\n\n\nvars:\n\n\n");
+//	minishell_env(minishell_data);
+//
 	return (err_check);
 }

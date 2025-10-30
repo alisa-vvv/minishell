@@ -28,7 +28,7 @@ int	minishell_cd(
 	t_minishell_data *const minishell_data
 );
 int	minishell_pwd(
-	void
+	t_minishell_data *const minishell_data
 );
 int	minishell_env(
 	t_minishell_data *const minishell_data
