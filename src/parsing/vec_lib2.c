@@ -67,9 +67,10 @@ int ft_free_tokens(void **token)
 			ft_safe_free((unsigned char **)&tokens[i]->value);
 			tokens[i]->command = 0;
 			tokens[i]->pos = 0;
+			ft_safe_free((unsigned char **)&tokens[i]);
 			i++;
 		}
-		//ft_safe_free((unsigned char **)&tokens);
+		ft_safe_free((unsigned char **)&tokens);
 	}
 	return (0);
 }
@@ -79,7 +80,6 @@ int	element_free(element *e)
 	if (e)
 	{
 		ft_free_tokens(e->element_list.tokens);
-		ft_free_arr(e->element_list.tokens);
 		e->element_list.total = 0;
 		e->element_list.tokens = NULL;
 		return (0);
