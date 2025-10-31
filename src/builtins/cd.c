@@ -44,18 +44,18 @@ static int	set_env_vars(
 
 	variables = ft_calloc(3, sizeof (char *));
 	if (!variables)
-		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, malloc_err); // stop!
 	variables[0] = ft_strjoin("OLDPWD=", cwd);
 	variables[1] = ft_strjoin("PWD=", path);
 	if (!variables[0] || !variables[1])
 	{
 		free_variables(variables);
-		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+		perror_and_return(NULL, MALLOC_ERR, extern_err, malloc_err); // stop!
 	}
 	err_check = minishell_export(variables, minishell_data);
 	if (err_check < 0)
 	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n"); /// aaahaaahahaaa
 		return (err_check);
 	}
 	free_variables(variables);
@@ -76,11 +76,7 @@ static int find_target_path(
 	{
 		path = env_var_get_value(minishell_data->env, "HOME");
 		if (!path)
-		{
-			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-			printf("what do we return in cases like this?\n");
-			return(perror_and_return("cd: ", "HOME not set", exec_err, 1));
-		}
+			return(perror_and_return("cd", "HOME not set", exec_err, 1)); // check the return value
 	}
 	else
 	{
@@ -89,13 +85,13 @@ static int find_target_path(
 		path = ft_strjoin(cwd, arg_with_slash);
 		free(arg_with_slash);
 		if (!path)
-			return (perror_and_return(NULL, MALLOC_ERR, extern_err, -1));
+			return (perror_and_return(NULL, MALLOC_ERR, extern_err, malloc_err));
 	}
 	if (access(path, F_OK))
 	{
 		free(path);
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (perror_and_return(NULL, "cd: ", extern_err, -1));
+		return (perror_and_return(NULL, "cd", extern_err, -1));
 	}
 	*path_pointer = path;
 	return (0);
@@ -115,7 +111,6 @@ int	minishell_cd(
 //	minishell_pwd(minishell_data);
 //
 	path = NULL;
-	//add check for if path does not exist
 	getcwd(cwd, PATH_MAX);
 	err_check = find_target_path(arg, minishell_data, cwd, &path);
 	if (err_check != 0)
@@ -125,10 +120,7 @@ int	minishell_cd(
 	}
 	err_check = chdir(path);
 	if (err_check != 0)
-	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		perror_and_return("cd: ", NULL, extern_err, -1);
-	}
+		return (perror_and_return("cd: ", NULL, extern_err, -1)); // uhhhhh
 	else
 		err_check = set_env_vars(minishell_data, cwd, path);
 	ft_bzero(minishell_data->cur_dir, PATH_MAX);
