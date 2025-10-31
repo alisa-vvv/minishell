@@ -12,33 +12,32 @@
 
 #include "parser.h"
 #include "vec_lib.h"
+#include <string.h>
 
 // realloc for shrink and expand size
 void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 {
-	unsigned int	i;
-	unsigned int	copy_size;
-	void			*n_ptr;
+	unsigned int    copy_size;
+	void            *n_ptr;
 
-	n_ptr = NULL;
-	i = 0;
 	if (newsize == 0)
-		return (ft_safe_free((unsigned char **)&n_ptr), NULL);
-	if (oldsize > newsize)
+	{
+		ft_safe_free(ptr);
+		return (NULL);
+	}
+	n_ptr = malloc(newsize);
+	if (!n_ptr)
+		return (NULL);
+	if (oldsize < newsize)
 		copy_size = oldsize;
-	else
+	else 
 		copy_size = newsize;
-	while (ptr && i < copy_size)
-	{
-		((char *)n_ptr)[i] = ((char *)ptr)[i];
-		i++;
-	}
-	while (i < newsize)
-	{
-		((char *)ptr)[i] = '\0';
-		i++;
-	}
-	return (free(ptr), n_ptr);
+	if (ptr && copy_size)
+		memcpy(n_ptr, ptr, copy_size);
+	if (newsize > copy_size)
+		memset((char *)n_ptr + copy_size, 0, newsize - copy_size);
+	ft_safe_free(ptr);
+	return (n_ptr);
 }
 
 int	element_resize(element *e, int oldsize, int newsize)
@@ -70,8 +69,10 @@ int	element_push_back(element *e, void *token)
 		{
 			status = element_resize(e, e->element_list.size, e->element_list.size
 					* 2);
-			if (status == -1)
-				e->element_list.tokens[e->element_list.total++] = token;
+			if (status != 0)
+				return (-1);
+			e->element_list.tokens[e->element_list.total++] = token;
+			status = 0;
 		}
 		else
 		{
