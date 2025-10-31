@@ -48,8 +48,8 @@ char *exp_str_token(char *str_token, char *name, char *value)
     start[0] = '\0';
     new_str = ft_strjoin(str_token, leftover);
     if (!new_str || !leftover)
-        return ((free(leftover), free(temp_left), free(new_str)), NULL);
-    (free(leftover), free(temp_left), free(str_token));
+        return ((ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&temp_left), ft_safe_free((unsigned char **)&new_str)), NULL);
+    (ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&temp_left), ft_safe_free((unsigned char **)&str_token));
     return (new_str);
 }
 
