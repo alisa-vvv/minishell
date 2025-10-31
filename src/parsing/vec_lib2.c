@@ -53,7 +53,7 @@ int	element_delete(element *e, size_t index)
 	return (status);
 }
 
-int ft_free_tokens(void **token, int count)
+int ft_free_tokens(void **token)
 {
 	int i;
 	t_token **tokens;
@@ -62,9 +62,11 @@ int ft_free_tokens(void **token, int count)
 	tokens = (t_token **)token; 
 	if (tokens)
 	{
-		while(i < count)
+		while(tokens[i])
 		{
 			ft_safe_free((unsigned char **)&tokens[i]->value);
+			tokens[i]->command = 0;
+			tokens[i]->pos = 0;
 			i++;
 		}
 		//ft_safe_free((unsigned char **)&tokens);
@@ -72,11 +74,11 @@ int ft_free_tokens(void **token, int count)
 	return (0);
 }
 
-int	element_free(element *e, int count)
+int	element_free(element *e)
 {
 	if (e)
 	{
-		ft_free_tokens(e->element_list.tokens, count);
+		ft_free_tokens(e->element_list.tokens);
 		ft_free_arr(e->element_list.tokens);
 		e->element_list.total = 0;
 		e->element_list.tokens = NULL;
@@ -109,4 +111,5 @@ void	element_init(element *e, int size)
 		fprintf(stderr, "Memory alloc failed in init tokenlist\n");
 		exit(EXIT_FAILURE);
 	}
+	e->element_list.tokens[size] = NULL;
 }
