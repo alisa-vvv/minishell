@@ -98,7 +98,12 @@ void	element_init(element *e, int size)
 	e->pf_element_delete = element_delete;
 	e->element_list.size = size;
 	e->element_list.total = 0;
-	e->element_list.tokens = malloc(sizeof(void *) * e->element_list.size);
+	if (e->element_list.size <= 0)
+	{
+		e->element_list.tokens = NULL;
+		return ;
+	}
+	e->element_list.tokens = calloc((size_t)e->element_list.size, sizeof(void *));
 	if (!e->element_list.tokens)
 	{
 		fprintf(stderr, "Memory alloc failed in init tokenlist\n");

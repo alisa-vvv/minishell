@@ -115,6 +115,7 @@ int	default_lexer(
 	t_minishell_data *minishell_data)
 {
 	int		token_c;
+	element token_list;
 
 	token_c = 0;
 	if (!input_line)
@@ -125,9 +126,9 @@ int	default_lexer(
 	token_c = token_count(input_line, 0);
 	if (!token_c)
 		return (write(1, "Failed to count tokens\n", 23));
-	TOKEN_INIT(token_list, token_c);
+	element_init(&token_list, token_c);
 	fill_tokenlist(&token_list, input_line);
-	token_list.element_list.tokens[token_c] = NULL; 
+	token_list.element_list.tokens[token_c] = NULL;  
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (check_lexer(&token_list, minishell_data))
@@ -136,6 +137,7 @@ int	default_lexer(
 		return (write(1, "Failed check types\n", 19));
 	}
 	token_list.pf_element_free(&token_list, token_c);
+	ft_safe_free((unsigned char **)&token_list);
 	return (0);
 }
 
