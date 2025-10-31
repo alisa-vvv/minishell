@@ -105,7 +105,7 @@ void	element_init(element *e, int size)
 		e->element_list.tokens = NULL;
 		return ;
 	}
-	e->element_list.tokens = calloc((size_t)e->element_list.size, sizeof(void *));
+	e->element_list.tokens = calloc((size_t)e->element_list.size +1, sizeof(void *));
 	if (!e->element_list.tokens)
 	{
 		fprintf(stderr, "Memory alloc failed in init tokenlist\n");
