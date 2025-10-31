@@ -73,6 +73,7 @@ char *refine_name_var(char *token_name, char *result)
         i++;
     }
     result[i] = '\0';
+    ft_safe_free((unsigned char **)&start);
     return (result);
 }
 
@@ -96,10 +97,11 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
     else if (!quoted && !env_var_get_value((*minishell_data)->env, name))
     {
         (*tokenlist)->pf_element_delete((*tokenlist), pos);
+        ft_safe_free((unsigned char **)&name);
         index_lexer(tokenlist);
         return (1);
     }
-    free(name);
+    ft_safe_free((unsigned char **)&name);
     return (0);
 }
  
