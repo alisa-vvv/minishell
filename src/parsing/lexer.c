@@ -48,7 +48,6 @@ int add_token(
 		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
 	token->pos = tokenlist->element_list.total;
 	tokenlist->pf_element_add(tokenlist, token);
-	//ft_safe_free((unsigned char **)token);
 	return (0);
 }
 

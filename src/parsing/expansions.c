@@ -38,6 +38,8 @@ char *exp_str_token(char *str_token, char *name, char *value)
 
     if (!value || !name)
         value = "";
+    start = NULL;
+    leftover = NULL; 
     start = ft_strchr(str_token, '$');
     offset = ft_strlen(name) + 1;
     temp_left = malloc(sizeof(char) * ft_strlen(start) - offset);
@@ -95,6 +97,7 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
     {
         e_printf("VALUE= %s \n", env_value);
         check_token->value = exp_str_token(check_token->value, name, env_value);
+        ft_safe_free((unsigned char **)&env_value);
     }
     else if (!quoted && !env_value)
     {
@@ -103,7 +106,7 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
         index_lexer(tokenlist);
         return (1);
     }
-    (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
+    (ft_safe_free((unsigned char **)&name));
     return (0);
 }
  
@@ -119,7 +122,6 @@ int	exp_lexer(
 	while (i < (size_t)tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		// e_printf("TYPE = %d \n", (int)check_token->type);
 		if (((int)check_token->type == PARAMETER && type == PARAMETER)
 			|| ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
 		{
