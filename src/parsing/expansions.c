@@ -28,18 +28,17 @@
 // look for return value in minishell struct when accessing $?
 
 //expand the var when token is in quotes 
-char *exp_str_token(char *str_token, char *name, char *value)
+char *exp_str_token(char *str_token, char *value, int offset)
 {
     char *new_str;
     char *start; 
     char *leftover;
     char *temp_left;
-    int offset; 
 
-    if (!value || !name)
-        value = "";
+    // start = NULL;
+    // leftover = NULL;
+    // new_str = NULL;
     start = ft_strchr(str_token, '$');
-    offset = ft_strlen(name) + 1;
     temp_left = malloc(sizeof(char) * ft_strlen(start) - offset);
     if (!temp_left)
         return (NULL);
@@ -61,6 +60,7 @@ char *refine_name_var(char *token_name, char *result)
     int i;
 
     i = 0;
+    start = NULL;
     start = ft_strchr(token_name, '$');
     // e_printf("\nSTART = %s\n", start);
     result = ft_strdup(start + 1);
@@ -74,28 +74,50 @@ char *refine_name_var(char *token_name, char *result)
         i++;
     }
     result[i] = '\0';
-    ft_safe_free((unsigned char **)&start);
+    if (ft_strncmp(start, "\0", 1) != 0)
+        ft_safe_free((unsigned char **)&start);
     return (result);
 }
 
+
+void expand_unquoted(element *tokenlist, t_token *check_token, int pos, char *env_value)
+{
+    tokenlist->pf_element_set(tokenlist, pos, new_token(env_value, ft_strlen(env_value)+ 1));
+    ft_safe_free((unsigned char **)&check_token);
+    ft_safe_free((unsigned char **)&env_value);
+    index_lexer(&tokenlist);
+}
+
+void expand_quoted(t_token *check_token, char *name, char *env_value)
+{
+    int offset; 
+
+    if (!env_value || !name)
+        env_value = "";
+    offset = ft_strlen(name) + 1;
+    check_token->value = exp_str_token(check_token->value, env_value, offset);
+}
+
 //expand known var and otherwise delete and re-position all tokens
-int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, t_token *check_token, bool quoted)
+int expand_var(element **tokenlist, 
+    int pos, 
+    t_minishell_data **minishell_data, 
+    t_token *check_token, 
+    bool quoted)
 {
     char *name;
     char *env_value;
 
 	name = NULL;
-    env_value = NULL;
     name = refine_name_var(check_token->value, name); 
-    env_value = env_var_get_value((*minishell_data)->env, name);
     if (ft_strncmp(name, "?", 2))
         printf("%d\n", (*minishell_data)->last_pipeline_return);
+    env_value = env_var_get_value((*minishell_data)->env, name);
     e_printf("\nNAME= %s \n", name);
-    if (quoted || env_value)
-    {
-        e_printf("VALUE= %s \n", env_value);
-        check_token->value = exp_str_token(check_token->value, name, env_value);
-    }
+    if (quoted)
+        expand_quoted(check_token, name, env_value);
+    else if (!quoted && env_value)
+        expand_unquoted(*tokenlist, check_token, pos, env_value);
     else if (!quoted && !env_value)
     {
         (*tokenlist)->pf_element_delete((*tokenlist), pos);
@@ -103,21 +125,22 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
         index_lexer(tokenlist);
         return (1);
     }
-    (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
+    (ft_safe_free((unsigned char **)&name));
     return (0);
 }
  
 // check lexer on expansion and quotes
-int	exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
+int	exp_lexer(
+    element *tokenlist, 
+    t_minishell_data **minishell_data,
+    int type, 
+    size_t i)
 {
-	size_t	i;
 	t_token	*check_token;
-
-	i = 0;
+    
 	while (i < (size_t)tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		// e_printf("TYPE = %d \n", (int)check_token->type);
 		if (((int)check_token->type == PARAMETER && type == PARAMETER)
 			|| ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
 		{

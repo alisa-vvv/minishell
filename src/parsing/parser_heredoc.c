@@ -91,7 +91,7 @@ int set_heredoc(
 	int pos_red)
 {
     t_redir_list *redirlist;
-	
+
     redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));

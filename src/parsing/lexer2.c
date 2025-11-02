@@ -15,9 +15,9 @@
 // go through lexer and clean up data
 int	check_lexer(element *tokenlist, t_minishell_data *minishell_data)
 {
-	if (exp_lexer(tokenlist, &minishell_data, PARAMETER) || exp_lexer(tokenlist,
-			&minishell_data, SINGLE_Q) || exp_lexer(tokenlist, &minishell_data,
-			DOUBLE_Q))
+	if (exp_lexer(tokenlist, &minishell_data, PARAMETER, 0) || exp_lexer(tokenlist,
+			&minishell_data, SINGLE_Q, 0) || exp_lexer(tokenlist, &minishell_data,
+			DOUBLE_Q, 0))
 		return (write(1, "Wrong expansion or quote\n", 25));
 	index_lexer(&tokenlist);
 	if (tokenlist->element_list.total < 2)
