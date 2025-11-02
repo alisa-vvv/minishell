@@ -69,8 +69,11 @@ int	count_next_cm(element *tokenlist, int pos)
 }
 
 // make an empty execdata
-int	make_cm_list(element *tokenlist, t_exec_data *comm_list, size_t pos,
-		int pos_red)
+int	make_cm_list(
+	element *tokenlist, 
+	t_exec_data *comm_list, 
+	size_t pos,
+	int pos_red)
 {
 	int	total;
 
