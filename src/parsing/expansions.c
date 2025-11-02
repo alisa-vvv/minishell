@@ -38,8 +38,9 @@ char *exp_str_token(char *str_token, char *name, char *value)
 
     if (!value || !name)
         value = "";
-    start = NULL;
-    leftover = NULL; 
+    // start = NULL;
+    // leftover = NULL;
+    new_str = NULL;
     start = ft_strchr(str_token, '$');
     offset = ft_strlen(name) + 1;
     temp_left = malloc(sizeof(char) * ft_strlen(start) - offset);
@@ -63,6 +64,7 @@ char *refine_name_var(char *token_name, char *result)
     int i;
 
     i = 0;
+    start = NULL;
     start = ft_strchr(token_name, '$');
     // e_printf("\nSTART = %s\n", start);
     result = ft_strdup(start + 1);
@@ -80,25 +82,40 @@ char *refine_name_var(char *token_name, char *result)
     return (result);
 }
 
+
+void expand_unquoted(element *tokenlist, t_token *check_token, int pos, char *env_value)
+{
+    tokenlist->pf_element_set(tokenlist, pos, new_token(env_value, ft_strlen(env_value)+ 1));
+    ft_safe_free((unsigned char **)&check_token);
+    ft_safe_free((unsigned char **)&env_value);
+    index_lexer(&tokenlist);
+}
+
+
 //expand known var and otherwise delete and re-position all tokens
-int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, t_token *check_token, bool quoted)
+int expand_var(element **tokenlist, 
+    int pos, 
+    t_minishell_data **minishell_data, 
+    t_token *check_token, 
+    bool quoted)
 {
     char *name;
     char *env_value;
 
 	name = NULL;
-    env_value = NULL;
     name = refine_name_var(check_token->value, name); 
-    env_value = env_var_get_value((*minishell_data)->env, name);
     if (ft_strncmp(name, "?", 2))
         printf("%d\n", (*minishell_data)->last_pipeline_return);
+    env_value = env_var_get_value((*minishell_data)->env, name);
     e_printf("\nNAME= %s \n", name);
-    if (quoted || env_value)
+    if (quoted && env_value)
     {
         e_printf("VALUE= %s \n", env_value);
         check_token->value = exp_str_token(check_token->value, name, env_value);
         ft_safe_free((unsigned char **)&env_value);
     }
+    else if (!quoted && env_value)
+        expand_unquoted(*tokenlist, check_token, pos, env_value);
     else if (!quoted && !env_value)
     {
         (*tokenlist)->pf_element_delete((*tokenlist), pos);

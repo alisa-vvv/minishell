@@ -77,6 +77,7 @@ int	make_cm_list(
 {
 	int	total;
 
+	total = 0;
 	//	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
 	if (pos_red > 0)
 		total = count_args(tokenlist, pos, pos_red);
