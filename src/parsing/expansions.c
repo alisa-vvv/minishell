@@ -108,12 +108,14 @@ int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, 
 }
  
 // check lexer on expansion and quotes
-int	exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
+int	exp_lexer(
+    element *tokenlist, 
+    t_minishell_data **minishell_data,
+    int type, 
+    size_t i)
 {
-	size_t	i;
 	t_token	*check_token;
-
-	i = 0;
+    
 	while (i < (size_t)tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];

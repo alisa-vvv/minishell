@@ -56,6 +56,7 @@ int	find_symbol(element *tokenlist, int pos, char symbol)
 	}
 	return (-1);
 }
+//searches tokenlist for specific type token
 int	find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type type)
 {
 	t_token	*check_token;
@@ -77,28 +78,7 @@ int	find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type ty
 	return (-1);
 }
 
-// count how many exec data structs need to be made
-int	count_lists(element *tokenlist)
-{
-	size_t	i;
-	size_t	count;
-	t_token *check_token;
-
-	i = 0;
-	count = 1;
-	while (i < tokenlist->element_list.total)
-	{
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (check_token->type == PIPE)
-			count++;
-		if (i == tokenlist->element_list.total -1 && check_token->type == PIPE)
-			return(-1);
-		i++;
-	}
-	return (count);
-}
-
-
+//counts no args for the execdata arv
 int count_args(
 	element *tokenlist, 
 	int pos, 
@@ -130,26 +110,4 @@ int count_args(
 		total -= (pos + 1);
 	p_printf("total = %d\n", total +1);
 	return(total + 1);
-}
-
-
-// count until the next pos that is a command
-int	count_next_cm(element *tokenlist, int pos)
-{
-	int redir;
-	size_t i;
-	t_token *check_token;
-
-	i = pos +1;
-	redir = 0;
-	while (i < tokenlist->element_list.total)
-	{
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (check_token->type == PIPE)
-			return (check_token->pos + 1);
-		if (check_token->command)
-			return (check_token->pos);
-		i++;
-	}
-	return (-1);
 }

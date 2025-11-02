@@ -25,6 +25,49 @@
 //     - env with no options or arguments
 //     - exit with no options
 
+
+// count how many exec data structs need to be made
+int	count_lists(element *tokenlist)
+{
+	size_t	i;
+	size_t	count;
+	t_token *check_token;
+
+	i = 0;
+	count = 1;
+	while (i < tokenlist->element_list.total)
+	{
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		if (check_token->type == PIPE)
+			count++;
+		if (i == tokenlist->element_list.total -1 && check_token->type == PIPE)
+			return(-1);
+		i++;
+	}
+	return (count);
+}
+
+// count until the next pos that is a command
+int	count_next_cm(element *tokenlist, int pos)
+{
+	int redir;
+	size_t i;
+	t_token *check_token;
+
+	i = pos +1;
+	redir = 0;
+	while (i < tokenlist->element_list.total)
+	{
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		if (check_token->type == PIPE)
+			return (check_token->pos + 1);
+		if (check_token->command)
+			return (check_token->pos);
+		i++;
+	}
+	return (-1);
+}
+
 // make an empty execdata
 int	make_cm_list(element *tokenlist, t_exec_data *comm_list, size_t pos,
 		int pos_red)
@@ -55,17 +98,15 @@ int	pass_comm(
 	int i,
 	int pos)
 {
-	int	n_list;
 	int	pos_red;
 
 	if (count_lists(tokenlist) == -1)
 		return (write(1, "No lists counted\n", 17));
-	n_list = count_lists(tokenlist);
-	minishell_data->exec_data = ft_calloc(n_list, sizeof(t_exec_data));
-	minishell_data->command_count = n_list;
+	minishell_data->command_count = count_lists(tokenlist);
+	minishell_data->exec_data = ft_calloc(minishell_data->command_count, sizeof(t_exec_data));
 	if (!minishell_data->exec_data)
 		return (write(1, MALLOC_ERR, 15));
-	while (n_list > 0)
+	while (i < minishell_data->command_count)
 	{
 		pos_red = count_next_cm(tokenlist, pos);
 		if (pos_red > 0 && lookahead(tokenlist, pos)->type == HEREDOC)
@@ -80,7 +121,6 @@ int	pass_comm(
 		else
 			pos = count_next_cm(tokenlist, pos_red);
 		i++;
-		n_list--;
 	}
 	return (0);
 }
