@@ -45,11 +45,12 @@ char *exp_str_token(char *str_token, char *name, char *value)
         return (NULL);
     ft_strlcpy(temp_left, start + offset, ft_strlen(start)- offset + 1);
     leftover = ft_strjoin(value, temp_left);
+    ft_safe_free((unsigned char **)&temp_left);
     start[0] = '\0';
     new_str = ft_strjoin(str_token, leftover);
     if (!new_str || !leftover)
-        return ((ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&temp_left), ft_safe_free((unsigned char **)&new_str)), NULL);
-    (ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&temp_left), ft_safe_free((unsigned char **)&str_token));
+        return ((ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&value), ft_safe_free((unsigned char **)&new_str)), NULL);
+    (ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&value), ft_safe_free((unsigned char **)&str_token));
     return (new_str);
 }
 
@@ -73,33 +74,36 @@ char *refine_name_var(char *token_name, char *result)
         i++;
     }
     result[i] = '\0';
+    ft_safe_free((unsigned char **)&start);
     return (result);
 }
 
 //expand known var and otherwise delete and re-position all tokens
-int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, bool quoted)
+int expand_var(element **tokenlist, int pos, t_minishell_data **minishell_data, t_token *check_token, bool quoted)
 {
-    t_token *check_token;
-    check_token = (t_token *)(*tokenlist)->element_list.tokens[pos];
     char *name;
+    char *env_value;
 
 	name = NULL;
-    name = refine_name_var(check_token->value, name);
+    env_value = NULL;
+    name = refine_name_var(check_token->value, name); 
+    env_value = env_var_get_value((*minishell_data)->env, name);
     if (ft_strncmp(name, "?", 2))
         printf("%d\n", (*minishell_data)->last_pipeline_return);
     e_printf("\nNAME= %s \n", name);
-    if (quoted || env_var_get_value((*minishell_data)->env, name))
+    if (quoted || env_value)
     {
-        e_printf("VALUE= %s \n", env_var_get_value((*minishell_data)->env, name));
-        check_token->value = exp_str_token(check_token->value, name, env_var_get_value((*minishell_data)->env, name));
+        e_printf("VALUE= %s \n", env_value);
+        check_token->value = exp_str_token(check_token->value, name, env_value);
     }
-    else if (!quoted && !env_var_get_value((*minishell_data)->env, name))
+    else if (!quoted && !env_value)
     {
         (*tokenlist)->pf_element_delete((*tokenlist), pos);
+        ft_safe_free((unsigned char **)&name);
         index_lexer(tokenlist);
         return (1);
     }
-    free(name);
+    (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
     return (0);
 }
  
@@ -120,12 +124,12 @@ int	exp_lexer(element *tokenlist, t_minishell_data **minishell_data, int type)
 			rm_quotes(tokenlist, i, '"');
 			if (type == DOUBLE_Q && ft_strchr(check_token->value, '$') != NULL)
 			{
-				if (expand_var(&tokenlist, i, minishell_data, true))
+				if (expand_var(&tokenlist, i, minishell_data, check_token, true))
 					i--;
 			}
 			else if (type == PARAMETER)
 			{
-				if (expand_var(&tokenlist, i, minishell_data, false))
+				if (expand_var(&tokenlist, i, minishell_data, check_token, false))
 					i--;
 			}
 		}

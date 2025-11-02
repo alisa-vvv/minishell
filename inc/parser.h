@@ -116,7 +116,7 @@ int			find_symbol(element *tokenlist, int pos, char symbol);
 int			match_nonterminal(char *str_token);
 int			match_string(char *str_token);
 int			expand_var(element **tokenlist, int pos,
-				t_minishell_data **minishell_data, bool quoted);
+				t_minishell_data **minishell_data, t_token *check_token, bool quoted);
 int			rm_quotes(element *tokenlist, int pos, char symbol);
 int			all_num_alph(const char *str);
 int			check_hyphens(const char *str_token);
