@@ -12,39 +12,36 @@
 
 #include "parser.h"
 
-//go through lexer and clean up data 
-int check_lexer(
-	element *tokenlist, 
-	t_minishell_data *minishell_data)
+// go through lexer and clean up data
+int	check_lexer(element *tokenlist, t_minishell_data *minishell_data)
 {
-
-	exp_lexer(tokenlist, &minishell_data, PARAMETER);
-	exp_lexer(tokenlist, &minishell_data, SINGLE_Q);
-	exp_lexer(tokenlist, &minishell_data, DOUBLE_Q);
+	if (exp_lexer(tokenlist, &minishell_data, PARAMETER) || exp_lexer(tokenlist,
+			&minishell_data, SINGLE_Q) || exp_lexer(tokenlist, &minishell_data,
+			DOUBLE_Q))
+		return (write(1, "Wrong expansion or quote\n", 25));
 	index_lexer(&tokenlist);
 	if (tokenlist->element_list.total < 2)
 	{
 		if (single_token(tokenlist))
-			return(write(1, "Wrong redirect\n", 15));
+			return (write(1, "Wrong redirect\n", 15));
 	}
 	else if (val_redir(tokenlist, 0))
 		return (write(1, "Wrong redirect\n", 15));
 	set_pipe_cm(tokenlist, 0);
 	// t_printf("\nAfter expansion, rm quotes and set commands:\n");
-	//test_tokens(*tokenlist);
+	// test_tokens(*tokenlist);
 	if (pass_comm(tokenlist, minishell_data, 0, 0))
-		return(write(1, "Failed passing exec data\n", 25));
-	return (0); 
+		return (write(1, "Failed passing exec data\n", 25));
+	return (0);
 }
 
 // check if left and right are args for pipe
-int	check_pipe_redirect(
-	char *str, 
-	char symbol)
+int	check_pipe_redirect(char *str, char symbol)
 {
 	int	command;
-    int i; 
-    i = 0;
+	int	i;
+
+	i = 0;
 	command = 0;
 	if (ft_strchr(str, symbol) != (void *)0)
 	{
@@ -56,24 +53,23 @@ int	check_pipe_redirect(
 		}
 		if (!command && symbol == '|')
 			return (1);
-		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i + 1 == '"'))
+		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i
+				+ 1 == '"'))
 			return (1);
 	}
-    return (0);
+	return (0);
 }
 
 // validate input on quotes, pipes
-int	val_inputline(
-	char *str)
+int	val_inputline(char *str)
 {
-	if (check_in_quote(str, ft_strlen(str) -1))
-	    return (write(1, "command not found\n", 18));
+	if (check_in_quote(str, ft_strlen(str) - 1))
+		return (write(1, "command not found\n", 18));
 	if (check_pipe_redirect(str, '|'))
 		return (write(1, "command not found\n", 18));
 	if (check_pipe_redirect(str, '>'))
 		return (write(1, "command not found\n", 18));
 	if (check_pipe_redirect(str, '<'))
 		return (write(1, "command not found\n", 18));
-    return(0);
+	return (0);
 }
-
