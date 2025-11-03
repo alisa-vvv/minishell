@@ -54,7 +54,7 @@ char *exp_str_token(char *str_token, char *value, int offset)
 }
 
 //get name of env var from token_name
-char *refine_name_var(char *token_name, char *result)
+char *refine_name_var(char *token_name, char *result, bool quoted)
 {
     char *start;
     int i;
@@ -74,7 +74,7 @@ char *refine_name_var(char *token_name, char *result)
         i++;
     }
     result[i] = '\0';
-    if (ft_strncmp(start, "\0", 1) != 0)
+    if (!quoted)
         ft_safe_free((unsigned char **)&start);
     return (result);
 }
@@ -109,7 +109,7 @@ int expand_var(element **tokenlist,
     char *env_value;
 
 	name = NULL;
-    name = refine_name_var(check_token->value, name); 
+    name = refine_name_var(check_token->value, name, quoted); 
     if (ft_strncmp(name, "?", 2))
         printf("%d\n", (*minishell_data)->last_pipeline_return);
     env_value = env_var_get_value((*minishell_data)->env, name);
