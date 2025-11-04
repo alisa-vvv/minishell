@@ -28,7 +28,10 @@
 // look for return value in minishell struct when accessing $?
 
 //expand the var when token is in quotes 
-char *exp_str_token(char *str_token, char *value, int offset)
+char *exp_str_token(
+    char *str_token, 
+    char *value, 
+    int offset)
 {
     char *new_str;
     char *start; 
