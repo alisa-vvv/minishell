@@ -31,7 +31,19 @@ free(): invalid pointer
 ls -l | cat -e | cat -b | cat -T
 <<<
 
-2.
+2. 
+>>> INPUT:
+echo '$?'
+<<<
+
+>>> FIXED?
+NO
+<<<
+
+>>> RESULT: 
+crash on free somewhere during parsing, never reaches execution
+<<<
+
 
 >>> EDGE CASES 
 
