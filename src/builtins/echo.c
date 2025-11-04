@@ -16,17 +16,34 @@
 
 #include <stdio.h>
 
+static bool	check_for_minus_n(
+	const char *const first_argument
+)
+{
+	int	i;
+
+	if (ft_strncmp(first_argument, "-n", 2) == 0)
+	{
+		i = 2;
+		while (first_argument[i] == 'n')
+			i++;
+		if (first_argument[i] == '\0')
+			return (false);
+		else
+			i = 0;
+	}
+	return (true);
+}
+
 int	minishell_echo(
-	char **arguments
+	char *const *const arguments
 )
 {
 	int		i;
 	bool	put_nl;
 
-	i = 0;
-	put_nl = true;
-	if (ft_strncmp(arguments[0], "-n", 3) == 0)
-		put_nl = false;
+	put_nl = check_for_minus_n(arguments[0]);
+	i = !put_nl;
 	while (arguments[i])
 	{
 		ft_putstr_fd(arguments[i], STDOUT_FILENO);

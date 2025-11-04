@@ -14,8 +14,8 @@
 #include "minishell.h"
 #include "minishell_env.h"
 
-// maybe just add a list of characters that are invalid for a variable name?
-static int	check_name_len_and_validity(char *name)
+// is this even needed?
+static int	check_name_len_and_validity(char *name) // find out which chars are not valid
 {
 	int	len;
 
@@ -28,7 +28,6 @@ static int	check_name_len_and_validity(char *name)
 	return (len);
 }
 
-// this is horrible but i don't see a better way if we keep env as a string array
 int	minishell_unset(
 	char **argv,
 	t_minishell_data *minishell_data
@@ -42,13 +41,11 @@ int	minishell_unset(
 	while (argv[++i])
 	{
 		len = check_name_len_and_validity(argv[i]);
+		if (len < 0)
+			continue ;
 		var_index = env_var_find_index(minishell_data->env, argv[i], &argv[i][len]);
 		if (var_index == minishell_data->env_var_count)
-		{
-			// PLACEHOLDER ADD PROPER ERROR MANAGEMENT
-			printf("invalid parameter name\n");
 			continue ;
-		}
 		free(minishell_data->env[var_index]);
 		while (var_index < minishell_data->env_var_count - 1)
 		{
