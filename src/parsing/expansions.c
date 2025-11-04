@@ -27,62 +27,6 @@
 // expand $EMPTY to nothing
 // look for return value in minishell struct when accessing $?
 
-//expand the var when token is in quotes 
-char *exp_str_token(
-    char *str_token, 
-    char *value, 
-    int offset)
-{
-    char *new_str;
-    char *start; 
-    char *leftover;
-    char *temp_left;
-
-    // start = NULL;
-    // leftover = NULL;
-    // new_str = NULL;
-    start = ft_strchr(str_token, '$');
-    temp_left = malloc(sizeof(char) * ft_strlen(start) - offset);
-    if (!temp_left)
-        return (NULL);
-    ft_strlcpy(temp_left, start + offset, ft_strlen(start)- offset + 1);
-    leftover = ft_strjoin(value, temp_left);
-    ft_safe_free((unsigned char **)&temp_left);
-    start[0] = '\0';
-    new_str = ft_strjoin(str_token, leftover);
-    if (!new_str || !leftover)
-        return ((ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&value), ft_safe_free((unsigned char **)&new_str)), NULL);
-    (ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&value), ft_safe_free((unsigned char **)&str_token));
-    return (new_str);
-}
-
-//get name of env var from token_name
-char *refine_name_var(char *token_name, char *result, bool quoted)
-{
-    char *start;
-    int i;
-
-    i = 0;
-    start = NULL;
-    start = ft_strchr(token_name, '$');
-    // e_printf("\nSTART = %s\n", start);
-    result = ft_strdup(start + 1);
-    if (!result)
-        return(NULL);
-   // e_printf("\nRESULT = %s$\n", result);
-    while (result[i])
-    {
-        if (result[i] == '"' || result[i] == ' ' || (result[i] >= '\t' && result[i] <= '\r'))
-            break;
-        i++;
-    }
-    result[i] = '\0';
-    if (!quoted)
-        ft_safe_free((unsigned char **)&start);
-    return (result);
-}
-
-
 void expand_unquoted(element *tokenlist, t_token *check_token, int pos, char *env_value)
 {
     tokenlist->pf_element_set(tokenlist, pos, new_token(env_value, ft_strlen(env_value)+ 1));
@@ -93,8 +37,9 @@ void expand_unquoted(element *tokenlist, t_token *check_token, int pos, char *en
 
 void expand_quoted(t_token *check_token, char *name, char *env_value)
 {
-    int offset; 
+    int offset;
 
+    offset = 0; 
     if (!env_value || !name)
         env_value = "";
     offset = ft_strlen(name) + 1;
@@ -112,9 +57,11 @@ int expand_var(element **tokenlist,
     char *env_value;
 
 	name = NULL;
-    name = refine_name_var(check_token->value, name, quoted); 
-    if (ft_strncmp(name, "?", 2))
+    name = refine_name_var(check_token->value, name);
+    if (name && ft_strncmp(name, "?", 2))
         printf("%d\n", (*minishell_data)->last_pipeline_return);
+    // if (name && ft_isall_upper(name))
+    //    return (token_name);
     env_value = env_var_get_value((*minishell_data)->env, name);
     e_printf("\nNAME= %s \n", name);
     if (quoted)
