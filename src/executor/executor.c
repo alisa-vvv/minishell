@@ -116,7 +116,7 @@ static int	execute_command(
 		}
 		// endof handle parent process
 		else if (process_id < 0)
-			return (perror_and_return(NULL, FORK_ERR, extern_err, -1)); // check prefix
+			return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
 	}
 	else if (command->builtin_name != not_builtin)
 	{
@@ -360,7 +360,7 @@ int	executor(
 	{
 		minishell_data->last_pipeline_return = errno;
 		executor_cleanup(minishell_data, command_io, p_id_arr, p_exit_codes);
-		return (perror_and_return(NULL, MALLOC_ERR, extern_err, errno));
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
 	}
 	minishell_data->last_pipeline_return = 0;
 	err = execute_pipeline(minishell_data, p_id_arr, p_exit_codes, command_io);

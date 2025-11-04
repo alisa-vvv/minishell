@@ -15,18 +15,17 @@
 #include <stdio.h>
 #include <errno.h>
 
-int	perror_and_return(
+void	msh_perror(
 	char *const error_prefix,
 	char *const error_msg,
-	t_error_relation relation,
-	int return_value
+	t_error_relation relation
 )
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	if (error_prefix)
 		ft_putstr_fd(error_prefix, STDERR_FILENO);
 	if (!error_msg)
-		return (return_value);
+		return ;
 	if (relation == extern_err)
 		perror(error_msg); // figure this out
 	else
@@ -34,5 +33,4 @@ int	perror_and_return(
 		ft_putstr_fd(error_msg, STDERR_FILENO);
 		ft_putchar_fd('\n', STDERR_FILENO);
 	}
-	return (return_value);
 }

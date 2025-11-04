@@ -41,7 +41,7 @@
 
 typedef enum	e_msh_errno // can define specific values later
 {
-	success,
+	success = 0,
 	malloc_err = -1,
 	pipe_err = -2,
 	fork_err = -3,
@@ -50,9 +50,10 @@ typedef enum	e_msh_errno // can define specific values later
 	dup_err = -6,
 	dup2_err = -7,
 	fd_err = -8,
-	child_error_delim = -9,
-	child_fd_err = -10,
-	child_heredoc = -11,
+	builtin_err = -9,
+	child_error_delim = -10,
+	child_fd_err = -11,
+	child_heredoc = -12,
 }	t_msh_errno;
 
 
@@ -192,11 +193,10 @@ typedef enum	e_error_relation
 /**/
 
 /*		Error Mananagement Functions	*/
-int	perror_and_return(
+void	msh_perror(
 	char *const error_prefix,
 	char *const error_msg,
-	t_error_relation relation,
-	int return_value
+	t_error_relation relation
 );
 void	clean_exit(
 	t_minishell_data *minishell_data,

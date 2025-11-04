@@ -152,7 +152,7 @@ int	create_here_doc(
 	err_check = 0;
 	err_check = pipe(here_doc);
 	if (err_check < 0)
-		perror_and_return(NULL, PIPE_ERR, extern_err, -1);
+		return (msh_perror(NULL, PIPE_ERR, extern_err), -1); // check return
 	pid = fork();
 	if (pid == 0)
 	{
@@ -171,7 +171,7 @@ int	create_here_doc(
 	if (err_check != 0)
 	{
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		perror_and_return(NULL, PIPE_ERR, extern_err, -1);
+		msh_perror(NULL, PIPE_ERR, extern_err); // check return
 	}
 	return (here_doc[READ_END]);
 }

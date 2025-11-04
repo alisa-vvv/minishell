@@ -44,13 +44,13 @@ static int	set_env_vars(
 
 	variables = ft_calloc(3, sizeof (char *));
 	if (!variables)
-		perror_and_return(NULL, MALLOC_ERR, extern_err, malloc_err); // stop!
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	variables[0] = ft_strjoin("OLDPWD=", cwd);
 	variables[1] = ft_strjoin("PWD=", path);
 	if (!variables[0] || !variables[1])
 	{
 		free_variables(variables);
-		perror_and_return(NULL, MALLOC_ERR, extern_err, malloc_err); // stop!
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	}
 	err_check = minishell_export(variables, minishell_data);
 	if (err_check < 0)
@@ -76,7 +76,7 @@ static int find_target_path(
 	{
 		path = env_var_get_value(minishell_data->env, "HOME");
 		if (!path)
-			return(perror_and_return("cd", "HOME not set", exec_err, 1)); // check the return value
+			return(msh_perror("cd", "HOME not set", exec_err), builtin_err); // check return
 	}
 	else
 	{
@@ -85,13 +85,13 @@ static int find_target_path(
 		path = ft_strjoin(cwd, arg_with_slash);
 		free(arg_with_slash);
 		if (!path)
-			return (perror_and_return(NULL, MALLOC_ERR, extern_err, malloc_err));
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	}
 	if (access(path, F_OK))
 	{
 		free(path);
 		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (perror_and_return(NULL, "cd", extern_err, -1));
+		return (msh_perror(NULL, "cd", extern_err), -1); // check return
 	}
 	*path_pointer = path;
 	return (0);
@@ -120,7 +120,7 @@ int	minishell_cd(
 	}
 	err_check = chdir(path);
 	if (err_check != 0)
-		return (perror_and_return("cd: ", NULL, extern_err, -1)); // uhhhhh
+		return (msh_perror("cd: ", NULL, extern_err), -1); // check return
 	else
 		err_check = set_env_vars(minishell_data, cwd, path);
 	ft_bzero(minishell_data->cur_dir, PATH_MAX);

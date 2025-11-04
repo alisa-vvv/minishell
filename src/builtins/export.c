@@ -18,7 +18,7 @@
 #include "builtins.h"
 #include "minishell_env.h"
 
-static int truncate_var(
+static int truncate_var( // move to env lib?
 	t_minishell_data *const minishell_data,
 	int var_index,
 	char *arg
@@ -29,11 +29,11 @@ static int truncate_var(
 		free(minishell_data->env[var_index]);
 	minishell_data->env[var_index] = ft_strdup(arg);
 	if (!minishell_data->env[var_index])
-		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	return (0);
 }
 
-static int append_var(
+static int append_var( // move to env lib?
 	t_minishell_data *const minishell_data,
 	int var_index,
 	char *arg,
@@ -48,12 +48,12 @@ static int append_var(
 		appended_var = ft_strjoin(arg, identifier + 1);
 		*identifier = '+';
 		if (!appended_var)
-			perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	}
 	else
 		appended_var = ft_strjoin(minishell_data->env[var_index], identifier + 2);
 	if (!appended_var)
-		perror_and_return(NULL, MALLOC_ERR, extern_err, -1);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	if (minishell_data->env[var_index])
 		free(minishell_data->env[var_index]);
 	minishell_data->env[var_index] = appended_var;
@@ -92,6 +92,7 @@ int	minishell_export(
 		// ? confusion
 		if (var_i == minishell_data->env_mem - 1)
 			env_var_realloc(minishell_data);
+		// ^ this should probably not be xposed to functions outsied env_lib
 		if (*identifier == '=')
 			err_check = truncate_var(minishell_data, var_i, argv[arg_i]);
 		if (*identifier == '+')

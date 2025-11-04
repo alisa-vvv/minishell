@@ -61,7 +61,7 @@ int	prepare_command_io(
 	{
 		err_check = pipe(command_io[i].out_pipe);
 		if (err_check < 0)
-			perror_and_return(NULL, PIPE_ERR, extern_err, pipe_err);
+			return (msh_perror(NULL, PIPE_ERR, extern_err), pipe_err); // do we need to reutrn here???
 	}
 	if (command->redirections)
 		err_check = find_and_create_heredocs(command->redirections);
