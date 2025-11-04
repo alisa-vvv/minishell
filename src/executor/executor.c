@@ -25,13 +25,6 @@ static int	cleanup_in_parent_process(
 	t_command_io *const command_io
 )
 {
-	// again, (likely) no reason to actuallly free in pipes
-	//if (command->input_is_pipe == true)
-	//{
-	//	test_close(command_io->in_pipe[READ_END]);
-	//	command_io->in_pipe[READ_END] = CLOSED_FD;
-	//	(command_io - 1)->out_pipe[READ_END] = CLOSED_FD;
-	//}
 	if (command->output_is_pipe == true)
 	{
 		test_close(command_io->out_pipe[WRITE_END]);
@@ -94,7 +87,7 @@ static int	execute_command(
 		|| command->builtin_name == not_builtin)
 	{
 		process_id = fork();
-		// this handle child process
+		// this is handle child process
 		if (process_id == 0)
 		{
 			err_check = run_child_process(command, command_io, minishell_data);
@@ -172,38 +165,6 @@ static int	wait_for_children(
 	return (EXIT_SUCCESS);
 }
 
-void	heredoc_cleanup(
-	t_minishell_data *const minishell_data,
-	t_exec_data *exec_data,
-	t_command_io *command_io,
-	int *p_ids,
-	int *p_exit_codes
-)
-{
-	int	i;
-
-	i = -1;
-	while (++i < minishell_data->command_count)
-	{
-		//marking these as closed is most likely useless. remove unless proven otherwise.
-		free_and_close_exec_data(&exec_data[i]);
-		if (command_io[i].out_pipe[READ_END] > 2)
-		{
-			test_close(command_io[i].out_pipe[READ_END]);
-			//command_io[i].out_pipe[READ_END] = CLOSED_FD;
-		}
-		if (command_io[i].out_pipe[WRITE_END] > 2)
-		{
-			test_close(command_io[i].out_pipe[WRITE_END]);
-			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
-		}
-	}
-	free(command_io);
-	free(p_ids);
-	free(p_exit_codes);
-	free(exec_data);
-}
-
 static void	executor_cleanup(
 	t_minishell_data *const minishell_data,
 	t_command_io *command_io,
@@ -214,10 +175,7 @@ static void	executor_cleanup(
 	int	i;
 
 	i = -1;
-	// question: can;t we omit clising in_pipes? they are always fro melft to right
-	// and alwats equal to prevoius out_pipes right?
-	// we can answer this question once we know what the behavior is on pipeline
-	// fail i guess?
+	// double check if there are ever cases where we need to close input pipes.
 	while (++i < minishell_data->command_count)
 	{
 		free_and_close_exec_data(&minishell_data->exec_data[i]);
@@ -231,22 +189,7 @@ static void	executor_cleanup(
 			test_close(command_io[i].out_pipe[WRITE_END]);
 			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
 		}
-		//if (command_io[i].in_pipe[READ_END] > 2)
-		//{
-		//	test_close(command_io[i].in_pipe[READ_END]);
-		//	//command_io[i].in_pipe[READ_END] = CLOSED_FD;
-		//}
-		//if (command_io[i].in_pipe[WRITE_END] > 2)
-		//{
-		//	test_close(command_io[i].in_pipe[WRITE_END]);
-		//	//command_io[i].in_pipe[WRITE_END] = CLOSED_FD;
-		//}
 	}
-	//(void) (command_io);
-	//(void) (p_ids);
-	//(void) (p_exit_codes);
-	//(void) (exec_data);
-
 	free(command_io);
 	free(p_ids);
 	free(p_exit_codes);
