@@ -25,13 +25,6 @@ static int	cleanup_in_parent_process(
 	t_command_io *const command_io
 )
 {
-	// again, (likely) no reason to actuallly free in pipes
-	//if (command->input_is_pipe == true)
-	//{
-	//	test_close(command_io->in_pipe[READ_END]);
-	//	command_io->in_pipe[READ_END] = CLOSED_FD;
-	//	(command_io - 1)->out_pipe[READ_END] = CLOSED_FD;
-	//}
 	if (command->output_is_pipe == true)
 	{
 		test_close(command_io->out_pipe[WRITE_END]);
@@ -94,7 +87,7 @@ static int	execute_command(
 		|| command->builtin_name == not_builtin)
 	{
 		process_id = fork();
-		// this handle child process
+		// this is handle child process
 		if (process_id == 0)
 		{
 			err_check = run_child_process(command, command_io, minishell_data);
@@ -172,38 +165,6 @@ static int	wait_for_children(
 	return (EXIT_SUCCESS);
 }
 
-void	heredoc_cleanup(
-	t_minishell_data *const minishell_data,
-	t_exec_data *exec_data,
-	t_command_io *command_io,
-	int *p_ids,
-	int *p_exit_codes
-)
-{
-	int	i;
-
-	i = -1;
-	while (++i < minishell_data->command_count)
-	{
-		//marking these as closed is most likely useless. remove unless proven otherwise.
-		free_and_close_exec_data(&exec_data[i]);
-		if (command_io[i].out_pipe[READ_END] > 2)
-		{
-			test_close(command_io[i].out_pipe[READ_END]);
-			//command_io[i].out_pipe[READ_END] = CLOSED_FD;
-		}
-		if (command_io[i].out_pipe[WRITE_END] > 2)
-		{
-			test_close(command_io[i].out_pipe[WRITE_END]);
-			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
-		}
-	}
-	free(command_io);
-	free(p_ids);
-	free(p_exit_codes);
-	free(exec_data);
-}
-
 static void	executor_cleanup(
 	t_minishell_data *const minishell_data,
 	t_command_io *command_io,
@@ -214,10 +175,7 @@ static void	executor_cleanup(
 	int	i;
 
 	i = -1;
-	// question: can;t we omit clising in_pipes? they are always fro melft to right
-	// and alwats equal to prevoius out_pipes right?
-	// we can answer this question once we know what the behavior is on pipeline
-	// fail i guess?
+	// double check if there are ever cases where we need to close input pipes.
 	while (++i < minishell_data->command_count)
 	{
 		free_and_close_exec_data(&minishell_data->exec_data[i]);
@@ -231,26 +189,12 @@ static void	executor_cleanup(
 			test_close(command_io[i].out_pipe[WRITE_END]);
 			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
 		}
-		//if (command_io[i].in_pipe[READ_END] > 2)
-		//{
-		//	test_close(command_io[i].in_pipe[READ_END]);
-		//	//command_io[i].in_pipe[READ_END] = CLOSED_FD;
-		//}
-		//if (command_io[i].in_pipe[WRITE_END] > 2)
-		//{
-		//	test_close(command_io[i].in_pipe[WRITE_END]);
-		//	//command_io[i].in_pipe[WRITE_END] = CLOSED_FD;
-		//}
 	}
-	//(void) (command_io);
-	//(void) (p_ids);
-	//(void) (p_exit_codes);
-	//(void) (exec_data);
-
 	free(command_io);
 	free(p_ids);
 	free(p_exit_codes);
 	free(minishell_data->exec_data);
+	minishell_data->exec_data = NULL;
 }
 
 // this functiohn will return either the amount of commands in the pipeline,
@@ -261,24 +205,23 @@ static void	executor_cleanup(
 int	build_pipeline(
 	t_exec_data *exec_data,
 	t_command_io *command_io,
-	int command_count
+	int command_count,
+	int *elem_count
 )
 {
 	int	status_check;
 	int	i;
 
 	i = -1;
+	status_check = success;
 	while (++i < command_count)
 	{
 		status_check = prepare_command_io(&exec_data[i], command_io, i);
-		if (status_check < 0)
-		{
-			if (status_check == child_heredoc)
-				return (child_heredoc);
-			return (i);
-		}
+		if (status_check != success)
+			break ;
 	}
-	return (command_count);
+	*elem_count = i;
+	return (status_check);
 }
 
 int	execute_commands(
@@ -297,7 +240,7 @@ int	execute_commands(
 		err_check = execute_command(&command[i], &command_io[i], minishell_data);
 		printf("\033[36mexecuted command's child id: %d\033[0m\n", err_check);
 		p_id_arr[i] = err_check;
-		if (err_check < 0)
+		if (err_check != success)
 		{
 			if (err_check == child_fd_err)
 				return (err_check);
@@ -316,27 +259,28 @@ static int	execute_pipeline(
 	t_command_io	*command_io
 )
 {
-	int			pipeline_elem_count;
-	t_exec_data	*exec_data;
-	int			command_count = minishell_data->command_count;
+	int			elem_count;
+	t_exec_data	*const exec_data = minishell_data->exec_data;
+	const int	command_count = minishell_data->command_count;
 	int			err;
 
-	exec_data = minishell_data->exec_data;
 	err = success;
-	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
-	if (pipeline_elem_count == command_count)
-		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
-	else
-		return (pipeline_elem_count); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
+	elem_count = 0;
+	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
+	if (err != success)
+	{
+		printf("returning from process: %d, getpid(), return value: %d\n", getpid(), err);
+		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
+	}
+	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
 	if (err != success)
 	{
 		printf("\033[31error during command execution\033[0m\n"); // please kill me	
-		executor_cleanup(minishell_data, command_io, p_id_arr, p_exit_codes);
 		return (err);
 	}
-	else if (command_count > 1 ||
+	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
-		wait_for_children(pipeline_elem_count, minishell_data, p_id_arr, p_exit_codes);
+		wait_for_children(elem_count, minishell_data, p_id_arr, p_exit_codes);
 	return (err);
 }
 

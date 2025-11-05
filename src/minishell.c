@@ -123,7 +123,6 @@ int	main(void)
 		/*	endof Test Lexer*/
 		if (read_line)
 			free(read_line);
-		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
 		if (err_check == child_heredoc)
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
 		else if (err_check < 0)
@@ -131,6 +130,7 @@ int	main(void)
 			printf("clean exit out of child hopefully, id: %d\n", getpid());
 			clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);
 		}
+		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
 	}
 	clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);
 }
