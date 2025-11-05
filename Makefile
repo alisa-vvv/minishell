@@ -30,6 +30,7 @@ CFILES_VECLIB	=	vec_lib.c\
 CFILES_PARSER	=	debug.c\
 					lexer_match.c\
 					lexer_utils.c\
+					expansions_utils.c\
 					expansions.c\
 					hyphen_handler.c\
 					lexer.c\

@@ -53,4 +53,5 @@ crash on free somewhere during parsing, never reaches execution
 - '>haha | ls'
 - 'export empty=" "' -> 'echo hi > $EMPTY' -> '$EMPTY echo hi'
 - export $BLA>hey   (we need to check if exporting with a pipe or something in the name breaks)
-- >hey ls               (need to check how we can make a default if the input is missing for a redirect)  
+- >hey ls               (need to check how we can make a default if the input is missing for a redirect) 
+- echo "$USER$USER"     (needs to expand to 'usernameusername', but now only expands to 'username')
