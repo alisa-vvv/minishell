@@ -68,47 +68,48 @@ static int	run_child_process(
 		err_check = try_execve(minishell_data->env, command->argv);
 	else
 		err_check = exec_builtin(command, minishell_data);
-	exit(err_check); // this needs to return for proper cleanup i think
+	return (err_check); // this needs to return for proper cleanup i think
 	// double check
 }
 
 static int	execute_command(
 	t_exec_data *command,
 	t_command_io *const command_io,
-	t_minishell_data *const minishell_data
+	t_minishell_data *const minishell_data,
+	pid_t *pid
 )
 {
-	pid_t	process_id;
 	int		err_check;
 
 	err_check = 0;
-	process_id = 0;
+	*pid = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true
 		|| command->builtin_name == not_builtin)
 	{
-		process_id = fork();
+		*pid = fork();
 		// this is handle child process
-		if (process_id == 0)
+		if (*pid == 0)
 		{
 			err_check = run_child_process(command, command_io, minishell_data);
-			if (err_check == child_fd_err) // replace with a function that amtches all return error cases
-				return (err_check);
+			//if (err_check != child_fd_err) // replace with a function that amtches all return error cases
+			return (err_check); // this should never be reached unless there is an error I think
 		}
 		// endof handle child process
 		// this is handle parent process
-		else if (process_id > 0)
+		else if (*pid > 0)
 		{
 			err_check = cleanup_in_parent_process(command, command_io);
-			if (err_check == 0)
-				return (process_id);
-			else
-			{
-				printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-				return (err_check);
-			}
+			return (err_check);
+			//if (err_check == 0)
+			//	return (*pid);
+			//else
+			//{
+			//	printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+			//	return (err_check);
+			//}
 		}
 		// endof handle parent process
-		else if (process_id < 0)
+		else if (*pid < 0)
 			return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
 	}
 	else if (command->builtin_name != not_builtin)
@@ -232,20 +233,24 @@ int	execute_commands(
 )
 {
 	int			i;
-	t_msh_errno	err_check;
+	t_msh_errno	err;
 
 	i = -1;
+	printf("hello? what is command count? %d\n", minishell_data->command_count);
 	while (++i < minishell_data->command_count)
 	{
-		err_check = execute_command(&command[i], &command_io[i], minishell_data);
-		printf("\033[36mexecuted command's child id: %d\033[0m\n", err_check);
-		p_id_arr[i] = err_check;
-		if (err_check != success)
+		err = execute_command(&command[i], &command_io[i], minishell_data, &p_id_arr[i]);
+		printf("\033[36mexecuted command's child id: %d\033[0m\n", err);
+		if (err != success)
 		{
-			if (err_check == child_fd_err)
-				return (err_check);
-			//printf("PLACEHOLDER, ADD PROPER ERROR MANAGEMENT\n");
-			// here, should check for when we actually need to stop. never questionmark?
+			printf("what is err check here? %d\n", err);
+			if (err == child_heredoc || err == malloc_err
+				|| err == no_command)
+			{
+				//printf("PLACEHOLDER, ADD PROPER ERROR MANAGEMENT\n");
+				// here, should check for when we actually need to stop. never questionmark?
+				return (err);
+			}
 		}
 	}
 	return (success);

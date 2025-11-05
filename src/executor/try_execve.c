@@ -36,6 +36,7 @@ static const char *const	*split_path_var(
 		perror(MALLOC_ERR);
 		return (NULL);
 	}
+	free(path_value);
 	return ((const char *const *) path_arr);
 }
 
@@ -45,7 +46,7 @@ static int	command_not_found(
 {
 	ft_putstr_fd(command_name, STDERR_FILENO);
 	ft_putstr_fd(": command not found\n", STDERR_FILENO);
-	return (EXIT_FAILURE);
+	return (no_command); // more work needed, this is funky
 }
 
 int	try_execve(
@@ -62,13 +63,13 @@ int	try_execve(
 		return (0);
 	tmp_slash = ft_strjoin("/", argv[0]);
 	if (!tmp_slash)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), errno); //check return
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); //check return
 	i = -1;
 	while (path[++i])
 	{
 		command_path = ft_strjoin(path[i], tmp_slash);
 		if (!command_path)
-			return (msh_perror(NULL, MALLOC_ERR, extern_err), errno); // check return
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 		if (execve(command_path, argv, env) == -1)
 			free(command_path);
 	}
