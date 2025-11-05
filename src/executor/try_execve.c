@@ -46,6 +46,7 @@ static int	command_not_found(
 {
 	ft_putstr_fd(command_name, STDERR_FILENO);
 	ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	//printf("command not found in pid: %d\n", getpid());
 	return (no_command); // more work needed, this is funky
 }
 

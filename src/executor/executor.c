@@ -136,8 +136,6 @@ static int	wait_for_children(
 	//printf("command count: %d\n", command_count);
 	while (++i < command_count)
 	{
-	//	printf("\np_ids[%d]: %d\n", i, p_ids[i]);
-	//	printf("p_exit_codes[%d]: %d\n\n", i, p_exit_codes[i]);
 		if (p_ids[i] < 0)
 			continue ;
 		err_check = waitpid(p_ids[i], &p_exit_codes[i], 0);
@@ -179,17 +177,11 @@ static void	executor_cleanup(
 	// double check if there are ever cases where we need to close input pipes.
 	while (++i < minishell_data->command_count)
 	{
-		free_and_close_exec_data(&minishell_data->exec_data[i]);
-		if (command_io[i].out_pipe[READ_END] > 2)
-		{
-			test_close(command_io[i].out_pipe[READ_END]);
-			//command_io[i].out_pipe[READ_END] = CLOSED_FD;
-		}
+		free_and_close_exec_data(&minishell_data->exec_data[i]); // should we do that here even?
+		if (command_io[i].in_pipe[READ_END] > 2)
+			test_close(command_io[i].in_pipe[READ_END]);
 		if (command_io[i].out_pipe[WRITE_END] > 2)
-		{
 			test_close(command_io[i].out_pipe[WRITE_END]);
-			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
-		}
 	}
 	free(command_io);
 	free(p_ids);
@@ -236,18 +228,15 @@ int	execute_commands(
 	t_msh_errno	err;
 
 	i = -1;
-	printf("hello? what is command count? %d\n", minishell_data->command_count);
 	while (++i < minishell_data->command_count)
 	{
 		err = execute_command(&command[i], &command_io[i], minishell_data, &p_id_arr[i]);
-		printf("\033[36mexecuted command's child id: %d\033[0m\n", err);
+		//printf("\033[36mexecuted command's child id: %d\033[0m\n", err);
 		if (err != success)
 		{
-			printf("what is err check here? %d\n", err);
 			if (err == child_heredoc || err == malloc_err
 				|| err == no_command)
 			{
-				//printf("PLACEHOLDER, ADD PROPER ERROR MANAGEMENT\n");
 				// here, should check for when we actually need to stop. never questionmark?
 				return (err);
 			}
@@ -274,15 +263,12 @@ static int	execute_pipeline(
 	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
 	if (err != success)
 	{
-		printf("returning from process: %d, getpid(), return value: %d\n", getpid(), err);
+		//printf("returning from process: %d, getpid(), return value: %d\n", getpid(), err);
 		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
 	}
 	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
 	if (err != success)
-	{
-		printf("\033[31error during command execution\033[0m\n"); // please kill me	
 		return (err);
-	}
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(elem_count, minishell_data, p_id_arr, p_exit_codes);
