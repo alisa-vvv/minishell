@@ -45,19 +45,26 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
         tokenlist->pf_element_set(tokenlist, pos, new_token(env_value, ft_strlen(env_value)+ 1));
        // ft_safe_free((unsigned char **)&env_value);
     }
-    (ft_safe_free((unsigned char **)&check_token->value), ft_safe_free((unsigned char **)&check_token));
+    (ft_safe_free((unsigned char **)&check_token));
     return (0);
 }
 
-void expand_quoted(t_token *check_token, char *name, char *env_value)
+void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
 {
     int offset;
+    t_token *check_token;
 
-    offset = 0; 
+    check_token = tokenlist->element_list.tokens[pos];
+    offset = 0;
+
     if (!env_value || !name)
         env_value = "";
     offset = ft_strlen(name) + 1;
-    check_token->value = exp_str_token(check_token->value, env_value, offset);
+    char *new_str;
+    new_str = exp_str_token(check_token->value, env_value, ft_strlen(name) +1);
+    tokenlist->pf_element_set(tokenlist, pos, new_token(new_str, ft_strlen(new_str) + 1));
+    (ft_safe_free((unsigned char **)&new_str), ft_safe_free((unsigned char **)&check_token));
+    // check_token->value = exp_str_token(check_token->value, env_value, offset);
 }
 
 
@@ -101,7 +108,7 @@ int expand_var(element **tokenlist,
         env_value = env_var_get_value((*minishell_data)->env, name);
         e_printf("\nNAME= %s \n", name);
         if (quoted)
-            expand_quoted(check_token, name, env_value);
+            expand_quoted(*tokenlist, name, pos, env_value);
         else if (!quoted && env_value)
             expand_unquoted(*tokenlist, check_token, name, pos, env_value);
         // else if (!quoted && !env_value)
