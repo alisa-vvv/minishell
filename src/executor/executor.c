@@ -194,6 +194,7 @@ static void	executor_cleanup(
 	free(p_ids);
 	free(p_exit_codes);
 	free(minishell_data->exec_data);
+	minishell_data->exec_data = NULL;
 }
 
 // this functiohn will return either the amount of commands in the pipeline,
@@ -204,24 +205,23 @@ static void	executor_cleanup(
 int	build_pipeline(
 	t_exec_data *exec_data,
 	t_command_io *command_io,
-	int command_count
+	int command_count,
+	int *elem_count
 )
 {
 	int	status_check;
 	int	i;
 
 	i = -1;
+	status_check = success;
 	while (++i < command_count)
 	{
 		status_check = prepare_command_io(&exec_data[i], command_io, i);
-		if (status_check < 0)
-		{
-			if (status_check == child_heredoc)
-				return (child_heredoc);
-			return (i);
-		}
+		if (status_check != success)
+			break ;
 	}
-	return (command_count);
+	*elem_count = i;
+	return (status_check);
 }
 
 int	execute_commands(
@@ -240,7 +240,7 @@ int	execute_commands(
 		err_check = execute_command(&command[i], &command_io[i], minishell_data);
 		printf("\033[36mexecuted command's child id: %d\033[0m\n", err_check);
 		p_id_arr[i] = err_check;
-		if (err_check < 0)
+		if (err_check != success)
 		{
 			if (err_check == child_fd_err)
 				return (err_check);
@@ -259,27 +259,28 @@ static int	execute_pipeline(
 	t_command_io	*command_io
 )
 {
-	int			pipeline_elem_count;
-	t_exec_data	*exec_data;
-	int			command_count = minishell_data->command_count;
+	int			elem_count;
+	t_exec_data	*const exec_data = minishell_data->exec_data;
+	const int	command_count = minishell_data->command_count;
 	int			err;
 
-	exec_data = minishell_data->exec_data;
 	err = success;
-	pipeline_elem_count = build_pipeline(exec_data, command_io, command_count);
-	if (pipeline_elem_count == command_count)
-		err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
-	else
-		return (pipeline_elem_count); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
+	elem_count = 0;
+	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
+	if (err != success)
+	{
+		printf("returning from process: %d, getpid(), return value: %d\n", getpid(), err);
+		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
+	}
+	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
 	if (err != success)
 	{
 		printf("\033[31error during command execution\033[0m\n"); // please kill me	
-		executor_cleanup(minishell_data, command_io, p_id_arr, p_exit_codes);
 		return (err);
 	}
-	else if (command_count > 1 ||
+	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
-		wait_for_children(pipeline_elem_count, minishell_data, p_id_arr, p_exit_codes);
+		wait_for_children(elem_count, minishell_data, p_id_arr, p_exit_codes);
 	return (err);
 }
 
