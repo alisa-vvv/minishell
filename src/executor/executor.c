@@ -87,37 +87,21 @@ static int	execute_command(
 		|| command->builtin_name == not_builtin)
 	{
 		*pid = fork();
-		// this is handle child process
 		if (*pid == 0)
 		{
 			err_check = run_child_process(command, command_io, minishell_data);
-			//if (err_check != child_fd_err) // replace with a function that amtches all return error cases
 			return (err_check); // this should never be reached unless there is an error I think
 		}
-		// endof handle child process
-		// this is handle parent process
 		else if (*pid > 0)
 		{
 			err_check = cleanup_in_parent_process(command, command_io);
 			return (err_check);
-			//if (err_check == 0)
-			//	return (*pid);
-			//else
-			//{
-			//	printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-			//	return (err_check);
-			//}
 		}
-		// endof handle parent process
 		else if (*pid < 0)
 			return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
 	}
 	else if (command->builtin_name != not_builtin)
-	{
 		err_check = exec_builtin(command, minishell_data);
-		//here we probably don't exit either. check.
-		//most likely we send an error msg locally and then proceed with execution
-	}
 	return (err_check);
 }
 

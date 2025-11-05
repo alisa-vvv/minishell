@@ -1,49 +1,20 @@
 FAILED TESTS
 
-1.
->>> INPUT:
-ls -l | sleep 2 | cat
+1. >>> INPUT:
+(anything) > 2
+(anything) >2
 <<<
-
 >>> FIXED?
 NO
 <<<
 
 >>> RESULT: 
-crash on free somewhere during parsing, never reaches execution
+crashes, getting stuck parsing fails, duplicating minishell process, jsut random shitm
 <<<
 
 >>> OUTPUT:
-minishell$ ls -l | sleep 2 | cat
-total = 2
-Token list total = 3
- Token list i = 3
-total = 2
-Token list total = 6
- Token list i = 3
-total = 1
-Token list total = 7
- Token list i = 1
-free(): invalid pointer
+various kinds of nonsense, memory errors gallore
 <<<
-
->>> CASES WITH SIMILAR OUTCOME:
-ls -l | cat -e | cat -b | cat -T
-<<<
-
-2. 
->>> INPUT:
-echo '$?'
-<<<
-
->>> FIXED?
-NO
-<<<
-
->>> RESULT: 
-crash on free somewhere during parsing, never reaches execution
-<<<
-
 
 >>> EDGE CASES 
 
