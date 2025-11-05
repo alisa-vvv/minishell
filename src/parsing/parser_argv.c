@@ -102,7 +102,7 @@ int	fill_comm_list(
 		pos++;
 	}
 	p_printf("Token list total = %d\n Token list i = %d\n", total, i);
-	if (i > 1)
-		exec_data->argv[i] = NULL;
+	// if (i > 1)
+	// 	exec_data->argv[i] = NULL;
 	return (0);
 }

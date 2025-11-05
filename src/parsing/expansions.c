@@ -118,7 +118,6 @@ int expand_var(element **tokenlist,
         //     index_lexer(tokenlist);
         //     return (1);
         // }
-        
         (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
         index_lexer(tokenlist);
         count--;
