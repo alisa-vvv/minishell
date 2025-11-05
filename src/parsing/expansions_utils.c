@@ -32,6 +32,8 @@ char *prep_leftover(
     n_offset = (ft_strlen(start) - offset);
     if (n_offset == 0)
         n_offset++;
+    else 
+        n_offset += 2;
     temp_left = malloc(sizeof(char) * (n_offset));
     if (!temp_left)
         return (NULL);
@@ -88,7 +90,7 @@ char *refine_name_var(char *token_name, char *result)
    // e_printf("\nRESULT = %s$\n", result);
     while (result[i])
     {
-        if (result[i] == '"' || result[i] == ' ' || result[i] == '$' || (result[i] >= '\t' && result[i] <= '\r') || ft_islower(result[i]))
+        if (result[i] == '"' || result[i] == '$' || ft_isspace(result[i]) || ft_islower(result[i]))
             break;
         i++;
     }
