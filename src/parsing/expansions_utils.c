@@ -19,7 +19,9 @@ char *prep_leftover(
 {
     char *start; 
     char *temp_left;
+    int n_offset;
 
+    n_offset = 0;
     start = NULL;
     temp_left = NULL;
     if (!str_token)
@@ -27,14 +29,14 @@ char *prep_leftover(
     start = ft_strrchr(str_token, '$');
     if (!start)
         return (NULL);
-    if (ft_strlen(start) - offset)
-        temp_left = malloc(sizeof(char) * (ft_strlen(start) - offset));
-    else 
-        temp_left = malloc(sizeof(char) * (ft_strlen(start) - offset)+1);
+    n_offset = (ft_strlen(start) - offset);
+    if (n_offset == 0)
+        n_offset++;
+    temp_left = malloc(sizeof(char) * (n_offset));
     if (!temp_left)
         return (NULL);
-    ft_strlcpy(temp_left, start + offset, (ft_strlen(start)- offset) + 1);
-    start[0] ='\0';
+    ft_strlcpy(temp_left, start + offset, n_offset);
+    *start ='\0';
     return(temp_left);
 }
 
