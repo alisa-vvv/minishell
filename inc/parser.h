@@ -126,6 +126,7 @@ int			set_exec_def(t_exec_data *execdata, element *tokenlist, size_t pos);
 int 		count_args(element *tokenlist, int pos, int total);
 int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
+char *		prep_leftover(char *str_token, int offset);
 char *		exp_str_token(char *str_token, char *value, int offset);
 char *		refine_name_var(char *token_name, char *result);
 t_builtin_name set_builtins(t_token_type tokentype);
