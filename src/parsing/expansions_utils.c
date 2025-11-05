@@ -21,6 +21,9 @@ char *prep_leftover(
     char *temp_left;
 
     start = NULL;
+    temp_left = NULL;
+    if (!str_token)
+        return(NULL);
     start = ft_strrchr(str_token, '$');
     if (!start)
         return (NULL);
@@ -75,7 +78,7 @@ char *refine_name_var(char *token_name, char *result)
 
     i = 0;
     start = NULL;
-    start = ft_strchr(token_name, '$');
+    start = ft_strrchr(token_name, '$');
     // e_printf("\nSTART = %s\n", start);
     result = ft_strdup(start + 1);
     if (!result)
@@ -88,7 +91,5 @@ char *refine_name_var(char *token_name, char *result)
         i++;
     }
     result[i] = '\0';
-    // if (!quoted)
-    //     ft_safe_free((unsigned char **)&start);
     return (result);
 }

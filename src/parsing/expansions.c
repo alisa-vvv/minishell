@@ -46,7 +46,6 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
        // ft_safe_free((unsigned char **)&env_value);
     }
     (ft_safe_free((unsigned char **)&check_token->value), ft_safe_free((unsigned char **)&check_token));
-    index_lexer(&tokenlist);
     return (0);
 }
 
@@ -115,6 +114,7 @@ int expand_var(element **tokenlist,
         (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
         count--;
     }
+    index_lexer(tokenlist);
     return (0);
 }
  
