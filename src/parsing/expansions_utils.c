@@ -54,7 +54,7 @@ char *exp_str_token(
     new_str = ft_strjoin(str_token, leftover);
     if (!new_str || !leftover)
         return ((ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&value), ft_safe_free((unsigned char **)&new_str), ft_safe_free((unsigned char **)&temp_right), NULL));
-    (ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&value), ft_safe_free((unsigned char **)&str_token), ft_safe_free((unsigned char **)&temp_right));
+    (ft_safe_free((unsigned char **)&leftover), ft_safe_free((unsigned char **)&temp_right), ft_safe_free((unsigned char **)&str_token));
     return (new_str);
 }
 
