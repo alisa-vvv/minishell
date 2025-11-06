@@ -48,6 +48,7 @@ CFILES_EXECUTOR	=	executor.c\
 					redirections.c\
 					here-doc.c\
 					try_execve.c\
+					executor_utils.c\
 					executor_test.c
 CFILES_BUILTINS	=	exec_builtin.c\
 					pwd.c\

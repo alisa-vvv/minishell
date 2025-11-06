@@ -64,6 +64,12 @@ int	try_execve(
 );
 /**/
 
+/*		Utils		*/
+void	safe_close(
+	int fd
+);
+/**/
+
 /*		Test Functions		*/
 void	test_close(int fd);
 void	test_dup2(int oldfd, int newfd);

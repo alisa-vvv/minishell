@@ -20,7 +20,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
-static int	cleanup_in_parent_process(
+static int	cleanup_in_parent_process( // FIX THIS
 	t_exec_data *command,
 	t_command_io *const command_io
 )
@@ -158,14 +158,21 @@ static void	executor_cleanup(
 	int	i;
 
 	i = -1;
-	// double check if there are ever cases where we need to close input pipes.
 	while (++i < minishell_data->command_count)
 	{
-		free_and_close_exec_data(&minishell_data->exec_data[i]); // should we do that here even?
-		if (command_io[i].in_pipe[READ_END] > 2)
-			test_close(command_io[i].in_pipe[READ_END]);
-		if (command_io[i].out_pipe[WRITE_END] > 2)
-			test_close(command_io[i].out_pipe[WRITE_END]);
+		free_and_close_exec_data(&minishell_data->exec_data[i]);
+		safe_close(command_io[i].out_pipe[READ_END]); // this is necessary for the heredoc case.
+		//if (command_io[i].out_pipe[READ_END] > 2) // this is necessary for the heredoc case.
+		//{
+		//	test_close(command_io[i].out_pipe[READ_END]);
+		//	command_io[i].out_pipe[READ_END] = CLOSED_FD;
+		//}
+		safe_close(command_io[i].out_pipe[WRITE_END]);
+		//if (command_io[i].out_pipe[WRITE_END] > 2)
+		//{
+		//	test_close(command_io[i].out_pipe[WRITE_END]);
+		//	command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
+		//}
 	}
 	free(command_io);
 	free(p_ids);
@@ -232,9 +239,9 @@ int	execute_commands(
 // maybe rework this for more clarity on what happens on different exit situations
 static int	execute_pipeline(
 	t_minishell_data *const minishell_data,
-	int				*p_id_arr,
-	int				*p_exit_codes,
-	t_command_io	*command_io
+	int *p_id_arr,
+	int *p_exit_codes,
+	t_command_io *command_io
 )
 {
 	int			elem_count;
@@ -246,10 +253,7 @@ static int	execute_pipeline(
 	elem_count = 0;
 	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
 	if (err != success)
-	{
-		//printf("returning from process: %d, getpid(), return value: %d\n", getpid(), err);
 		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
-	}
 	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
 	if (err != success)
 		return (err);
