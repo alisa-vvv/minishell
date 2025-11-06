@@ -12,6 +12,8 @@
 
 #include "parser.h"
 
+
+
 // go through lexer and clean up data
 int	check_lexer(element *tokenlist, t_minishell_data *minishell_data)
 {

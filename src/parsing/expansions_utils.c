@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-
+//prepare leftover parts of str token to keep for the updated string
 char *prep_leftover(
     char *str_token, 
     int offset)
