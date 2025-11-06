@@ -44,6 +44,7 @@ void set_command(
 
 
 // push appropiate token to argv skipping redirects and heredoc delim
+//(pos + 1 < tokenlist->element_list.total && token_is_redirect(lookahead(tokenlist, pos)))
 int	add_arg_to_list(
 	t_exec_data *comm_list, 
 	element *tokenlist, 
@@ -54,9 +55,7 @@ int	add_arg_to_list(
 	t_token	*check_token;
 
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	if ((pos + 1 < tokenlist->element_list.total
-			&& token_is_redirect(lookahead(tokenlist, pos))) || (pos > 0
-			&& token_is_redirect(lookbehind(tokenlist, pos))))
+	if ((pos > 0 && token_is_redirect(lookbehind(tokenlist, pos))))
 		*i -= 1;
 	else if (check_token->command)
 		set_command(comm_list, tokenlist, pos, check_token, i);

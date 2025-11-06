@@ -78,6 +78,32 @@ int	find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type ty
 	return (-1);
 }
 
+
+int count_redirs(
+	element *tokenlist,
+	int total,
+	int i
+	)
+{
+	int redir;
+	t_token *check_token;
+	redir = 0;
+
+	check_token = tokenlist->element_list.tokens[i];
+	if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
+	{
+		if (lookbehind(tokenlist, i)->type == NUMBER && (check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_OUT_APP))
+			redir++;
+	}
+		redir++;
+	if (lookahead(tokenlist, i))
+		redir++;
+	redir++;
+
+	return (redir);
+}
+
+
 //counts no args for the execdata arv
 int count_args(
 	element *tokenlist, 
@@ -101,13 +127,13 @@ int count_args(
 			redir++;
 		}
 		else if (check_token->type == PIPE)
-			redir += 2;
+			redir++;
 		i++;
 	}
 	if (redir)
 		total = total - (redir + pos);
 	else 
 		total -= (pos + 1);
-	p_printf("total = %d\n", total +1);
+	p_printf("total = %d\n", total);
 	return(total + 1);
 }
