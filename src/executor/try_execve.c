@@ -57,11 +57,21 @@ int	try_execve(
 {
 	char				*tmp_slash;
 	char				*command_path;
-	const char *const 	*path = split_path_var(env);
+	const char *const 	*path;
 	int					i;
 
-	if (execve(argv[0], argv, env) != -1)
-		return (0);
+	if (argv[0] == NULL)
+		return (child_success);
+	path = split_path_var(env);
+	if (!path)
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); //check return
+	execve(argv[0], argv, env);
+	if (errno != ENOENT)
+	{
+		printf("PLACEHOLDER, ADD ERROR HANDLING!\n");
+		return (-1);
+	}
+	perror("checking execve error");
 	tmp_slash = ft_strjoin("/", argv[0]);
 	if (!tmp_slash)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); //check return

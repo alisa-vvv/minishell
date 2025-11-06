@@ -54,7 +54,8 @@ typedef enum	e_msh_errno // can define specific values later
 	child_error_delim = -10,
 	child_fd_err = -11,
 	child_heredoc = -12,
-	no_command = -13,
+	child_success = -13,
+	no_command = -14,
 }	t_msh_errno;
 
 

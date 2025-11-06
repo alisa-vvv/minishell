@@ -122,7 +122,7 @@ int	main(void)
 		/*	endof Test Lexer*/
 		if (read_line)
 			free(read_line);
-		if (err_check == child_heredoc)
+		if (err_check == child_heredoc || err_check == child_success)
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
 		else if (err_check < 0)
 			clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);

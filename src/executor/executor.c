@@ -43,7 +43,7 @@ static int	run_child_process(
 {
 	int				err_check;
 
-	err_check = 0;
+	err_check = success;
 	if (command->input_is_pipe == true)
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
@@ -100,8 +100,10 @@ static int	execute_command(
 		else if (*pid < 0)
 			return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
 	}
+	// HERE: add peform_redirections()
 	else if (command->builtin_name != not_builtin)
 		err_check = exec_builtin(command, minishell_data);
+	// HERE: add undup_redirections()
 	return (err_check);
 }
 
@@ -161,9 +163,7 @@ static void	executor_cleanup(
 	while (++i < minishell_data->command_count)
 	{
 		free_and_close_exec_data(&minishell_data->exec_data[i]);
-		safe_close(command_io[i].out_pipe[READ_END]); // this is necessary for the heredoc case.
-		//if (command_io[i].out_pipe[READ_END] > 2) // this is necessary for the heredoc case.
-		//{
+		safe_close(command_io[i].out_pipe[READ_END]); // this is necessary for the heredoc case. if (command_io[i].out_pipe[READ_END] > 2) // this is necessary for the heredoc case. {
 		//	test_close(command_io[i].out_pipe[READ_END]);
 		//	command_io[i].out_pipe[READ_END] = CLOSED_FD;
 		//}
@@ -222,11 +222,11 @@ int	execute_commands(
 	while (++i < minishell_data->command_count)
 	{
 		err = execute_command(&command[i], &command_io[i], minishell_data, &p_id_arr[i]);
-		//printf("\033[36mexecuted command's child id: %d\033[0m\n", err);
+		printf("\033[36mexecuted command's child id: %d\033[0m\n", err);
 		if (err != success)
 		{
 			if (err == child_heredoc || err == malloc_err
-				|| err == no_command)
+				|| err == no_command || err == child_success)
 			{
 				// here, should check for when we actually need to stop. never questionmark?
 				return (err);
@@ -252,6 +252,8 @@ static int	execute_pipeline(
 	err = success;
 	elem_count = 0;
 	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
+	printf("command count? %d\n", command_count);
+	printf("elem count? %d\n", elem_count);
 	if (err != success)
 		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
 	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
