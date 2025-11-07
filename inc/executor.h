@@ -66,7 +66,7 @@ int	try_execve(
 
 /*		Utils		*/
 void	safe_close(
-	int fd
+	int *fd
 );
 /**/
 

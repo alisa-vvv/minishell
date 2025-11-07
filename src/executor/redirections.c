@@ -25,11 +25,11 @@ static int	perform_input_redirection(
 	if (redirection->dest_filename != NULL)
 	{
 		redirection->dest_fd = open(redirection->dest_filename, O_RDONLY);
-		if (redirection->dest_fd != 0)
+		if (redirection->dest_fd < 0)
 			return (msh_perror(NULL, FD_ERR, extern_err), fd_err); // do we return here?
 	}
 	test_dup2(redirection->dest_fd, STDIN_FILENO);
-	test_close(redirection->dest_fd);
+	safe_close(&redirection->dest_fd);
 	return (0);
 }
 
@@ -56,11 +56,11 @@ static int	perform_output_redirection(
 	}
 	if (redirection->src_fd < 0)
 	{
-		test_close(redirection->dest_fd);
+		safe_close(&redirection->dest_fd);
 		return (msh_perror(NULL, FD_ERR, extern_err), fd_err);
 	}
 	test_dup2(redirection->dest_fd, redirection->src_fd);
-	test_close(redirection->dest_fd);
+	safe_close(&redirection->dest_fd);
 	return (0);
 }
 

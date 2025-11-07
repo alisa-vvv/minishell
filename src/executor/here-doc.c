@@ -157,14 +157,14 @@ int	create_here_doc(
 	if (pid == 0)
 	{
 		printf("here doc child lalala %d\n", getpid());
-		safe_close(here_doc[READ_END]); // double check how this works just in case
+		safe_close(&here_doc[READ_END]); // double check how this works just in case
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
-		safe_close(here_doc[WRITE_END]);
+		safe_close(&here_doc[WRITE_END]);
 		return (child_heredoc);
 	}
 	else if (pid > 0)
 	{
-		safe_close(here_doc[WRITE_END]);
+		safe_close(&here_doc[WRITE_END]);
 		ignore_sigint();
 		err_check = heredoc_wait_for_child(pid);
 		handle_signals_non_interactive();

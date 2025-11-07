@@ -27,7 +27,7 @@ static int	cleanup_in_parent_process( // FIX THIS
 {
 	if (command->output_is_pipe == true)
 	{
-		test_close(command_io->out_pipe[WRITE_END]);
+		safe_close(&command_io->out_pipe[WRITE_END]);
 		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 		(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD;
 	}
@@ -47,13 +47,13 @@ static int	run_child_process(
 	if (command->input_is_pipe == true)
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
-		test_close(command_io->in_pipe[READ_END]);
+		safe_close(&command_io->in_pipe[READ_END]);
 		command_io->in_pipe[READ_END] = CLOSED_FD;
 	}
 	if (command->output_is_pipe == true)
 	{
 		test_dup2(command_io->out_pipe[WRITE_END], STDOUT_FILENO);
-		test_close(command_io->out_pipe[WRITE_END]);
+		safe_close(&command_io->out_pipe[WRITE_END]);
 		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 	}
 	if (command->redirections)
@@ -163,16 +163,9 @@ static void	executor_cleanup(
 	while (++i < minishell_data->command_count)
 	{
 		free_and_close_exec_data(&minishell_data->exec_data[i]);
-		safe_close(command_io[i].out_pipe[READ_END]); // this is necessary for the heredoc case. if (command_io[i].out_pipe[READ_END] > 2) // this is necessary for the heredoc case. {
-		//	test_close(command_io[i].out_pipe[READ_END]);
-		//	command_io[i].out_pipe[READ_END] = CLOSED_FD;
-		//}
-		safe_close(command_io[i].out_pipe[WRITE_END]);
-		//if (command_io[i].out_pipe[WRITE_END] > 2)
-		//{
-		//	test_close(command_io[i].out_pipe[WRITE_END]);
-		//	command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
-		//}
+		safe_close(&command_io[i].out_pipe[READ_END]); // this is necessary for the heredoc case.
+		// check if there's a better way to handle here doc situations
+		safe_close(&command_io[i].out_pipe[WRITE_END]);
 	}
 	free(command_io);
 	free(p_ids);

@@ -70,11 +70,10 @@ void	clean_redir_list(
 		if (cur_node->heredoc_delim)
 			free(cur_node->heredoc_delim);
 		if (cur_node->type == heredoc)
-			test_close(cur_node->dest_fd);
+			safe_close(&cur_node->dest_fd);
 		cur_node->dest_filename = NULL;
 		cur_node->src_filename = NULL;
 		cur_node->heredoc_delim = NULL;
-		cur_node->dest_fd = CLOSED_FD;
 		free(cur_node);
 		cur_node = next_node;
 	}
