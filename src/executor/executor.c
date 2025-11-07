@@ -20,7 +20,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
-static int	cleanup_in_parent_process( // FIX THIS
+static int	cleanup_in_parent_process( // FIX THIS // fix what?
 	t_exec_data *command,
 	t_command_io *const command_io
 )
@@ -28,7 +28,6 @@ static int	cleanup_in_parent_process( // FIX THIS
 	if (command->output_is_pipe == true)
 	{
 		safe_close(&command_io->out_pipe[WRITE_END]);
-		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 		(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD;
 	}
 	free_and_close_exec_data(command);
@@ -48,16 +47,14 @@ static int	run_child_process(
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
 		safe_close(&command_io->in_pipe[READ_END]);
-		command_io->in_pipe[READ_END] = CLOSED_FD;
 	}
 	if (command->output_is_pipe == true)
 	{
 		test_dup2(command_io->out_pipe[WRITE_END], STDOUT_FILENO);
 		safe_close(&command_io->out_pipe[WRITE_END]);
-		command_io->out_pipe[WRITE_END] = CLOSED_FD;
 	}
 	if (command->redirections)
-		err_check = perform_redirections(command->redirections);
+		err_check = perform_redirections(command->redirections, NULL, false);
 	if (err_check != success) // it looks like the processs does not run if it fails
 	{
 		if (err_check == fd_err) // add reasnable system for just adding child process
@@ -72,6 +69,49 @@ static int	run_child_process(
 	// double check
 }
 
+static int	execute_in_child(
+	t_exec_data *command,
+	t_command_io *const command_io,
+	t_minishell_data *const minishell_data,
+	pid_t *pid
+)
+{
+	int	err_check;
+
+	err_check = success;
+	*pid = fork();
+	if (*pid == 0)
+		err_check = run_child_process(command, command_io, minishell_data);
+	else if (*pid > 0)
+		err_check = cleanup_in_parent_process(command, command_io);
+	else if (*pid < 0)
+		return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
+	return (err_check);
+}
+
+//static int	redirect_in_parent(
+//	t_redir_list *redirections,
+//	t_undup_list *undup_list
+//)
+//{
+//	int	err_check;
+//
+//	err_check = 0;
+//	while (redirections != NULL)
+//	{
+//		if (redirections->type == input || redirections->type == heredoc)
+//			err_check = perform_input_redirection(redirections);
+//		else
+//			err_check = perform_output_redirection(redirections);
+//		// do we stop after first error or do we try them all?
+//		if (err_check != success)
+//			return (err_check);
+//		redirections = redirections->next;
+//	}
+//	return (err_check);
+//	return (success);
+//}
+//
 static int	execute_command(
 	t_exec_data *command,
 	t_command_io *const command_io,
@@ -79,29 +119,19 @@ static int	execute_command(
 	pid_t *pid
 )
 {
-	int		err_check;
+	int				err_check;
+	//t_undup_list	**undup_list;
 
-	err_check = 0;
+	err_check = success;
 	*pid = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true
 		|| command->builtin_name == not_builtin)
-	{
-		*pid = fork();
-		if (*pid == 0)
-		{
-			err_check = run_child_process(command, command_io, minishell_data);
-			return (err_check); // this should never be reached unless there is an error I think
-		}
-		else if (*pid > 0)
-		{
-			err_check = cleanup_in_parent_process(command, command_io);
-			return (err_check);
-		}
-		else if (*pid < 0)
-			return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
-	}
-	// HERE: add peform_redirections()
-	else if (command->builtin_name != not_builtin)
+		err_check = execute_in_child(command, command_io, minishell_data, pid);
+	if (err_check != success)
+		return (err_check);
+	//undup_list = NULL;
+	//redirect_in_parent(command->redirections, undup_list);
+	if (command->builtin_name != not_builtin)
 		err_check = exec_builtin(command, minishell_data);
 	// HERE: add undup_redirections()
 	return (err_check);
@@ -245,8 +275,6 @@ static int	execute_pipeline(
 	err = success;
 	elem_count = 0;
 	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
-	printf("command count? %d\n", command_count);
-	printf("elem count? %d\n", elem_count);
 	if (err != success)
 		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
 	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
