@@ -20,7 +20,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
-static int	cleanup_in_parent_process(
+static int	cleanup_in_parent_process( // FIX THIS
 	t_exec_data *command,
 	t_command_io *const command_io
 )
@@ -43,7 +43,7 @@ static int	run_child_process(
 {
 	int				err_check;
 
-	err_check = 0;
+	err_check = success;
 	if (command->input_is_pipe == true)
 	{
 		test_dup2(command_io->in_pipe[READ_END], STDIN_FILENO);
@@ -87,37 +87,23 @@ static int	execute_command(
 		|| command->builtin_name == not_builtin)
 	{
 		*pid = fork();
-		// this is handle child process
 		if (*pid == 0)
 		{
 			err_check = run_child_process(command, command_io, minishell_data);
-			//if (err_check != child_fd_err) // replace with a function that amtches all return error cases
 			return (err_check); // this should never be reached unless there is an error I think
 		}
-		// endof handle child process
-		// this is handle parent process
 		else if (*pid > 0)
 		{
 			err_check = cleanup_in_parent_process(command, command_io);
 			return (err_check);
-			//if (err_check == 0)
-			//	return (*pid);
-			//else
-			//{
-			//	printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-			//	return (err_check);
-			//}
 		}
-		// endof handle parent process
 		else if (*pid < 0)
 			return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
 	}
+	// HERE: add peform_redirections()
 	else if (command->builtin_name != not_builtin)
-	{
 		err_check = exec_builtin(command, minishell_data);
-		//here we probably don't exit either. check.
-		//most likely we send an error msg locally and then proceed with execution
-	}
+	// HERE: add undup_redirections()
 	return (err_check);
 }
 
@@ -136,8 +122,6 @@ static int	wait_for_children(
 	//printf("command count: %d\n", command_count);
 	while (++i < command_count)
 	{
-	//	printf("\np_ids[%d]: %d\n", i, p_ids[i]);
-	//	printf("p_exit_codes[%d]: %d\n\n", i, p_exit_codes[i]);
 		if (p_ids[i] < 0)
 			continue ;
 		err_check = waitpid(p_ids[i], &p_exit_codes[i], 0);
@@ -176,20 +160,19 @@ static void	executor_cleanup(
 	int	i;
 
 	i = -1;
-	// double check if there are ever cases where we need to close input pipes.
 	while (++i < minishell_data->command_count)
 	{
 		free_and_close_exec_data(&minishell_data->exec_data[i]);
-		if (command_io[i].out_pipe[READ_END] > 2)
-		{
-			test_close(command_io[i].out_pipe[READ_END]);
-			//command_io[i].out_pipe[READ_END] = CLOSED_FD;
-		}
-		if (command_io[i].out_pipe[WRITE_END] > 2)
-		{
-			test_close(command_io[i].out_pipe[WRITE_END]);
-			//command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
-		}
+		safe_close(command_io[i].out_pipe[READ_END]); // this is necessary for the heredoc case. if (command_io[i].out_pipe[READ_END] > 2) // this is necessary for the heredoc case. {
+		//	test_close(command_io[i].out_pipe[READ_END]);
+		//	command_io[i].out_pipe[READ_END] = CLOSED_FD;
+		//}
+		safe_close(command_io[i].out_pipe[WRITE_END]);
+		//if (command_io[i].out_pipe[WRITE_END] > 2)
+		//{
+		//	test_close(command_io[i].out_pipe[WRITE_END]);
+		//	command_io[i].out_pipe[WRITE_END] = CLOSED_FD;
+		//}
 	}
 	free(command_io);
 	free(p_ids);
@@ -236,18 +219,15 @@ int	execute_commands(
 	t_msh_errno	err;
 
 	i = -1;
-	printf("hello? what is command count? %d\n", minishell_data->command_count);
 	while (++i < minishell_data->command_count)
 	{
 		err = execute_command(&command[i], &command_io[i], minishell_data, &p_id_arr[i]);
 		printf("\033[36mexecuted command's child id: %d\033[0m\n", err);
 		if (err != success)
 		{
-			printf("what is err check here? %d\n", err);
 			if (err == child_heredoc || err == malloc_err
-				|| err == no_command)
+				|| err == no_command || err == child_success)
 			{
-				//printf("PLACEHOLDER, ADD PROPER ERROR MANAGEMENT\n");
 				// here, should check for when we actually need to stop. never questionmark?
 				return (err);
 			}
@@ -259,9 +239,9 @@ int	execute_commands(
 // maybe rework this for more clarity on what happens on different exit situations
 static int	execute_pipeline(
 	t_minishell_data *const minishell_data,
-	int				*p_id_arr,
-	int				*p_exit_codes,
-	t_command_io	*command_io
+	int *p_id_arr,
+	int *p_exit_codes,
+	t_command_io *command_io
 )
 {
 	int			elem_count;
@@ -272,17 +252,13 @@ static int	execute_pipeline(
 	err = success;
 	elem_count = 0;
 	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
+	printf("command count? %d\n", command_count);
+	printf("elem count? %d\n", elem_count);
 	if (err != success)
-	{
-		printf("returning from process: %d, getpid(), return value: %d\n", getpid(), err);
 		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
-	}
 	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
 	if (err != success)
-	{
-		printf("\033[31error during command execution\033[0m\n"); // please kill me	
 		return (err);
-	}
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(elem_count, minishell_data, p_id_arr, p_exit_codes);

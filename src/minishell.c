@@ -117,19 +117,15 @@ int	main(void)
 			TEST_MINISHELLDATA(minishell_data);
 			if (TEST_lexer_return != 0)
 				printf("PLACEHOLDER ERROR\n");
-			printf("cur dir post parsing: %s\n", minishell_data.cur_dir);
 			err_check = executor(&minishell_data, minishell_data.command_count);
 		}
 		/*	endof Test Lexer*/
 		if (read_line)
 			free(read_line);
-		if (err_check == child_heredoc)
+		if (err_check == child_heredoc || err_check == child_success)
 			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
 		else if (err_check < 0)
-		{
-			printf("clean exit out of child hopefully, id: %d\n", getpid());
 			clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);
-		}
 		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
 	}
 	clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);

@@ -45,4 +45,3 @@ void	test_dup2(int oldfd, int newfd)
 		perror(DUP2_ERR);
 	}
 }
-

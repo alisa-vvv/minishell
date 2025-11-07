@@ -263,6 +263,19 @@ t_exec_data	*test_get_dummy_exec_data(
 	i++;
 	//	}
 
+//	// {
+//	// BASIC_TEST_09: >outfile
+//	//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = NULL;
+//	exec_data[i].builtin_name = not_builtin;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	//exec_data[i].redirections = NULL;
+//	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+//	i++;
+//
+//	//	}
 
 
 	return (exec_data);

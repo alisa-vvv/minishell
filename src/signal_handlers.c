@@ -22,7 +22,7 @@ void	sigint_handler_interactive(
 )
 {
 	write(STDOUT_FILENO, "\n", 1);
-	// rl_replace_line("", 0); // Commented out - not available on all systems
+	rl_replace_line("", 0); // Commented out - not available on all systems
 	rl_on_new_line();
 	rl_redisplay();
 	g_msh_signal = SIGINT;

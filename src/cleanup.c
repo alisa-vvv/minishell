@@ -25,14 +25,13 @@ void	clean_exit(
 {
 	int	i;
 
-	printf("cleaning in process: %d\n", getpid());
 	if (minishell_data)
 	{
 		if (exit_code == 0)
 			exit_code = minishell_data->last_pipeline_return;
 		if (minishell_data->cur_dir)
 			free(minishell_data->cur_dir);
-		if (minishell_data->exec_data) // do we ever need this? double check
+		if (minishell_data->exec_data)
 		{
 			i = -1;
 			while (++i < minishell_data->command_count)
@@ -51,7 +50,6 @@ void	clean_exit(
 		free(read_line);
 	if (silent_exit == false)
 		write(STDOUT_FILENO, "exit\n", 5); // this should msybe have a check if we are in  child process
-	printf("finished cleaning in process: %d\n", getpid());
 	exit (exit_code);
 }
 
@@ -96,7 +94,6 @@ void	free_and_close_exec_data(
 		i = -1;
 		while (exec_data->argv[++i])
 		{
-			printf("\033[36mfreeing data: %s at index: %d\33[0m\n", exec_data->argv[i], i);
 			free(exec_data->argv[i]);
 			exec_data->argv[i] = NULL;
 		}
