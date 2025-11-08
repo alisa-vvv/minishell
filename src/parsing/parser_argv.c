@@ -54,17 +54,19 @@ int	add_arg_to_list(
 {
 	t_token	*check_token;
 
+	comm_list->argv[*i] = NULL;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+	if (token_is_redirect(check_token))
+	{
+		if (*i > 0)
+			*i -= 1;
+		add_redirect(comm_list, tokenlist, pos, pos_red);
+		return (0);
+	}
 	if ((pos > 0 && token_is_redirect(lookbehind(tokenlist, pos))))
 		*i -= 1;
 	else if (check_token->command)
 		set_command(comm_list, tokenlist, pos, check_token, i);
-	else if (token_is_redirect(check_token))
-	{
-		*i -= 1;
-		add_redirect(comm_list, tokenlist, pos, pos_red);
-		return (0);
-	}
 	else if (check_token->type == PIPE)
 	{
 		comm_list->output_is_pipe = true;
@@ -101,5 +103,6 @@ int	fill_comm_list(
 		pos++;
 	}
 	p_printf("Token list total = %d\n Token list i = %d\n", total, i);
+	exec_data->argv[i] = NULL;
 	return (0);
 }

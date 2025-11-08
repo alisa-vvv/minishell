@@ -56,6 +56,7 @@ int	find_symbol(element *tokenlist, int pos, char symbol)
 	}
 	return (-1);
 }
+
 //searches tokenlist for specific type token
 int	find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type type)
 {
@@ -81,25 +82,32 @@ int	find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type ty
 
 int count_redirs(
 	element *tokenlist,
-	int total,
-	int i
-	)
+	int total, 
+	int i)
 {
 	int redir;
 	t_token *check_token;
 	redir = 0;
 
-	check_token = tokenlist->element_list.tokens[i];
-	if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
+	while (i < total)
 	{
-		if (lookbehind(tokenlist, i)->type == NUMBER && (check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_OUT_APP))
-			redir++;
+		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		if (token_is_redirect(check_token))
+		{
+			if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
+			{
+				if (lookbehind(tokenlist, i)->type == NUMBER && (check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_OUT_APP))
+					redir++;
+				else if (lookahead(tokenlist, i) && lookahead(tokenlist, i)->type == REDIRECT_IN )
+					redir++;
+			}
+			if (lookahead(tokenlist, i) && (lookahead(tokenlist, i)->type == REDIRECT_OUT_APP || lookahead(tokenlist, i)->type == REDIRECT_OUT))
+				redir++;
+			if (check_token->type == PIPE)
+				redir++;
+		}
+		i++;
 	}
-		redir++;
-	if (lookahead(tokenlist, i))
-		redir++;
-	redir++;
-
 	return (redir);
 }
 
@@ -112,24 +120,10 @@ int count_args(
 {
 	int redir;
 	int i;
-	t_token *check_token;
+	// t_token *check_token;
 	i = pos;
 	redir = 0;
-	while (i < total)
-	{
-		check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);
-		if (token_is_redirect(check_token))
-		{
-			if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
-				redir++;
-			if (lookahead(tokenlist, i))
-				redir++;
-			redir++;
-		}
-		else if (check_token->type == PIPE)
-			redir++;
-		i++;
-	}
+	redir = count_redirs(tokenlist, total, i);
 	if (redir)
 		total = total - (redir + pos);
 	else 

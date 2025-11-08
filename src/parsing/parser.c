@@ -79,13 +79,16 @@ int	make_cm_list(
 
 	total = 0;
 	//	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
+	if (!comm_list)
+		return (write(1, "No command list\n", 16));
+	comm_list->argv = NULL;
 	if (pos_red > 0)
 		total = count_args(tokenlist, pos, pos_red);
 	else
 		total = count_args(tokenlist, pos, tokenlist->element_list.total);
 	if (total == 0)
 	{
-		comm_list->argv = NULL;
+		// comm_list->argv = NULL;
 		return (0);
 	}
 	comm_list->argv = malloc(sizeof(char *) * (total + 1));
@@ -139,6 +142,7 @@ int	convert_data(
 {
 	t_exec_data	*comm_list;
 
+	comm_list = NULL;
 	comm_list = minishell_data->exec_data + i;
 	//	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
 	if (make_cm_list(tokenlist, comm_list, pos, pos_red))

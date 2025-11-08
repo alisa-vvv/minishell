@@ -42,4 +42,18 @@ ls -l | cat -e | cat -b | cat -T
 - 'export empty=" "' -> 'echo hi > $EMPTY' -> '$EMPTY echo hi'
 - export $BLA>hey   (we need to check if exporting with a pipe or something in the name breaks)
 - >hey ls               (need to check how we can make a default if the input is missing for a redirect) 
-- echo "$USER$USER"     (needs to expand to 'usernameusername', DONE)
+- 
+{
+    adecheri@f1r1s9:~/tmp$ /bin/djdjdjd
+    bash: /bin/djdjdjd: No such file or directory
+    adecheri@f1r1s9:~/tmp$ echo $?
+    127
+    adecheri@f1r1s9:~/tmp$ /bin/ls/heheh
+    bash: /bin/ls/heheh: Not a directory
+    adecheri@f1r1s9:~/tmp$ echo $?
+    126
+    
+
+^ check if the exit codes are different when it's a file/directory
+}
+

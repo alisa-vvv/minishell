@@ -41,14 +41,15 @@ int set_src(
 	t_token *check_token;
 
 	check_token = NULL;
-	if (pos > 0)
-		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
-	else 
+	execdata->redirections->src_fd = -1;
+	execdata->redirections->src_filename = NULL;
+	if (pos == 0)
 	{
-		execdata->redirections->src_fd = -1;
-		execdata->redirections->src_filename = NULL;
+		execdata->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 	}
-	if (check_token->type == NUMBER)
+	else if (pos > 0)
+		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
+	else if (check_token->type == NUMBER)
 	{
 		execdata->redirections->src_fd = ft_atoi(check_token->value);
 		execdata->redirections->src_filename = NULL;
