@@ -103,8 +103,6 @@ int expand_var(element **tokenlist,
         name = refine_name_var(check_token->value, name);
         if (name && ft_strncmp(name, "?", 1))
             printf("%d\n", (*minishell_data)->last_pipeline_return);
-        // if (name && ft_isall_upper(name))
-        //    return (token_name);
         env_value = env_var_get_value((*minishell_data)->env, name);
         e_printf("\nNAME= %s \n", name);
         if (quoted)

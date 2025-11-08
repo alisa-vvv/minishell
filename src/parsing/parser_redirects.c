@@ -12,47 +12,53 @@
 
 #include "parser.h"
 
-int set_dest(t_exec_data *execdata,
+void set_dest(
+	t_exec_data *execdata,
 	element *tokenlist,
 	int pos)
 {
-	if (lookahead(tokenlist, pos)->type == NUMBER)
-	{
-		execdata->redirections->dest_fd = ft_atoi((lookahead(tokenlist, pos)->value));
-		execdata->redirections->dest_filename = NULL;
-	}
-	else
+	// if (lookahead(tokenlist, pos)->type == NUMBER)
+	// {
+	// 	execdata->redirections->dest_fd = ft_atoi((lookahead(tokenlist, pos)->value));
+	// 	execdata->redirections->dest_filename = NULL;
+	// }
+	// else
+	// {
+	if (lookahead(tokenlist, pos))
 	{
 		execdata->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 		execdata->redirections->dest_fd = -1;
 	}
-	return (0);
+	
+	// return (0);
 }
 
-int set_src(t_exec_data *execdata,
+int set_src(
+	t_exec_data *execdata,
 	element *tokenlist,
 	int pos)
 {
 	t_token *check_token;
 
 	check_token = NULL;
-	if (pos > 0)
-		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
-	else 
+	execdata->redirections->src_fd = -1;
+	execdata->redirections->src_filename = NULL;
+	if (pos == 0)
 	{
-		execdata->redirections->src_fd = -1;
-		execdata->redirections->src_filename = NULL;
+		execdata->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 	}
-	if (check_token->type == NUMBER)
+	else if (pos > 0)
+		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
+	else if (check_token->type == NUMBER)
 	{
 		execdata->redirections->src_fd = ft_atoi(check_token->value);
 		execdata->redirections->src_filename = NULL;
 	}
-	else if (check_token->type == STRING || check_token->type == UNKNOWN)
-	{
-		execdata->redirections->src_filename = ft_strdup(check_token->value);
-		execdata->redirections->src_fd = -1;
-	}
+	// else if (check_token->type == STRING || check_token->type == UNKNOWN)
+	// {
+	// 	execdata->redirections->src_filename = ft_strdup(check_token->value);
+	// 	execdata->redirections->src_fd = -1;
+	// }
 	return(0);
 }
 
@@ -126,6 +132,6 @@ int add_redirect(
 	if (check_token->type == HEREDOC)
 		set_heredoc(execdata, tokenlist, pos, pos_red);
 	else 
-		set_redirect(execdata,tokenlist, pos);		
+		set_redirect(execdata, tokenlist, pos);		
 	return (0);
 }

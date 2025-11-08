@@ -12,8 +12,11 @@
 
 #include "parser.h"
 
+
+
 // go through lexer and clean up data
-int	check_lexer(element *tokenlist, t_minishell_data *minishell_data)
+int	check_lexer(element *tokenlist, 
+	t_minishell_data *minishell_data)
 {
 	
 	if (exp_lexer(tokenlist, &minishell_data, PARAMETER, 0) || exp_lexer(tokenlist,
