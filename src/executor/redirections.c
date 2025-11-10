@@ -45,7 +45,8 @@ static int	input_redirect(
 	if (record == true)
 	{
 		dprintf(STDERR_FILENO, "recording input redirections\n");
-		undup_elem->orig_fd = dup(STDIN_FILENO); 
+		dprintf(STDERR_FILENO, "input dest fd: %d\n", redirection->dest_fd);
+		undup_elem->orig_fd = dup(STDIN_FILENO); // investigate this dup
 		undup_elem->dup_fd = STDIN_FILENO; // wrong i think
 		undup_elem->dest_fd = redirection->dest_fd;
 		undup_elem->next = NULL; // wahto do we do here again
@@ -54,7 +55,9 @@ static int	input_redirect(
 	if (redirection->dest_fd < 0)
 		return (msh_perror(NULL, FD_ERR, extern_err), fd_err);
 	test_dup2(redirection->dest_fd, STDIN_FILENO);
-	safe_close(&redirection->dest_fd);
+	dprintf(STDERR_FILENO, "dest fd before firstr close: %d\n", redirection->dest_fd);
+	safe_close(&redirection->dest_fd); //ingestigae this close
+	dprintf(STDERR_FILENO, "dest fd after firstr close: %d\n", redirection->dest_fd); 
 	return (success);
 }
 
@@ -67,7 +70,6 @@ static int	output_redirect(
 	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
 	const int	app_f = O_WRONLY | O_CREAT | O_APPEND;
 
-		printf("IS IT NOT TRUE??? %d\n", record == true);
 	if (redirection->type == trunc)
 		safe_open(redirection->dest_filename, &redirection->dest_fd, trunc_f);
 	else if (redirection->type == append)
@@ -105,7 +107,9 @@ void	undup_redirections(
 		dprintf(STDERR_FILENO, "cur_undup->orig_fd: %d\n", cur_undup->orig_fd);
 		dprintf(STDERR_FILENO, "cur_undup->dup_fd: %d\n", cur_undup->dup_fd);
 		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd); // add error handling ?
+		dprintf(STDERR_FILENO, "wrap error\n");
 		safe_close(&cur_undup->dest_fd);
+		dprintf(STDERR_FILENO, "wrap error end\n");
 		safe_close(&cur_undup->orig_fd);
 		cur_undup = cur_undup->prev;
 		free(*undup_head);

@@ -157,7 +157,7 @@ int	create_here_doc(
 	if (pid == 0)
 	{
 		printf("here doc child lalala %d\n", getpid());
-		safe_close(&here_doc[READ_END]); // double check how this works just in case
+		//safe_close(&here_doc[READ_END]); // this should not be closed here since we need to access it maybe
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		safe_close(&here_doc[WRITE_END]);
 		return (child_heredoc);
