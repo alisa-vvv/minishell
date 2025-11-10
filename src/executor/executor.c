@@ -120,20 +120,24 @@ static int	execute_command(
 )
 {
 	int				err_check;
-	//t_undup_list	**undup_list;
+	t_undup_list	**undup_list_head;
+	t_undup_list	*undup_list;
 
 	err_check = success;
 	*pid = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true
 		|| command->builtin_name == not_builtin)
-		err_check = execute_in_child(command, command_io, minishell_data, pid);
-	if (err_check != success)
-		return (err_check);
-	//undup_list = NULL;
-	//redirect_in_parent(command->redirections, undup_list);
+		return (execute_in_child(command, command_io, minishell_data, pid));
+	if (command->redirections)
+	{
+		undup_list = NULL;
+		undup_list_head = &undup_list;
+		perform_redirections(command->redirections, undup_list_head, true);
+	}
 	if (command->builtin_name != not_builtin)
 		err_check = exec_builtin(command, minishell_data);
-	// HERE: add undup_redirections()
+	if (command->redirections)
+		undup_redirections(undup_list_head);
 	return (err_check);
 }
 

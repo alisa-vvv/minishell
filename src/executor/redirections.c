@@ -47,6 +47,7 @@ static int	input_redirect(
 		dprintf(STDERR_FILENO, "recording input redirections\n");
 		undup_elem->orig_fd = dup(STDIN_FILENO); 
 		undup_elem->dup_fd = STDIN_FILENO; // wrong i think
+		undup_elem->dest_fd = redirection->dest_fd;
 		undup_elem->next = NULL; // wahto do we do here again
 	}
 	safe_open(redirection->dest_filename, &redirection->dest_fd, O_RDONLY);
@@ -66,6 +67,7 @@ static int	output_redirect(
 	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
 	const int	app_f = O_WRONLY | O_CREAT | O_APPEND;
 
+		printf("IS IT NOT TRUE??? %d\n", record == true);
 	if (redirection->type == trunc)
 		safe_open(redirection->dest_filename, &redirection->dest_fd, trunc_f);
 	else if (redirection->type == append)
@@ -77,6 +79,7 @@ static int	output_redirect(
 		dprintf(STDERR_FILENO, "recording output redirections\n");
 		undup_elem->orig_fd = dup(redirection->src_fd); 
 		undup_elem->dup_fd = redirection->src_fd;
+		undup_elem->dest_fd = redirection->dest_fd;
 		undup_elem->next = NULL;
 	}
 	if (redirection->src_filename != NULL)
@@ -89,37 +92,60 @@ static int	output_redirect(
 	return (success);
 }
 
+void	undup_redirections(
+	t_undup_list **undup_head
+)
+{
+	t_undup_list	*cur_undup;
+
+	cur_undup = *undup_head;
+	while (cur_undup != NULL)
+	{
+		dprintf(STDERR_FILENO, "checking insides of cur_undup\n");
+		dprintf(STDERR_FILENO, "cur_undup->orig_fd: %d\n", cur_undup->orig_fd);
+		dprintf(STDERR_FILENO, "cur_undup->dup_fd: %d\n", cur_undup->dup_fd);
+		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd); // add error handling ?
+		safe_close(&cur_undup->dest_fd);
+		safe_close(&cur_undup->orig_fd);
+		cur_undup = cur_undup->prev;
+		free(*undup_head);
+		*undup_head = cur_undup;
+	}
+}
+
 // QUESTION: DO WE NEED TO EXIT ON REDIRECTION FAIL? (I ASSUME NO)
 // turns out the answer is YES. lmao
 // add a check for if this is child process
 int	perform_redirections(
 	t_redir_list *redirections,
-	t_undup_list **undup_list,
+	t_undup_list **undup_list_head,
 	bool record
 )
 {
 	int				err_check;
 	t_undup_list	*cur_undup;
-	//t_undup_list	*prev_undup; // add a subfunction for all the undup nonsense
 
-	//prev_undup = NULL; // uuuhhhhhuhuhuhhhhuhhhh linked lsit linked list linked list lionked lsit
+	cur_undup = NULL;
 	err_check = success;
-	if (record == true)
-		cur_undup = *undup_list;
-	// do we stop after first error or do we try them all?
 	while (redirections != NULL)
 	{
+		if (record == true)
+			cur_undup = ft_calloc(1, sizeof(t_undup_list));
 		if (redirections->type == input || redirections->type == heredoc)
 			err_check = input_redirect(redirections, cur_undup, record);
 		else
 			err_check = output_redirect(redirections, cur_undup, record);
 		if (err_check != success)
-			return (err_check);
+			return (err_check); // IMPORTANT: FREE UNDUP LIST IN CASE OF ERROR!
 		redirections = redirections->next;
 		if (record == true)
 		{
-			*undup_list = cur_undup;
-			cur_undup = cur_undup->next;
+			cur_undup->prev = *undup_list_head;
+			if (*undup_list_head == NULL)
+				(*undup_list_head) = cur_undup;
+			else
+				(*undup_list_head)->next = cur_undup;
+			cur_undup->next = NULL;
 		}
 	}
 	return (err_check);

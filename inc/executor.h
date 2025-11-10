@@ -32,6 +32,7 @@ typedef struct	s_undup_list
 {
 	int	orig_fd;
 	int	dup_fd;
+	int	dest_fd;
 	struct s_undup_list *prev;
 	struct s_undup_list *next;
 }	t_undup_list;
@@ -55,7 +56,13 @@ int	prepare_command_io(
 	t_command_io *const command_io,
 	int i
 );
+/**/
 
+
+/*		Redirections	*/
+void	undup_redirections(
+	t_undup_list **undup_head
+);
 int	perform_redirections(
 	t_redir_list *redirections,
 	t_undup_list **undup_list,
