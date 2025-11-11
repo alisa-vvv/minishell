@@ -107,9 +107,9 @@ void	undup_redirections(
 		dprintf(STDERR_FILENO, "cur_undup->orig_fd: %d\n", cur_undup->orig_fd);
 		dprintf(STDERR_FILENO, "cur_undup->dup_fd: %d\n", cur_undup->dup_fd);
 		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd); // add error handling ?
-		dprintf(STDERR_FILENO, "wrap error\n");
-		safe_close(&cur_undup->dest_fd);
-		dprintf(STDERR_FILENO, "wrap error end\n");
+		//dprintf(STDERR_FILENO, "wrap error\n");
+		//safe_close(&cur_undup->dest_fd);
+		//dprintf(STDERR_FILENO, "wrap error end\n");
 		safe_close(&cur_undup->orig_fd);
 		cur_undup = cur_undup->prev;
 		free(*undup_head);

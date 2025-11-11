@@ -47,6 +47,7 @@ static void	setup_minishell_data(
 	minishell_data->env = NULL;
 	minishell_data->env_var_count = 0;
 	minishell_data->env_mem = 0;
+	minishell_data->is_parent = true;
 	minishell_data->last_pipeline_return = 0;
 	minishell_data->exec_data = NULL;
 	minishell_data->command_count = 0;
@@ -76,7 +77,7 @@ int	main(void)
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	//
 	rl_catch_signals = false;
-	int	TEST_len = 1;
+	int	TEST_len = 2;
 	printf("pid of parrent: %d\n", getpid());
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)
@@ -122,10 +123,14 @@ int	main(void)
 		/*	endof Test Lexer*/
 		if (read_line)
 			free(read_line);
-		if (err_check == child_heredoc || err_check == child_success)
-			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
-		else if (err_check < 0)
-			clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);
+		if (minishell_data.is_parent == false) // make this better
+		{
+			if (err_check == child_heredoc || err_check == child_success)
+				clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
+			else if (err_check < 0)
+				clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);
+		}
+		// add error cases where bash exits (never questionmark?)
 		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
 	}
 	clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);

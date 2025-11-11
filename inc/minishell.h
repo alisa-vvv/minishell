@@ -164,6 +164,7 @@ typedef struct	minishell_data
 	char		**env;
 	int			env_var_count;
 	int			env_mem;
+	bool		is_parent;
 	t_exec_data	*exec_data;
 	int			command_count;
 	int			last_pipeline_return;

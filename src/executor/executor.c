@@ -20,7 +20,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
-static int	cleanup_in_parent_process( // FIX THIS // fix what?
+static int	cleanup_in_parent_process(
 	t_exec_data *command,
 	t_command_io *const command_io
 )
@@ -31,7 +31,7 @@ static int	cleanup_in_parent_process( // FIX THIS // fix what?
 		(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD;
 	}
 	free_and_close_exec_data(command);
-	return (0);
+	return (success);
 }
 
 static int	run_child_process(
@@ -56,12 +56,9 @@ static int	run_child_process(
 	if (command->redirections)
 		err_check = perform_redirections(command->redirections, NULL, false);
 	if (err_check != success) // it looks like the processs does not run if it fails
-	{
-		if (err_check == fd_err) // add reasnable system for just adding child process
-			return (child_fd_err);
-	}
+		return (err_check);
 	// to redirect stuff, so we need to clean and propogate to exit
-	if (command->builtin_name == not_builtin && command->argv) // whats up with sechond condition>?
+	if (command->builtin_name == not_builtin) // whats up with sechond condition>?
 		err_check = try_execve(minishell_data->env, command->argv);
 	else
 		err_check = exec_builtin(command, minishell_data);
@@ -81,9 +78,15 @@ static int	execute_in_child(
 	err_check = success;
 	*pid = fork();
 	if (*pid == 0)
+	{
+		minishell_data->is_parent = false;
 		err_check = run_child_process(command, command_io, minishell_data);
+	}
 	else if (*pid > 0)
+	{
+		printf("pid after execute in child: %d\n", *pid);
 		err_check = cleanup_in_parent_process(command, command_io);
+	}
 	else if (*pid < 0)
 		return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
 	return (err_check);
@@ -127,7 +130,9 @@ static int	execute_command(
 	*pid = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true
 		|| command->builtin_name == not_builtin)
+	{
 		return (execute_in_child(command, command_io, minishell_data, pid));
+	}
 	if (command->redirections)
 	{
 		undup_list = NULL;
@@ -249,15 +254,10 @@ int	execute_commands(
 	while (++i < minishell_data->command_count)
 	{
 		err = execute_command(&command[i], &command_io[i], minishell_data, &p_id_arr[i]);
-		printf("\033[36mexecuted command's child id: %d\033[0m\n", err);
 		if (err != success)
 		{
-			if (err == child_heredoc || err == malloc_err
-				|| err == no_command || err == child_success)
-			{
-				// here, should check for when we actually need to stop. never questionmark?
+			if (minishell_data->is_parent == false)
 				return (err);
-			}
 		}
 	}
 	return (success);
