@@ -28,7 +28,7 @@ static int	cleanup_in_parent_process(
 	if (command->output_is_pipe == true)
 	{
 		safe_close(&command_io->out_pipe[WRITE_END]);
-		(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD;
+		(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD; // fix invalid read here
 	}
 	free_and_close_exec_data(command);
 	return (success);
@@ -84,7 +84,7 @@ static int	execute_in_child(
 	}
 	else if (*pid > 0)
 	{
-		printf("pid after execute in child: %d\n", *pid);
+		//printf("pid after execute in child: %d\n", *pid);
 		err_check = cleanup_in_parent_process(command, command_io);
 	}
 	else if (*pid < 0)

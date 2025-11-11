@@ -68,10 +68,10 @@ int	try_execve(
 	execve(argv[0], argv, env);
 	if (errno != ENOENT)
 	{
+		printf("WEIRD EXECVE ERROR! CATCH IT!\n");
 		printf("PLACEHOLDER, ADD ERROR HANDLING!\n");
 		return (-1);
 	}
-	perror("checking execve error");
 	tmp_slash = ft_strjoin("/", argv[0]);
 	if (!tmp_slash)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); //check return

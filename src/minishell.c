@@ -64,6 +64,7 @@ static void	setup_minishell_data(
 		minishell_data->cur_dir[0] = '/';
 }
 
+int	TEST_len;
 int	main(void)
 {
 	char				*read_line;
@@ -77,7 +78,6 @@ int	main(void)
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	//
 	rl_catch_signals = false;
-	int	TEST_len = 2;
 	printf("pid of parrent: %d\n", getpid());
 	setup_minishell_data(&minishell_data);
 	while (is_open != 0)
@@ -106,7 +106,8 @@ int	main(void)
 		else if (strcmp(read_line, "executor") == 0)
 		{
 			handle_signals_non_interactive();
-			minishell_data.exec_data = test_get_dummy_exec_data(&minishell_data, TEST_len);
+			minishell_data.exec_data = test_get_dummy_exec_data(&minishell_data);
+			printf("\n");
 			err_check = executor(&minishell_data, TEST_len);
 		}
 		/*	endof Test Executor*/

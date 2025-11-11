@@ -26,8 +26,7 @@ t_redir_list	*test_add_redirection(
 );
 
 t_exec_data	*test_get_dummy_exec_data(
-	t_minishell_data	*minishell_data,
-	int len
+	t_minishell_data	*minishell_data
 );
 
 #endif
