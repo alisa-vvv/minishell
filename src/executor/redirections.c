@@ -18,72 +18,139 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-static int	perform_input_redirection(
-	t_redir_list *redirection
+static void	 safe_open(
+	char *filename,
+	int *fd,
+	int flags
 )
 {
-	if (redirection->dest_filename != NULL)
-	{
-		redirection->dest_fd = open(redirection->dest_filename, O_RDONLY);
-		if (redirection->dest_fd != 0)
-			return (msh_perror(NULL, FD_ERR, extern_err), fd_err); // do we return here?
-	}
-	test_dup2(redirection->dest_fd, STDIN_FILENO);
-	test_close(redirection->dest_fd);
-	return (0);
+	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC; // make these into defines maybe? can we?
+	const int	app_f = O_WRONLY | O_CREAT | O_APPEND;
+
+	if (filename == NULL)
+		return ;
+	// add access check here?
+	if (flags == trunc_f || flags == app_f)
+		*fd = open(filename, flags, 0664);
+	else
+		*fd = open(filename, flags);
 }
 
-static int	perform_output_redirection(
-	t_redir_list *redirection
+static int	input_redirect(
+	t_redir_list *redirection,
+	t_undup_list *undup_elem,
+	bool record
+)
+{
+	if (record == true)
+	{
+		dprintf(STDERR_FILENO, "recording input redirections\n");
+		dprintf(STDERR_FILENO, "input dest fd: %d\n", redirection->dest_fd);
+		undup_elem->orig_fd = dup(STDIN_FILENO); // investigate this dup
+		undup_elem->dup_fd = STDIN_FILENO; // wrong i think
+		undup_elem->dest_fd = redirection->dest_fd;
+		undup_elem->next = NULL; // wahto do we do here again
+	}
+	safe_open(redirection->dest_filename, &redirection->dest_fd, O_RDONLY);
+	if (redirection->dest_fd < 0)
+		return (msh_perror(NULL, FD_ERR, extern_err), fd_err);
+	test_dup2(redirection->dest_fd, STDIN_FILENO);
+	dprintf(STDERR_FILENO, "dest fd before firstr close: %d\n", redirection->dest_fd);
+	safe_close(&redirection->dest_fd); //ingestigae this close
+	dprintf(STDERR_FILENO, "dest fd after firstr close: %d\n", redirection->dest_fd); 
+	return (success);
+}
+
+static int	output_redirect(
+	t_redir_list *redirection,
+	t_undup_list *undup_elem,
+	bool record
 )
 {
 	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
 	const int	app_f = O_WRONLY | O_CREAT | O_APPEND;
 
-	if (redirection->dest_filename != NULL)
-	{
-		if (redirection->type == trunc)
-			redirection->dest_fd = open(redirection->dest_filename, trunc_f, 0664);
-		else if (redirection->type == append)
-			redirection->dest_fd = open(redirection->dest_filename, app_f, 0664);
-	}
+	if (redirection->type == trunc)
+		safe_open(redirection->dest_filename, &redirection->dest_fd, trunc_f);
+	else if (redirection->type == append)
+		safe_open(redirection->dest_filename, &redirection->dest_fd, app_f);
 	if (redirection->dest_fd < 0)
-		return (msh_perror(NULL, FD_ERR, extern_err), fd_err);
+		return (msh_perror(NULL, FD_ERR, extern_err), fd_err);// check return
+	if (record == true)
+	{
+		dprintf(STDERR_FILENO, "recording output redirections\n");
+		undup_elem->orig_fd = dup(redirection->src_fd); 
+		undup_elem->dup_fd = redirection->src_fd;
+		undup_elem->dest_fd = redirection->dest_fd;
+		undup_elem->next = NULL;
+	}
 	if (redirection->src_filename != NULL)
 	{
 		//this is for special cases only, refer to bash manual
 		//redirection->src_fd = open(redirection->src_filename, O_RDONLY);
 	}
-	if (redirection->src_fd < 0)
-	{
-		test_close(redirection->dest_fd);
-		return (msh_perror(NULL, FD_ERR, extern_err), fd_err);
-	}
 	test_dup2(redirection->dest_fd, redirection->src_fd);
-	test_close(redirection->dest_fd);
-	return (0);
+	safe_close(&redirection->dest_fd);
+	return (success);
+}
+
+void	undup_redirections(
+	t_undup_list **undup_head
+)
+{
+	t_undup_list	*cur_undup;
+
+	cur_undup = *undup_head;
+	while (cur_undup != NULL)
+	{
+		dprintf(STDERR_FILENO, "checking insides of cur_undup\n");
+		dprintf(STDERR_FILENO, "cur_undup->orig_fd: %d\n", cur_undup->orig_fd);
+		dprintf(STDERR_FILENO, "cur_undup->dup_fd: %d\n", cur_undup->dup_fd);
+		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd); // add error handling ?
+		//dprintf(STDERR_FILENO, "wrap error\n");
+		//safe_close(&cur_undup->dest_fd);
+		//dprintf(STDERR_FILENO, "wrap error end\n");
+		safe_close(&cur_undup->orig_fd);
+		cur_undup = cur_undup->prev;
+		free(*undup_head);
+		*undup_head = cur_undup;
+	}
 }
 
 // QUESTION: DO WE NEED TO EXIT ON REDIRECTION FAIL? (I ASSUME NO)
 // turns out the answer is YES. lmao
 // add a check for if this is child process
 int	perform_redirections(
-	t_redir_list *redirections
+	t_redir_list *redirections,
+	t_undup_list **undup_list_head,
+	bool record
 )
 {
-	int	err_check;
+	int				err_check;
+	t_undup_list	*cur_undup;
 
-	err_check = 0;
+	cur_undup = NULL;
+	err_check = success;
 	while (redirections != NULL)
 	{
+		if (record == true)
+			cur_undup = ft_calloc(1, sizeof(t_undup_list));
 		if (redirections->type == input || redirections->type == heredoc)
-			err_check = perform_input_redirection(redirections);
+			err_check = input_redirect(redirections, cur_undup, record);
 		else
-			err_check = perform_output_redirection(redirections);
-		// do we stop after first error or do we try them all?
+			err_check = output_redirect(redirections, cur_undup, record);
 		if (err_check != success)
-			return (err_check);
+			return (err_check); // IMPORTANT: FREE UNDUP LIST IN CASE OF ERROR!
 		redirections = redirections->next;
+		if (record == true)
+		{
+			cur_undup->prev = *undup_list_head;
+			if (*undup_list_head == NULL)
+				(*undup_list_head) = cur_undup;
+			else
+				(*undup_list_head)->next = cur_undup;
+			cur_undup->next = NULL;
+		}
 	}
 	return (err_check);
 }

@@ -51,8 +51,6 @@ int	prepare_command_io(
 	{
 		command_io[i].in_pipe[READ_END] = command_io[i - 1].out_pipe[READ_END];
 		command_io[i].in_pipe[WRITE_END] = command_io[i - 1].out_pipe[WRITE_END];
-		//printf("\033[36mpipe fds? %d\033[0m\n", command_io[i].in_pipe[READ_END]);
-		//printf("\033[36mpipe fds write? %d\033[0m\n", command_io[i].in_pipe[WRITE_END]);
 	}
 	if (command->output_is_pipe == true)
 	{
