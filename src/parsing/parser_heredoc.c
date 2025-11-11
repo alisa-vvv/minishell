@@ -12,7 +12,6 @@
 
 #include "parser.h"
 
-
 t_builtin_name set_builtins(t_token_type tokentype)
 {
 	if (tokentype == CD)

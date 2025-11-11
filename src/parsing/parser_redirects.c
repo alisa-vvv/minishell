@@ -54,22 +54,12 @@ int set_redirect(
 	set_redir_def(execdata);
 	if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 		execdata->input_is_pipe = true;
-	if (check_token->type == REDIRECT_IN)
+	if (token_is_redirect(check_token))
 	{
-		execdata->redirections->type = input;
-		execdata->redirections->dest_filename = ft_strdup(lookbehind(tokenlist, pos)->value);
-		execdata->redirections->src_filename = ft_strdup(lookahead(tokenlist, pos)->value);
-	}
-	else if (check_token->type == REDIRECT_OUT_APP || check_token->type == REDIRECT_OUT)
-	{
-		if (check_token->type == REDIRECT_OUT_APP)
-			execdata->redirections->type = append;
-	 	else 
-			execdata->redirections->type = trunc;
 		set_src(execdata, tokenlist, pos);
-		execdata->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
-		execdata->redirections->dest_fd = -1;
+		execdata->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value); 
 	}
+
 	return (0);
 }
 

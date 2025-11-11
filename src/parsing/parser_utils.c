@@ -41,7 +41,6 @@ t_token	*lookbehind(
 	return (check_token);
 }
 
-
 // func to traverse list and find a spec symbol
 int	find_symbol(
 	element *tokenlist, 
@@ -85,7 +84,6 @@ int	find_token_type(
 	}
 	return (-1);
 }
-
 
 int count_redirs(
 	element *tokenlist,

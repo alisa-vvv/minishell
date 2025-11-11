@@ -89,10 +89,7 @@ int	make_cm_list(
 	else
 		total = count_args(tokenlist, pos, tokenlist->element_list.total);
 	if (total == 0)
-	{
-		// comm_list->argv = NULL;
 		return (0);
-	}
 	comm_list->argv = malloc(sizeof(char *) * (total + 1));
 	if (!comm_list->argv)
 		return (write(1, MALLOC_ERR, 15));
