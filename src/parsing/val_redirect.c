@@ -29,7 +29,8 @@ int single_token(element *tokenlist)
 }
 
 void set_pipe_cm(
-	element *tokenlist, size_t i)
+	element *tokenlist, 
+    size_t i)
 {
     t_token *c_token;
     bool flag;
@@ -51,9 +52,7 @@ void set_pipe_cm(
 		else if (flag == true)
 		{
             if (lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type == HEREDOC)
-            {
 			    c_token->command = false;
-            }
             else 
                 c_token->command = true; 
 			flag = false;
@@ -85,7 +84,9 @@ static int val_redir_out(
 }
 
 
-static int check_heredoc(element *tokenlist, size_t pos)
+static int check_heredoc(
+    element *tokenlist, 
+    size_t pos)
 {
     t_token *check_token;
 
@@ -98,7 +99,9 @@ static int check_heredoc(element *tokenlist, size_t pos)
 }
 
 //set values 
-int val_redir(element *tokenlist, size_t i)
+int val_redir(
+    element *tokenlist, 
+    size_t i)
 {
     t_token *check_token;
     while (i < tokenlist->element_list.total)

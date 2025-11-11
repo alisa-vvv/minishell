@@ -191,6 +191,7 @@ void TEST_MINISHELLDATA(t_minishell_data minishell_data)
         i++;
     }
     p_printf("Last pipeline return = %d\n", minishell_data.last_pipeline_return);
+    p_printf("COMMAND COUNT: %d\n", minishell_data.command_count);
     p_printf("\n");
 }
 
@@ -206,7 +207,7 @@ void test_execdata(
     {
         while (execdata.argv[i] != NULL)
         {
-            p_printf("Value is = %s\n", execdata.argv[i]);    
+            p_printf("Value is = %s$\n", execdata.argv[i]);    
             i++;
         }
     }
@@ -225,12 +226,12 @@ void test_execdata(
     if (execdata.redirections)
     {   
         //p_printf("Got here\n");
-        p_printf("Redirection Type = %s\n", enum_red_type(execdata.redirections->type));
+        p_printf("Redirection Type = %s$\n", enum_red_type(execdata.redirections->type));
         p_printf("Redirection src_fd = %d\n", execdata.redirections->src_fd);
         p_printf("Redirection dest_fd = %d\n", execdata.redirections->dest_fd);
-        p_printf("Redirection dest_filename = %s\n", execdata.redirections->dest_filename);
-        p_printf("Redirection src_filename = %s\n", execdata.redirections->src_filename);
-        p_printf("Redirection heredoc delimeter = %s\n", execdata.redirections->heredoc_delim);
+        p_printf("Redirection dest_filename = %s$\n", execdata.redirections->dest_filename);
+        p_printf("Redirection src_filename = %s$\n", execdata.redirections->src_filename);
+        p_printf("Redirection heredoc delimeter = %s$\n", execdata.redirections->heredoc_delim);
     }
     t_printf("\n");
 }

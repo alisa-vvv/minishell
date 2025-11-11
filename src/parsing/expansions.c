@@ -136,6 +136,8 @@ int	exp_lexer(
 	while (i < (size_t)tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
+        if (!check_token)
+            return (1);
 		if (((int)check_token->type == PARAMETER && type == PARAMETER)
 			|| ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
 		{

@@ -48,7 +48,9 @@ int	count_lists(element *tokenlist)
 }
 
 // count until the next pos that is a command
-int	count_next_cm(element *tokenlist, int pos)
+int	count_next_cm(
+	element *tokenlist, 
+	int pos)
 {
 	int redir;
 	size_t i;

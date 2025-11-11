@@ -75,7 +75,9 @@ int ft_isall_upper(const char *name)
 
 
 //get name of env var from token_name
-char *refine_name_var(char *token_name, char *result)
+char *refine_name_var(
+    char *token_name, 
+    char *result)
 {
     char *start;
     int i;

@@ -24,6 +24,7 @@ int	set_exec_def(t_exec_data *execdata, element *tokenlist, size_t pos)
 	execdata->redirections = NULL;
 	return (0);
 }
+
 //sets command details in the argv for execdata
 void set_command(
 	t_exec_data *comm_list,
@@ -32,11 +33,18 @@ void set_command(
 	t_token *check_token,
 	int *i)
 {
-	if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
+	if (pos == 0 && token_is_redirect(lookahead(tokenlist, *i)))
+		return;
+	else if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 	{
 		comm_list->argv[*i] = ft_strdup(check_token->value);
 		comm_list->input_is_pipe = true;
 	}
+	else if (token_is_redirect(check_token) || (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos))))
+	{
+		*i -= 1; 
+		return;
+	} 
 	else
 		comm_list->argv[*i] = ft_strdup(check_token->value);
 	comm_list->builtin_name = set_builtins(check_token->type);
@@ -56,23 +64,23 @@ int	add_arg_to_list(
 
 	comm_list->argv[*i] = NULL;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	if (token_is_redirect(check_token))
-	{
-		if (*i > 0)
-			*i -= 1;
-		add_redirect(comm_list, tokenlist, pos, pos_red);
-		return (0);
-	}
-	if ((pos > 0 && token_is_redirect(lookbehind(tokenlist, pos))))
-		*i -= 1;
-	else if (check_token->command)
+	
+	if (check_token->command)
 		set_command(comm_list, tokenlist, pos, check_token, i);
 	else if (check_token->type == PIPE)
 	{
 		comm_list->output_is_pipe = true;
 		return (0);
 	}
-	else
+	else if (token_is_redirect(check_token))
+	{
+		if (*i > 0)
+			*i -= 1;
+		add_redirect(comm_list, tokenlist, pos, pos_red);
+	}
+	else if ((pos > 0 && token_is_redirect(lookbehind(tokenlist, pos))))
+		*i -= 1;
+	else if (token_is_redirect(check_token) == false)
 		comm_list->argv[*i] = ft_strdup(check_token->value);
 	return (0);
 }

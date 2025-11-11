@@ -43,7 +43,10 @@ t_token	*lookbehind(
 
 
 // func to traverse list and find a spec symbol
-int	find_symbol(element *tokenlist, int pos, char symbol)
+int	find_symbol(
+	element *tokenlist, 
+	int pos, 
+	char symbol)
 {
 	t_token	*check_token;
 
@@ -58,7 +61,11 @@ int	find_symbol(element *tokenlist, int pos, char symbol)
 }
 
 //searches tokenlist for specific type token
-int	find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type type)
+int	find_token_type(
+	element *tokenlist, 
+	size_t pos, 
+	int pos_red, 
+	t_token_type type)
 {
 	t_token	*check_token;
 	size_t total;
@@ -94,11 +101,13 @@ int count_redirs(
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
 		if (token_is_redirect(check_token))
 		{
-			if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
+			if (i == 0)
+				redir++;
+			else if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
 			{
 				if (lookbehind(tokenlist, i)->type == NUMBER && (check_token->type == REDIRECT_OUT || check_token->type == REDIRECT_OUT_APP))
 					redir++;
-				else if (lookahead(tokenlist, i) && lookahead(tokenlist, i)->type == REDIRECT_IN )
+				else if (lookahead(tokenlist, i) && lookahead(tokenlist, i)->type == REDIRECT_IN)
 					redir++;
 			}
 			if (lookahead(tokenlist, i) && (lookahead(tokenlist, i)->type == REDIRECT_OUT_APP || lookahead(tokenlist, i)->type == REDIRECT_OUT))
