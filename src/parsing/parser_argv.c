@@ -72,7 +72,7 @@ int	add_arg_to_list(
 	}
 	if (token_is_redirect(check_token))
 	{
-		if (add_redirect(comm_list, tokenlist, pos, pos_red) != 0)
+		if (add_redirect(comm_list, tokenlist, pos, pos_red))
 			return (-1);
 		return (0);
 	}
