@@ -92,8 +92,8 @@ int count_redirs(
 {
 	int redir;
 	t_token *check_token;
-	redir = 0;
 
+	redir = 0;
 	while (i < total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
@@ -110,9 +110,9 @@ int count_redirs(
 			}
 			if (lookahead(tokenlist, i) && (lookahead(tokenlist, i)->type == REDIRECT_OUT_APP || lookahead(tokenlist, i)->type == REDIRECT_OUT))
 				redir++;
-			if (check_token->type == PIPE)
-				redir++;
 		}
+		else if (check_token->type == PIPE)
+			redir++;
 		i++;
 	}
 	return (redir);
