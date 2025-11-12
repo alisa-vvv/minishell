@@ -27,7 +27,8 @@
 
 
 // count how many exec data structs need to be made
-int	count_lists(element *tokenlist)
+int	count_lists(
+	element *tokenlist)
 {
 	size_t	i;
 	size_t	count;
@@ -61,7 +62,7 @@ int	count_next_cm(
 	while (i < tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
-		if (check_token->type == PIPE)
+		if (check_token->type == PIPE && lookahead(tokenlist, pos))
 			return (check_token->pos + 1);
 		if (check_token->command)
 			return (check_token->pos);
@@ -78,7 +79,9 @@ int	make_cm_list(
 	int pos_red)
 {
 	int	total;
+	int i;
 
+	i = -1;
 	total = 0;
 	//	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
 	if (!comm_list)
@@ -93,6 +96,8 @@ int	make_cm_list(
 	comm_list->argv = malloc(sizeof(char *) * (total + 1));
 	if (!comm_list->argv)
 		return (write(1, MALLOC_ERR, 15));
+	while (++i < total)
+		comm_list->argv[i] = NULL;
 	comm_list->argv[total] = NULL;
 	return (0);
 }

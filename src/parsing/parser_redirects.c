@@ -59,7 +59,6 @@ int set_redirect(
 		set_src(execdata, tokenlist, pos);
 		execdata->redirections->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value); 
 	}
-
 	return (0);
 }
 
