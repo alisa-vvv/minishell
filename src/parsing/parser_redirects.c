@@ -28,7 +28,7 @@ int set_src(
 	{
 		execdata->redirections->src_fd = ft_atoi(check_token->value);
 		//execdata->redirections->src_filename = ft_strdup(check_token->value);
-	}else
+	}else if (!token_is_redirect(check_token))
 		execdata->redirections->src_filename = ft_strdup(check_token->value);
 	return(0);
 }
