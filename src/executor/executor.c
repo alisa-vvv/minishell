@@ -92,29 +92,6 @@ static int	execute_in_child(
 	return (err_check);
 }
 
-//static int	redirect_in_parent(
-//	t_redir_list *redirections,
-//	t_undup_list *undup_list
-//)
-//{
-//	int	err_check;
-//
-//	err_check = 0;
-//	while (redirections != NULL)
-//	{
-//		if (redirections->type == input || redirections->type == heredoc)
-//			err_check = perform_input_redirection(redirections);
-//		else
-//			err_check = perform_output_redirection(redirections);
-//		// do we stop after first error or do we try them all?
-//		if (err_check != success)
-//			return (err_check);
-//		redirections = redirections->next;
-//	}
-//	return (err_check);
-//	return (success);
-//}
-//
 static int	execute_command(
 	t_exec_data *command,
 	t_command_io *const command_io,
