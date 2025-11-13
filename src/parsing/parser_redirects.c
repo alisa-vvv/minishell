@@ -25,10 +25,8 @@ int set_src(
 	if (pos > 0)
 		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
 	if (check_token->type == NUMBER)
-	{
 		execdata->redirections->src_fd = ft_atoi(check_token->value);
-		//execdata->redirections->src_filename = ft_strdup(check_token->value);
-	}else if (!token_is_redirect(check_token))
+	else if (!token_is_redirect(check_token))
 		execdata->redirections->src_filename = ft_strdup(check_token->value);
 	return(0);
 }
@@ -85,9 +83,7 @@ int add_redirect(
 		
 		next = execdata->redirections->next;
 		while (next)
-		{
 			next = next->next;
-		}
 		next = redirlist;
 	}
 	if (check_token->type == HEREDOC)
