@@ -63,5 +63,5 @@ Edge cases
 - '>ls' -> 'ls' -> './les'
 - '>haha | ls'
 - 'export empty=" "' -> 'echo hi > $EMPTY' -> '$EMPTY echo hi'
-
+- echo baaa | echo siii (is not working properly)
 

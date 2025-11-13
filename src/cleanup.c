@@ -21,7 +21,7 @@ void	clean_exit(
 	char *read_line,
 	int exit_code,
 	bool silent_exit
-)
+	)
 {
 	int	i;
 

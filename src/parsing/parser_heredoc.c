@@ -35,7 +35,6 @@ t_builtin_name set_builtins(t_token_type tokentype)
 //set defaults of heredoc
 void set_heredoc_def(t_exec_data* execdata)
 {
-	
 	execdata->builtin_name = not_builtin;
     execdata->output_is_pipe = false;
 	execdata->input_is_pipe = false;
