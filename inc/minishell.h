@@ -37,6 +37,7 @@
 # define PATH_ERR "Error! PATH not found"
 # define DUP_ERR "Error! dup()"
 # define DUP2_ERR "Error! dup2()"
+# define EXECVE_ERR "Error! execve()"
 # define FD_ERR "Error! Wrong file descriptor"
 
 typedef enum	e_msh_errno // can define specific values later
@@ -51,11 +52,12 @@ typedef enum	e_msh_errno // can define specific values later
 	dup2_err = -7,
 	fd_err = -8,
 	builtin_err = -9,
-	child_error_delim = -10,
-	child_fd_err = -11,
-	child_heredoc = -12,
-	child_success = -13,
-	no_command = -14,
+	execve_err = -10,
+	child_error_delim = -11,
+	child_fd_err = -12,
+	child_heredoc = -13,
+	child_success = -14,
+	no_command = -15,
 }	t_msh_errno;
 
 

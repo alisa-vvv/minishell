@@ -55,15 +55,13 @@ static int	run_child_process(
 	}
 	if (command->redirections)
 		err_check = perform_redirections(command->redirections, NULL, false);
-	if (err_check != success) // it looks like the processs does not run if it fails
+	if (err_check != success)
 		return (err_check);
-	// to redirect stuff, so we need to clean and propogate to exit
-	if (command->builtin_name == not_builtin) // whats up with sechond condition>?
+	if (command->builtin_name == not_builtin)
 		err_check = try_execve(minishell_data->env, command->argv);
 	else
 		err_check = exec_builtin(command, minishell_data);
-	return (err_check); // this needs to return for proper cleanup i think
-	// double check
+	return (err_check);
 }
 
 static int	execute_in_child(

@@ -21,11 +21,9 @@ static const char *const	*split_path_var(
 	char **env
 )
 {
-//	int		i;
 	char	*path_value;
 	char	**path_arr;
 
-//	i = -1;
 	path_arr = NULL;
 	path_value = env_var_get_value(env, "PATH");
 	if (!path_value)
@@ -40,14 +38,44 @@ static const char *const	*split_path_var(
 	return ((const char *const *) path_arr);
 }
 
-static int	command_not_found(
-	char *command_name
+static int	error_loop(
+	char *slash_arg,
+	char *error_msg,
+	int	error_code
+
 )
 {
-	ft_putstr_fd(command_name, STDERR_FILENO);
-	ft_putstr_fd(": command not found\n", STDERR_FILENO);
-	//printf("command not found in pid: %d\n", getpid());
-	return (no_command); // more work needed, this is funky
+	free(slash_arg);
+	msh_perror(NULL, error_msg, extern_err); // check return
+	return (error_code);
+}
+
+static int	look_for_command(
+	char **env,
+	char *const argv[],
+	const char *const *path
+)
+{
+	int		i;
+	char	*command_path;
+	char	*slash_arg;
+
+	i = -1;
+	slash_arg = ft_strjoin("/", argv[0]);
+	if (!slash_arg)
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); //check return
+	while (path[++i])
+	{
+		command_path = ft_strjoin(path[i], slash_arg);
+		if (!command_path)
+			return (error_loop(slash_arg, MALLOC_ERR, malloc_err));
+		execve(command_path, argv, env);
+		free(command_path);
+		if (errno != ENOENT)
+			return (error_loop(slash_arg, EXECVE_ERR, malloc_err));
+	}
+	free(slash_arg);
+	return (no_command);
 }
 
 int	try_execve(
@@ -55,10 +83,8 @@ int	try_execve(
 	char *const argv[]
 )
 {
-	char				*tmp_slash;
-	char				*command_path;
+	int					err_check;
 	const char *const 	*path;
-	int					i;
 
 	if (argv == NULL || argv[0] == NULL)
 		return (child_success); // should probably jsut be success
@@ -68,23 +94,10 @@ int	try_execve(
 	execve(argv[0], argv, env);
 	if (errno != ENOENT)
 	{
-		printf("WEIRD EXECVE ERROR! CATCH IT!\n");
-		printf("PLACEHOLDER, ADD ERROR HANDLING!\n");
-		return (-1);
+		free_2d_arr((void **) path);
+		return (msh_perror(NULL, EXECVE_ERR, extern_err), execve_err); //check return
 	}
-	tmp_slash = ft_strjoin("/", argv[0]);
-	if (!tmp_slash)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); //check return
-	i = -1;
-	while (path[++i])
-	{
-		command_path = ft_strjoin(path[i], tmp_slash);
-		if (!command_path)
-			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
-		if (execve(command_path, argv, env) == -1)
-			free(command_path);
-	}
-	free(tmp_slash);
+	err_check = look_for_command(env, argv, path);
 	free_2d_arr((void **) path);
-	return (command_not_found(argv[0]));
+	return (err_check);
 }
