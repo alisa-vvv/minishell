@@ -28,7 +28,8 @@ static int	cleanup_in_parent_process(
 	if (command->output_is_pipe == true)
 	{
 		safe_close(&command_io->out_pipe[WRITE_END]);
-		(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD; // fix invalid read here
+		// this line below might be obsolete now. CHECK. go through all cases.
+		//(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD; // fix invalid read here /?
 	}
 	free_and_close_exec_data(command);
 	return (success);
@@ -81,10 +82,7 @@ static int	execute_in_child(
 		err_check = run_child_process(command, command_io, minishell_data);
 	}
 	else if (*pid > 0)
-	{
-		//printf("pid after execute in child: %d\n", *pid);
 		err_check = cleanup_in_parent_process(command, command_io);
-	}
 	else if (*pid < 0)
 		return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
 	return (err_check);
@@ -133,7 +131,6 @@ static int	wait_for_children(
 	int	err_check;
 
 	i = -1;
-	//printf("command count: %d\n", command_count);
 	while (++i < command_count)
 	{
 		if (p_ids[i] < 0)
@@ -156,10 +153,7 @@ static int	wait_for_children(
 			}
 		}
 		else
-		{
-			// we probably don't need this check at all
-			perror("waitpid -1");
-		}
+			perror("waitpid -1"); // check necessity
 	}
 	return (EXIT_SUCCESS);
 }
@@ -177,9 +171,12 @@ static void	executor_cleanup(
 	while (++i < minishell_data->command_count)
 	{
 		free_and_close_exec_data(&minishell_data->exec_data[i]);
-		safe_close(&command_io[i].out_pipe[READ_END]); // this is necessary for the heredoc case.
-		// check if there's a better way to handle here doc situations
-		safe_close(&command_io[i].out_pipe[WRITE_END]);
+		if (i == minishell_data->command_count - 1
+			|| command_io[i + 1].in_pipe[READ_END] != CLOSED_FD)
+			safe_close(&command_io[i].out_pipe[READ_END]);
+		if (i == minishell_data->command_count - 1
+			|| command_io[i + 1].in_pipe[WRITE_END] != CLOSED_FD)
+			safe_close(&command_io[i].out_pipe[WRITE_END]);
 	}
 	free(command_io);
 	free(p_ids);

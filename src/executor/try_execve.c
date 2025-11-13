@@ -99,5 +99,10 @@ int	try_execve(
 	}
 	err_check = look_for_command(env, argv, path);
 	free_2d_arr((void **) path);
+	if (err_check == no_command)
+	{
+		ft_putstr_fd(argv[0], STDERR_FILENO);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	}
 	return (err_check);
 }

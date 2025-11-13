@@ -19,11 +19,12 @@ void	test_close(int fd)
 {
 	int	err_check;
 
+	dprintf(STDERR_FILENO, "closing fd: %d in pid: %d\n", fd, getpid());
 	err_check = close(fd);
 	if (err_check != 0)
 	{
-		printf("bad close in pid: %d\n", getpid());
-		printf("this fd: %d\n", fd);
+		dprintf(STDERR_FILENO, "bad close in pid: %d\n", getpid());
+		dprintf(STDERR_FILENO, "this fd: %d\n", fd);
 		if (errno == EBADF)
 			perror("Check if doing weird closes");
 		if (errno == EIO)

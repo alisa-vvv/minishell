@@ -80,7 +80,6 @@ static int find_target_path(
 	}
 	else
 	{
-		// ADD A FUNCTION THAT ADDS SLASH AND JOINS. AAAAAAAA
 		arg_with_slash = ft_strjoin("/", arg);
 		path = ft_strjoin(cwd, arg_with_slash);
 		free(arg_with_slash);
@@ -106,10 +105,7 @@ int	minishell_cd(
 	int			err_check;
 	char		*path;
 	char *const	cwd = ft_calloc(PATH_MAX, sizeof(char));
-//
-//	printf("\n\n\nbefore:\n\n\n");
-//	minishell_pwd(minishell_data);
-//
+
 	path = NULL;
 	getcwd(cwd, PATH_MAX);
 	err_check = find_target_path(arg, minishell_data, cwd, &path);
@@ -127,11 +123,5 @@ int	minishell_cd(
 	getcwd(minishell_data->cur_dir, PATH_MAX);
 	free(path);
 	free(cwd);
-//
-//	printf("\n\n\nafter:\n\n\n");
-//	minishell_pwd(minishell_data);
-//	printf("\n\n\nvars:\n\n\n");
-//	minishell_env(minishell_data);
-//
 	return (err_check);
 }

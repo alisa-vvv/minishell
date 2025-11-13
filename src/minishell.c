@@ -64,7 +64,7 @@ static void	setup_minishell_data(
 		minishell_data->cur_dir[0] = '/';
 }
 
-int	TEST_len;
+int	TEST_len = 0;
 int	main(void)
 {
 	char				*read_line;

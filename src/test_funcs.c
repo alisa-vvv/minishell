@@ -75,49 +75,49 @@ t_exec_data	*test_get_dummy_exec_data(
 //	i++;
 	//	}
 
-	// {
-	// BASIC_TEST_00: ls -l >outfile
-	//
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("ls");
-	exec_data[i].argv[1] = ft_strdup("-l");
-	exec_data[i].builtin_name = not_builtin;
-	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = false;
-	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
-	i++;
-	//	}
+//	// {
+//	// BASIC_TEST_00: ls -l >outfile
+//	//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("ls");
+//	exec_data[i].argv[1] = ft_strdup("-l");
+//	exec_data[i].builtin_name = not_builtin;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+//	i++;
+//	//	}
 
 	
-	// BASIC_TEST_01: ls -l | sleep 2 | cat
-	//
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("ls");
-	exec_data[i].argv[1] = ft_strdup("-l");
-	exec_data[i].builtin_name = not_builtin;
-	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = true;
-	exec_data[i].redirections = NULL;
-	i++;
-
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("sleep");
-	exec_data[i].argv[1] = ft_strdup("2");
-	exec_data[i].builtin_name = not_builtin;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = true;
-	exec_data[i].redirections = NULL;
-	i++;
-
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = ft_strdup("cat");
-	exec_data[i].builtin_name = not_builtin;
-	exec_data[i].input_is_pipe = true;
-	exec_data[i].output_is_pipe = false;
-	exec_data[i].redirections = NULL;
-	i++;
-
-	//	}
+//	// BASIC_TEST_01: ls -l | sleep 2 | cat
+//	//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("ls");
+//	exec_data[i].argv[1] = ft_strdup("-l");
+//	exec_data[i].builtin_name = not_builtin;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = true;
+//	exec_data[i].redirections = NULL;
+//	i++;
+//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("sleep");
+//	exec_data[i].argv[1] = ft_strdup("2");
+//	exec_data[i].builtin_name = not_builtin;
+//	exec_data[i].input_is_pipe = true;
+//	exec_data[i].output_is_pipe = true;
+//	exec_data[i].redirections = NULL;
+//	i++;
+//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("cat");
+//	exec_data[i].builtin_name = not_builtin;
+//	exec_data[i].input_is_pipe = true;
+//	exec_data[i].output_is_pipe = false;
+//	exec_data[i].redirections = NULL;
+//	i++;
+//
+//	//	}
 
 //	// {
 //	// BASIC_TEST_02: ls -l | cat -e >outfile
@@ -286,19 +286,19 @@ t_exec_data	*test_get_dummy_exec_data(
 //	i++;
 //	//	}
 
-//	// {
-//	// BASIC_TEST_09: >outfile
-//	//
-//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-//	exec_data[i].argv[0] = NULL;
-//	exec_data[i].builtin_name = not_builtin;
-//	exec_data[i].input_is_pipe = false;
-//	exec_data[i].output_is_pipe = false;
-//	//exec_data[i].redirections = NULL;
-//	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
-//	i++;
-//
-//	//	}
+	// {
+	// BASIC_TEST_09: >outfile
+	//
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	exec_data[i].argv[0] = NULL;
+	exec_data[i].builtin_name = not_builtin;
+	exec_data[i].input_is_pipe = false;
+	exec_data[i].output_is_pipe = false;
+	//exec_data[i].redirections = NULL;
+	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+	i++;
+
+	//	}
 
 	// {
 //	// BASIC_TEST_10: <infile cat -e | cat -T >outfile
