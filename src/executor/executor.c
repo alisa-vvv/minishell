@@ -110,7 +110,7 @@ static int	execute_command(
 	{
 		undup_list = NULL;
 		undup_list_head = &undup_list;
-		perform_redirections(command->redirections, undup_list_head, true);
+		perform_redirections(command->redirections, undup_list_head, true); // add error checking here
 	}
 	if (command->builtin_name != not_builtin)
 		err_check = exec_builtin(command, minishell_data);
@@ -226,11 +226,8 @@ int	execute_commands(
 	while (++i < minishell_data->command_count)
 	{
 		err = execute_command(&command[i], &command_io[i], minishell_data, &p_id_arr[i]);
-		if (err != success)
-		{
-			if (minishell_data->is_parent == false)
-				return (err);
-		}
+		if (minishell_data->is_parent == false)
+			return (err);
 	}
 	return (success);
 }

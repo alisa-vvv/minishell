@@ -126,7 +126,8 @@ int	main(void)
 			free(read_line);
 		if (minishell_data.is_parent == false) // make this better
 		{
-			if (err_check == child_heredoc || err_check == child_success)
+			if (err_check == child_heredoc || err_check == child_success
+				|| err_check == success)
 				clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
 			else if (err_check < 0)
 				clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);

@@ -27,11 +27,15 @@ static const char *const	*split_path_var(
 	path_arr = NULL;
 	path_value = env_var_get_value(env, "PATH");
 	if (!path_value)
+	{
+		msh_perror(NULL, MALLOC_ERR, extern_err);
 		return (NULL);
+	}
 	path_arr = ft_split(path_value, ':');
 	if (!path_arr)
 	{
-		perror(MALLOC_ERR);
+		free(path_value);
+		msh_perror(NULL, MALLOC_ERR, extern_err);
 		return (NULL);
 	}
 	free(path_value);
@@ -90,7 +94,7 @@ int	try_execve(
 		return (child_success); // should probably jsut be success
 	path = split_path_var(env);
 	if (!path)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); //check return
+		return (malloc_err);
 	execve(argv[0], argv, env);
 	if (errno != ENOENT)
 	{
