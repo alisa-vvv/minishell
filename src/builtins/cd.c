@@ -116,7 +116,9 @@ int	minishell_cd(
 	}
 	err_check = chdir(path);
 	if (err_check != 0)
+	{
 		return (msh_perror("cd: ", NULL, extern_err), -1); // check return
+	}
 	else
 		err_check = set_env_vars(minishell_data, cwd, path);
 	ft_bzero(minishell_data->cur_dir, PATH_MAX);

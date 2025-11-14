@@ -82,7 +82,10 @@ static int	execute_in_child(
 		err_check = run_child_process(command, command_io, minishell_data);
 	}
 	else if (*pid > 0)
+	{
+		//dprintf(STDERR_FILENO,"what is *pid when command is %s: %d\n", command->argv[0], *pid);
 		err_check = cleanup_in_parent_process(command, command_io);
+	}
 	else if (*pid < 0)
 		return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
 	return (err_check);
@@ -251,7 +254,7 @@ static int	execute_pipeline(
 	if (err != success)
 		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
 	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
-	if (err != success)
+	if (err != success || minishell_data->is_parent == false)
 		return (err);
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))

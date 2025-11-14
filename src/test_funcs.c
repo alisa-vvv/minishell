@@ -370,7 +370,8 @@ t_exec_data	*test_get_dummy_exec_data(
 	exec_data[i].builtin_name = builtin_echo;
 	exec_data[i].input_is_pipe = false;
 	exec_data[i].output_is_pipe = true;
-	exec_data[i].redirections = NULL;
+	//exec_data[i].redirections = NULL;
+	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
 	i++;
 	
 	exec_data[i].argv = ft_calloc(10, sizeof(char *));
