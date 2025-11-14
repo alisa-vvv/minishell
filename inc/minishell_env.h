@@ -20,6 +20,7 @@
 /**/
 
 char	**clone_env(
+	t_minishell_data *const minishell_data,
 	int *env_var_count,
 	int *env_mem
 );

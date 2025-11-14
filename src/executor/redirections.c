@@ -51,7 +51,7 @@ static int	input_redirect(
 	}
 	safe_open(redirection->dest_filename, &redirection->dest_fd, O_RDONLY);
 	if (redirection->dest_fd < 0)
-		return (msh_perror(NULL, FD_ERR, extern_err), fd_err);
+		return (msh_perror(NULL, redirection->dest_filename, extern_err), fd_err);// check return
 	test_dup2(redirection->dest_fd, STDIN_FILENO);
 	safe_close(&redirection->dest_fd); //ingestigae this close
 	return (success);
@@ -71,7 +71,7 @@ static int	output_redirect(
 	else if (redirection->type == append)
 		safe_open(redirection->dest_filename, &redirection->dest_fd, app_f);
 	if (redirection->dest_fd < 0)
-		return (msh_perror(NULL, FD_ERR, extern_err), fd_err);// check return
+		return (msh_perror(NULL, redirection->dest_filename, extern_err), fd_err);// check return
 	if (record == true)
 	{
 		undup_elem->orig_fd = dup(redirection->src_fd); 

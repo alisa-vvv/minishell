@@ -44,14 +44,13 @@ static void	setup_minishell_data(
 	t_minishell_data *minishell_data
 )
 {
-	minishell_data->env = NULL;
 	minishell_data->env_var_count = 0;
 	minishell_data->env_mem = 0;
 	minishell_data->is_parent = true;
 	minishell_data->last_pipeline_return = 0;
 	minishell_data->exec_data = NULL;
 	minishell_data->command_count = 0;
-	minishell_data->env = clone_env(&minishell_data->env_var_count,
+	minishell_data->env = clone_env(minishell_data, &minishell_data->env_var_count,
 								 &minishell_data->env_mem);
 	if (!minishell_data->env)
 		exit(errno); // add error message

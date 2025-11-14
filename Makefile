@@ -18,6 +18,7 @@ CFILES	=	minishell.c\
 			signal_handlers.c\
 			errors.c\
 			cleanup.c\
+			env_creation.c\
 			env_operations.c\
 			$(CFILES_VECLIB)\
 			$(CFILES_PARSER)\

@@ -14,46 +14,6 @@
 #include "minishell.h"
 #include "minishell_env.h"
 
-extern char **environ;
-
-char	**clone_env(
-	int *env_var_count,
-	int *env_mem
-)
-{
-	// SET A MAX VALUE FOR ALLOC SIZE
-	char		**env;
-	int			i;
-	int			alloc_size;
-
-	alloc_size = 128;
-	env = ft_calloc(alloc_size, sizeof(char *));
-	if (!env)
-		return (NULL);
-	i = -1;
-	while(environ[++i])
-	{
-		if (i == alloc_size)
-		{
-			alloc_size += alloc_size;
-			free_2d_arr((void **) env);
-			env = ft_calloc(alloc_size, sizeof(char *));
-			if (!env)
-				return (NULL);
-			i = 0;
-		}
-		env[i] = ft_strdup(environ[i]);
-		if (!env[i])
-		{
-			free_2d_arr((void **) env);
-			return (NULL);
-		}
-	}
-	*env_var_count = i;
-	*env_mem = alloc_size;
-	return (env);
-}
-
 int env_var_realloc(
 	t_minishell_data *minishell_data
 )
@@ -61,7 +21,7 @@ int env_var_realloc(
 	char	**new_env;
 	int		i;
 
-	if (minishell_data->env_mem * 2 > MAX_ENV)
+	if (minishell_data->env_mem * 2 > ENV_MAX)
 		msh_perror(NULL, "Environment variable limit reached", extern_err); // add return?
 	minishell_data->env_mem *= 2;
 	new_env = ft_calloc(minishell_data->env_mem, sizeof(char *));

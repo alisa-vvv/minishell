@@ -15,7 +15,9 @@
 
 # include "minishell.h"
 
-# define PATH_MAX 1024//4096
+# ifndef PATH_MAX
+#  define PATH_MAX 4096
+# endif
 # define READ_END 0
 # define WRITE_END 1
 # define CLOSED_FD -1
