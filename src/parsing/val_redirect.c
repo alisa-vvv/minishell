@@ -109,6 +109,8 @@ int val_redir(
     while (i < tokenlist->element_list.total)
     {
         check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);
+        if (!check_token)
+            return(1);
         if (check_token->type == HEREDOC && i + 1 < tokenlist->element_list.total)
         {
             if (check_heredoc(tokenlist, i + 1))

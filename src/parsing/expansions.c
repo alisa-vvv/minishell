@@ -33,6 +33,8 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
     int i;
     
     i = -1;
+    if (!env_value)
+        env_value = "";
     if (flag > 0 || ft_strchr(check_token->value, '$'))
     {
         char *new_str;
@@ -101,7 +103,7 @@ int expand_var(element **tokenlist,
     {
         check_token = (*tokenlist)->element_list.tokens[pos];
         name = refine_name_var(check_token->value, name);
-        if (name && ft_strncmp(name, "?", 1))
+        if (name && ft_strncmp(name, "?", 2))
             printf("%d\n", (*minishell_data)->last_pipeline_return);
         env_value = env_var_get_value((*minishell_data)->env, name);
         e_printf("\nNAME= %s \n", name);
@@ -109,18 +111,17 @@ int expand_var(element **tokenlist,
             expand_quoted(*tokenlist, name, pos, env_value);
         else if (!quoted && env_value)
             expand_unquoted(*tokenlist, check_token, name, pos, env_value);
-        // else if (!quoted && !env_value)
-        // {
-        //     (*tokenlist)->pf_element_delete((*tokenlist), pos);
-        //     ft_safe_free((unsigned char **)&name);
-        //     index_lexer(tokenlist);
-        //     return (1);
-        // }
+        else if (!quoted && !env_value)
+        {
+            (*tokenlist)->pf_element_delete((*tokenlist), pos);
+            ft_safe_free((unsigned char **)&name);
+            index_lexer(tokenlist);
+            return (1);
+        }
         (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
         index_lexer(tokenlist);
         count--;
     }
-    //index_lexer(tokenlist);
     return (0);
 }
  
