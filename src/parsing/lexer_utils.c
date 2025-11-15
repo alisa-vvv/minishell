@@ -128,6 +128,8 @@ int index_lexer(
     {
         t_token *check_token;
 		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
+		if (!check_token)
+			return (write(1, "No tokens available\n", 20));
 		check_token->pos = i;
 		//e_printf("POS= %d \n", check_token->pos);
         i++;

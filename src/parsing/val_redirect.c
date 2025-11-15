@@ -18,6 +18,8 @@ int single_token(element *tokenlist)
     t_token *check_token;
 
     check_token = (t_token *)tokenlist->element_list.tokens[0];
+    if (!check_token)
+        return (1);
     if ((int)tokenlist->element_list.total == 1)
     {
         if (token_is_redirect(check_token))

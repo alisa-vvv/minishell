@@ -26,8 +26,8 @@ int set_src(
 		check_token = tokenlist->pf_element_get(tokenlist, pos -1);
 	if (check_token->type == NUMBER)
 		execdata->redirections->src_fd = ft_atoi(check_token->value);
-	else if (!token_is_redirect(check_token))
-		execdata->redirections->src_filename = ft_strdup(check_token->value);
+	// else if (!token_is_redirect(check_token))
+	// 	execdata->redirections->src_filename = ft_strdup(check_token->value);
 	return(0);
 }
 
@@ -38,7 +38,6 @@ void set_redir_def(t_exec_data *execdata)
 	execdata->redirections->src_fd = -1;
 	execdata->redirections->dest_fd = -1;
 	execdata->redirections->dest_filename= NULL;
-	execdata->redirections->src_filename = NULL;
 	execdata->redirections->next = NULL;
 }
 
