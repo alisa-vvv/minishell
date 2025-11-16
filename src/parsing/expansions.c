@@ -26,14 +26,17 @@
 //--> make expansion first, remove quotes later
 // expand $EMPTY to nothing
 // look for return value in minishell struct when accessing $?
-//ft_safe_free((unsigned char **)&env_value)
+
+//expands unquoted var to the relevant environment value, keeping the rest of the string intact or replacing empty strings if env value is not present
 int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int pos, char *env_value)
 {
     static int flag;
     int i;
     
     i = -1;
-    if (flag > 0 || ft_strchr(check_token->value, '$'))
+    if (!env_value)
+        env_value = "";
+    if (flag >= 0 || ft_strchr(check_token->value, '$'))
     {
         char *new_str;
         new_str = exp_str_token(check_token->value, env_value, ft_strlen(name) +1);
@@ -101,26 +104,18 @@ int expand_var(element **tokenlist,
     {
         check_token = (*tokenlist)->element_list.tokens[pos];
         name = refine_name_var(check_token->value, name);
-        if (name && ft_strncmp(name, "?", 1))
+        if (name && ft_strncmp(name, "?", 2))
             printf("%d\n", (*minishell_data)->last_pipeline_return);
         env_value = env_var_get_value((*minishell_data)->env, name);
         e_printf("\nNAME= %s \n", name);
         if (quoted)
             expand_quoted(*tokenlist, name, pos, env_value);
-        else if (!quoted && env_value)
+        else if (!quoted)
             expand_unquoted(*tokenlist, check_token, name, pos, env_value);
-        // else if (!quoted && !env_value)
-        // {
-        //     (*tokenlist)->pf_element_delete((*tokenlist), pos);
-        //     ft_safe_free((unsigned char **)&name);
-        //     index_lexer(tokenlist);
-        //     return (1);
-        // }
         (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
         index_lexer(tokenlist);
         count--;
     }
-    //index_lexer(tokenlist);
     return (0);
 }
  
@@ -142,6 +137,11 @@ int	exp_lexer(
 			|| ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
 		{
 			rm_quotes(tokenlist, i, '"');
+            if (type == DOUBLE_Q && ft_strchr(check_token->value, '\''))
+            {
+                check_token->type = match_token(check_token->value);
+                break;
+            }
 			if (type == DOUBLE_Q && ft_strchr(check_token->value, '$') != NULL)
 			{
 				if (expand_var(&tokenlist, i, minishell_data, check_token, true))
@@ -153,7 +153,7 @@ int	exp_lexer(
 					i--;
 			}
 		}
-		else if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
+		if ((int)check_token->type == SINGLE_Q || type == SINGLE_Q)
 			rm_quotes(tokenlist, i, '\'');
 		i++;
 	}

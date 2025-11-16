@@ -12,9 +12,7 @@
 
 #include "parser.h"
 
-int	skip_blanks(
-	char *str, 
-	int pos)
+int	skip_blanks(char *str, int pos)
 {
 	int	count;
 
@@ -24,13 +22,12 @@ int	skip_blanks(
 		count++;
 		str++;
 	}
-    // l_printf("%d\n", count);
+	// l_printf("%d\n", count);
 	return (count);
 }
 
 // trims input to have 1 space
-char	*trim_str_space(
-	char *str)
+char	*trim_str_space(char *str)
 {
 	int	i;
 	int	j;
@@ -54,44 +51,72 @@ char	*trim_str_space(
 		j++;
 	}
 	str[i] = '\0';
-    l_printf("trimmed str = %s$\n", str);
+	l_printf("trimmed str = %s$\n", str);
 	return (str);
 }
 
+// int	move_multiple_quotes(char *str, int pos, char quote, int i)
+// {
+// 	int	count;
 
-//move over quoted string
-int move_over_quote(
-	char *str, 
-	int pos)
+// 	count = 0;
+// 	while (str[pos])
+// 	{
+// 		while (str[pos] == quote)
+// 		{
+// 			count++;
+// 			pos++;
+// 			i++;
+// 		}
+// 		while (str[pos] != quote)
+// 		{
+// 			i++;
+// 			pos++;
+// 		}
+// 		while (str[pos] && str[pos] == quote)
+// 		{
+// 			count--;
+// 			pos++;
+// 			i++;
+// 		}
+// 		pos++;
+// 	}
+// 	return (i);
+// }
+
+// move over quoted string
+int	move_over_quote(char *str, int pos)
 {
-    int i;
-    i = 0; 
-    if (str[pos] == '"' || str[pos] == '\'')
+	int		i;
+	int		count;
+	char	quote;
+
+	count = 1;
+	i = 1;
+
+	quote = str[pos];
+	pos++;
+	while (str[pos++] == quote)
+		count++;
+	while (str[pos] && str[pos] != quote)
 	{
-        char quote = str[pos];
-        pos++;
-        while (str[pos] && str[pos] != quote)
-        {
-            i++;
-            pos++;
-        }
-        if (str[pos] == quote)
-            pos++;
-		while (str[pos] && !ft_isspace(str[pos]))
-		{
-			i++;
-			pos++;
-		}
-    }
-    if (i > 0)
-        i += 2;
-    return(i);
+		i++;
+		pos++;
+	}
+	if (str[pos] == quote)
+		pos++;
+	while (str[pos++] && !ft_isspace(str[pos++]))
+		i++;
+	i = i + (count * 2);
+	// p_printf("QUOTE LEN = %d\n", i);
+	return (i);
 }
 
-//returns len of tokens
-int set_len(char *str, int i)
+// returns len of tokens
+int	set_len(char *str, int i)
 {
-	int len;
+	int	len;
+
 	len = 0;
 	if ((str[i] == '\'' || str[i] == '"') && str[i])
 	{
@@ -108,7 +133,7 @@ int set_len(char *str, int i)
 	}
 	else if (len == 0 && str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
 	{
-		while(str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+		while (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
 		{
 			len++;
 			i++;
@@ -117,23 +142,22 @@ int set_len(char *str, int i)
 	return (len);
 }
 
-//index lexer by traversing - not needed anymore
-int index_lexer(
-	element **tokenlist)
+// index lexer by traversing - not needed anymore
+int	index_lexer(element **tokenlist)
 {
-    size_t i;
-    i = 0;
-	//e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
-    while (i < (size_t)(*tokenlist)->element_list.total)
-    {
-        t_token *check_token;
+	size_t	i;
+		t_token *check_token;
+
+	i = 0;
+	// e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
+	while (i < (size_t)(*tokenlist)->element_list.total)
+	{
 		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
 		if (!check_token)
 			return (write(1, "No tokens available\n", 20));
 		check_token->pos = i;
-		//e_printf("POS= %d \n", check_token->pos);
-        i++;
-    }
-    return (0);
+		// e_printf("POS= %d \n", check_token->pos);
+		i++;
+	}
+	return (0);
 }
-

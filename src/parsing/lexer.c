@@ -57,6 +57,7 @@ int	token_count(
 	int i)
 {
 	int	tokencount;
+	
 	tokencount = 0;
 	while (str[i])
 	{
