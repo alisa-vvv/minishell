@@ -55,7 +55,7 @@ void set_pipe_cm(
 		{
             if (lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type == HEREDOC)
 			    c_token->command = false;
-            else 
+            else
                 c_token->command = true; 
 			flag = false;
 		}

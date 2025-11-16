@@ -223,15 +223,15 @@ void test_execdata(
         p_printf("Output is pipe = true\n");
     else
         p_printf("Output is pipe = false\n");
-    if (execdata.redirections)
+    while (execdata.redirections)
     {   
-        //p_printf("Got here\n");
         p_printf("Redirection Type = %s$\n", enum_red_type(execdata.redirections->type));
         p_printf("Redirection src_fd = %d\n", execdata.redirections->src_fd);
         p_printf("Redirection dest_fd = %d\n", execdata.redirections->dest_fd);
         p_printf("Redirection dest_filename = %s$\n", execdata.redirections->dest_filename);
         p_printf("Redirection src_filename = %s$\n", execdata.redirections->src_filename);
         p_printf("Redirection heredoc delimeter = %s$\n", execdata.redirections->heredoc_delim);
+        execdata.redirections = execdata.redirections->next;
     }
     t_printf("\n");
 }

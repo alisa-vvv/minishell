@@ -112,13 +112,6 @@ int expand_var(element **tokenlist,
             expand_quoted(*tokenlist, name, pos, env_value);
         else if (!quoted)
             expand_unquoted(*tokenlist, check_token, name, pos, env_value);
-        // else if (!quoted && !env_value)
-        // {
-        //     (*tokenlist)->pf_element_delete((*tokenlist), pos);
-        //     ft_safe_free((unsigned char **)&name);
-        //     index_lexer(tokenlist);
-        //     return (1);
-        // }
         (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
         index_lexer(tokenlist);
         count--;
