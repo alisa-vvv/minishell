@@ -137,6 +137,11 @@ int	exp_lexer(
 			|| ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
 		{
 			rm_quotes(tokenlist, i, '"');
+            if (type == DOUBLE_Q && ft_strchr(check_token->value, '\''))
+            {
+                check_token->type = match_token(check_token->value);
+                break;
+            }
 			if (type == DOUBLE_Q && ft_strchr(check_token->value, '$') != NULL)
 			{
 				if (expand_var(&tokenlist, i, minishell_data, check_token, true))
@@ -148,7 +153,7 @@ int	exp_lexer(
 					i--;
 			}
 		}
-		else if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
+		if ((int)check_token->type == SINGLE_Q || type == SINGLE_Q)
 			rm_quotes(tokenlist, i, '\'');
 		i++;
 	}

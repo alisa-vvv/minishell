@@ -16,7 +16,8 @@
 int	check_lexer(element *tokenlist, 
 	t_minishell_data *minishell_data)
 {
-	
+	int count;
+	count = 0;
 	if (exp_lexer(tokenlist, &minishell_data, PARAMETER, 0) || exp_lexer(tokenlist,
 			&minishell_data, SINGLE_Q, 0) || exp_lexer(tokenlist, &minishell_data,
 			DOUBLE_Q, 0))

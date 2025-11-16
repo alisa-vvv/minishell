@@ -47,17 +47,20 @@ int	check_in_quote(char *str, int pos)
 void move_str(char *str, char symbol)
 {
 	int i;
+	static int len;
 
 	i = 0;
-	if (str[i] == symbol && str[ft_strlen(str)-1] == symbol)
-		str[ft_strlen(str)-1] = '\0';
-	//printf("STRING IS %s/n str[ftlen]= %c\n", str, str[ft_strlen(str)-1]);
+	if (str[i] == symbol && str[len-1] == symbol)
+		str[ft_strlen(str)- len -1] = '\0';
+	//ft_safe_free((unsigned char **)str[ft]);
+	printf("STRING IS %s\n str[ftlen]= %c\n", str, str[ft_strlen(str)- len -1]);
 	while (str[i + 1])
 	{
 		str[i] = str[i + 1];
 		i++;
 	}
 	str[i] = '\0';
+	len++;
 }
 
 
