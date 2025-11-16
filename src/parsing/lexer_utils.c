@@ -58,6 +58,39 @@ char	*trim_str_space(
 	return (str);
 }
 
+int move_multiple_quotes(
+	char *str,
+	int pos,
+	char quote,
+	int i)
+{
+	int count;
+
+	count = 0;
+	while (str[pos])
+	{
+		while (str[pos] == quote)
+		{
+			count++;
+			pos++;
+			i++;
+		}
+		while(str[pos] != quote)
+		{
+			i++;
+			pos++;
+		}
+		while (str[pos] && str[pos] == quote)
+		{
+			count--;
+			pos++;
+			i++;
+		}
+		pos++;
+	}
+	return (i);
+}
+
 
 //move over quoted string
 int move_over_quote(
@@ -65,26 +98,27 @@ int move_over_quote(
 	int pos)
 {
     int i;
-    i = 0; 
+	int count;
+	count = 1;
+    i = 0;
     if (str[pos] == '"' || str[pos] == '\'')
 	{
         char quote = str[pos];
         pos++;
+		while (str[pos++] == quote)
+			count++;
         while (str[pos] && str[pos] != quote)
         {
             i++;
             pos++;
-        }
+		}
         if (str[pos] == quote)
             pos++;
-		while (str[pos] && !ft_isspace(str[pos]))
-		{
+		while (str[pos++] && !ft_isspace(str[pos]))
 			i++;
-			pos++;
-		}
     }
     if (i > 0)
-        i += 2;
+        i += (count *2);
     return(i);
 }
 
@@ -92,6 +126,7 @@ int move_over_quote(
 int set_len(char *str, int i)
 {
 	int len;
+
 	len = 0;
 	if ((str[i] == '\'' || str[i] == '"') && str[i])
 	{

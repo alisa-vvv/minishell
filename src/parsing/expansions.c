@@ -26,7 +26,8 @@
 //--> make expansion first, remove quotes later
 // expand $EMPTY to nothing
 // look for return value in minishell struct when accessing $?
-//ft_safe_free((unsigned char **)&env_value)
+
+//expands unquoted var to the relevant environment value, keeping the rest of the string intact or replacing empty strings if env value is not present
 int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int pos, char *env_value)
 {
     static int flag;
@@ -35,7 +36,7 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
     i = -1;
     if (!env_value)
         env_value = "";
-    if (flag > 0 || ft_strchr(check_token->value, '$'))
+    if (flag >= 0 || ft_strchr(check_token->value, '$'))
     {
         char *new_str;
         new_str = exp_str_token(check_token->value, env_value, ft_strlen(name) +1);
@@ -109,15 +110,15 @@ int expand_var(element **tokenlist,
         e_printf("\nNAME= %s \n", name);
         if (quoted)
             expand_quoted(*tokenlist, name, pos, env_value);
-        else if (!quoted && env_value)
+        else if (!quoted)
             expand_unquoted(*tokenlist, check_token, name, pos, env_value);
-        else if (!quoted && !env_value)
-        {
-            (*tokenlist)->pf_element_delete((*tokenlist), pos);
-            ft_safe_free((unsigned char **)&name);
-            index_lexer(tokenlist);
-            return (1);
-        }
+        // else if (!quoted && !env_value)
+        // {
+        //     (*tokenlist)->pf_element_delete((*tokenlist), pos);
+        //     ft_safe_free((unsigned char **)&name);
+        //     index_lexer(tokenlist);
+        //     return (1);
+        // }
         (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
         index_lexer(tokenlist);
         count--;
