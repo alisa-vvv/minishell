@@ -57,7 +57,7 @@ char	*trim_str_space(char *str)
 
 
 // move over quoted string
-int	move_over_quote(char *str, int pos, char quote)
+int	move_over_quote(const char *str, int pos, char quote)
 {
 	int		i;
 	int		count;
@@ -82,27 +82,37 @@ int	move_over_quote(char *str, int pos, char quote)
 }
 
 // returns len of tokens
-int	set_len(char *str, int i)
+int	set_len(const char *str, int i)
 {
 	int	len;
 
 	len = 0;
-	if ((str[i] == '\'' || str[i] == '"') && str[i])
+
+	if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && !str_is_red(str[i]) && str[i]))
 	{
-		len = move_over_quote(str, i, str[i]);
-		i += len;
-	}
-	else if ((len == 0 && str[i]) && !ft_isspace(str[i]) && !str_is_red(str[i]))
-	{
-		while (str[i] && !ft_isspace(str[i]) && !str_is_red(str[i]))
+		
+		while (str[i] && !str_is_red(str[i]) && str[i] != '\'' && str[i] != '"' && !ft_isspace(str[i]))
 		{
 			len++;
 			i++;
 		}
+		if (str[i] && (str[i] == '\'' && str[i] == '"') && str[i -1] == '=')
+		{
+			while (str[i] && !ft_isspace(str[i]))
+			{
+				len++;
+				i++;
+			}
+		}
+	}
+	if ( len == 0 && str[i] && (str[i] == '"' || str[i] == '\''))
+	{
+		len = move_over_quote(str, i, str[i]);
+		i += len;
 	}
 	else if (len == 0 && str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
 	{
-		while (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+		while (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]) && str[i] != '\'' && str[i] != '"')
 		{
 			len++;
 			i++;
@@ -115,16 +125,23 @@ int	set_len(char *str, int i)
 int	index_lexer(element **tokenlist)
 {
 	size_t	i;
-		t_token *check_token;
+	t_token *check_token;
 
 	i = 0;
 	// e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
 	while (i < (size_t)(*tokenlist)->element_list.total)
 	{
 		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
-		if (!check_token)
+		if (ft_strncmp(check_token->value, "", 1) == 0)
+		{
+			(*tokenlist)->pf_element_delete(*tokenlist, i);
+			i--;
+			break;
+		}
+		else if (!check_token)
 			return (write(1, "No tokens available\n", 20));
-		check_token->pos = i;
+		else 
+			check_token->pos = i;
 		// e_printf("POS= %d \n", check_token->pos);
 		i++;
 	}

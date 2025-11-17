@@ -53,7 +53,7 @@ int add_token(
 
 // counts args to size up elementlist
 int	token_count(
-	char *str,
+	const char *str,
 	int i)
 {
 	int	tokencount;
@@ -61,21 +61,26 @@ int	token_count(
 	tokencount = 0;
 	while (str[i])
 	{
-		if ((str[i] == '"' || str[i] == '\'') && str[i])
+		if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && !str_is_red(str[i]) && str[i]))
+		{
+			tokencount++;
+			while (str[i] && !str_is_red(str[i]) && str[i] != '\'' && str[i] != '"' && !ft_isspace(str[i]))
+				i++;
+			if (str[i] && (str[i] == '\'' && str[i] == '"') && str[i -1] == '=')
+			{
+				while (str[i] && !ft_isspace(str[i]))
+					i++;
+			}
+		}
+		if (str[i] && (str[i] == '"' || str[i] == '\''))
 		{
 			tokencount++;
             i += move_over_quote(str, i, str[i]);
 		}
-		else if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && !str_is_red(str[i]) && str[i]))
+		if (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
 		{
 			tokencount++;
-			while (!ft_isspace(str[i]) && !str_is_red(str[i]) && str[i])
-				i++;
-		}
-		else if (str_is_red(str[i]) && str[i] && !ft_isspace(str[i]))
-		{
-			tokencount++;
-			while(str_is_red(str[i]) && str[i] && !ft_isspace(str[i]))
+			while(str_is_red(str[i]) && str[i] && !ft_isspace(str[i]) && str[i] != '\'' && str[i] != '"')
 				i++;
 		}
         else
@@ -94,7 +99,10 @@ int	fill_tokenlist(
 	size_t	len;
 
 	i = 0;
-	while (str[i])
+	len = 0;
+	if (!str)
+		return(1);
+	while (str[i] != '\0')
 	{
 		len = set_len(str, i);
 		i += len;

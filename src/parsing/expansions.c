@@ -131,7 +131,6 @@ int	exp_lexer(
 	while (i < (size_t)tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
-        p_printf("CHECK TOKEN = %s\n", check_token->value);
         if (!check_token)
             return (1);
 		if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
@@ -140,6 +139,8 @@ int	exp_lexer(
 			rm_quotes(tokenlist, i, '"');
         if (type == PARAMETER && check_token->type == PARAMETER)
             expand_var(&tokenlist, i, minishell_data, check_token, false);
+        if (i > 0 && lookbehind(tokenlist, i)->type == OPERATOR)
+            merge_tokens(tokenlist, i -1, i);
 		i++;
 	}
 	return (0);

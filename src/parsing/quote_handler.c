@@ -13,12 +13,12 @@
 #include "parser.h"
 
 // check if a certain pos is inside quotes
-int	check_in_quote(char *str, int pos)
+int	check_in_quote(const char *str, int pos)
 {
 	int	count_s;
 	int	count_d;
 	int	in_quote;
-	int i;
+	int	i;
 
 	count_s = 0;
 	count_d = 0;
@@ -43,20 +43,16 @@ int	check_in_quote(char *str, int pos)
 	return (count_d || count_s);
 }
 
-
-void move_str(char *str, char symbol, int count)
+void	move_str(char *str, char symbol, int count)
 {
-	int i;
-	int len;
+	int	i;
+	int	len;
 
 	i = 0;
 	len = ft_strlen(str);
-	
 	while (count > 0)
 	{
 		str[len - 1] = '\0';
-		//ft_safe_free((unsigned char **)str[ft]);
-		printf("STRING IS %s\n str[ftlen]= %c\n", str, str[ft_strlen(str)-1]);
 		while (str[i + 1])
 		{
 			str[i] = str[i + 1];
@@ -69,30 +65,25 @@ void move_str(char *str, char symbol, int count)
 		str[len - count] = '\0';
 }
 
-
-
-//rm quotes for certain pos in tokenlist
-int	rm_quotes(
-	element *tokenlist, 
-	int pos, 
-	char symbol)
+// rm quotes for certain pos in tokenlist
+int	rm_quotes(element *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
 	int		i;
-	int count;
+	int		count;
 
 	i = 0;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
 	count = count_symbols(check_token->value, symbol);
-	if (check_token->value[i] == symbol && check_token->value[ft_strlen(check_token->value) -1] == symbol)
+	if (check_token->value[i] == symbol
+		&& check_token->value[ft_strlen(check_token->value) - 1] == symbol)
 		move_str(check_token->value, symbol, count);
 	if (symbol == '\'')
 		check_token->type = STRING;
-	else if (symbol == '"' && check_token->value[0] == '\'' && check_token->value[ft_strlen(check_token->value) -1] == '\'')
+	else if (symbol == '"' && check_token->value[0] == '\''
+		&& check_token->value[ft_strlen(check_token->value) - 1] == '\'')
 		check_token->type = SINGLE_Q;
-	else if (symbol == '"' && ft_strchr(check_token->value, '$'))
-		check_token->type = PARAMETER;
-
+	else if (symbol == '"')
+		check_token->type = match_nonterminal(check_token->value);
 	return (0);
 }
-
