@@ -51,6 +51,21 @@ int add_token(
 	return (0);
 }
 
+
+int move_o_unquoted(const char *str, int i)
+{
+	while (str[i] && !str_is_red(str[i]) && str[i] != '\'' && str[i] != '"' && !ft_isspace(str[i]))
+		i++;
+	if (str[i] && (str[i] == '\'' && str[i] == '"') && str[i -1] == '=')
+	{
+		while (str[i] && !ft_isspace(str[i]))
+			i++;
+	}
+	return (i);
+}
+
+
+
 // counts args to size up elementlist
 int	token_count(
 	const char *str,
@@ -64,13 +79,7 @@ int	token_count(
 		if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && !str_is_red(str[i]) && str[i]))
 		{
 			tokencount++;
-			while (str[i] && !str_is_red(str[i]) && str[i] != '\'' && str[i] != '"' && !ft_isspace(str[i]))
-				i++;
-			if (str[i] && (str[i] == '\'' && str[i] == '"') && str[i -1] == '=')
-			{
-				while (str[i] && !ft_isspace(str[i]))
-					i++;
-			}
+			i = move_o_unquoted(str, i);
 		}
 		if (str[i] && (str[i] == '"' || str[i] == '\''))
 		{
@@ -102,7 +111,7 @@ int	fill_tokenlist(
 	len = 0;
 	if (!str)
 		return(1);
-	while (str[i] != '\0')
+	while (str[i])
 	{
 		len = set_len(str, i);
 		i += len;

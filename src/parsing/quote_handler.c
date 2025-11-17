@@ -48,21 +48,22 @@ void	move_str(char *str, char symbol, int count)
 	int	i;
 	int	len;
 
-	i = 0;
-	len = ft_strlen(str);
 	while (count > 0)
-	{
-		str[len - 1] = '\0';
-		while (str[i + 1])
+	{	
+		i = 0;
+		len = ft_strlen(str);
+		if (str[0] && str[len -1] == symbol)
 		{
-			str[i] = str[i + 1];
-			i++;
+			str[len - 1] = '\0';
+			while (str[i + 1])
+			{
+				str[i] = str[i + 1];
+				i++;
+			}
+			str[i] = '\0';
 		}
-		str[i] = '\0';
 		count--;
 	}
-	if (str[len - count] == symbol)
-		str[len - count] = '\0';
 }
 
 // rm quotes for certain pos in tokenlist

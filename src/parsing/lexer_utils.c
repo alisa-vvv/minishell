@@ -73,10 +73,10 @@ int	move_over_quote(const char *str, int pos, char quote)
 		i++;
 		pos++;
 	}
-	// if (str[pos] == quote)
-	// 	pos++;
-	// while (str[pos++] && !ft_isspace(str[pos++]))
-	// 	i++;
+	if (str[pos] == quote)
+		pos++;
+	while (str[pos++] && !ft_isspace(str[pos++]))
+		i++;
 	i = i + (count * 2);
 	return (i);
 }
@@ -121,7 +121,26 @@ int	set_len(const char *str, int i)
 	return (len);
 }
 
-// index lexer by traversing - not needed anymore
+int clean_lexer(element *tokenlist, size_t i)
+{
+	t_token *check_token;
+
+	while (i < tokenlist->element_list.total)
+	{
+		check_token = tokenlist->element_list.tokens[i];
+		if (!check_token)
+			return (1);
+		if (ft_strncmp(check_token->value, "", 1) == 0)
+		{
+			tokenlist->pf_element_delete(tokenlist, i);
+		}
+		i++;
+	}
+	index_lexer(&tokenlist);
+	return (0);
+}
+
+// index lexer by traversing
 int	index_lexer(element **tokenlist)
 {
 	size_t	i;
@@ -132,13 +151,7 @@ int	index_lexer(element **tokenlist)
 	while (i < (size_t)(*tokenlist)->element_list.total)
 	{
 		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
-		if (ft_strncmp(check_token->value, "", 1) == 0)
-		{
-			(*tokenlist)->pf_element_delete(*tokenlist, i);
-			i--;
-			break;
-		}
-		else if (!check_token)
+		if (!check_token)
 			return (write(1, "No tokens available\n", 20));
 		else 
 			check_token->pos = i;
