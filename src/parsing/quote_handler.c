@@ -56,7 +56,6 @@ void move_str(char *str, char symbol, int count)
 	{
 		str[len - 1] = '\0';
 		//ft_safe_free((unsigned char **)str[ft]);
-		printf("STRING IS %s\n str[ftlen]= %c\n", str, str[ft_strlen(str)-1]);
 		while (str[i + 1])
 		{
 			str[i] = str[i + 1];
@@ -90,8 +89,8 @@ int	rm_quotes(
 		check_token->type = STRING;
 	else if (symbol == '"' && check_token->value[0] == '\'' && check_token->value[ft_strlen(check_token->value) -1] == '\'')
 		check_token->type = SINGLE_Q;
-	else if (symbol == '"' && ft_strchr(check_token->value, '$'))
-		check_token->type = PARAMETER;
+	else if (symbol == '"')
+		check_token->type = match_nonterminal(check_token->value);
 
 	return (0);
 }

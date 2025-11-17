@@ -43,7 +43,7 @@ int	check_lexer(element *tokenlist,
 	t_minishell_data *minishell_data)
 {
 	int count;
-	count = 0;
+	count = 1;
 
 	count = count_exp(tokenlist);
 	p_printf("COUNT = %d\n", count);
@@ -53,7 +53,7 @@ int	check_lexer(element *tokenlist,
 			return (write(1, "Wrong quotes\n", 14));
 		if (exp_lexer(tokenlist, minishell_data, PARAMETER, 0))
 			return(write(1, "Wrong expanion param\n", 21));
-		count = count_exp(tokenlist);
+		count--;
 	}
 	index_lexer(&tokenlist);
 	if (tokenlist->element_list.total < 2)
