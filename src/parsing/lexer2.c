@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-
+//counts how many expansions need to be done
 int count_exp(element *tokenlist)
 {
 	int count;
@@ -27,9 +27,9 @@ int count_exp(element *tokenlist)
 		check_token = tokenlist->element_list.tokens[i];
 		if (check_token->type == DOUBLE_Q)
 			count++;
-		if (check_token->type == PARAMETER)
+		else if (check_token->type == PARAMETER)
 			count++;
-		if (check_token->type == SINGLE_Q)
+		else if (check_token->type == SINGLE_Q)
 			count++;
 		i++;
 	}
@@ -69,6 +69,8 @@ int	check_lexer(element *tokenlist,
 			return(write(1, "Wrong expanion param\n", 21));
 		count--;
 	}
+	if (exp_lexer(tokenlist, minishell_data, OPERATOR, 0))
+		return (write(1, "Wrong operator\n", 15));
 	index_lexer(&tokenlist);
 	if (tokenlist->element_list.total < 2)
 	{
