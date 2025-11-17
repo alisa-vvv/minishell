@@ -131,7 +131,6 @@ int	exp_lexer(
 	while (i < (size_t)tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
-        p_printf("CHECK TOKEN = %s\n", check_token->value);
         if (!check_token)
             return (1);
 		if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)

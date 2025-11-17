@@ -20,7 +20,7 @@ int count_exp(element *tokenlist)
 	t_token *check_token;
 	
 	i = 0;
-	count = -1;
+	count = 0;
 	check_token = NULL;
 	while (i < tokenlist->element_list.total)
 	{
@@ -46,13 +46,14 @@ int	check_lexer(element *tokenlist,
 	count = 0;
 
 	count = count_exp(tokenlist);
-	while (count > 0 )
+	p_printf("COUNT = %d\n", count);
+	while (count > 0)
 	{
 		if (exp_lexer(tokenlist, minishell_data, SINGLE_Q, 0) || exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))
 			return (write(1, "Wrong quotes\n", 14));
 		if (exp_lexer(tokenlist, minishell_data, PARAMETER, 0))
 			return(write(1, "Wrong expanion param\n", 21));
-		count--;
+		count = count_exp(tokenlist);
 	}
 	index_lexer(&tokenlist);
 	if (tokenlist->element_list.total < 2)
