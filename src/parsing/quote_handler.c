@@ -44,23 +44,29 @@ int	check_in_quote(char *str, int pos)
 }
 
 
-void move_str(char *str, char symbol)
+void move_str(char *str, char symbol, int count)
 {
 	int i;
-	static int len;
+	int len;
 
 	i = 0;
-	if (str[i] == symbol && str[len-1] == symbol)
-		str[ft_strlen(str)- len -1] = '\0';
-	//ft_safe_free((unsigned char **)str[ft]);
-	printf("STRING IS %s\n str[ftlen]= %c\n", str, str[ft_strlen(str)- len -1]);
-	while (str[i + 1])
+	len = ft_strlen(str);
+	
+	while (count > 0)
 	{
-		str[i] = str[i + 1];
-		i++;
+		str[len - 1] = '\0';
+		//ft_safe_free((unsigned char **)str[ft]);
+		printf("STRING IS %s\n str[ftlen]= %c\n", str, str[ft_strlen(str)-1]);
+		while (str[i + 1])
+		{
+			str[i] = str[i + 1];
+			i++;
+		}
+		str[i] = '\0';
+		count--;
 	}
-	str[i] = '\0';
-	len++;
+	if (str[len - count] == symbol)
+		str[len - count] = '\0';
 }
 
 
@@ -73,23 +79,20 @@ int	rm_quotes(
 {
 	t_token	*check_token;
 	int		i;
+	int count;
 
 	i = 0;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	while (check_token->value[i])
-	{
-		if (check_token->value[i] == symbol)
-		{
-			move_str(check_token->value, symbol);
-		}
-		i++;
-		// if (!check_token->value[i] && ft_strrchr(check_token->value, symbol))
-		// 	i = 0;
-	}
+	count = count_symbols(check_token->value, symbol);
+	if (check_token->value[i] == symbol && check_token->value[ft_strlen(check_token->value) -1] == symbol)
+		move_str(check_token->value, symbol, count);
 	if (symbol == '\'')
 		check_token->type = STRING;
-	else if (symbol == '"')
-		check_token->type = match_token(check_token->value);
+	else if (symbol == '"' && check_token->value[0] == '\'' && check_token->value[ft_strlen(check_token->value) -1] == '\'')
+		check_token->type = SINGLE_Q;
+	else if (symbol == '"' && ft_strchr(check_token->value, '$'))
+		check_token->type = PARAMETER;
+
 	return (0);
 }
 

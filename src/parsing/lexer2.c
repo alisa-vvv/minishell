@@ -12,16 +12,48 @@
 
 #include "parser.h"
 
+
+int count_exp(element *tokenlist)
+{
+	int count;
+	size_t i;
+	t_token *check_token;
+	
+	i = 0;
+	count = -1;
+	check_token = NULL;
+	while (i < tokenlist->element_list.total)
+	{
+		check_token = tokenlist->element_list.tokens[i];
+		if (check_token->type == DOUBLE_Q)
+			count++;
+		if (check_token->type == PARAMETER)
+			count++;
+		if (check_token->type == SINGLE_Q)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+
+
 // go through lexer and clean up data
 int	check_lexer(element *tokenlist, 
 	t_minishell_data *minishell_data)
 {
 	int count;
 	count = 0;
-	if (exp_lexer(tokenlist, &minishell_data, PARAMETER, 0) || exp_lexer(tokenlist,
-			&minishell_data, SINGLE_Q, 0) || exp_lexer(tokenlist, &minishell_data,
-			DOUBLE_Q, 0))
-		return (write(1, "Wrong expansion or quote\n", 25));
+
+	count = count_exp(tokenlist);
+	while (count > 0 )
+	{
+		if (exp_lexer(tokenlist, minishell_data, SINGLE_Q, 0) || exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))
+			return (write(1, "Wrong quotes\n", 14));
+		if (exp_lexer(tokenlist, minishell_data, PARAMETER, 0))
+			return(write(1, "Wrong expanion param\n", 21));
+		count--;
+	}
 	index_lexer(&tokenlist);
 	if (tokenlist->element_list.total < 2)
 	{

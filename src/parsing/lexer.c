@@ -64,7 +64,7 @@ int	token_count(
 		if ((str[i] == '"' || str[i] == '\'') && str[i])
 		{
 			tokencount++;
-            i += move_over_quote(str, i);
+            i += move_over_quote(str, i, str[i]);
 		}
 		else if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && !str_is_red(str[i]) && str[i]))
 		{

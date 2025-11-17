@@ -55,60 +55,29 @@ char	*trim_str_space(char *str)
 	return (str);
 }
 
-// int	move_multiple_quotes(char *str, int pos, char quote, int i)
-// {
-// 	int	count;
-
-// 	count = 0;
-// 	while (str[pos])
-// 	{
-// 		while (str[pos] == quote)
-// 		{
-// 			count++;
-// 			pos++;
-// 			i++;
-// 		}
-// 		while (str[pos] != quote)
-// 		{
-// 			i++;
-// 			pos++;
-// 		}
-// 		while (str[pos] && str[pos] == quote)
-// 		{
-// 			count--;
-// 			pos++;
-// 			i++;
-// 		}
-// 		pos++;
-// 	}
-// 	return (i);
-// }
 
 // move over quoted string
-int	move_over_quote(char *str, int pos)
+int	move_over_quote(char *str, int pos, char quote)
 {
 	int		i;
 	int		count;
-	char	quote;
 
 	count = 1;
 	i = 1;
 
-	quote = str[pos];
 	pos++;
 	while (str[pos++] == quote)
 		count++;
-	while (str[pos] && str[pos] != quote)
+	while (check_in_quote(str, pos))
 	{
 		i++;
 		pos++;
 	}
-	if (str[pos] == quote)
-		pos++;
-	while (str[pos++] && !ft_isspace(str[pos++]))
-		i++;
+	// if (str[pos] == quote)
+	// 	pos++;
+	// while (str[pos++] && !ft_isspace(str[pos++]))
+	// 	i++;
 	i = i + (count * 2);
-	// p_printf("QUOTE LEN = %d\n", i);
 	return (i);
 }
 
@@ -120,7 +89,7 @@ int	set_len(char *str, int i)
 	len = 0;
 	if ((str[i] == '\'' || str[i] == '"') && str[i])
 	{
-		len = move_over_quote(str, i);
+		len = move_over_quote(str, i, str[i]);
 		i += len;
 	}
 	else if ((len == 0 && str[i]) && !ft_isspace(str[i]) && !str_is_red(str[i]))
