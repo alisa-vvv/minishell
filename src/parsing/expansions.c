@@ -71,7 +71,7 @@ void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
 }
 
 
-int count_exp(char* str_token)
+int count_symbols(char* str_token, char symbol)
 {
     int i; 
     int count;
@@ -80,7 +80,7 @@ int count_exp(char* str_token)
     i = 0;
     while(str_token[i])
     {
-        if (str_token[i] == '$')
+        if (str_token[i] == symbol)
             count++;
         i++;
     }
@@ -90,7 +90,7 @@ int count_exp(char* str_token)
 //expand known var and otherwise delete and re-position all tokens
 int expand_var(element **tokenlist, 
     int pos, 
-    t_minishell_data **minishell_data, 
+    t_minishell_data *minishell_data, 
     t_token *check_token, 
     bool quoted)
 {
@@ -99,14 +99,14 @@ int expand_var(element **tokenlist,
     int count;
 
 	name = NULL;
-    count = count_exp(check_token->value);
+    count = count_symbols(check_token->value, '$');
     while (count > 0)
     {
         check_token = (*tokenlist)->element_list.tokens[pos];
         name = refine_name_var(check_token->value, name);
         if (name && ft_strncmp(name, "?", 2))
-            printf("%d\n", (*minishell_data)->last_pipeline_return);
-        env_value = env_var_get_value((*minishell_data)->env, name);
+            printf("%d\n", minishell_data->last_pipeline_return);
+        env_value = env_var_get_value(minishell_data->env, name);
         e_printf("\nNAME= %s \n", name);
         if (quoted)
             expand_quoted(*tokenlist, name, pos, env_value);
@@ -122,7 +122,7 @@ int expand_var(element **tokenlist,
 // check lexer on expansion and quotes
 int	exp_lexer(
     element *tokenlist, 
-    t_minishell_data **minishell_data,
+    t_minishell_data *minishell_data,
     int type, 
     size_t i)
 {
@@ -131,30 +131,15 @@ int	exp_lexer(
 	while (i < (size_t)tokenlist->element_list.total)
 	{
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
+        p_printf("CHECK TOKEN = %s\n", check_token->value);
         if (!check_token)
             return (1);
-		if (((int)check_token->type == PARAMETER && type == PARAMETER)
-			|| ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q))
-		{
+		if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
+            rm_quotes(tokenlist, i, '\'');
+        if ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q)
 			rm_quotes(tokenlist, i, '"');
-            if (type == DOUBLE_Q && ft_strchr(check_token->value, '\''))
-            {
-                check_token->type = match_token(check_token->value);
-                break;
-            }
-			if (type == DOUBLE_Q && ft_strchr(check_token->value, '$') != NULL)
-			{
-				if (expand_var(&tokenlist, i, minishell_data, check_token, true))
-					i--;
-			}
-			else if (type == PARAMETER)
-			{
-				if (expand_var(&tokenlist, i, minishell_data, check_token, false))
-					i--;
-			}
-		}
-		if ((int)check_token->type == SINGLE_Q || type == SINGLE_Q)
-			rm_quotes(tokenlist, i, '\'');
+        if (type == PARAMETER && check_token->type == PARAMETER)
+            expand_var(&tokenlist, i, minishell_data, check_token, false);
 		i++;
 	}
 	return (0);
