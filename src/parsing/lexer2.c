@@ -36,6 +36,21 @@ int count_exp(element *tokenlist)
 	return (count);
 }
 
+int merge_tokens(element *tokenlist, int pos1, int pos2)
+{
+	t_token *check_token;
+	t_token *extra_token;
+
+	check_token = tokenlist->element_list.tokens[pos1];
+	extra_token = tokenlist->element_list.tokens[pos2];
+	if (check_token->type == OPERATOR)
+	{
+		check_token->value = ft_strjoin(check_token->value, extra_token->value);
+		tokenlist->pf_element_delete(tokenlist, pos2);
+		index_lexer(&tokenlist);
+	}
+	return (0);
+}
 
 
 // go through lexer and clean up data
@@ -46,7 +61,6 @@ int	check_lexer(element *tokenlist,
 	count = 1;
 
 	count = count_exp(tokenlist);
-	p_printf("COUNT = %d\n", count);
 	while (count > 0)
 	{
 		if (exp_lexer(tokenlist, minishell_data, SINGLE_Q, 0) || exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))

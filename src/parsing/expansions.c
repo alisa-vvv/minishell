@@ -139,6 +139,8 @@ int	exp_lexer(
 			rm_quotes(tokenlist, i, '"');
         if (type == PARAMETER && check_token->type == PARAMETER)
             expand_var(&tokenlist, i, minishell_data, check_token, false);
+        if (i > 0 && lookbehind(tokenlist, i)->type == OPERATOR)
+            merge_tokens(tokenlist, i -1, i);
 		i++;
 	}
 	return (0);
