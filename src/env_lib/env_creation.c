@@ -36,8 +36,8 @@ int	set_default_env(
 	*env_var_count = 2;
 	if (getcwd(cwd, PATH_MAX) == NULL)
 	{
-		msh_perror(NULL, "cound not set current working directory", extern_err); // double check meaning of extern err
-		return (extern_err); // what d pwe returtn?
+		msh_perror(NULL, "cound not set current working directory", extern_err);
+		return (extern_err);
 	}
 	msh_env[2] = ft_strjoin("PWD=\0", cwd);
 	if (!msh_env[2])
@@ -47,7 +47,7 @@ int	set_default_env(
 }
 
 int	clone_loop(
-	char **environ,
+	char *envp[],
 	int *alloc_size,
 	char **msh_env,
 	int *env_var_count
@@ -56,9 +56,9 @@ int	clone_loop(
 	int	i;
 
 	i = -1;
-	while(environ[++i])
+	while(envp[++i]) // replace wit msh_export?
 	{
-		if (i == *alloc_size)
+		if (i == *alloc_size) // separate into its own function since it's a common operation?
 		{
 			*alloc_size += *alloc_size / 2;
 			free_2d_arr((void **) msh_env);
@@ -67,7 +67,7 @@ int	clone_loop(
 				return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
 			i = 0;
 		}
-		msh_env[i] = ft_strdup(environ[i]);
+		msh_env[i] = ft_strdup(envp[i]);
 		if (!msh_env[i])
 		{
 			free_2d_arr((void **) msh_env);
@@ -79,11 +79,11 @@ int	clone_loop(
 }
 
 int	clone_env(
-	t_minishell_data *const minishell_data
+	t_minishell_data *const minishell_data,
+	char *envp[]
 )
 {
 	// SET A MAX VALUE FOR ALLOC SIZE // ? huh ?
-	extern	char **environ;
 	int		alloc_size;
 	int		err;
 
@@ -91,11 +91,11 @@ int	clone_env(
 	minishell_data->env = ft_calloc(alloc_size, sizeof(char *));
 	if (!minishell_data->env)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
-	if (environ[0] == NULL)
+	if (envp[0] == NULL)
 		set_default_env(minishell_data->env, &minishell_data->env_var_count);
 	else
 	{
-		err = clone_loop(environ, &alloc_size,
+		err = clone_loop(envp, &alloc_size,
 			minishell_data->env, &minishell_data->env_var_count);
 		if (err != success)
 			return (err);

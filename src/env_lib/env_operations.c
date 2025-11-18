@@ -14,7 +14,7 @@
 #include "minishell.h"
 #include "minishell_env.h"
 
-int env_var_realloc(
+int env_var_realloc( // go through this again
 	t_minishell_data *minishell_data
 )
 {
@@ -39,10 +39,10 @@ int env_var_realloc(
 	}
 	free_2d_arr((void **) minishell_data->env);
 	minishell_data->env = new_env;
-	return (0);
+	return (success);
 }
 
-char	*env_var_find_identifier(
+char	*env_var_find_identifier( // also change to return error?
 	char *arg
 )
 {
@@ -62,7 +62,7 @@ char	*env_var_find_identifier(
 
 // compares the string name vs the variable in env.
 // if finds match, checks if next symbol in env is '='
-int	env_var_find_index(
+int	env_var_find_index( // change to return error if not found var?
 	char **env,
 	char *name,
 	char *identifier
@@ -84,7 +84,7 @@ int	env_var_find_index(
 	return (i);
 }
 
-char	*env_var_get_value(
+char	*env_var_get_value(// change this to be int for errors. and write to buffer.
 	char **env,
 	char *name
 )

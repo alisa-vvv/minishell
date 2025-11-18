@@ -20,7 +20,8 @@
 /**/
 
 int	clone_env(
-	t_minishell_data *const minishell_data
+	t_minishell_data *const minishell_data,
+	char *envp[]
 );
 
 int env_var_realloc(

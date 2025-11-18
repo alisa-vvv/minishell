@@ -41,7 +41,8 @@ static void	reset_minishell_data(
 }
 
 static void	setup_minishell_data(
-	t_minishell_data *minishell_data
+	t_minishell_data *minishell_data,
+	char *envp[]
 )
 {
 	minishell_data->env_var_count = 0;
@@ -50,7 +51,7 @@ static void	setup_minishell_data(
 	minishell_data->last_pipeline_return = 0;
 	minishell_data->exec_data = NULL;
 	minishell_data->command_count = 0;
-	if (clone_env(minishell_data) != success)
+	if (clone_env(minishell_data, envp) != success)
 		clean_exit(minishell_data, NULL, EXIT_FAILURE, false); // check for errors here
 	minishell_data->cur_dir = ft_calloc(sizeof(char), PATH_MAX + 1);
 	if (!minishell_data->cur_dir)
@@ -62,7 +63,8 @@ static void	setup_minishell_data(
 }
 
 int	TEST_len = 0;
-int	main(void)
+
+int	main(int argc, char **argv, char *envp[])
 {
 	char				*read_line;
 	int					is_open = true;
@@ -70,13 +72,15 @@ int	main(void)
 	t_minishell_data	minishell_data;
 //	t_exec_data			*exec_data;
 
+	(void) argc;
+	(void) argv;
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	//
 	rl_catch_signals = false;
 	printf("pid of parrent: %d\n", getpid());
-	setup_minishell_data(&minishell_data);
+	setup_minishell_data(&minishell_data, envp);
 	while (is_open != 0)
 	{
 		handle_signals_interactive();

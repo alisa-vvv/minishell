@@ -102,6 +102,8 @@ int	minishell_cd(
 	char		*path;
 	char *const	cwd = ft_calloc(PATH_MAX, sizeof(char));
 
+	if (cwd == NULL)
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	path = NULL;
 	getcwd(cwd, PATH_MAX);
 	err_check = find_target_path(arg, minishell_data, cwd, &path);
@@ -110,14 +112,13 @@ int	minishell_cd(
 		free(cwd);
 		return (err_check);
 	}
-	err_check = chdir(path);
+	err_check = chdir(path); // this SHOULD check for path length i think
 	if (err_check != 0)
 		return (msh_perror("cd: ", NULL, extern_err), -1); // check return
 	else
 		err_check = set_env_vars(minishell_data, cwd, path);
-	ft_bzero(minishell_data->cur_dir, PATH_MAX);
-	getcwd(minishell_data->cur_dir, PATH_MAX); // add error?
-	free(path);
+	free(minishell_data->cur_dir);
+	minishell_data->cur_dir = path;
 	free(cwd);
 	return (err_check);
 }
