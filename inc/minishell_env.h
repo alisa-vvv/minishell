@@ -19,10 +19,8 @@
 # define INVALID_IDENTIFIER "not a valid identifier: "
 /**/
 
-char	**clone_env(
-	t_minishell_data *const minishell_data,
-	int *env_var_count,
-	int *env_mem
+int	clone_env(
+	t_minishell_data *const minishell_data
 );
 
 int env_var_realloc(

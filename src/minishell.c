@@ -50,10 +50,8 @@ static void	setup_minishell_data(
 	minishell_data->last_pipeline_return = 0;
 	minishell_data->exec_data = NULL;
 	minishell_data->command_count = 0;
-	minishell_data->env = clone_env(minishell_data, &minishell_data->env_var_count,
-								 &minishell_data->env_mem);
-	if (!minishell_data->env)
-		exit(errno); // add error message
+	if (clone_env(minishell_data) != success)
+		clean_exit(minishell_data, NULL, EXIT_FAILURE, false); // check for errors here
 	minishell_data->cur_dir = ft_calloc(sizeof(char), PATH_MAX + 1);
 	if (!minishell_data->cur_dir)
 		clean_exit(minishell_data, NULL, errno, true); // add error message

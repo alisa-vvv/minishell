@@ -54,10 +54,7 @@ static int	set_env_vars(
 	}
 	err_check = minishell_export(variables, minishell_data);
 	if (err_check < 0)
-	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n"); /// aaahaaahahaaa
-		return (err_check);
-	}
+		return (err_check); // check return
 	free_variables(variables);
 	return (0);
 }
@@ -76,7 +73,7 @@ static int find_target_path(
 	{
 		path = env_var_get_value(minishell_data->env, "HOME");
 		if (!path)
-			return(msh_perror("cd", "HOME not set", exec_err), builtin_err); // check return
+			return(msh_perror("cd", "HOME not set", exec_err), builtin_err);
 	}
 	else
 	{
@@ -89,8 +86,7 @@ static int find_target_path(
 	if (access(path, F_OK))
 	{
 		free(path);
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (msh_perror(NULL, "cd", extern_err), -1); // check return
+		return (msh_perror(NULL, "cd", extern_err), builtin_err);
 	}
 	*path_pointer = path;
 	return (0);
@@ -116,13 +112,11 @@ int	minishell_cd(
 	}
 	err_check = chdir(path);
 	if (err_check != 0)
-	{
 		return (msh_perror("cd: ", NULL, extern_err), -1); // check return
-	}
 	else
 		err_check = set_env_vars(minishell_data, cwd, path);
 	ft_bzero(minishell_data->cur_dir, PATH_MAX);
-	getcwd(minishell_data->cur_dir, PATH_MAX);
+	getcwd(minishell_data->cur_dir, PATH_MAX); // add error?
 	free(path);
 	free(cwd);
 	return (err_check);
