@@ -61,24 +61,19 @@ int	check_in_quote(const char *str, int pos)
 	return (count_d || count_s);
 }
 
-void	move_str(char *str)
+void	move_str(char *str, int count, char symbol)
 {
 	int	i;
 	int	len;
-	int count;
 
 	i = 0;
-	count = 1;
-	while (check_in_quote(str, i))
-	{
-		i++;
-		count++;
-	}
-	// p_printf("COUNT = %d\n", count);
+	p_printf("COUNT = %d\n", count);
 	while (count > 0)
 	{	
 		i = 0;
 		len = ft_strlen(str)-1;
+		if (str[0] == symbol)
+			count--;
 		if (char_is_quote(str[0]) && char_is_quote(str[len]))
 		{
 			str[len] = '\0';
@@ -89,8 +84,9 @@ void	move_str(char *str)
 			}
 			str[i] = '\0';
 		}
+
 	//	p_printf("TOKEN = %s\n", str);
-		count--;
+	//	count--;
 	}
 }
 
@@ -99,21 +95,27 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
 	int		i;
-	//int		count;
+	int		count;
 
 	i = 0;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-
-	// count = count_symbols(check_token->value, symbol);
-	p_printf("CHECK TOKEN = %s\n", check_token->value);
+	count = (count_symbols(check_token->value, symbol) / 2);
+	// p_printf("CHECK TOKEN = %s\n", check_token->value);
 	if (str_is_quote(check_token->value, symbol))
-		move_str(check_token->value);
-	if (str_is_quote(check_token->value, '\''))
+		move_str(check_token->value, count, symbol);
+	if (symbol == '\'')
+		check_token->type = SINGLE_Q;
+	else if (str_is_quote(check_token->value, '\''))
 		check_token->type = SINGLE_Q;
 	else if(str_is_quote(check_token->value, '"'))
-		check_token->type = DOUBLE_Q;
+	{
+		if (ft_strchr(check_token->value, '$'))
+			check_token->type = PARAMETER;
+		else 
+			check_token->type = DOUBLE_Q;
+	}
 	else 
 		check_token->type = match_nonterminal(check_token->value);
-	p_printf("CHECK TOKEN AFTER = %s\n", check_token->value);
+	// p_printf("CHECK TOKEN AFTER = %s\n", check_token->value);
 	return (0);
 }
