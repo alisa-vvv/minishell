@@ -12,6 +12,24 @@
 
 #include "parser.h"
 
+//returns true if character is quote
+bool char_is_quote(char c)
+{
+	if (c == '\'' || c == '"')
+		return (true);
+	return (false);
+}
+
+bool str_is_quote(const char *str, char symbol)
+{
+	int len;
+
+	len = ft_strlen(str) - 1;
+	if (str[0] == symbol && str[len] == symbol)
+		return (true);
+	return (false);
+}
+
 // check if a certain pos is inside quotes
 int	check_in_quote(const char *str, int pos)
 {
@@ -43,18 +61,27 @@ int	check_in_quote(const char *str, int pos)
 	return (count_d || count_s);
 }
 
-void	move_str(char *str, char symbol, int count)
+void	move_str(char *str)
 {
 	int	i;
 	int	len;
+	int count;
 
+	i = 0;
+	count = 1;
+	while (check_in_quote(str, i))
+	{
+		i++;
+		count++;
+	}
+	// p_printf("COUNT = %d\n", count);
 	while (count > 0)
 	{	
 		i = 0;
-		len = ft_strlen(str);
-		if (str[0] && str[len -1] == symbol)
+		len = ft_strlen(str)-1;
+		if (char_is_quote(str[0]) && char_is_quote(str[len]))
 		{
-			str[len - 1] = '\0';
+			str[len] = '\0';
 			while (str[i + 1])
 			{
 				str[i] = str[i + 1];
@@ -62,6 +89,7 @@ void	move_str(char *str, char symbol, int count)
 			}
 			str[i] = '\0';
 		}
+	//	p_printf("TOKEN = %s\n", str);
 		count--;
 	}
 }
@@ -71,20 +99,21 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
 	int		i;
-	int		count;
+	//int		count;
 
 	i = 0;
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	count = count_symbols(check_token->value, symbol);
-	if (check_token->value[i] == symbol
-		&& check_token->value[ft_strlen(check_token->value) - 1] == symbol)
-		move_str(check_token->value, symbol, count);
-	if (symbol == '\'')
-		check_token->type = STRING;
-	else if (symbol == '"' && check_token->value[0] == '\''
-		&& check_token->value[ft_strlen(check_token->value) - 1] == '\'')
+
+	// count = count_symbols(check_token->value, symbol);
+	p_printf("CHECK TOKEN = %s\n", check_token->value);
+	if (str_is_quote(check_token->value, symbol))
+		move_str(check_token->value);
+	if (str_is_quote(check_token->value, '\''))
 		check_token->type = SINGLE_Q;
-	else if (symbol == '"')
+	else if(str_is_quote(check_token->value, '"'))
+		check_token->type = DOUBLE_Q;
+	else 
 		check_token->type = match_nonterminal(check_token->value);
+	p_printf("CHECK TOKEN AFTER = %s\n", check_token->value);
 	return (0);
 }

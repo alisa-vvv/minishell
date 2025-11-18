@@ -48,6 +48,9 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
         tokenlist->pf_element_set(tokenlist, pos, new_token(env_value, ft_strlen(env_value)+ 1));
        // ft_safe_free((unsigned char **)&env_value);
     }
+    check_token = tokenlist->element_list.tokens[pos];
+    if (!check_token)
+        tokenlist->pf_element_delete(tokenlist, pos);
     (ft_safe_free((unsigned char **)&check_token));
     return (0);
 }
@@ -139,7 +142,7 @@ int	exp_lexer(
 			rm_quotes(tokenlist, i, '"');
         if (type == PARAMETER && check_token->type == PARAMETER)
             expand_var(&tokenlist, i, minishell_data, check_token, false);
-        if (i > 0 && lookbehind(tokenlist, i)->type == OPERATOR)
+        else if (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type == OPERATOR)
             merge_tokens(tokenlist, i -1, i);
 		i++;
 	}
