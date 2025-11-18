@@ -28,10 +28,10 @@ int	set_default_env(
 	msh_env[1] = ft_strdup("SHLVL=1");
 	if (!cwd || !msh_env[0] || !msh_env[1])
 	{
-		ft_safe_free((unsigned char **) cwd);
-		ft_safe_free((unsigned char **) msh_env[0]);
-		ft_safe_free((unsigned char **) msh_env[1]);
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), extern_err); // free here?
+		ft_safe_free((unsigned char **) &cwd);
+		ft_safe_free((unsigned char **) &msh_env[0]);
+		ft_safe_free((unsigned char **) &msh_env[1]);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), extern_err);
 	}
 	*env_var_count = 2;
 	if (getcwd(cwd, PATH_MAX) == NULL)
