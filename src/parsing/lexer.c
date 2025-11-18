@@ -51,19 +51,27 @@ int add_token(
 	return (0);
 }
 
-
+//returns len of unquoted token
 int move_o_unquoted(const char *str, int i)
 {
+	int len;
+
+	len = 0;
 	while (str[i] && !str_is_red(str[i]) && str[i] != '\'' && str[i] != '"' && !ft_isspace(str[i]))
+	{
+		len++;
 		i++;
+	}
 	if (str[i] && (str[i] == '\'' && str[i] == '"') && str[i -1] == '=')
 	{
 		while (str[i] && !ft_isspace(str[i]))
+		{
+			len++;
 			i++;
+		}
 	}
-	return (i);
+	return (len);
 }
-
 
 
 // counts args to size up elementlist
@@ -76,17 +84,18 @@ int	token_count(
 	tokencount = 0;
 	while (str[i])
 	{
-		if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && !str_is_red(str[i]) && str[i]))
+		if ((str[i] && !check_in_quote(str, i) && !ft_isspace(str[i]) && !str_is_red(str[i])))
 		{
 			tokencount++;
-			i = move_o_unquoted(str, i);
+			i += move_o_unquoted(str, i);
 		}
-		if (str[i] && (str[i] == '"' || str[i] == '\''))
+		else if (str[i] && (str[i] == '"' || str[i] == '\''))
 		{
 			tokencount++;
-            i += move_over_quote(str, i, str[i]);
+            i += move_over_quote(str, i);
+			t_printf("POS in readl = %d\n", i);
 		}
-		if (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
+		else if (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
 		{
 			tokencount++;
 			while(str_is_red(str[i]) && str[i] && !ft_isspace(str[i]) && str[i] != '\'' && str[i] != '"')
@@ -98,6 +107,7 @@ int	token_count(
     t_printf("Token count = %d\n", tokencount);
 	return (tokencount);
 }
+
 
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(
@@ -148,6 +158,7 @@ int	default_lexer(
 	token_list.element_list.tokens[token_c] = NULL;  
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
+//	test_tokens(token_list);
 	if (check_lexer(&token_list, minishell_data))
 	{
 		token_list.pf_element_free(&token_list);
@@ -157,6 +168,5 @@ int	default_lexer(
 	ft_safe_free((unsigned char **)&token_list);
 	return (0);
 }
-
 
 

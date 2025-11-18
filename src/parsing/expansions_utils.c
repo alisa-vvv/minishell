@@ -62,16 +62,7 @@ char	*exp_str_token(char *str_token, char *value, int offset)
 	return (new_str);
 }
 
-int	ft_isall_upper(const char *name)
-{
-	while (*name)
-	{
-		if (ft_islower(*name))
-			return (1);
-		name++;
-	}
-	return (0);
-}
+
 
 // get name of env var from token_name
 char	*refine_name_var(char *token_name, char *result)

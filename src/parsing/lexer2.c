@@ -13,7 +13,7 @@
 #include "parser.h"
 
 //counts how many expansions need to be done
-int count_exp(element *tokenlist)
+int count_exp(element *tokenlist, char symbol)
 {
 	int count;
 	size_t i;
@@ -25,17 +25,20 @@ int count_exp(element *tokenlist)
 	while (i < tokenlist->element_list.total)
 	{
 		check_token = tokenlist->element_list.tokens[i];
-		if (check_token->type == DOUBLE_Q)
+		if (!check_token)
+			return (count);
+		if (symbol == '"' && check_token->type == DOUBLE_Q)
 			count++;
-		else if (check_token->type == PARAMETER)
+		if (symbol == '\'' && check_token->type == SINGLE_Q)
 			count++;
-		else if (check_token->type == SINGLE_Q)
+		if (symbol == '$' && check_token->type == PARAMETER)
 			count++;
 		i++;
 	}
 	return (count);
 }
 
+//merge tokens with pos1 and pos2 into pos 1
 int merge_tokens(element *tokenlist, int pos1, int pos2)
 {
 	t_token *check_token;
@@ -53,25 +56,57 @@ int merge_tokens(element *tokenlist, int pos1, int pos2)
 }
 
 
+//expands single and double quotes 
+int expand_quotes(element *tokenlist, 
+	t_minishell_data *minishell_data)
+{
+	int count;
+	count = count_exp(tokenlist, '"');
+	while (count > 0)
+	{
+		if (exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))
+			return (write(1, "Wrong quotes\n", 14));
+		count--;
+	}
+	count = count_exp(tokenlist, '\'');
+	while (count > 0)
+	{
+		if (exp_lexer(tokenlist, minishell_data, SINGLE_Q, 0))
+			return (write(1, "Wrong quotes\n", 14));
+		count--;
+	}
+	return (0);
+}
+
+int expand_param(element *tokenlist,
+	t_minishell_data *minishell_data)
+{
+	int count;
+	count = count_exp(tokenlist, '$');
+	while (count > 0)
+	{
+		if (exp_lexer(tokenlist, minishell_data, PARAMETER, 0))
+			return (write(1, "Wrong variable\n", 15));
+		count--;
+	}
+	count = count_exp(tokenlist, '=');
+	while (count > 0)
+	{
+		if (exp_lexer(tokenlist, minishell_data, OPERATOR, 0))
+			return (write(1, "Wrong operator\n", 15));
+		count--;
+	}
+	return (0);
+}
+
 // go through lexer and clean up data
 int	check_lexer(element *tokenlist, 
 	t_minishell_data *minishell_data)
 {
-	int count;
-	count = 1;
 
-	count = count_exp(tokenlist);
-	while (count > 0)
-	{
-		if (exp_lexer(tokenlist, minishell_data, SINGLE_Q, 0) || exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))
-			return (write(1, "Wrong quotes\n", 14));
-		if (exp_lexer(tokenlist, minishell_data, PARAMETER, 0))
-			return(write(1, "Wrong expanion param\n", 21));
-		count--;
-	}
-	if (exp_lexer(tokenlist, minishell_data, OPERATOR, 0))
-		return (write(1, "Wrong operator\n", 15));
-	index_lexer(&tokenlist);
+	expand_quotes(tokenlist, minishell_data);
+	expand_param(tokenlist, minishell_data);
+	//clean_lexer(tokenlist, 0);
 	if (tokenlist->element_list.total < 2)
 	{
 		if (single_token(tokenlist))
