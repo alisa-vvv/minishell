@@ -110,6 +110,7 @@ int expand_var(element **tokenlist,
         if (name && ft_strncmp(name, "?", 2))
             printf("%d\n", minishell_data->last_pipeline_return);
         env_value = env_var_get_value(minishell_data->env, name);
+        
         e_printf("\nNAME= %s \n", name);
         if (quoted)
             expand_quoted(*tokenlist, name, pos, env_value);

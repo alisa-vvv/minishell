@@ -61,19 +61,21 @@ int expand_quotes(element *tokenlist,
 	t_minishell_data *minishell_data)
 {
 	int count;
+	int count_single;
 	count = count_exp(tokenlist, '"');
+	count_single = count_exp(tokenlist, '\'');
+	
 	while (count > 0)
 	{
 		if (exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))
 			return (write(1, "Wrong quotes\n", 14));
 		count--;
 	}
-	count = count_exp(tokenlist, '\'');
-	while (count > 0)
+	while (count_single > 0)
 	{
 		if (exp_lexer(tokenlist, minishell_data, SINGLE_Q, 0))
-			return (write(1, "Wrong quotes\n", 14));
-		count--;
+			return (write(1, "Wrong single quotes\n", 20));
+		count_single--;
 	}
 	return (0);
 }
@@ -117,8 +119,11 @@ int	check_lexer(element *tokenlist,
 	set_pipe_cm(tokenlist, 0);
 	// t_printf("\nAfter expansion, rm quotes and set commands:\n");
 	// test_tokens(*tokenlist);
-	if (pass_comm(tokenlist, minishell_data, 0, 0))
-		return (write(1, "Failed passing exec data\n", 25));
+	if (tokenlist)
+	{
+		if (pass_comm(tokenlist, minishell_data, 0, 0))
+			return (write(1, "Failed passing exec data\n", 25));
+	}
 	return (0);
 }
 

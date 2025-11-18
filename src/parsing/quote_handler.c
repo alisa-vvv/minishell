@@ -67,13 +67,14 @@ void	move_str(char *str, int count, char symbol)
 	int	len;
 
 	i = 0;
-	p_printf("COUNT = %d\n", count);
+	// p_printf("COUNT = %d\n", count);
 	while (count > 0)
 	{	
 		i = 0;
 		len = ft_strlen(str)-1;
 		if (str[0] == symbol)
 			count--;
+		p_printf("COUNT = %d\n", count);
 		if (char_is_quote(str[0]) && char_is_quote(str[len]))
 		{
 			str[len] = '\0';
@@ -84,7 +85,6 @@ void	move_str(char *str, int count, char symbol)
 			}
 			str[i] = '\0';
 		}
-
 	//	p_printf("TOKEN = %s\n", str);
 	//	count--;
 	}
