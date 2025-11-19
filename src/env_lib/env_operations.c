@@ -52,7 +52,7 @@ char	*env_var_find_identifier( // also change to return error?
 			return (arg);
 		else if (!ft_isalnum(*arg) && *arg != '_')
 		{
-			ft_putstr_fd(INVALID_IDENTIFIER, STDERR_FILENO);
+			ft_putstr_fd(INVALID_IDENTIFIER, STDERR_FILENO); // should never happen???
 			return (NULL);
 		}
 		arg++;
