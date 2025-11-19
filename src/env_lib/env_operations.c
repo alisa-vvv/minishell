@@ -21,9 +21,9 @@ int env_var_realloc( // go through this again
 	char	**new_env;
 	int		i;
 
-	if (msh_data->env_mem * 2 > ENV_MAX)
+	if (msh_data->env_mem + msh_data->env_mem / 2 > ENV_MAX)
 		msh_perror(NULL, "Environment variable limit reached", extern_err); // add return?
-	msh_data->env_mem *= 2;
+	msh_data->env_mem += msh_data->env_mem / 2;
 	new_env = ft_calloc(msh_data->env_mem, sizeof(char *));
 	if (!new_env)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
@@ -31,7 +31,7 @@ int env_var_realloc( // go through this again
 	while (msh_data->env[++i])
 	{
 		new_env[i] = ft_strdup(msh_data->env[i]);
-		if (!new_env)
+		if (!new_env[i])
 		{
 			free_2d_arr((void **) new_env);
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
