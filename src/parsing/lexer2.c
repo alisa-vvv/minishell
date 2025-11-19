@@ -27,12 +27,13 @@ int count_exp(element *tokenlist, char symbol)
 		check_token = tokenlist->element_list.tokens[i];
 		if (!check_token)
 			return (count);
-		if (symbol == '"' && check_token->type == DOUBLE_Q)
-			count++;
-		if (symbol == '\'' && check_token->type == SINGLE_Q)
-			count++;
 		if (symbol == '$' && ft_strchr(check_token->value, '$'))
 			count++;
+		else if (symbol == '"' && check_token->type == DOUBLE_Q)
+			count++;
+		else if (symbol == '\'' && check_token->type == SINGLE_Q)
+			count++;
+		
 		i++;
 	}
 	return (count);
@@ -65,18 +66,19 @@ int expand_quotes(element *tokenlist,
 	count = count_exp(tokenlist, '"');
 	count_single = count_exp(tokenlist, '\'');
 	
-	while (count > 0)
-	{
-		if (exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))
-			return (write(1, "Wrong quotes\n", 14));
-		count--;
-	}
 	while (count_single > 0)
 	{
 		if (exp_lexer(tokenlist, minishell_data, SINGLE_Q, 0))
 			return (write(1, "Wrong single quotes\n", 20));
 		count_single--;
 	}
+	while (count > 0)
+	{
+		if (exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))
+			return (write(1, "Wrong double quotes\n", 20));
+		count--;
+	}
+
 	return (0);
 }
 
