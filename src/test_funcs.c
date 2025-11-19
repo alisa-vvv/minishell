@@ -51,7 +51,7 @@ t_exec_data	*test_get_dummy_exec_data(
 	t_exec_data	*exec_data;
 	int			len;
 
-	TEST_len = 1;
+	TEST_len = 2;
 	len = TEST_len;
 	int i = 0;
 	printf("len? %d\n", len);
@@ -63,28 +63,28 @@ t_exec_data	*test_get_dummy_exec_data(
 	minishell_data->exec_data = exec_data;
 	minishell_data->command_count = len;
 
-
-	// {
-	// REDIRECTIONS TEST
-	//
-//	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "", NULL);
-//	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
-//	test_add_redirection(&exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
-//	test_add_redirection(&exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
-//	test_add_redirection(&exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF2");
-//	i++;
-	//	}
-
+//
 //	// {
-//	// BASIC_TEST_00: ls -l >outfile
+//	// REDIRECTIONS TEST
 //	//
-//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-//	exec_data[i].argv[0] = ft_strdup("ls");
-//	exec_data[i].argv[1] = ft_strdup("-l");
-//	exec_data[i].builtin_name = not_builtin;
-//	exec_data[i].input_is_pipe = false;
-//	exec_data[i].output_is_pipe = false;
-//	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+////	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "", NULL);
+////	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+////	test_add_redirection(&exec_data[i].redirections, input, STDIN_FILENO, "infile", NULL);
+////	test_add_redirection(&exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
+////	test_add_redirection(&exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF2");
+////	i++;
+//	//	}
+//
+////	// {
+////	// BASIC_TEST_00: ls -l >outfile
+////	//
+////	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+////	exec_data[i].argv[0] = ft_strdup("ls");
+////	exec_data[i].argv[1] = ft_strdup("-l");
+////	exec_data[i].builtin_name = not_builtin;
+////	exec_data[i].input_is_pipe = false;
+////	exec_data[i].output_is_pipe = false;
+////	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
 //	i++;
 //	//	}
 
@@ -286,17 +286,17 @@ t_exec_data	*test_get_dummy_exec_data(
 //	i++;
 //	//	}
 
-	// {
-	// BASIC_TEST_09: >outfile
-	//
-	exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	exec_data[i].argv[0] = NULL;
-	exec_data[i].builtin_name = not_builtin;
-	exec_data[i].input_is_pipe = false;
-	exec_data[i].output_is_pipe = false;
-	//exec_data[i].redirections = NULL;
-	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
-	i++;
+//	// {
+//	// BASIC_TEST_09: >outfile
+//	//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = NULL;
+//	exec_data[i].builtin_name = not_builtin;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = false;
+//	//exec_data[i].redirections = NULL;
+//	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+//	i++;
 
 	//	}
 
@@ -338,28 +338,52 @@ t_exec_data	*test_get_dummy_exec_data(
 	////exec_data[i].redirections = NULL;
 	//i++;
 
-	//// {
-	//// BASIC_TEST_12: <fakefile ls | ls -l (failed redirect)
-	////
-	//exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	//exec_data[i].argv[0] = ft_strdup("ls");
-	//exec_data[i].builtin_name = not_builtin;
-	//exec_data[i].input_is_pipe = false;
-	//exec_data[i].output_is_pipe = true;
-	////test_add_redirection(&exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
-	//test_add_redirection(&exec_data[i].redirections, input, STDIN_FILENO, "fakefile", NULL);
-	////test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
-	////exec_data[i].redirections = NULL;
-	//i++;
+	// {
+	// BASIC_TEST_12: <fakefile ls | ls -l (failed redirect)
 	//
-	//exec_data[i].argv = ft_calloc(10, sizeof(char *));
-	//exec_data[i].argv[0] = ft_strdup("ls");
-	//exec_data[i].argv[1] = ft_strdup("-l");
-	//exec_data[i].builtin_name = not_builtin;
-	//exec_data[i].input_is_pipe = true;
-	//exec_data[i].output_is_pipe = false;
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	exec_data[i].argv[0] = ft_strdup("sleep");
+	exec_data[i].argv[1] = ft_strdup("2");
+	exec_data[i].builtin_name = not_builtin;
+	exec_data[i].input_is_pipe = false;
+	exec_data[i].output_is_pipe = true;
+	//test_add_redirection(&exec_data[i].redirections, heredoc, STDIN_FILENO, NULL, "EOF");
+	test_add_redirection(&exec_data[i].redirections, input, STDIN_FILENO, "fakefile", NULL);
+	//test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
 	//exec_data[i].redirections = NULL;
-	//i++;
+	i++;
+	
+	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+	exec_data[i].argv[0] = ft_strdup("sleep");
+	exec_data[i].argv[1] = ft_strdup("2");
+	exec_data[i].builtin_name = not_builtin;
+	exec_data[i].input_is_pipe = true;
+	exec_data[i].output_is_pipe = false;
+	//exec_data[i].redirections = NULL;
+	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+	i++;
+
+//	// {
+//	// BASIC_TEST_13: echo abc | echo xyz
+//	//
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("echo");
+//	exec_data[i].argv[1] = ft_strdup("abc");
+//	exec_data[i].builtin_name = builtin_echo;
+//	exec_data[i].input_is_pipe = false;
+//	exec_data[i].output_is_pipe = true;
+//	//exec_data[i].redirections = NULL;
+//	test_add_redirection(&exec_data[i].redirections, trunc, STDOUT_FILENO, "outfile", NULL);
+//	i++;
+//	
+//	exec_data[i].argv = ft_calloc(10, sizeof(char *));
+//	exec_data[i].argv[0] = ft_strdup("echo");
+//	exec_data[i].argv[1] = ft_strdup("xyz");
+//	exec_data[i].builtin_name = builtin_echo;
+//	exec_data[i].input_is_pipe = true;
+//	exec_data[i].output_is_pipe = false;
+//	exec_data[i].redirections = NULL;
+//	i++;
 
 	return (exec_data);
 }

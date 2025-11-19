@@ -41,20 +41,18 @@ static void	reset_minishell_data(
 }
 
 static void	setup_minishell_data(
-	t_minishell_data *minishell_data
+	t_minishell_data *minishell_data,
+	char *envp[]
 )
 {
-	minishell_data->env = NULL;
 	minishell_data->env_var_count = 0;
 	minishell_data->env_mem = 0;
 	minishell_data->is_parent = true;
 	minishell_data->last_pipeline_return = 0;
 	minishell_data->exec_data = NULL;
 	minishell_data->command_count = 0;
-	minishell_data->env = clone_env(&minishell_data->env_var_count,
-								 &minishell_data->env_mem);
-	if (!minishell_data->env)
-		exit(errno); // add error message
+	if (clone_env(minishell_data, envp) != success)
+		clean_exit(minishell_data, NULL, EXIT_FAILURE, false); // check for errors here
 	minishell_data->cur_dir = ft_calloc(sizeof(char), PATH_MAX + 1);
 	if (!minishell_data->cur_dir)
 		clean_exit(minishell_data, NULL, errno, true); // add error message
@@ -65,7 +63,8 @@ static void	setup_minishell_data(
 }
 
 int	TEST_len = 0;
-int	main(void)
+
+int	main(int argc, char **argv, char *envp[])
 {
 	char				*read_line;
 	int					is_open = true;
@@ -73,13 +72,15 @@ int	main(void)
 	t_minishell_data	minishell_data;
 //	t_exec_data			*exec_data;
 
+	(void) argc;
+	(void) argv;
 	// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE CAUSE IT'S A TEST.
 	// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	//
 	rl_catch_signals = false;
 	printf("pid of parrent: %d\n", getpid());
-	setup_minishell_data(&minishell_data);
+	setup_minishell_data(&minishell_data, envp);
 	while (is_open != 0)
 	{
 		handle_signals_interactive();
@@ -126,7 +127,8 @@ int	main(void)
 			free(read_line);
 		if (minishell_data.is_parent == false) // make this better
 		{
-			if (err_check == child_heredoc || err_check == child_success)
+			if (err_check == child_heredoc || err_check == child_success
+				|| err_check == success)
 				clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
 			else if (err_check < 0)
 				clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);

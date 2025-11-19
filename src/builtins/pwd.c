@@ -11,26 +11,21 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "executor.h"
-#include "minishell_env.h"
+#include "minishell.h"
 #include <stdio.h>
 
 int	minishell_pwd(
 	t_minishell_data *const minishell_data
 )
 {
-	// alloc this variable in advance? // why
 	char *const	dir = ft_calloc(PATH_MAX, sizeof(char));
 	int			err_check;
 	
-	err_check = 0;
+	if (!dir)
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+	err_check = success;
 	getcwd(dir, PATH_MAX);
-	//if (!dir)
-	//{
-	//	printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n"); // do we need to error manage?
-	//	return (-1);
-	//}
-	if (!getcwd(dir, PATH_MAX) || dir[0] == '\0') // manage the errors?
+	if (!getcwd(dir, PATH_MAX) || dir[0] == '\0') // manage errors?
 		printf("%s\n", minishell_data->cur_dir);
 	else
 	{

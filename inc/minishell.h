@@ -28,8 +28,14 @@
 /* for true/false macro (and bool if we need it) */
 # include <stdbool.h>
 
-/*		Error Macros	*/
+/*		Standard/Default values		*/
+# define STD_PATH "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+// max value for environment variables
+# define PATH_MAX 4096 // change name?
+# define ENV_MAX 4096
+/**/
 
+/*		Error Macros	*/
 # define MALLOC_ERR "Error! malloc()"
 # define PIPE_ERR "Error! pipe()"
 # define FORK_ERR "Error! fork()"
@@ -39,6 +45,7 @@
 # define DUP2_ERR "Error! dup2()"
 # define EXECVE_ERR "Error! execve()"
 # define FD_ERR "Error! Wrong file descriptor"
+/**/
 
 typedef enum	e_msh_errno // can define specific values later
 {
@@ -71,8 +78,6 @@ typedef enum	e_msh_errno // can define specific values later
 
 /**/
 
-// max value for environment variables
-# define MAX_ENV 4096
 
 // this value is returned in a child process that only exists to create heredoc
 // doesn't need to be -2
