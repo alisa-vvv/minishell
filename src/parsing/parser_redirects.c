@@ -67,7 +67,12 @@ int set_type(t_redir_list *redirlist,
 	//
 	// I think the easiest/most general way is to have whitespace be a token.
 	// then we can check for whitespace whenever it is relevant to syntax. and just skip it
-	// when checking for other things. @alisa
+	// when checking for other things.
+	//
+	// we can change lookbehind() and lookahead() functions to take a third argument
+	// which can be an int, macroed as SKIP_SPACE or CHECK_SPACE to determine whether or not
+	// we need to skip whitespace tokens when looking for next/prev.
+	// -- @alisa
 	if (prev_token->type == NUMBER)
 		redirlist->src_fd = ft_atoi(prev_token->value);
 	else
@@ -78,7 +83,8 @@ int set_type(t_redir_list *redirlist,
 				|| check_token->type == REDIRECT_OUT_APP)
 			redirlist->src_fd = STDOUT_FILENO;
 	}
-	// ^ I added this if-else @alisa
+	// ^ I added this if-else
+	// -- @alisa
 	return (0);
 }
 
