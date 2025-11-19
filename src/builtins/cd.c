@@ -63,35 +63,33 @@ static int find_target_path(
 	char *const arg,
 	t_msh_data *const msh_data,
 	char *const cwd,
-	char **path_pointer
+	char **path
 )
 {
 	char	*arg_with_slash;
-	char	*path;
 
 	path = NULL;
 	if (!arg || arg[0] == '\0')
 	{
-		if (env_var_get_value(msh_data->env, "HOME", &path) != success)
+		if (env_var_get_value(msh_data->env, "HOME", path) != success)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-		if (!path)
+		if (!*path)
 			return (msh_perror("cd: ", "HOME not set", exec_err), builtin_err);
 	}
 	else
 	{
 		arg_with_slash = ft_strjoin("/", arg);
-		path = ft_strjoin(cwd, arg_with_slash);
+		*path = ft_strjoin(cwd, arg_with_slash);
 		free(arg_with_slash);
-		if (!path)
+		if (!*path)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	}
-	if (access(path, F_OK))
+	if (access(*path, F_OK))
 	{
-		free(path);
+		free(*path);
 		return (msh_perror(NULL, "cd", extern_err), builtin_err);
 	}
-	*path_pointer = path;
-	return (0);
+	return (success);
 }
 
 // add case for when directory was removed
