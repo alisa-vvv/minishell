@@ -31,7 +31,7 @@ int count_exp(element *tokenlist, char symbol)
 			count++;
 		if (symbol == '\'' && check_token->type == SINGLE_Q)
 			count++;
-		if (symbol == '$' && check_token->type == PARAMETER)
+		if (symbol == '$' && ft_strchr(check_token->value, '$'))
 			count++;
 		i++;
 	}
@@ -80,6 +80,7 @@ int expand_quotes(element *tokenlist,
 	return (0);
 }
 
+//expand vars and merge operators for export
 int expand_param(element *tokenlist,
 	t_minishell_data *minishell_data)
 {
@@ -105,9 +106,9 @@ int expand_param(element *tokenlist,
 int	check_lexer(element *tokenlist, 
 	t_minishell_data *minishell_data)
 {
-
-	expand_quotes(tokenlist, minishell_data);
+	
 	expand_param(tokenlist, minishell_data);
+	expand_quotes(tokenlist, minishell_data);
 	//clean_lexer(tokenlist, 0);
 	if (tokenlist->element_list.total < 2)
 	{

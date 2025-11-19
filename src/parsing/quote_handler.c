@@ -103,7 +103,7 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 	// p_printf("CHECK TOKEN = %s\n", check_token->value);
 	if (str_is_quote(check_token->value, symbol))
 		move_str(check_token->value, count, symbol);
-	if (symbol == '\'')
+	if (symbol == '\'' && char_is_quote(check_token->value[0]))
 		check_token->type = SINGLE_Q;
 	else if (str_is_quote(check_token->value, '\''))
 		check_token->type = SINGLE_Q;

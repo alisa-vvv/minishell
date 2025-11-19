@@ -80,7 +80,7 @@ char	*refine_name_var(char *token_name, char *result)
 	// e_printf("\nRESULT = %s$\n", result);
 	while (result[i])
 	{
-		if (result[i] == '"' || result[i] == '$' || ft_isspace(result[i])
+		if (char_is_quote(result[i]) || result[i] == '$' || ft_isspace(result[i])
 			|| ft_islower(result[i]))
 			break ;
 		i++;
