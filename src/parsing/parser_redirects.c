@@ -40,6 +40,7 @@ int set_type(t_redir_list *redirlist,
 	int pos)
 {
 	t_token	*check_token;
+	t_token *prev_token;
 
 	check_token = tokenlist->pf_element_get(tokenlist, pos);
 	if (check_token->type == REDIRECT_IN)
@@ -48,6 +49,36 @@ int set_type(t_redir_list *redirlist,
 		redirlist->type = trunc;
 	else if (check_token->type == REDIRECT_OUT_APP)
 		redirlist->type = append;
+	prev_token = lookbehind(tokenlist, pos);
+	// we might need a WHITESPACE as a token type, or more robust way of excluding
+	// arguments from being numbers during lexing
+	//
+	// currently, if the token type is NUMBER, it is still counted as a command argument
+	// it should just be a string. the only time we care about something being a number is when
+	// it's directly before a redirection character, without whitespace.
+	// 
+	// so in "ls -l 2>outfile":
+	// 2 is a file descriptor that we need to recognize as a number and set to be src_fd.
+	// currently, this case adds string "2" as a command argument, BUT the token type of "2" is number
+	// it should not be passed as a command argument.
+	//
+	// in "ls -l 2 >outfile" 2 is a command argument, not related to redirects.
+	// so it should NOT be a NUMBER.
+	//
+	// I think the easiest/most general way is to have whitespace be a token.
+	// then we can check for whitespace whenever it is relevant to syntax. and just skip it
+	// when checking for other things. @alisa
+	if (prev_token->type == NUMBER)
+		redirlist->src_fd = ft_atoi(prev_token->value);
+	else
+	{
+		if (check_token->type == REDIRECT_IN)
+			redirlist->src_fd = STDIN_FILENO;
+		else if (check_token->type == REDIRECT_OUT
+				|| check_token->type == REDIRECT_OUT_APP)
+			redirlist->src_fd = STDOUT_FILENO;
+	}
+	// ^ I added this if-else @alisa
 	return (0);
 }
 
