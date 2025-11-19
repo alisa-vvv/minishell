@@ -42,6 +42,11 @@ int	msh_echo(
 	int		i;
 	bool	put_nl;
 
+	if (*arguments == NULL)
+	{
+		ft_putchar_fd('\n', STDOUT_FILENO);
+		return (0);
+	}
 	put_nl = check_for_minus_n(arguments[0]);
 	i = !put_nl;
 	while (arguments[i])
