@@ -35,6 +35,23 @@ void	set_redir_def(t_redir_list	*redirlist)
 	redirlist->next = NULL;
 }
 
+int set_type(t_redir_list *redirlist,
+	element *tokenlist, 
+	int pos)
+{
+	t_token	*check_token;
+
+	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	if (check_token->type == REDIRECT_IN)
+		redirlist->type = input;
+	else if (check_token->type == REDIRECT_OUT)
+		redirlist->type = trunc;
+	else if (check_token->type == REDIRECT_OUT_APP)
+		redirlist->type = append;
+	return (0);
+}
+
+
 int	set_redirect(
 	t_redir_list	*redirlist, 
 	element *tokenlist, 
@@ -54,6 +71,7 @@ int	set_redirect(
 			check_token = lookahead(tokenlist, pos);
 			check_token->type = STRING;
 		}
+		set_type(redirlist, tokenlist, pos);
 	}
 	return (0);
 }
