@@ -38,9 +38,10 @@ char	*env_var_find_identifier(
 	char *arg
 );
 
-char	*env_var_get_value(
+int	env_var_get_value(
 	char **env,
-	char *name
+	char *name,
+	char **buf_ptr
 );
 
 #endif 

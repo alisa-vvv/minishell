@@ -23,10 +23,12 @@ static const char *const	*split_path_var(
 {
 	char	*path_value;
 	char	**path_arr;
+	int		err_check;
 
 	path_arr = NULL;
-	path_value = env_var_get_value(env, "PATH");
-	if (!path_value)
+	path_value = NULL;
+	err_check = env_var_get_value(env, "PATH", &path_value); // explicitly manage situations where path has no value?
+	if (err_check != success)
 	{
 		msh_perror(NULL, MALLOC_ERR, extern_err);
 		return (NULL);

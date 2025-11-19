@@ -71,18 +71,16 @@ static int	output_redirect(
 	else if (redirection->type == append)
 		safe_open(redirection->dest_filename, &redirection->dest_fd, app_f);
 	if (redirection->dest_fd < 0)
-		return (msh_perror(NULL, redirection->dest_filename, extern_err), fd_err);// check return
+	{
+		msh_perror(NULL, redirection->dest_filename, extern_err);
+		return (fd_err); // check return
+	}
 	if (record == true)
 	{
 		undup_elem->orig_fd = dup(redirection->src_fd); 
 		undup_elem->dup_fd = redirection->src_fd;
 		undup_elem->dest_fd = redirection->dest_fd;
 		undup_elem->next = NULL;
-	}
-	if (redirection->src_filename != NULL)
-	{
-		//this is for special cases only, refer to bash manual
-		//redirection->src_fd = open(redirection->src_filename, O_RDONLY);
 	}
 	test_dup2(redirection->dest_fd, redirection->src_fd);
 	safe_close(&redirection->dest_fd);

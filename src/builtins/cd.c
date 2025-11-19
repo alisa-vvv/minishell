@@ -69,11 +69,13 @@ static int find_target_path(
 	char	*arg_with_slash;
 	char	*path;
 
+	path = NULL;
 	if (!arg || arg[0] == '\0')
 	{
-		path = env_var_get_value(msh_data->env, "HOME");
+		if (env_var_get_value(msh_data->env, "HOME", &path) != success)
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 		if (!path)
-			return(msh_perror("cd", "HOME not set", exec_err), builtin_err);
+			return (msh_perror("cd: ", "HOME not set", exec_err), builtin_err);
 	}
 	else
 	{

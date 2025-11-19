@@ -43,7 +43,6 @@ void set_heredoc_def(t_exec_data* execdata)
     execdata->redirections->dest_filename = NULL;
 	execdata->redirections->dest_fd = -1;
 	execdata->redirections->src_fd = -1;
-	execdata->redirections->src_filename = NULL;
 }
 
 int set_heredoc_red(

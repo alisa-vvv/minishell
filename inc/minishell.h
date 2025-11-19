@@ -119,7 +119,7 @@ typedef struct	s_redir_list
 	int					src_fd; // equal to -1 if fd not provided/not default
 	int					dest_fd; // equal to -1 if fd not provided/not default
 	char				*dest_filename; // equal to NULL if filename wasn't provided
-	char				*src_filename; // equal to NULL if filename wasn't provided
+//	char				*src_filename; // equal to NULL if filename wasn't provided
 	char				*heredoc_delim; // null or delim, will be used to check if input is heredoc
 	struct s_redir_list	*next;
 }	t_redir_list;

@@ -18,7 +18,6 @@ int	set_src(t_redir_list	*redirlist, element *tokenlist, int pos)
 
 	check_token = tokenlist->element_list.tokens[pos];
 	redirlist->src_fd = -1;
-	redirlist->src_filename = NULL;
 	if (pos > 0)
 		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
 	if (check_token->type == NUMBER)

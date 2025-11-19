@@ -123,6 +123,7 @@ int expand_var(element **tokenlist,
     int count;
 
 	name = NULL;
+	env_value = NULL;
     count = count_symbols(check_token->value, '$');
     while (count > 0)
     {
@@ -130,7 +131,8 @@ int expand_var(element **tokenlist,
         name = refine_name_var(check_token->value, name);
         if (name && ft_strncmp(name, "?", 2))
             printf("%d\n", msh_data->last_pipeline_return);
-        env_value = env_var_get_value(msh_data->env, name);
+        if (env_var_get_value(msh_data->env, name, &env_value) != success) // changed by alisa. look at this :)
+			dprintf(STDERR_FILENO, "PLACEHOLDER, ADD ERROR MANAGEMENT\n");
         e_printf("\nNAME= %s \n", name);
         if (quoted)
             expand_quoted(*tokenlist, name, pos, env_value);

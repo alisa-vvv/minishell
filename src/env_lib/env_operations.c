@@ -84,9 +84,12 @@ int	env_var_find_index( // change to return error if not found var?
 	return (i);
 }
 
-char	*env_var_get_value(// change this to be int for errors. and write to buffer.
+// this function takes the adress of a pointer to NULL. it will allocate and
+// write to it.
+int	env_var_get_value(// change this to be int for errors. and write to buffer.
 	char **env,
-	char *name
+	char *name,
+	char **buf_ptr
 )
 {
 	char	*value;
@@ -94,6 +97,7 @@ char	*env_var_get_value(// change this to be int for errors. and write to buffer
 	int		i;
 
 	name_len = ft_strlen(name);
+	value = NULL;
 	i = 0;
 	while (env[i])
 	{
@@ -102,11 +106,12 @@ char	*env_var_get_value(// change this to be int for errors. and write to buffer
 		{
 			value = ft_strdup(&env[i][name_len + 1]);
 			if (!value)
-				return (msh_perror(NULL, MALLOC_ERR, extern_err), NULL); // check return
-			return (value);
+				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
+			break ;
 		}
 		else
 			i++;
 	}
-	return (NULL);
+	*buf_ptr = value;
+	return (success);
 }

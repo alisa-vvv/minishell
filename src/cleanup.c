@@ -65,14 +65,11 @@ void	clean_redir_list(
 		next_node = cur_node->next;
 		if (cur_node->dest_filename)
 			free(cur_node->dest_filename);
-		if (cur_node->src_filename)
-			free(cur_node->src_filename);
 		if (cur_node->heredoc_delim)
 			free(cur_node->heredoc_delim);
 		if (cur_node->type == heredoc)
 			safe_close(&cur_node->dest_fd);
 		cur_node->dest_filename = NULL;
-		cur_node->src_filename = NULL;
 		cur_node->heredoc_delim = NULL;
 		free(cur_node);
 		cur_node = next_node;
