@@ -79,7 +79,8 @@ void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
     int start;
     check_token = tokenlist->element_list.tokens[pos];
     start = lpos_in_str(check_token->value, '$');
-    if (!check_in_quote(check_token->value, start))
+
+    if ((check_in_quote(check_token->value, start) && check_token->type== DOUBLE_Q) ||  !check_in_quote(check_token->value, start))
     {
         offset = 0;
         if (!env_value || !name)
@@ -156,10 +157,7 @@ int	exp_lexer(
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
         if (!check_token)
             return (1);
-		if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
-            rm_quotes(tokenlist, i, '\'');
-        if ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q)
-			rm_quotes(tokenlist, i, '"');
+		
         if (type == PARAMETER && (check_token->type == PARAMETER || check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q))
         {
             if (check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q)
@@ -168,6 +166,10 @@ int	exp_lexer(
         }
         else if (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type == OPERATOR)
             merge_tokens(tokenlist, i -1, i);
+        else if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
+            rm_quotes(tokenlist, i, '\'');
+        else if ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q)
+			rm_quotes(tokenlist, i, '"');
 		i++;
 	}
 	return (0);
