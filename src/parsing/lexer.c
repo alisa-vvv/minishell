@@ -57,12 +57,12 @@ int move_o_unquoted(const char *str, int i)
 	int len;
 
 	len = 0;
-	while (str[i] && !str_is_red(str[i]) && str[i] != '\'' && str[i] != '"' && !ft_isspace(str[i]))
+	while (str[i] && !str_is_red(str[i]) && !char_is_quote(str[i]) && !ft_isspace(str[i]))
 	{
 		len++;
 		i++;
 	}
-	if (str[i] && (str[i] == '\'' && str[i] == '"') && str[i -1] == '=')
+	if (str[i] && char_is_quote(str[i]) && str[i -1] == '=')
 	{
 		while (str[i] && !ft_isspace(str[i]))
 		{
@@ -89,7 +89,7 @@ int	token_count(
 			tokencount++;
 			i += move_o_unquoted(str, i);
 		}
-		else if (str[i] && (str[i] == '"' || str[i] == '\''))
+		else if (str[i] && char_is_quote(str[i]))
 		{
 			tokencount++;
             i += move_over_quote(str, i);
@@ -98,7 +98,7 @@ int	token_count(
 		else if (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
 		{
 			tokencount++;
-			while(str_is_red(str[i]) && str[i] && !ft_isspace(str[i]) && str[i] != '\'' && str[i] != '"')
+			while(str_is_red(str[i]) && str[i] && !ft_isspace(str[i]) && !char_is_quote(str[i]))
 				i++;
 		}
         else

@@ -67,13 +67,14 @@ void	move_str(char *str, int count, char symbol)
 	int	len;
 
 	i = 0;
-	p_printf("COUNT = %d\n", count);
+	// p_printf("COUNT = %d\n", count);
 	while (count > 0)
 	{	
 		i = 0;
 		len = ft_strlen(str)-1;
 		if (str[0] == symbol)
 			count--;
+		p_printf("COUNT = %d\n", count);
 		if (char_is_quote(str[0]) && char_is_quote(str[len]))
 		{
 			str[len] = '\0';
@@ -84,7 +85,6 @@ void	move_str(char *str, int count, char symbol)
 			}
 			str[i] = '\0';
 		}
-
 	//	p_printf("TOKEN = %s\n", str);
 	//	count--;
 	}
@@ -103,7 +103,7 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 	// p_printf("CHECK TOKEN = %s\n", check_token->value);
 	if (str_is_quote(check_token->value, symbol))
 		move_str(check_token->value, count, symbol);
-	if (symbol == '\'')
+	if (symbol == '\'' && char_is_quote(check_token->value[0]))
 		check_token->type = SINGLE_Q;
 	else if (str_is_quote(check_token->value, '\''))
 		check_token->type = SINGLE_Q;

@@ -58,19 +58,29 @@ char	*trim_str_space(char *str)
 // move over quoted string
 int	move_over_quote(const char *str, int pos)
 {
-	int count;
+	//int count;
 	int i;
 
 	i = 0;
-	count = 1;
-	while (str[pos++] && char_is_quote(str[pos]))
-		count++;
+	//count = 1;
+	while (str[pos] && char_is_quote(str[pos]))
+	{
+		i++;
+		pos++;
+	}
 	while (str[pos] && !char_is_quote(str[pos]))
 	{
 		i++;
 		pos++;
 	}
-	i += (count *2);
+	while (str[pos] && char_is_quote(str[pos]))
+	{
+		i++;
+		pos++;
+	}
+	while(str[pos++] && !ft_isspace(str[pos]))
+		i++;
+	//i += (count *2);
 	return (i);
 }
 
@@ -88,11 +98,11 @@ int	set_len(const char *str, int i)
 	if (len == 0 && str[i] && char_is_quote(str[i]))
 	{
 		len = move_over_quote(str, i);
-		i += len -1;
+		i += len;
 	}
 	else if (len == 0 && str[i] && !ft_isspace(str[i]) && str_is_red(str[i]))
 	{
-		while (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]) && char_is_quote(str[i]))
+		while (str[i] && !ft_isspace(str[i]) && str_is_red(str[i]) && !char_is_quote(str[i]))
 		{
 			len++;
 			i++;
@@ -133,10 +143,7 @@ int	index_lexer(element **tokenlist)
 	{
 		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
 		if (!check_token)
-		{
-			p_printf("TOKEN GONE AT POS= %d\n", i);
 			return (write(1, "No tokens available\n", 20));
-		}
 		else 
 			check_token->pos = i;
 		// e_printf("POS= %d \n", check_token->pos);
