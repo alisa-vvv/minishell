@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::             */
-/*   minishell_testfuncs.h                             :+:    :+:             */
+/*   msh_testfuncs.h                             :+:    :+:             */
 /*                                                    +:+                     */
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
@@ -26,7 +26,7 @@ t_redir_list	*test_add_redirection(
 );
 
 t_exec_data	*test_get_dummy_exec_data(
-	t_minishell_data	*minishell_data
+	t_msh_data	*msh_data
 );
 
 #endif

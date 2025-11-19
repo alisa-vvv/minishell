@@ -17,7 +17,7 @@
 #include "executor.h"
 
 void	clean_exit(
-	t_minishell_data *minishell_data,
+	t_msh_data *msh_data,
 	char *read_line,
 	int exit_code,
 	bool silent_exit
@@ -25,25 +25,25 @@ void	clean_exit(
 {
 	int	i;
 
-	if (minishell_data)
+	if (msh_data)
 	{
 		if (exit_code == 0)
-			exit_code = minishell_data->last_pipeline_return;
-		if (minishell_data->cur_dir)
-			free(minishell_data->cur_dir);
-		if (minishell_data->exec_data)
+			exit_code = msh_data->last_pipeline_return;
+		if (msh_data->cur_dir)
+			free(msh_data->cur_dir);
+		if (msh_data->exec_data)
 		{
 			i = -1;
-			while (++i < minishell_data->command_count)
-				free_and_close_exec_data(&minishell_data->exec_data[i]);
-			free(minishell_data->exec_data);
+			while (++i < msh_data->command_count)
+				free_and_close_exec_data(&msh_data->exec_data[i]);
+			free(msh_data->exec_data);
 		}
-		if (minishell_data->env)
+		if (msh_data->env)
 		{
 			i = -1;
-			while (minishell_data->env[++i])
-				free(minishell_data->env[i]);
-			free(minishell_data->env);
+			while (msh_data->env[++i])
+				free(msh_data->env[i]);
+			free(msh_data->env);
 		}
 	}
 	if (read_line)

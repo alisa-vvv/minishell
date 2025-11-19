@@ -14,7 +14,7 @@
 
 int	exec_builtin(
 	t_exec_data *const command,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 )
 {
 	int			err_check;
@@ -23,18 +23,18 @@ int	exec_builtin(
 	builtin_args = &command->argv[1]; // weird, check this for being normal
 	err_check = 0;
 	if (command->builtin_name == builtin_echo)
-		err_check = minishell_echo(builtin_args);
+		err_check = msh_echo(builtin_args);
 	else if (command->builtin_name == builtin_cd)
-		err_check = minishell_cd(builtin_args[0], minishell_data);
+		err_check = msh_cd(builtin_args[0], msh_data);
 	else if (command->builtin_name == builtin_pwd)
-		err_check = minishell_pwd(minishell_data);
+		err_check = msh_pwd(msh_data);
 	else if (command->builtin_name == builtin_env)
-		err_check = minishell_env(minishell_data);
+		err_check = msh_env(msh_data);
 	else if (command->builtin_name == builtin_export)
-		err_check = minishell_export(builtin_args, minishell_data);
+		err_check = msh_export(builtin_args, msh_data);
 	else if (command->builtin_name == builtin_unset)
-		err_check = minishell_unset(builtin_args, minishell_data);
+		err_check = msh_unset(builtin_args, msh_data);
 	else if (command->builtin_name == builtin_exit)
-		minishell_exit(command, minishell_data);
+		msh_exit(command, msh_data);
 	return (err_check);
 }

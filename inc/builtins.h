@@ -17,33 +17,33 @@
 
 int	exec_builtin(
 	t_exec_data *const command,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 );
 
-int	minishell_echo(
+int	msh_echo(
 	char **arguments
 );
-int	minishell_cd(
+int	msh_cd(
 	char *const arg,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 );
-int	minishell_pwd(
-	t_minishell_data *const minishell_data
+int	msh_pwd(
+	t_msh_data *const msh_data
 );
-int	minishell_env(
-	t_minishell_data *const minishell_data
+int	msh_env(
+	t_msh_data *const msh_data
 );
-int	minishell_export(
+int	msh_export(
 	char *const *argv,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 );
-int	minishell_unset(
+int	msh_unset(
 	char **argv,
-	t_minishell_data *minishell_data
+	t_msh_data *msh_data
 );
-int	minishell_exit(
+int	msh_exit(
 	t_exec_data *command,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 );
 
 #endif

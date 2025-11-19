@@ -34,7 +34,7 @@ static void	free_variables(
 }
 
 static int	set_env_vars(
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	char *cwd,
 	char *path
 )
@@ -52,7 +52,7 @@ static int	set_env_vars(
 		free_variables(variables);
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	}
-	err_check = minishell_export(variables, minishell_data);
+	err_check = msh_export(variables, msh_data);
 	if (err_check < 0)
 		return (err_check); // check return
 	free_variables(variables);
@@ -61,7 +61,7 @@ static int	set_env_vars(
 
 static int find_target_path(
 	char *const arg,
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	char *const cwd,
 	char **path_pointer
 )
@@ -71,7 +71,7 @@ static int find_target_path(
 
 	if (!arg || arg[0] == '\0')
 	{
-		path = env_var_get_value(minishell_data->env, "HOME");
+		path = env_var_get_value(msh_data->env, "HOME");
 		if (!path)
 			return(msh_perror("cd", "HOME not set", exec_err), builtin_err);
 	}
@@ -93,9 +93,9 @@ static int find_target_path(
 }
 
 // add case for when directory was removed
-int	minishell_cd(
+int	msh_cd(
 	char *const arg,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 )
 {
 	int			err_check;
@@ -106,7 +106,7 @@ int	minishell_cd(
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	path = NULL;
 	getcwd(cwd, PATH_MAX);
-	err_check = find_target_path(arg, minishell_data, cwd, &path);
+	err_check = find_target_path(arg, msh_data, cwd, &path);
 	if (err_check != 0)
 	{
 		free(cwd);
@@ -116,9 +116,9 @@ int	minishell_cd(
 	if (err_check != 0)
 		return (msh_perror("cd: ", NULL, extern_err), -1); // check return
 	else
-		err_check = set_env_vars(minishell_data, cwd, path);
-	free(minishell_data->cur_dir);
-	minishell_data->cur_dir = path;
+		err_check = set_env_vars(msh_data, cwd, path);
+	free(msh_data->cur_dir);
+	msh_data->cur_dir = path;
 	free(cwd);
 	return (err_check);
 }

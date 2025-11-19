@@ -44,7 +44,7 @@ void	test_add_redirection(
 }
 
 t_exec_data	*test_get_dummy_exec_data(
-	t_minishell_data *minishell_data
+	t_msh_data *msh_data
 )
 {
 	extern int	TEST_len;
@@ -60,8 +60,8 @@ t_exec_data	*test_get_dummy_exec_data(
 	exec_data->input_is_pipe = false;
 	exec_data->output_is_pipe = false;
 	exec_data->redirections = NULL;
-	minishell_data->exec_data = exec_data;
-	minishell_data->command_count = len;
+	msh_data->exec_data = exec_data;
+	msh_data->command_count = len;
 
 //
 //	// {

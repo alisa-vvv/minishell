@@ -14,17 +14,17 @@
 #include <unistd.h>
 #include <stdio.h>
 
-int	minishell_env(
-	t_minishell_data *const minishell_data
+int	msh_env(
+	t_msh_data *const msh_data
 )
 {
 	int	i;
 
 	i = -1;
-	if (minishell_data->env)
+	if (msh_data->env)
 	{
-		while(minishell_data->env[++i])
-			printf("%s\n", minishell_data->env[i]);
+		while(msh_data->env[++i])
+			printf("%s\n", msh_data->env[i]);
 	}
 	return (0);
 }

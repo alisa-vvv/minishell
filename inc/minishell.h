@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::             */
-/*   minishell.h                                       :+:    :+:             */
+/*   msh.h                                       :+:    :+:             */
 /*                                                    +:+                     */
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
@@ -166,7 +166,7 @@ typedef struct	s_exec_data
 // each execution cycle.
 // env is cloned at start and contains environment.
 // last_pipleline_return starts at 0 and stores return value of last pipeline.
-typedef struct	minishell_data
+typedef struct	msh_data
 {
 	char		**env;
 	int			env_var_count;
@@ -176,7 +176,7 @@ typedef struct	minishell_data
 	int			command_count;
 	int			last_pipeline_return;
 	char		*cur_dir;
-}	t_minishell_data;
+}	t_msh_data;
 
 void	free_and_close_exec_data(
 	t_exec_data	*exec_data
@@ -188,7 +188,7 @@ void	free_and_close_exec_data(
 // error_prefix is for stuff to print before error message, like error during a builtin
 // relation will specify behavior for different errors.
 // function errors (extern_err) will use native perror() to print their messages.
-// all other errors will put a "minishell: " prefix automatic.
+// all other errors will put a "msh: " prefix automatic.
 // generic_err is for an error that doesn't need specific prefix
 // other two values are for parse_err and exec_err
 /*		Error Mananagement Structures	*/
@@ -209,7 +209,7 @@ void	msh_perror(
 	t_error_relation relation
 );
 void	clean_exit(
-	t_minishell_data *minishell_data,
+	t_msh_data *msh_data,
 	char *read_line,
 	int exit_code,
 	bool silent_exit

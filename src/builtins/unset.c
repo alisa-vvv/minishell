@@ -28,9 +28,9 @@ static int	check_name_len_and_validity(char *name) // find out which chars are n
 	return (len);
 }
 
-int	minishell_unset(
+int	msh_unset(
 	char **argv,
-	t_minishell_data *minishell_data
+	t_msh_data *msh_data
 )
 {
 	int	i;
@@ -43,17 +43,17 @@ int	minishell_unset(
 		len = check_name_len_and_validity(argv[i]);
 		if (len < 0)
 			continue ;
-		var_index = env_var_find_index(minishell_data->env, argv[i], &argv[i][len]);
-		if (var_index == minishell_data->env_var_count)
+		var_index = env_var_find_index(msh_data->env, argv[i], &argv[i][len]);
+		if (var_index == msh_data->env_var_count)
 			continue ;
-		free(minishell_data->env[var_index]);
-		while (var_index < minishell_data->env_var_count - 1)
+		free(msh_data->env[var_index]);
+		while (var_index < msh_data->env_var_count - 1)
 		{
-			minishell_data->env[var_index] = minishell_data->env[var_index + 1];
+			msh_data->env[var_index] = msh_data->env[var_index + 1];
 			var_index++;
 		}
-		minishell_data->env_var_count -= 1;
-		minishell_data->env[minishell_data->env_var_count] = NULL;
+		msh_data->env_var_count -= 1;
+		msh_data->env[msh_data->env_var_count] = NULL;
 	}
 	return (0);
 }

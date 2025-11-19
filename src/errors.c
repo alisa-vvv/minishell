@@ -21,7 +21,7 @@ void	msh_perror(
 	t_error_relation relation
 )
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd("msh: ", STDERR_FILENO);
 	if (error_prefix)
 		ft_putstr_fd(error_prefix, STDERR_FILENO);
 	if (!error_msg)

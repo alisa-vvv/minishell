@@ -39,7 +39,7 @@ static int	cleanup_in_parent_process(
 static int	run_child_process(
 	t_exec_data *const command,
 	t_command_io *const command_io,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 )
 {
 	int				err_check;
@@ -60,16 +60,16 @@ static int	run_child_process(
 	if (err_check != success)
 		return (err_check);
 	if (command->builtin_name == not_builtin)
-		err_check = try_execve(minishell_data->env, command->argv);
+		err_check = try_execve(msh_data->env, command->argv);
 	else
-		err_check = exec_builtin(command, minishell_data);
+		err_check = exec_builtin(command, msh_data);
 	return (err_check);
 }
 
 static int	execute_in_child(
 	t_exec_data *command,
 	t_command_io *const command_io,
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	pid_t *pid
 )
 {
@@ -79,8 +79,8 @@ static int	execute_in_child(
 	*pid = fork();
 	if (*pid == 0)
 	{
-		minishell_data->is_parent = false;
-		err_check = run_child_process(command, command_io, minishell_data);
+		msh_data->is_parent = false;
+		err_check = run_child_process(command, command_io, msh_data);
 	}
 	else if (*pid > 0)
 	{
@@ -95,7 +95,7 @@ static int	execute_in_child(
 static int	execute_command(
 	t_exec_data *command,
 	t_command_io *const command_io,
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	pid_t *pid
 )
 {
@@ -108,7 +108,7 @@ static int	execute_command(
 	if (command->input_is_pipe == true || command->output_is_pipe == true
 		|| command->builtin_name == not_builtin)
 	{
-		return (execute_in_child(command, command_io, minishell_data, pid));
+		return (execute_in_child(command, command_io, msh_data, pid));
 	}
 	if (command->redirections)
 	{
@@ -117,7 +117,7 @@ static int	execute_command(
 		perform_redirections(command->redirections, undup_list_head, true); // add error checking here
 	}
 	if (command->builtin_name != not_builtin)
-		err_check = exec_builtin(command, minishell_data);
+		err_check = exec_builtin(command, msh_data);
 	if (command->redirections)
 		undup_redirections(undup_list_head);
 	return (err_check);
@@ -125,7 +125,7 @@ static int	execute_command(
 
 static int	wait_for_children(
 	const int command_count,
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	const int *const p_ids,
 	int *const p_exit_codes
 )
@@ -147,7 +147,7 @@ static int	wait_for_children(
 			{
 				last_exit = WEXITSTATUS(p_exit_codes[i]);
 				if (last_exit != EXIT_SUCCESS)
-					minishell_data->last_pipeline_return = last_exit;
+					msh_data->last_pipeline_return = last_exit;
 			}
 			else if (WIFSIGNALED(p_exit_codes[i]) == true)
 			{
@@ -163,7 +163,7 @@ static int	wait_for_children(
 }
 
 static void	executor_cleanup(
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	t_command_io *command_io,
 	int *p_ids,
 	int *p_exit_codes
@@ -172,21 +172,21 @@ static void	executor_cleanup(
 	int	i;
 
 	i = -1;
-	while (++i < minishell_data->command_count)
+	while (++i < msh_data->command_count)
 	{
-		free_and_close_exec_data(&minishell_data->exec_data[i]);
-		if (i == minishell_data->command_count - 1
+		free_and_close_exec_data(&msh_data->exec_data[i]);
+		if (i == msh_data->command_count - 1
 			|| command_io[i + 1].in_pipe[READ_END] != CLOSED_FD)
 			safe_close(&command_io[i].out_pipe[READ_END]);
-		if (i == minishell_data->command_count - 1
+		if (i == msh_data->command_count - 1
 			|| command_io[i + 1].in_pipe[WRITE_END] != CLOSED_FD)
 			safe_close(&command_io[i].out_pipe[WRITE_END]);
 	}
 	free(command_io);
 	free(p_ids);
 	free(p_exit_codes);
-	free(minishell_data->exec_data);
-	minishell_data->exec_data = NULL;
+	free(msh_data->exec_data);
+	msh_data->exec_data = NULL;
 }
 
 // this functiohn will return either the amount of commands in the pipeline,
@@ -217,7 +217,7 @@ int	build_pipeline(
 }
 
 int	execute_commands(
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	t_exec_data *command,
 	t_command_io *command_io,
 	int *p_id_arr // replace with pid_t
@@ -227,10 +227,10 @@ int	execute_commands(
 	t_msh_errno	err;
 
 	i = -1;
-	while (++i < minishell_data->command_count)
+	while (++i < msh_data->command_count)
 	{
-		err = execute_command(&command[i], &command_io[i], minishell_data, &p_id_arr[i]);
-		if (minishell_data->is_parent == false)
+		err = execute_command(&command[i], &command_io[i], msh_data, &p_id_arr[i]);
+		if (msh_data->is_parent == false)
 			return (err);
 	}
 	return (success);
@@ -238,15 +238,15 @@ int	execute_commands(
 
 // maybe rework this for more clarity on what happens on different exit situations
 static int	execute_pipeline(
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	int *p_id_arr,
 	int *p_exit_codes,
 	t_command_io *command_io
 )
 {
 	int			elem_count;
-	t_exec_data	*const exec_data = minishell_data->exec_data;
-	const int	command_count = minishell_data->command_count;
+	t_exec_data	*const exec_data = msh_data->exec_data;
+	const int	command_count = msh_data->command_count;
 	int			err;
 
 	err = success;
@@ -254,12 +254,12 @@ static int	execute_pipeline(
 	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
 	if (err != success)
 		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
-	err = execute_commands(minishell_data, exec_data, command_io, p_id_arr);
-	if (err != success || minishell_data->is_parent == false)
+	err = execute_commands(msh_data, exec_data, command_io, p_id_arr);
+	if (err != success || msh_data->is_parent == false)
 		return (err);
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
-		wait_for_children(elem_count, minishell_data, p_id_arr, p_exit_codes);
+		wait_for_children(elem_count, msh_data, p_id_arr, p_exit_codes);
 	return (err);
 }
 
@@ -303,7 +303,7 @@ static int	execute_pipeline(
 //}
 
 int	executor(
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	int command_count
 )
 {
@@ -313,7 +313,7 @@ int	executor(
 	int				err;
 
 	err = success;
-//	err = validate_redirections(minishell_data->exec_data, command_count);
+//	err = validate_redirections(msh_data->exec_data, command_count);
 	//if (err != success)
 	//	return (err);
 	p_id_arr = malloc(sizeof(int) * command_count);
@@ -322,12 +322,12 @@ int	executor(
 	command_io = ft_calloc(sizeof(t_command_io), command_count);
 	if (!p_id_arr || !p_exit_codes || !command_io)
 	{
-		minishell_data->last_pipeline_return = errno;
-		executor_cleanup(minishell_data, command_io, p_id_arr, p_exit_codes);
+		msh_data->last_pipeline_return = errno;
+		executor_cleanup(msh_data, command_io, p_id_arr, p_exit_codes);
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
 	}
-	minishell_data->last_pipeline_return = 0;
-	err = execute_pipeline(minishell_data, p_id_arr, p_exit_codes, command_io);
-	executor_cleanup(minishell_data, command_io, p_id_arr, p_exit_codes);
+	msh_data->last_pipeline_return = 0;
+	err = execute_pipeline(msh_data, p_id_arr, p_exit_codes, command_io);
+	executor_cleanup(msh_data, command_io, p_id_arr, p_exit_codes);
 	return (err);
 }

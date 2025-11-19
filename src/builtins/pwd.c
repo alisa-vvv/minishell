@@ -14,8 +14,8 @@
 #include "minishell.h"
 #include <stdio.h>
 
-int	minishell_pwd(
-	t_minishell_data *const minishell_data
+int	msh_pwd(
+	t_msh_data *const msh_data
 )
 {
 	char *const	dir = ft_calloc(PATH_MAX, sizeof(char));
@@ -26,7 +26,7 @@ int	minishell_pwd(
 	err_check = success;
 	getcwd(dir, PATH_MAX);
 	if (!getcwd(dir, PATH_MAX) || dir[0] == '\0') // manage errors?
-		printf("%s\n", minishell_data->cur_dir);
+		printf("%s\n", msh_data->cur_dir);
 	else
 	{
 		printf("%s\n", dir);

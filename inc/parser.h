@@ -83,7 +83,7 @@ typedef struct s_token
 }			t_token;
 
 
-int			default_lexer(char *input_line, t_minishell_data *minishell_data);
+int			default_lexer(char *input_line, t_msh_data *msh_data);
 bool 		char_is_quote(char c);
 bool 		str_is_quote(const char *str, char symbol);
 int			token_count(const char *str, int i);
@@ -99,12 +99,12 @@ int 		all_num_alph(const char *str);
 int 		clean_lexer(element *tokenlist, size_t i);
 int			merge_tokens(element *tokenlist, int pos1, int pos2);
 int			check_file(const char *str_token);
-int			check_lexer(element *tokenlist, t_minishell_data *minishell_data);
+int			check_lexer(element *tokenlist, t_msh_data *msh_data);
 int			fill_comm_list(t_exec_data *exec_data, element *tokenlist, size_t pos, int pos_red);
 int			index_lexer(element **tokenlist);
 t_token		*lookahead(element *tokenlist, size_t index);
 t_token		*lookbehind(element *tokenlist, size_t index);
-int			exp_lexer(element *tokenlist, t_minishell_data *minishell_data,
+int			exp_lexer(element *tokenlist, t_msh_data *msh_data,
 				int type, size_t i);
 int			skip_blanks(char *str, int pos);
 char		*trim_str_space(char *str);
@@ -117,7 +117,7 @@ int			val_redir(element *tokenlist, size_t i);
 int			find_symbol(element *tokenlist, int pos, char symbol);
 int			match_nonterminal(char *str_token);
 int			match_string(char *str_token);
-int			expand_var(element **tokenlist, int pos, t_minishell_data *minishell_data, t_token *check_token, bool quoted);
+int			expand_var(element **tokenlist, int pos, t_msh_data *msh_data, t_token *check_token, bool quoted);
 int			rm_quotes(element *tokenlist, int pos, char symbol);
 int			all_num_alph(const char *str);
 int			check_hyphens(const char *str_token);
@@ -138,7 +138,7 @@ t_builtin_name set_builtins(t_token_type tokentype);
 int			find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type type);
 int			fill_comm_list(t_exec_data *execdata, element *tokenlist, size_t pos, int pos_red);
 int			make_cm_list(element *tokenlist, t_exec_data *comm_list, size_t pos, int pos_red);
-int			pass_comm(element *tokenlist, t_minishell_data *minishell_data, int i, int pos);
-int			convert_data(element *tokenlist, t_minishell_data *minishell_data, int i, size_t pos, int pos_red);
+int			pass_comm(element *tokenlist, t_msh_data *msh_data, int i, int pos);
+int			convert_data(element *tokenlist, t_msh_data *msh_data, int i, size_t pos, int pos_red);
 
 #endif

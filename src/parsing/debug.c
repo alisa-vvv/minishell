@@ -159,7 +159,7 @@ const char* enum_builtin(t_builtin_name builtin)
     return "???";
 }
 
-// typedef struct	minishell_data
+// typedef struct	msh_data
 // {
 // 	char		**env;
 // 	int			env_var_count;
@@ -167,31 +167,31 @@ const char* enum_builtin(t_builtin_name builtin)
 // 	t_exec_data	*exec_data;
 // 	int			command_count;
 // 	int			last_pipeline_return;
-// }	t_minishell_data;
+// }	t_msh_data;
 
-void TEST_MINISHELLDATA(t_minishell_data minishell_data)
+void TEST_MINISHELLDATA(t_msh_data msh_data)
 {
     size_t i;
 
     i = 0;
     p_printf("\nMINISHELL DATA IS:");
-    if (minishell_data.command_count != 0)
+    if (msh_data.command_count != 0)
     {
-        while (i < (size_t)minishell_data.command_count)
+        while (i < (size_t)msh_data.command_count)
         {
-            test_execdata(*(minishell_data.exec_data + i), i);
+            test_execdata(*(msh_data.exec_data + i), i);
             i++;
         }
         printf("\n");
     }
     i = 0;
-    while (i < (size_t)minishell_data.env_var_count)
+    while (i < (size_t)msh_data.env_var_count)
     {
-        p_printf("Env %d = %s\n", i, minishell_data.env[i]);
+        p_printf("Env %d = %s\n", i, msh_data.env[i]);
         i++;
     }
-    p_printf("Last pipeline return = %d\n", minishell_data.last_pipeline_return);
-    p_printf("COMMAND COUNT: %d\n", minishell_data.command_count);
+    p_printf("Last pipeline return = %d\n", msh_data.last_pipeline_return);
+    p_printf("COMMAND COUNT: %d\n", msh_data.command_count);
     p_printf("\n");
 }
 

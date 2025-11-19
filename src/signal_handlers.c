@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #define _GNU_SOURCE
-#include <minishell.h>
+#include "minishell.h"
 #include <stddef.h>
 #include <signal.h>
 #include <unistd.h>

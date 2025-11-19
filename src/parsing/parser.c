@@ -105,7 +105,7 @@ int	make_cm_list(
 // start conversion by making lists of commands
 int	pass_comm(
 	element *tokenlist, 
-	t_minishell_data *minishell_data, 
+	t_msh_data *msh_data, 
 	int i,
 	int pos)
 {
@@ -113,16 +113,16 @@ int	pass_comm(
 
 	if (count_lists(tokenlist) == -1)
 		return (write(1, "No lists counted\n", 17));
-	minishell_data->command_count = count_lists(tokenlist);
-	minishell_data->exec_data = ft_calloc(minishell_data->command_count, sizeof(t_exec_data));
-	if (!minishell_data->exec_data)
+	msh_data->command_count = count_lists(tokenlist);
+	msh_data->exec_data = ft_calloc(msh_data->command_count, sizeof(t_exec_data));
+	if (!msh_data->exec_data)
 		return (write(1, MALLOC_ERR, 15));
-	while (i < minishell_data->command_count)
+	while (i < msh_data->command_count)
 	{
 		pos_red = count_next_cm(tokenlist, pos);
 		if (pos_red > 0 && lookahead(tokenlist, pos)->type == HEREDOC)
 			pos_red = count_next_cm(tokenlist, pos + 1);
-		convert_data(tokenlist, minishell_data, i, pos, pos_red);
+		convert_data(tokenlist, msh_data, i, pos, pos_red);
 		if (pos_red > 0 && find_token_type(tokenlist, pos,
 				find_token_type(tokenlist, pos, pos_red, PIPE), HEREDOC) == -1)
 			pos = pos_red;
@@ -139,7 +139,7 @@ int	pass_comm(
 // convert the tokenlist to executable data
 int	convert_data(
 	element *tokenlist, 
-	t_minishell_data *minishell_data, 
+	t_msh_data *msh_data, 
 	int i,
 	size_t pos, 
 	int pos_red)
@@ -147,7 +147,7 @@ int	convert_data(
 	t_exec_data	*comm_list;
 
 	comm_list = NULL;
-	comm_list = minishell_data->exec_data + i;
+	comm_list = msh_data->exec_data + i;
 	//	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
 	if (make_cm_list(tokenlist, comm_list, pos, pos_red))
 		return (write(1, "Command list failed\n", 20));

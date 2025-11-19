@@ -13,9 +13,9 @@
 #include "libft.h"
 #include "minishell.h"
 
-int	minishell_exit(
+int	msh_exit(
 	t_exec_data *command,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 )
 {
 	char *const *const	args = &command->argv[1];
@@ -23,7 +23,7 @@ int	minishell_exit(
 
 	exit_code = 0;
 	if (args[0] == NULL)
-		clean_exit(minishell_data, NULL, 0, false);
+		clean_exit(msh_data, NULL, 0, false);
 	else if (args[1] != NULL)
 	{
 		//should return and not exit
@@ -46,11 +46,11 @@ int	minishell_exit(
 				// "bash: exit: numeric argument required"
 				// also for whatever reason i think bash exits with 2 here (dumb?)
 				printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-				clean_exit(minishell_data, NULL, exit_code, false);
+				clean_exit(msh_data, NULL, exit_code, false);
 			}
 		}
 	}
-	clean_exit(minishell_data, NULL, exit_code, false);
+	clean_exit(msh_data, NULL, exit_code, false);
 	// should NEVER get here, something is COMPLETELY fucked if we are here
 	return (-1);
 }

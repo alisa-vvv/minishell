@@ -15,30 +15,30 @@
 #include "minishell_env.h"
 
 int env_var_realloc( // go through this again
-	t_minishell_data *minishell_data
+	t_msh_data *msh_data
 )
 {
 	char	**new_env;
 	int		i;
 
-	if (minishell_data->env_mem * 2 > ENV_MAX)
+	if (msh_data->env_mem * 2 > ENV_MAX)
 		msh_perror(NULL, "Environment variable limit reached", extern_err); // add return?
-	minishell_data->env_mem *= 2;
-	new_env = ft_calloc(minishell_data->env_mem, sizeof(char *));
+	msh_data->env_mem *= 2;
+	new_env = ft_calloc(msh_data->env_mem, sizeof(char *));
 	if (!new_env)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	i = -1;
-	while (minishell_data->env[++i])
+	while (msh_data->env[++i])
 	{
-		new_env[i] = ft_strdup(minishell_data->env[i]);
+		new_env[i] = ft_strdup(msh_data->env[i]);
 		if (!new_env)
 		{
 			free_2d_arr((void **) new_env);
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 		}
 	}
-	free_2d_arr((void **) minishell_data->env);
-	minishell_data->env = new_env;
+	free_2d_arr((void **) msh_data->env);
+	msh_data->env = new_env;
 	return (success);
 }
 

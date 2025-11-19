@@ -25,7 +25,7 @@
 //path expansion
 //--> make expansion first, remove quotes later
 // expand $EMPTY to nothing
-// look for return value in minishell struct when accessing $?
+// look for return value in msh struct when accessing $?
 
 
 int lpos_in_str(const char *str, char symbol)
@@ -114,7 +114,7 @@ int count_symbols(char* str_token, char symbol)
 //expand known var and otherwise delete and re-position all tokens
 int expand_var(element **tokenlist, 
     int pos, 
-    t_minishell_data *minishell_data, 
+    t_msh_data *msh_data, 
     t_token *check_token, 
     bool quoted)
 {
@@ -129,8 +129,8 @@ int expand_var(element **tokenlist,
         check_token = (*tokenlist)->element_list.tokens[pos];
         name = refine_name_var(check_token->value, name);
         if (name && ft_strncmp(name, "?", 2))
-            printf("%d\n", minishell_data->last_pipeline_return);
-        env_value = env_var_get_value(minishell_data->env, name);
+            printf("%d\n", msh_data->last_pipeline_return);
+        env_value = env_var_get_value(msh_data->env, name);
         e_printf("\nNAME= %s \n", name);
         if (quoted)
             expand_quoted(*tokenlist, name, pos, env_value);
@@ -146,7 +146,7 @@ int expand_var(element **tokenlist,
 // check lexer on expansion and quotes
 int	exp_lexer(
     element *tokenlist, 
-    t_minishell_data *minishell_data,
+    t_msh_data *msh_data,
     int type, 
     size_t i)
 {
@@ -161,8 +161,8 @@ int	exp_lexer(
         if (type == PARAMETER && (check_token->type == PARAMETER || check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q))
         {
             if (check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q)
-                expand_var(&tokenlist, i, minishell_data, check_token, true);
-            expand_var(&tokenlist, i, minishell_data, check_token, false);
+                expand_var(&tokenlist, i, msh_data, check_token, true);
+            expand_var(&tokenlist, i, msh_data, check_token, false);
         }
         else if (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type == OPERATOR)
             merge_tokens(tokenlist, i -1, i);

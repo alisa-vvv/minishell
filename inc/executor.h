@@ -41,7 +41,7 @@ typedef struct	s_undup_list
 
 
 int	executor(
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	int command_count
 );
 /**/

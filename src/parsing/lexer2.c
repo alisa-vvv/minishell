@@ -59,7 +59,7 @@ int merge_tokens(element *tokenlist, int pos1, int pos2)
 
 //expands single and double quotes 
 int expand_quotes(element *tokenlist, 
-	t_minishell_data *minishell_data)
+	t_msh_data *msh_data)
 {
 	int count;
 	int count_single;
@@ -68,13 +68,13 @@ int expand_quotes(element *tokenlist,
 	
 	while (count_single > 0)
 	{
-		if (exp_lexer(tokenlist, minishell_data, SINGLE_Q, 0))
+		if (exp_lexer(tokenlist, msh_data, SINGLE_Q, 0))
 			return (write(1, "Wrong single quotes\n", 20));
 		count_single--;
 	}
 	while (count > 0)
 	{
-		if (exp_lexer(tokenlist, minishell_data, DOUBLE_Q, 0))
+		if (exp_lexer(tokenlist, msh_data, DOUBLE_Q, 0))
 			return (write(1, "Wrong double quotes\n", 20));
 		count--;
 	}
@@ -84,20 +84,20 @@ int expand_quotes(element *tokenlist,
 
 //expand vars and merge operators for export
 int expand_param(element *tokenlist,
-	t_minishell_data *minishell_data)
+	t_msh_data *msh_data)
 {
 	int count;
 	count = count_exp(tokenlist, '$');
 	while (count > 0)
 	{
-		if (exp_lexer(tokenlist, minishell_data, PARAMETER, 0))
+		if (exp_lexer(tokenlist, msh_data, PARAMETER, 0))
 			return (write(1, "Wrong variable\n", 15));
 		count--;
 	}
 	count = count_exp(tokenlist, '=');
 	while (count > 0)
 	{
-		if (exp_lexer(tokenlist, minishell_data, OPERATOR, 0))
+		if (exp_lexer(tokenlist, msh_data, OPERATOR, 0))
 			return (write(1, "Wrong operator\n", 15));
 		count--;
 	}
@@ -106,11 +106,11 @@ int expand_param(element *tokenlist,
 
 // go through lexer and clean up data
 int	check_lexer(element *tokenlist, 
-	t_minishell_data *minishell_data)
+	t_msh_data *msh_data)
 {
 	
-	expand_param(tokenlist, minishell_data);
-	expand_quotes(tokenlist, minishell_data);
+	expand_param(tokenlist, msh_data);
+	expand_quotes(tokenlist, msh_data);
 	//clean_lexer(tokenlist, 0);
 	if (tokenlist->element_list.total < 2)
 	{
@@ -124,7 +124,7 @@ int	check_lexer(element *tokenlist,
 	// test_tokens(*tokenlist);
 	if (tokenlist)
 	{
-		if (pass_comm(tokenlist, minishell_data, 0, 0))
+		if (pass_comm(tokenlist, msh_data, 0, 0))
 			return (write(1, "Failed passing exec data\n", 25));
 	}
 	return (0);

@@ -35,7 +35,7 @@ static bool	check_for_minus_n(
 	return (true);
 }
 
-int	minishell_echo(
+int	msh_echo(
 	char *const *const arguments
 )
 {

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::             */
-/*   minishell.c                                       :+:    :+:             */
+/*   msh.c                                       :+:    :+:             */
 /*                                                    +:+                     */
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
@@ -32,34 +32,34 @@
 /*	signals		*/
 #include <signal.h>
 
-static void	reset_minishell_data(
-	t_minishell_data *minishell_data
+static void	reset_msh_data(
+	t_msh_data *msh_data
 )
 {
-	minishell_data->exec_data = NULL;
-	minishell_data->command_count = 0;
+	msh_data->exec_data = NULL;
+	msh_data->command_count = 0;
 }
 
-static void	setup_minishell_data(
-	t_minishell_data *minishell_data,
+static void	setup_msh_data(
+	t_msh_data *msh_data,
 	char *envp[]
 )
 {
-	minishell_data->env_var_count = 0;
-	minishell_data->env_mem = 0;
-	minishell_data->is_parent = true;
-	minishell_data->last_pipeline_return = 0;
-	minishell_data->exec_data = NULL;
-	minishell_data->command_count = 0;
-	if (clone_env(minishell_data, envp) != success)
-		clean_exit(minishell_data, NULL, EXIT_FAILURE, false); // check for errors here
-	minishell_data->cur_dir = ft_calloc(sizeof(char), PATH_MAX + 1);
-	if (!minishell_data->cur_dir)
-		clean_exit(minishell_data, NULL, errno, true); // add error message
-	getcwd(minishell_data->cur_dir, PATH_MAX); // ADD ERROR CHECKING!
-	printf("did we get it? %s\n", minishell_data->cur_dir);
-	if (minishell_data->cur_dir[0] == '\0')
-		minishell_data->cur_dir[0] = '/';
+	msh_data->env_var_count = 0;
+	msh_data->env_mem = 0;
+	msh_data->is_parent = true;
+	msh_data->last_pipeline_return = 0;
+	msh_data->exec_data = NULL;
+	msh_data->command_count = 0;
+	if (clone_env(msh_data, envp) != success)
+		clean_exit(msh_data, NULL, EXIT_FAILURE, false); // check for errors here
+	msh_data->cur_dir = ft_calloc(sizeof(char), PATH_MAX + 1);
+	if (!msh_data->cur_dir)
+		clean_exit(msh_data, NULL, errno, true); // add error message
+	getcwd(msh_data->cur_dir, PATH_MAX); // ADD ERROR CHECKING!
+	printf("did we get it? %s\n", msh_data->cur_dir);
+	if (msh_data->cur_dir[0] == '\0')
+		msh_data->cur_dir[0] = '/';
 }
 
 int	TEST_len = 0;
@@ -69,7 +69,7 @@ int	main(int argc, char **argv, char *envp[])
 	char				*read_line;
 	int					is_open = true;
 	int					err_check;
-	t_minishell_data	minishell_data;
+	t_msh_data	msh_data;
 //	t_exec_data			*exec_data;
 
 	(void) argc;
@@ -80,16 +80,16 @@ int	main(int argc, char **argv, char *envp[])
 	//
 	rl_catch_signals = false;
 	printf("pid of parrent: %d\n", getpid());
-	setup_minishell_data(&minishell_data, envp);
+	setup_msh_data(&msh_data, envp);
 	while (is_open != 0)
 	{
 		handle_signals_interactive();
-		read_line = readline("minishell$ ");
+		read_line = readline("msh$ ");
 		if (!read_line)
 		{
 			printf("pid of of null return: %d\n", getpid());
 			printf("read_line return NULL!\n");
-			clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);
+			clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
 		}
 	//	if (g_msh_signal == SIGINT)
 	//	{
@@ -102,39 +102,39 @@ int	main(int argc, char **argv, char *envp[])
 		if (read_line)
 			add_history(read_line);
 		if (strcmp(read_line, "exit") == 0)
-			clean_exit(&minishell_data, read_line, EXIT_SUCCESS, false);
+			clean_exit(&msh_data, read_line, EXIT_SUCCESS, false);
 		/*	Test Executor */
 		else if (strcmp(read_line, "executor") == 0)
 		{
 			handle_signals_non_interactive();
-			minishell_data.exec_data = test_get_dummy_exec_data(&minishell_data);
+			msh_data.exec_data = test_get_dummy_exec_data(&msh_data);
 			printf("\n");
-			err_check = executor(&minishell_data, TEST_len);
+			err_check = executor(&msh_data, TEST_len);
 		}
 		/*	endof Test Executor*/
 		/*	Test Lexer */
 		else
 		{
-			TEST_lexer_return = default_lexer(read_line, &minishell_data);
+			TEST_lexer_return = default_lexer(read_line, &msh_data);
 			printf("Parsing COMPLETE\n");
-			TEST_MINISHELLDATA(minishell_data);
+			TEST_MINISHELLDATA(msh_data);
 			if (TEST_lexer_return != 0)
 				printf("PLACEHOLDER ERROR\n");
-			err_check = executor(&minishell_data, minishell_data.command_count);
+			err_check = executor(&msh_data, msh_data.command_count);
 		}
 		/*	endof Test Lexer*/
 		if (read_line)
 			free(read_line);
-		if (minishell_data.is_parent == false) // make this better
+		if (msh_data.is_parent == false) // make this better
 		{
 			if (err_check == child_heredoc || err_check == child_success
 				|| err_check == success)
-				clean_exit(&minishell_data, NULL, EXIT_SUCCESS, true);
+				clean_exit(&msh_data, NULL, EXIT_SUCCESS, true);
 			else if (err_check < 0)
-				clean_exit(&minishell_data, NULL, EXIT_FAILURE, true);
+				clean_exit(&msh_data, NULL, EXIT_FAILURE, true);
 		}
 		// add error cases where bash exits (never questionmark?)
-		reset_minishell_data(&minishell_data); // this should ALAWAYS happen if we parse something.
+		reset_msh_data(&msh_data); // this should ALAWAYS happen if we parse something.
 	}
-	clean_exit(&minishell_data, NULL, EXIT_SUCCESS, false);
+	clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
 }

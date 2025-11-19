@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                       ::::::::             */
-/*   minishell_env.h                                   :+:    :+:             */
+/*   msh_env.h                                   :+:    :+:             */
 /*                                                    +:+                     */
 /*   By: avaliull <avaliull@student.codam.nl>        +#+                      */
 /*                                                  +#+                       */
@@ -20,12 +20,12 @@
 /**/
 
 int	clone_env(
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	char *envp[]
 );
 
 int env_var_realloc(
-	t_minishell_data *minishell_data
+	t_msh_data *msh_data
 );
 
 int	env_var_find_index(

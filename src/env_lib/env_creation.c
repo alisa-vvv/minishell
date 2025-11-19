@@ -79,7 +79,7 @@ int	clone_loop(
 }
 
 int	clone_env(
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	char *envp[]
 )
 {
@@ -88,18 +88,18 @@ int	clone_env(
 	int		err;
 
 	alloc_size = 128;
-	minishell_data->env = ft_calloc(alloc_size, sizeof(char *));
-	if (!minishell_data->env)
+	msh_data->env = ft_calloc(alloc_size, sizeof(char *));
+	if (!msh_data->env)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
 	if (envp[0] == NULL)
-		set_default_env(minishell_data->env, &minishell_data->env_var_count);
+		set_default_env(msh_data->env, &msh_data->env_var_count);
 	else
 	{
 		err = clone_loop(envp, &alloc_size,
-			minishell_data->env, &minishell_data->env_var_count);
+			msh_data->env, &msh_data->env_var_count);
 		if (err != success)
 			return (err);
 	}
-	minishell_data->env_mem = alloc_size;
+	msh_data->env_mem = alloc_size;
 	return (success);
 }

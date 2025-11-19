@@ -19,22 +19,22 @@
 #include "minishell_env.h"
 
 static int truncate_var( // move to env lib?
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	int var_index,
 	char *arg
 )
 {
-	if (var_index < minishell_data->env_var_count &&
-			minishell_data->env[var_index])
-		free(minishell_data->env[var_index]);
-	minishell_data->env[var_index] = ft_strdup(arg);
-	if (!minishell_data->env[var_index])
+	if (var_index < msh_data->env_var_count &&
+			msh_data->env[var_index])
+		free(msh_data->env[var_index]);
+	msh_data->env[var_index] = ft_strdup(arg);
+	if (!msh_data->env[var_index])
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	return (0);
 }
 
 static int append_var( // move to env lib?
-	t_minishell_data *const minishell_data,
+	t_msh_data *const msh_data,
 	int var_index,
 	char *arg,
 	char *identifier
@@ -42,7 +42,7 @@ static int append_var( // move to env lib?
 {
 	char	*appended_var;
 
-	if (var_index == minishell_data->env_var_count)
+	if (var_index == msh_data->env_var_count)
 	{
 		*identifier = '\0';
 		appended_var = ft_strjoin(arg, identifier + 1);
@@ -51,18 +51,18 @@ static int append_var( // move to env lib?
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
 	}
 	else
-		appended_var = ft_strjoin(minishell_data->env[var_index], identifier + 2);
+		appended_var = ft_strjoin(msh_data->env[var_index], identifier + 2);
 	if (!appended_var)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
-	if (minishell_data->env[var_index])
-		free(minishell_data->env[var_index]);
-	minishell_data->env[var_index] = appended_var;
+	if (msh_data->env[var_index])
+		free(msh_data->env[var_index]);
+	msh_data->env[var_index] = appended_var;
 	return (0);
 }
 
-int	minishell_export(
+int	msh_export(
 	char *const *argv,
-	t_minishell_data *const minishell_data
+	t_msh_data *const msh_data
 )
 {
 	int		var_i;
@@ -71,11 +71,11 @@ int	minishell_export(
 	int		err_check;
 
 //	printf("\n\n\nPRE EXPORT\n\n\n");
-//	minishell_env(minishell_data);
+//	msh_env(msh_data);
 //	printf("\n\n\nENDPRE\n\n\n");
 //
 	if (!*argv)
-		return (minishell_env(minishell_data));
+		return (msh_env(msh_data));
 	arg_i = -1;
 	while (argv[++arg_i])
 	{
@@ -83,39 +83,39 @@ int	minishell_export(
 		identifier = env_var_find_identifier(argv[arg_i]);
 		if (!identifier)
 			continue ;
-		var_i = env_var_find_index(minishell_data->env, argv[arg_i], identifier);
+		var_i = env_var_find_index(msh_data->env, argv[arg_i], identifier);
 
-		assert(var_i <= minishell_data->env_var_count); // REMOVE ASSERT
+		assert(var_i <= msh_data->env_var_count); // REMOVE ASSERT
     	
 		// CHANGE ENV_VAR_REALLOC
 		// checks if env mem needs to be expanded, and if we='re adding or modifyig a var
 		// ? confusion
-		if (var_i == minishell_data->env_mem - 1)
-			env_var_realloc(minishell_data);
+		if (var_i == msh_data->env_mem - 1)
+			env_var_realloc(msh_data);
 		// ^ this should probably not be xposed to functions outsied env_lib
 		if (*identifier == '=')
-			err_check = truncate_var(minishell_data, var_i, argv[arg_i]);
+			err_check = truncate_var(msh_data, var_i, argv[arg_i]);
 		if (*identifier == '+')
-			err_check = append_var(minishell_data, var_i, argv[arg_i], identifier);
+			err_check = append_var(msh_data, var_i, argv[arg_i], identifier);
 		if (err_check < 0)
 		{
 			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
 			return (-1);
 		}
-		if (var_i == minishell_data->env_var_count)
-			minishell_data->env_var_count += 1; 
+		if (var_i == msh_data->env_var_count)
+			msh_data->env_var_count += 1; 
 	}
 
 	
 //	printf("\n\n\nPOST EXPORT\n\n\n");
-//	minishell_env(minishell_data);
+//	msh_env(msh_data);
 
 	//char **test_unset = ft_calloc(2, sizeof(char *));
 	//test_unset[0] = "var";
 	//test_unset[1] = "var2";
-	//minishell_unset(test_unset, minishell_data);
+	//msh_unset(test_unset, msh_data);
 
 	//printf("\n\n\nPOST UNSET\n\n\n");
-	//minishell_env(minishell_data);
+	//msh_env(msh_data);
 	return (0);
 }

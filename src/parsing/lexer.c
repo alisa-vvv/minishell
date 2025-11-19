@@ -139,7 +139,7 @@ int	fill_tokenlist(
 // default option to put trimmed input in tokenlist
 int	default_lexer(
 	char *input_line, 
-	t_minishell_data *minishell_data)
+	t_msh_data *msh_data)
 {
 	int		token_c;
 	element token_list;
@@ -159,7 +159,7 @@ int	default_lexer(
 	if (!token_list.element_list.tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
 //	test_tokens(token_list);
-	if (check_lexer(&token_list, minishell_data))
+	if (check_lexer(&token_list, msh_data))
 	{
 		token_list.pf_element_free(&token_list);
 		return (write(1, "Failed check types\n", 19));
