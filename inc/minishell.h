@@ -196,7 +196,7 @@ void	free_and_close_exec_data(
 typedef enum	e_error_relation
 {
 	extern_err,
-	generic_err,
+	msh_err,
 	parse_err,
 	exec_err,
 }	t_error_relation;
