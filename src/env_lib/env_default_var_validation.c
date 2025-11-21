@@ -6,10 +6,11 @@
 /*   By: avaliull <avaliull@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/21 18:05:26 by avaliull            #+#    #+#           */
-/*   Updated: 2025/11/21 18:58:26 by avaliull            ########   odam.nl   */
+/*   Updated: 2025/11/21 19:08:16 by avaliull            ########   odam.nl   */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <limits.h>
 #include "libft.h"
 #include "minishell.h"
 #include "minishell_env.h"
@@ -47,7 +48,7 @@ static int	iterate_shlvl(
 	i = -1;
 	while (shlvl_string[++i])
 		shlvl_int = shlvl_int * 10 + shlvl_string[i] - '0';
-	if (shlvl_int >= 2147483647)
+	if (shlvl_int >= INT_MAX)
 		shlvl_int = 0;
 	shlvl_int += 1;
 	var_value[0] = ft_itoa(shlvl_int);
@@ -101,10 +102,16 @@ static int	export_cwd(
 	cwd = ft_calloc(PATH_MAX, sizeof(char)); 
 	if (!cwd)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+	err_check = env_util_get_cwd(cwd);
+	if (err_check != success)
+	{
+		free(cwd);
+		return (err_check);
+	}
 	var_value[0] = ft_strjoin("PWD=\0", cwd);
 	free(cwd);
 	if (!var_value[0])
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), extern_err);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = msh_export(var_value, msh_data);
 	return (err_check);
 }

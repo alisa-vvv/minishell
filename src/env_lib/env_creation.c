@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/14 19:30:33 by avaliull            #+#    #+#           */
-/*   Updated: 2025/11/21 19:02:09 by avaliull            ########   odam.nl   */
+/*   Updated: 2025/11/21 19:03:17 by avaliull            ########   odam.nl   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int	set_default_env(
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), extern_err);
 	}
 	*env_var_count = 2;
-	if (env_util_get_cwd(cwd) != success) // separate exporting pwd into its own thing?
+	if (env_util_get_cwd(cwd) != success)
 		return (extern_err);
 	msh_env[2] = ft_strjoin("PWD=\0", cwd);
 	if (!msh_env[2])

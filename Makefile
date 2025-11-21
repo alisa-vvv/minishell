@@ -148,7 +148,7 @@ leak:
 	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
 	--leak-check=full --show-leak-kinds=all ./$(NAME) $(INPUT)
 val:
-	valgrind --track-fds=yes --track-origins=yes \
+	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
 	--leak-check=full --show-leak-kinds=all ./$(NAME) $(INPUT)
 
 .PHONY:	clangd all clean fclean re libs_clean test run leak debug gdb
