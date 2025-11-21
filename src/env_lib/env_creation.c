@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/14 19:30:33 by avaliull            #+#    #+#           */
-/*   Updated: 2025/11/14 20:23:49 by avaliull            ########   odam.nl   */
+/*   Updated: 2025/11/21 19:02:09 by avaliull            ########   odam.nl   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "minishell_env.h"
 #include <errno.h>
 
-int	set_default_env(
+static int	set_default_env(
 	char **msh_env,
 	int *env_var_count
 )
@@ -34,11 +34,8 @@ int	set_default_env(
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), extern_err);
 	}
 	*env_var_count = 2;
-	if (getcwd(cwd, PATH_MAX) == NULL)
-	{
-		msh_perror(NULL, "cound not set current working directory", extern_err);
+	if (env_util_get_cwd(cwd) != success) // separate exporting pwd into its own thing?
 		return (extern_err);
-	}
 	msh_env[2] = ft_strjoin("PWD=\0", cwd);
 	if (!msh_env[2])
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), extern_err);
@@ -46,7 +43,7 @@ int	set_default_env(
 	return (success);
 }
 
-int	clone_loop(
+static int	clone_loop(
 	char *envp[],
 	int *alloc_size,
 	char **msh_env,
@@ -90,7 +87,7 @@ int	clone_env(
 	alloc_size = 128;
 	msh_data->env = ft_calloc(alloc_size, sizeof(char *));
 	if (!msh_data->env)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	if (envp[0] == NULL)
 		set_default_env(msh_data->env, &msh_data->env_var_count);
 	else
@@ -100,6 +97,7 @@ int	clone_env(
 		if (err != success)
 			return (err);
 	}
+	err = validate_default_vars(msh_data);
 	msh_data->env_mem = alloc_size;
-	return (success);
+	return (err);
 }

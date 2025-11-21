@@ -17,31 +17,46 @@
 
 /*		Environment errors		*/
 # define INVALID_IDENTIFIER "not a valid identifier: "
+# define TOO_MANY_SH_ERR "Maximum number of sessions reached!"
 /**/
 
+/*	Initialization	*/
 int	clone_env(
 	t_msh_data *const msh_data,
 	char *envp[]
 );
+int	validate_default_vars(
+	t_msh_data *const msh_data
+);
+/**/
 
+/*	Variable usage	*/
 int env_var_realloc(
 	t_msh_data *msh_data
 );
-
+bool	env_var_if_exists(
+	char **env,
+	char *name
+);
 int	env_var_find_index(
 	char **env,
 	char *name,
 	char *identifier
 );
-
 char	*env_var_find_identifier(
 	char *arg
 );
-
 int	env_var_get_value(
 	char **env,
 	char *name,
 	char **buf_ptr
 );
+/**/
+
+/*	Utils	*/
+int	env_util_get_cwd(
+	char *cwd
+);
+/**/
 
 #endif 

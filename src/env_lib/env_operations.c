@@ -84,6 +84,26 @@ int	env_var_find_index( // change to return error if not found var?
 	return (i);
 }
 
+bool	env_var_if_exists(
+	char **env,
+	char *name
+)
+{
+	int	name_len;
+	int	i;
+
+	name_len = ft_strlen(name);
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], name, name_len) == 0 &&
+				env[i][name_len] == '=')
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 // this function takes the adress of a pointer to NULL. it will allocate and
 // write to it.
 int	env_var_get_value(// change this to be int for errors. and write to buffer.

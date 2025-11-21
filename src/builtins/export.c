@@ -74,6 +74,7 @@ int	msh_export(
 //	msh_env(msh_data);
 //	printf("\n\n\nENDPRE\n\n\n");
 //
+	err_check = success;
 	if (!*argv)
 		return (msh_env(msh_data));
 	arg_i = -1;
@@ -97,7 +98,7 @@ int	msh_export(
 			err_check = truncate_var(msh_data, var_i, argv[arg_i]);
 		if (*identifier == '+')
 			err_check = append_var(msh_data, var_i, argv[arg_i], identifier);
-		if (err_check < 0)
+		if (err_check != success)
 		{
 			printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
 			return (-1);
