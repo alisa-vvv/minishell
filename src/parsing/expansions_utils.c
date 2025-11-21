@@ -13,7 +13,7 @@
 #include "parser.h"
 
 // prepare leftover parts of str token to keep for the updated string
-char	*prep_leftover(char *str_token, int offset)
+char	*prep_leftover(char *str_token, char symbol, int offset)
 {
 	char	*start;
 	char	*temp_left;
@@ -24,7 +24,7 @@ char	*prep_leftover(char *str_token, int offset)
 	temp_left = NULL;
 	if (!str_token)
 		return (NULL);
-	start = ft_strrchr(str_token, '$');
+	start = ft_strrchr(str_token, symbol);
 	if (!start)
 		return (NULL);
 	n_offset = (ft_strlen(start) - offset);
@@ -48,7 +48,7 @@ char	*exp_str_token(char *str_token, char *value, int offset)
 	char	*temp_right;
 
 	temp_right = NULL;
-	temp_right = prep_leftover(str_token, offset);
+	temp_right = prep_leftover(str_token, '$', offset);
 	leftover = ft_strjoin(value, temp_right);
 	new_str = ft_strjoin(str_token, leftover);
 	if (!new_str || !leftover)
@@ -65,14 +65,14 @@ char	*exp_str_token(char *str_token, char *value, int offset)
 
 
 // get name of env var from token_name
-char	*refine_name_var(char *token_name, char *result)
+char	*refine_name_var(char *token_name, char *result, char symbol)
 {
 	char	*start;
 	int		i;
 
 	i = 0;
 	start = NULL;
-	start = ft_strrchr(token_name, '$');
+	start = ft_strrchr(token_name, symbol);
 	// e_printf("\nSTART = %s\n", start);
 	result = ft_strdup(start + 1);
 	if (!result)
@@ -80,9 +80,12 @@ char	*refine_name_var(char *token_name, char *result)
 	// e_printf("\nRESULT = %s$\n", result);
 	while (result[i])
 	{
-		if (char_is_quote(result[i]) || result[i] == '$' || ft_isspace(result[i])
-			|| ft_islower(result[i]))
-			break ;
+		if (symbol == '$')
+		{
+			if (char_is_quote(result[i]) || result[i] == '$' || ft_isspace(result[i])
+				|| ft_islower(result[i]))
+				break ;
+		}
 		i++;
 	}
 	result[i] = '\0';

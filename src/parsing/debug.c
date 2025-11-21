@@ -72,7 +72,6 @@ const char* enum_to_str(t_token_type symbols)
         case STRING: return "String";
         case COMMAND: return "Command";
         case NUMBER: return "Number";
-        case ARGUMENT: return "Argument";
         case OPERATOR: return "Operator";
         case PARAMETER: return "Parameter";
         case FILENAME: return "Filename";
@@ -85,8 +84,6 @@ const char* enum_to_str(t_token_type symbols)
         case DOT: return "Dot";
         case HYPHEN: return "Hyphen";
         case PIPE: return "PIPE";
-        case PIPE_IN: return "PIPE IN";
-        case PIPE_OUT: return "PIPE OUT";
         case HEREDOC: return "Heredoc";
         case HEREDOC_DEL: return "Heredoc Delimeter";
         case REDIRECT_IN: return "Redirect In";

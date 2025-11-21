@@ -49,7 +49,6 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
     int i;
     
     i = -1;
-    p_printf("GOT IN HERE \n");
     if (!env_value)
         env_value = "";
     if (flag >= 0 || ft_strchr(check_token->value, '$'))
@@ -77,12 +76,12 @@ void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
     t_token *check_token;
 
     char quote;
-    // int start;
+    int start;
     check_token = tokenlist->element_list.tokens[pos];
-    // start = lpos_in_str(check_token->value, '$');
+    start = lpos_in_str(check_token->value, '$');
     quote = symbol_in_quote(check_token->value, '$');
     p_printf("QUOTE TYPE =%c\n", quote);
-    if (quote == '"')
+    if (quote == '"' || !check_in_quote_s(check_token->value, start, '\''))
     {
         offset = 0;
         if (!env_value || !name)
@@ -130,11 +129,11 @@ int expand_var(element **tokenlist,
     while (count > 0)
     {
         check_token = (*tokenlist)->element_list.tokens[pos];
-        name = refine_name_var(check_token->value, name);
+        name = refine_name_var(check_token->value, name, '$');
         if (name && ft_strncmp(name, "?", 2))
             printf("%d\n", msh_data->last_pipeline_return);
-        if (env_var_get_value(msh_data->env, name, &env_value) != success) // changed by alisa. look at this :)
-			dprintf(STDERR_FILENO, "PLACEHOLDER, ADD ERROR MANAGEMENT\n");
+        if (env_var_get_value(msh_data->env, name, &env_value) != success)
+			dprintf(STDERR_FILENO, "Failed to malloc env\n");
         e_printf("\nNAME= %s \n", name);
         if (quoted)
             expand_quoted(*tokenlist, name, pos, env_value);

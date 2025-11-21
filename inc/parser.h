@@ -33,7 +33,6 @@ typedef enum	e_token_type
 	COMMAND,
 	STRING,
 	NUMBER,
-	ARGUMENT,
 	OPERATOR,
 	PARAMETER,
 	FILENAME,
@@ -53,8 +52,6 @@ typedef enum	e_token_type
 	EXCLAM_MARK,
 	
 	PIPE,
-	PIPE_IN,
-	PIPE_OUT,
 	REDIRECT_IN,
 	HEREDOC,
 	HEREDOC_DEL,
@@ -92,6 +89,7 @@ int			set_len(const char *str, int i);
 bool		str_is_red(char c);
 bool		token_is_redirect(t_token *check_token);
 char 		symbol_in_quote(char *str, char symbol);
+int			check_in_quote_s(const char *str, int pos, char quote);
 int 		move_o_unquoted(const char *str, int i);
 int			move_over_quote(const char *str, int pos);
 int			fill_tokenlist(element *tokenlist, char *str);
@@ -132,9 +130,9 @@ int 		count_symbols(char* str_token, char symbol);
 int 		count_args(element *tokenlist, int pos, int total);
 int			count_lists(element *tokenlist);
 int			count_next_cm(element *tokenlist, int pos);
-char *		prep_leftover(char *str_token, int offset);
+char *		prep_leftover(char *str_token, char symbol,  int offset);
 char *		exp_str_token(char *str_token, char *value, int offset);
-char *		refine_name_var(char *token_name, char *result);
+char *		refine_name_var(char *token_name, char *result, char symbol);
 t_builtin_name set_builtins(t_token_type tokentype);
 int			find_token_type(element *tokenlist, size_t pos, int pos_red, t_token_type type);
 int			fill_comm_list(t_exec_data *execdata, element *tokenlist, size_t pos, int pos_red);

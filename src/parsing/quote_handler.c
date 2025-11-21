@@ -61,6 +61,32 @@ int	check_in_quote(const char *str, int pos)
 	return (count_d || count_s);
 }
 
+// check if a certain pos is inside quotes
+int	check_in_quote_s(const char *str, int pos, char quote)
+{
+	int	count;
+	int	in_quote;
+	int	i;
+
+	count = 0;
+	in_quote = -1;
+	i = -1;
+
+	while (str[++i] && i <= pos)
+	{
+		if (str[i] == quote && (in_quote == 1 || in_quote == -1))
+			count++;
+		if (count > 0 && count % 2 != 0)
+			in_quote = 1;
+		else
+			in_quote = -1;
+	}
+	count %= 2;
+	return (count);
+}
+
+
+
 char symbol_in_quote(char *str, char symbol)
 {
 	int	i;
@@ -80,24 +106,21 @@ char symbol_in_quote(char *str, char symbol)
 	return (l_symbol);
 }
 
-
-char	move_str(char *str, int count, char symbol)
+char rm_str_quotes(char *str, int count, char symbol)
 {
+	char quote;
 	int	i;
 	int	len;
 
-	i = 0;
-	char quote;
-	// p_printf("COUNT = %d\n", count);
 	while (count > 0)
 	{	
 		i = 0;
 		len = ft_strlen(str)-1;
 		if (char_is_quote(str[0]))
 			quote = str[0];
-		if (str[0] == symbol)
+		if (str[i] == symbol)
 			count--;
-		if (char_is_quote(str[0]) && char_is_quote(str[len]))
+		if (str_is_quote(str, symbol))
 		{
 			str[len] = '\0';
 			while (str[i + 1])
@@ -108,6 +131,32 @@ char	move_str(char *str, int count, char symbol)
 			str[i] = '\0';
 		}
 	}
+	return (quote);
+}
+
+//have to make another part to keep the leftover before the quoted part 
+char	prep_str(char *str, int count, char symbol)
+{
+	char quote;
+	char *leftover;
+	char *before;
+
+	char *cut;
+	cut = NULL;
+	before = NULL;
+	leftover = NULL;
+	if (!str_is_quote(str, symbol))
+	{
+		leftover = refine_name_var(str, leftover, symbol);
+		cut = ft_strrchr(str, symbol);
+
+		cut[0] = '\0';
+	}
+	quote = rm_str_quotes(str, count, symbol);
+	if (leftover)
+		ft_strjoin(str, leftover);
+	if (before)
+		ft_strjoin(before, str);
 	return (quote);
 }
 
@@ -122,13 +171,13 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 	char quote;
 	quote = 'q';
 	check_token = (t_token *)tokenlist->element_list.tokens[pos];
-	count = (count_symbols(check_token->value, symbol) / 2);
+	count = (count_symbols(check_token->value, symbol));
 	// p_printf("CHECK TOKEN = %s\n", check_token->value);
 	if (str_is_quote(check_token->value, symbol))
-		quote = move_str(check_token->value, count, symbol);
+		quote = prep_str(check_token->value, count/2, symbol);
 	if (quote == '\'' && char_is_quote(symbol))
 		check_token->type = SINGLE_Q;
-	else if(quote == '"' )
+	else if (quote == '"')
 	{
 		if (ft_strchr(check_token->value, '$'))
 			check_token->type = PARAMETER;
