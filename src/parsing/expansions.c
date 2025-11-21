@@ -31,7 +31,6 @@
 int lpos_in_str(const char *str, char symbol)
 {
     int i;
-    i = -1;
     i = ft_strlen(str)-1;
     while (i > 0)
     {
@@ -50,6 +49,7 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
     int i;
     
     i = -1;
+    p_printf("GOT IN HERE \n");
     if (!env_value)
         env_value = "";
     if (flag >= 0 || ft_strchr(check_token->value, '$'))
@@ -76,11 +76,13 @@ void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
     int offset;
     t_token *check_token;
 
-    int start;
+    char quote;
+    // int start;
     check_token = tokenlist->element_list.tokens[pos];
-    start = lpos_in_str(check_token->value, '$');
-
-    if ((check_in_quote(check_token->value, start) && check_token->type== DOUBLE_Q) ||  !check_in_quote(check_token->value, start))
+    // start = lpos_in_str(check_token->value, '$');
+    quote = symbol_in_quote(check_token->value, '$');
+    p_printf("QUOTE TYPE =%c\n", quote);
+    if (quote == '"')
     {
         offset = 0;
         if (!env_value || !name)
@@ -145,6 +147,7 @@ int expand_var(element **tokenlist,
     return (0);
 }
  
+// check_in_quote(check_token->value, lpos_in_str(check_token->value, '$')
 // check lexer on expansion and quotes
 int	exp_lexer(
     element *tokenlist, 
@@ -164,7 +167,8 @@ int	exp_lexer(
         {
             if (check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q)
                 expand_var(&tokenlist, i, msh_data, check_token, true);
-            expand_var(&tokenlist, i, msh_data, check_token, false);
+            else 
+                expand_var(&tokenlist, i, msh_data, check_token, false);
         }
         else if (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type == OPERATOR)
             merge_tokens(tokenlist, i -1, i);

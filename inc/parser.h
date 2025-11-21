@@ -91,6 +91,7 @@ t_token * 	new_token(char *str, int len);
 int			set_len(const char *str, int i);
 bool		str_is_red(char c);
 bool		token_is_redirect(t_token *check_token);
+char 		symbol_in_quote(char *str, char symbol);
 int 		move_o_unquoted(const char *str, int i);
 int			move_over_quote(const char *str, int pos);
 int			fill_tokenlist(element *tokenlist, char *str);
