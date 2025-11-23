@@ -80,13 +80,15 @@ typedef struct s_token
 }			t_token;
 
 
+int 		all_num_alph(const char *str);
 int			default_lexer(char *input_line, t_msh_data *msh_data);
 bool 		char_is_quote(char c);
 bool 		str_is_quote(const char *str, char symbol);
 int			token_count(const char *str, int i);
-t_token * 	new_token(char *str, int len);
+t_token *	new_token(element *tokenlist, char *str, int len);
 int			set_len(const char *str, int i);
-bool		str_is_red(char c);
+bool		char_is_red(char c);
+bool 		str_contains_red(char *str);
 bool		token_is_redirect(t_token *check_token);
 char 		symbol_in_quote(char *str, char symbol);
 int			check_in_quote_s(const char *str, int pos, char quote);
@@ -94,7 +96,6 @@ int 		move_o_unquoted(const char *str, int i);
 int			move_over_quote(const char *str, int pos);
 int			fill_tokenlist(element *tokenlist, char *str);
 const char* enum_to_str(t_token_type symbols);
-int 		all_num_alph(const char *str);
 int 		clean_lexer(element *tokenlist, size_t i);
 int			merge_tokens(element *tokenlist, int pos1, int pos2);
 int			check_file(const char *str_token);
