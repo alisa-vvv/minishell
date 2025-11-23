@@ -85,7 +85,7 @@ int	match_token(char *str_token)
 		return (SINGLE_Q);
     else if (str_token[0] == '"')
 		return (DOUBLE_Q);
-    else if (str_token[0] == '>' || str_token[0] == '<'	|| (str_token[0] == '$') || str_token[0] == '|' || (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
+    else if (str_contains_red(str_token) || (str_token[0] == '$') || str_token[0] == '|' || (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
 		return (match_nonterminal(str_token));
 	else if (str_token[0] == '(' || str_token[0] == '{')
 		return (OPEN_BRACKET);

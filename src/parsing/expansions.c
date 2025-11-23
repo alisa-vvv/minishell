@@ -55,12 +55,12 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
     {
         char *new_str;
         new_str = exp_str_token(check_token->value, env_value, ft_strlen(name) +1);
-        tokenlist->pf_element_set(tokenlist, pos, new_token(new_str, ft_strlen(new_str) + 1));
+        tokenlist->pf_element_set(tokenlist, pos, new_token(tokenlist, new_str, ft_strlen(new_str) + 1));
         (ft_safe_free((unsigned char **)&new_str));
     }
     else 
     {
-        tokenlist->pf_element_set(tokenlist, pos, new_token(env_value, ft_strlen(env_value)+ 1));
+        tokenlist->pf_element_set(tokenlist, pos, new_token(tokenlist, env_value, ft_strlen(env_value)+ 1));
        // ft_safe_free((unsigned char **)&env_value);
     }
     check_token = tokenlist->element_list.tokens[pos];
@@ -89,7 +89,7 @@ void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
         offset = ft_strlen(name) + 1;
         char *new_str;
         new_str = exp_str_token(check_token->value, env_value, ft_strlen(name) +1);
-        tokenlist->pf_element_set(tokenlist, pos, new_token(new_str, ft_strlen(new_str) + 1));
+        tokenlist->pf_element_set(tokenlist, pos, new_token(tokenlist, new_str, ft_strlen(new_str)));
         (ft_safe_free((unsigned char **)&new_str), ft_safe_free((unsigned char **)&check_token));
         // check_token->value = exp_str_token(check_token->value, env_value, offset);
     }
@@ -161,7 +161,6 @@ int	exp_lexer(
 		check_token = (t_token *)tokenlist->element_list.tokens[i];
         if (!check_token)
             return (1);
-		
         if (type == PARAMETER && (check_token->type == PARAMETER || check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q))
         {
             if (check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q)
@@ -171,7 +170,7 @@ int	exp_lexer(
         }
         else if (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type == OPERATOR)
             merge_tokens(tokenlist, i -1, i);
-        else if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
+        if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
             rm_quotes(tokenlist, i, '\'');
         else if ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q)
 			rm_quotes(tokenlist, i, '"');

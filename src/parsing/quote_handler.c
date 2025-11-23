@@ -86,7 +86,7 @@ int	check_in_quote_s(const char *str, int pos, char quote)
 }
 
 
-
+//returns the kind of quote that is within quotes for var 
 char symbol_in_quote(char *str, char symbol)
 {
 	int	i;
@@ -98,14 +98,15 @@ char symbol_in_quote(char *str, char symbol)
 		if (char_is_quote(str[i]))
 		{
 			l_symbol = str[i];
-			// if (str[i] == quote )
-			// 	count--;
 		}
 		i--;
 	}
 	return (l_symbol);
 }
 
+
+
+//loops count amount of times to remove outside quotes from string
 char rm_str_quotes(char *str, int count, char symbol)
 {
 	char quote;
@@ -123,7 +124,7 @@ char rm_str_quotes(char *str, int count, char symbol)
 		if (str_is_quote(str, symbol))
 		{
 			str[len] = '\0';
-			while (str[i + 1])
+			while (str[i +1])
 			{
 				str[i] = str[i + 1];
 				i++;
@@ -135,24 +136,28 @@ char rm_str_quotes(char *str, int count, char symbol)
 }
 
 //have to make another part to keep the leftover before the quoted part 
-char	prep_str(char *str, int count, char symbol)
+char	prep_q_str(char *str, int count, char symbol)
 {
 	char quote;
 	char *leftover;
 	char *before;
 
 	char *cut;
+	quote = '\0';
 	cut = NULL;
 	before = NULL;
 	leftover = NULL;
-	if (!str_is_quote(str, symbol))
+	if (str_is_quote(str, symbol))
+	{
+		quote = rm_str_quotes(str, count, symbol);
+		return(quote);
+	}
+	else 
 	{
 		leftover = refine_name_var(str, leftover, symbol);
 		cut = ft_strrchr(str, symbol);
-
 		cut[0] = '\0';
 	}
-	quote = rm_str_quotes(str, count, symbol);
 	if (leftover)
 		ft_strjoin(str, leftover);
 	if (before)
@@ -174,7 +179,7 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 	count = (count_symbols(check_token->value, symbol));
 	// p_printf("CHECK TOKEN = %s\n", check_token->value);
 	if (str_is_quote(check_token->value, symbol))
-		quote = prep_str(check_token->value, count/2, symbol);
+		quote = prep_q_str(check_token->value, count/2, symbol);
 	if (quote == '\'' && char_is_quote(symbol))
 		check_token->type = SINGLE_Q;
 	else if (quote == '"')

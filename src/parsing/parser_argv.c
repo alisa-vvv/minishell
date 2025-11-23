@@ -70,9 +70,9 @@ int	add_arg_to_list(
 			return (0);
 		return (1);
 	}
-	if (token_is_redirect(check_token))
+	if (lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos)))
 	{
-		if (add_redirect(comm_list, tokenlist, pos, pos_red))
+		if (add_redirect(comm_list, tokenlist, pos+1, pos_red))
 			return (-1);
 		return (0);
 	}
@@ -81,7 +81,8 @@ int	add_arg_to_list(
 		comm_list->output_is_pipe = true;
 		return (0);
 	}
-	comm_list->argv[*i] = ft_strdup(check_token->value);
+	if (!token_is_redirect(check_token))
+		comm_list->argv[*i] = ft_strdup(check_token->value);
 	return (1);
 }
 

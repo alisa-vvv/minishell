@@ -12,18 +12,19 @@
 
 #include "parser.h"
 
-int	set_src(t_redir_list	*redirlist, element *tokenlist, int pos)
-{
-	t_token	*check_token;
+// int	set_src(t_redir_list	*redirlist, element *tokenlist, int pos)
+// {
+// 	t_token	*check_token;
 
-	check_token = tokenlist->element_list.tokens[pos];
-	redirlist->src_fd = -1;
-	if (pos > 0)
-		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
-	if (check_token->type == NUMBER)
-		redirlist->src_fd = ft_atoi(check_token->value);
-	return (0);
-}
+// 	check_token = tokenlist->element_list.tokens[pos];
+// 	if (pos > 0)
+// 		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
+// 	if (check_token->type == NUMBER)
+// 	{
+// 		redirlist->src_fd = ft_atoi(check_token->value);
+// 	}
+// 	return (0);
+// }
 
 void	set_redir_def(t_redir_list	*redirlist)
 {
@@ -50,31 +51,10 @@ int set_type(t_redir_list *redirlist,
 	else if (check_token->type == REDIRECT_OUT_APP)
 		redirlist->type = append;
 	prev_token = lookbehind(tokenlist, pos);
-	// we might need a WHITESPACE as a token type, or more robust way of excluding
-	// arguments from being numbers during lexing
-	//
-	// currently, if the token type is NUMBER, it is still counted as a command argument
-	// it should just be a string. the only time we care about something being a number is when
-	// it's directly before a redirection character, without whitespace.
-	// 
-	// so in "ls -l 2>outfile":
-	// 2 is a file descriptor that we need to recognize as a number and set to be src_fd.
-	// currently, this case adds string "2" as a command argument, BUT the token type of "2" is number
-	// it should not be passed as a command argument.
-	//
-	// in "ls -l 2 >outfile" 2 is a command argument, not related to redirects.
-	// so it should NOT be a NUMBER.
-	//
-	// I think the easiest/most general way is to have whitespace be a token.
-	// then we can check for whitespace whenever it is relevant to syntax. and just skip it
-	// when checking for other things.
-	//
-	// we can change lookbehind() and lookahead() functions to take a third argument
-	// which can be an int, macroed as SKIP_SPACE or CHECK_SPACE to determine whether or not
-	// we need to skip whitespace tokens when looking for next/prev.
-	// -- @alisa
 	if (prev_token->type == NUMBER)
+	{
 		redirlist->src_fd = ft_atoi(prev_token->value);
+	}
 	else
 	{
 		if (check_token->type == REDIRECT_IN)
@@ -100,7 +80,7 @@ int	set_redirect(
 	set_redir_def(redirlist);
 	if (token_is_redirect(check_token))
 	{
-		set_src(redirlist, tokenlist, pos);
+		//set_src(redirlist, tokenlist, pos);
 		if (lookahead(tokenlist, pos))
 			redirlist->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 		if (lookahead(tokenlist, pos + 1) && token_is_redirect(lookahead(tokenlist, pos +1)))

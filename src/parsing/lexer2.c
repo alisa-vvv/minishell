@@ -33,7 +33,6 @@ int count_exp(element *tokenlist, char symbol)
 			count++;
 		else if (symbol == '\'' && check_token->type == SINGLE_Q)
 			count++;
-		
 		i++;
 	}
 	return (count);
@@ -63,9 +62,9 @@ int expand_quotes(element *tokenlist,
 {
 	int count;
 	int count_single;
+
 	count = count_exp(tokenlist, '"');
 	count_single = count_exp(tokenlist, '\'');
-	
 	while (count_single > 0)
 	{
 		if (exp_lexer(tokenlist, msh_data, SINGLE_Q, 0))
@@ -78,7 +77,6 @@ int expand_quotes(element *tokenlist,
 			return (write(1, "Wrong double quotes\n", 20));
 		count--;
 	}
-
 	return (0);
 }
 
@@ -108,14 +106,13 @@ int expand_param(element *tokenlist,
 int	check_lexer(element *tokenlist, 
 	t_msh_data *msh_data)
 {
-	
 	expand_param(tokenlist, msh_data);
 	expand_quotes(tokenlist, msh_data);
-	//clean_lexer(tokenlist, 0);
+	clean_lexer(tokenlist, 0);
 	if (tokenlist->element_list.total < 2)
 	{
 		if (single_token(tokenlist))
-			return (write(1, "Wrong redirect\n", 15));
+			return (write(1, "Single token redir\n", 19));
 	}
 	else if (val_redir(tokenlist, 0))
 		return (write(1, "Wrong redirect\n", 15));

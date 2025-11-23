@@ -14,9 +14,16 @@
 #include "parser.h"
 
 
-bool str_is_red(char c)
+bool char_is_red(char c)
 {
 	if (c == '<' || c == '>' || c == '|')
+		return (1);
+	return (0);
+}
+
+bool str_contains_red(char *str)
+{
+	if (ft_strchr(str, '>') || ft_strchr(str, '<'))
 		return (1);
 	return (0);
 }
