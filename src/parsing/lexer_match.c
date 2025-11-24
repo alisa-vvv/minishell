@@ -79,7 +79,7 @@ int match_string(char *str_token)
 }
 
 // set a value to the token so we can expand on those later
-int	match_token(char *str_token)
+int	match_token(char *str_token) // needs rework @alisa
 {
 	if (str_token[0] == '\'')
 		return (SINGLE_Q);
@@ -99,7 +99,7 @@ int	match_token(char *str_token)
 		return (BACKW_SLASH);
 	else if (ft_isdigit(str_token[0]))
 		return (all_num_alph(str_token));
-	else if (ft_isalpha(str_token[0]))
+	else if (ft_isalpha(str_token[0])) // our string could be anything I think. not jsut alpha @alisa
 		return (match_string(str_token));
 	else
 		return(UNKNOWN);

@@ -96,6 +96,7 @@ void	undup_redirections(
 	cur_undup = *undup_head;
 	while (cur_undup != NULL)
 	{
+		dprintf(STDERR_FILENO, "undupping\n");
 		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd); // add error handling ?
 		safe_close(&cur_undup->orig_fd);
 		cur_undup = cur_undup->prev;
@@ -104,9 +105,20 @@ void	undup_redirections(
 	}
 }
 
-// QUESTION: DO WE NEED TO EXIT ON REDIRECTION FAIL? (I ASSUME NO)
-// turns out the answer is YES. lmao
-// add a check for if this is child process
+void	record_undup(
+	t_undup_list **undup_list_head,
+	t_undup_list *cur_undup
+)
+{
+	cur_undup->prev = *undup_list_head;
+	if (*undup_list_head == NULL)
+		(*undup_list_head) = cur_undup;
+	else
+		(*undup_list_head)->next = cur_undup;
+	cur_undup->next = NULL;
+	*undup_list_head = cur_undup;
+}
+
 int	perform_redirections(
 	t_redir_list *redirections,
 	t_undup_list **undup_list_head,
@@ -121,23 +133,19 @@ int	perform_redirections(
 	while (redirections != NULL)
 	{
 		if (record == true)
-			cur_undup = ft_calloc(1, sizeof(t_undup_list));
+			cur_undup = ft_calloc(1, sizeof(t_undup_list)); // ugh
 		if (redirections->type == input || redirections->type == heredoc)
 			err_check = input_redirect(redirections, cur_undup, record);
 		else
 			err_check = output_redirect(redirections, cur_undup, record);
 		if (err_check != success)
-			return (err_check); // IMPORTANT: FREE UNDUP LIST IN CASE OF ERROR!
+		{
+			undup_redirections(undup_list_head); // FIX this!
+			return (err_check);
+		}
 		redirections = redirections->next;
 		if (record == true)
-		{
-			cur_undup->prev = *undup_list_head;
-			if (*undup_list_head == NULL)
-				(*undup_list_head) = cur_undup;
-			else
-				(*undup_list_head)->next = cur_undup;
-			cur_undup->next = NULL;
-		}
+			record_undup(undup_list_head, cur_undup);
 	}
 	return (err_check);
 }

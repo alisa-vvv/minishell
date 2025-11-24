@@ -56,6 +56,11 @@ char *before_red(char *str_token)
 	if (i == 0)
 	{
 		ft_strlcpy(result, "-1", 3);
+		/* this can't be -1! then we have cases where -1 is an actual string
+		 * that are interpreted as whatever this is for!
+		 * just set it to '\0' maybe?
+		 * @alisa
+		 */
 		return (result);
 	} 
 	result[i] = '\0';
@@ -95,21 +100,37 @@ int add_token(
 
 
 //splits redirect tokens into 3 tokens "-1" if not spec
-int split_redir(element *tokenlist,
-	char *str_b_token)
+int split_redir(
+	element *tokenlist, // look here @alisa
+	char *str_b_token
+)
 {
-	char *str_piece;
-	int len;
+	/*
+		I changed this function while testing certain changes
+		case: ls -l>outfile
+		-l is set as HYPHEN! should be command argument
+		case: echo -1>outfile
+		weird? 
+		@alisa
+	*/
+	t_token	*prev_token;
+	char	*str_piece;
+	int		len;
 
 	str_piece = before_red(str_b_token);
 	if (!str_piece)
 		return (write(1, MALLOC_ERR, 16));
+	dprintf(STDERR_FILENO, "what is str_piece? (%s)\n", str_piece);
 	if (add_token(tokenlist, str_piece, ft_strlen(str_piece) + 1))
 	{
 		ft_safe_free((unsigned char **)&str_piece);
 		return (1);
 	}
-	if (ft_strncmp(str_piece, "-1", 2) == 0)
+	prev_token = tokenlist->pf_element_get(tokenlist,
+										tokenlist->element_list.total - 1);
+	dprintf(STDERR_FILENO, "what is prev_token? (%s)\n", prev_token->value);
+	dprintf(STDERR_FILENO, "what is prev_token's type? (%s)\n", enum_to_str(prev_token->type));
+	if (ft_strncmp(str_piece, "-1", 2) == 0) // what if we pass -1 as a commnad argument? @alisa
 	{
 		len = l_red(str_b_token);
 		str_piece[0] = '\0';
