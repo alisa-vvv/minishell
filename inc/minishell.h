@@ -37,6 +37,7 @@
 
 /*		Error Macros	*/
 # define MALLOC_ERR "Error! malloc()"
+# define OVERFLOW_ERR "Error! Integer overflow"
 # define PIPE_ERR "Error! pipe()"
 # define FORK_ERR "Error! fork()"
 # define READLINE_ERR "Error! readline()"
@@ -51,22 +52,22 @@ typedef enum	e_msh_errno // can define specific values later
 {
 	success = 0,
 	malloc_err = -1,
-	pipe_err = -2,
-	fork_err = -3,
-	readline_err = -4,
-	path_err = -5,
-	dup_err = -6,
-	dup2_err = -7,
-	fd_err = -8,
-	builtin_err = -9,
-	execve_err = -10,
-	child_error_delim = -11,
-	child_fd_err = -12,
-	child_heredoc = -13,
-	child_success = -14,
-	no_command = -15,
+	overflow_err = -2,
+	pipe_err = -3,
+	fork_err = -4,
+	readline_err = -5,
+	path_err = -6,
+	dup_err = -7,
+	dup2_err = -8,
+	fd_err = -9,
+	builtin_err = -10,
+	execve_err = -11,
+	child_error_delim = -12,
+	child_fd_err = -13,
+	child_heredoc = -14,
+	child_success = -15,
+	no_command = -16,
 }	t_msh_errno;
-
 
 # define LIBFUNC_ERR 0
 # define MINISHELL_ERR 1
@@ -195,7 +196,7 @@ void	free_and_close_exec_data(
 typedef enum	e_error_relation
 {
 	extern_err,
-	generic_err,
+	msh_err,
 	parse_err,
 	exec_err,
 }	t_error_relation;

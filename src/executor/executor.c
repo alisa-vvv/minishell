@@ -85,7 +85,7 @@ static int	execute_in_child(
 	else if (*pid > 0)
 	{
 		//dprintf(STDERR_FILENO,"what is *pid when command is %s: %d\n", command->argv[0], *pid);
-		err_check = cleanup_in_parent_process(command, command_io);
+		err_check = cleanup_in_parent_process(command, command_io); // there's no return here?
 	}
 	else if (*pid < 0)
 		return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
@@ -263,45 +263,6 @@ static int	execute_pipeline(
 	return (err);
 }
 
-//static int	validate_redirections(
-//	t_exec_data *const exec_data,
-//	int command_count
-//)
-//{
-//	t_redir_list	*cur_redir;
-//	int				i;
-//	int				access_mode;
-//	int				err;
-//
-//	err = success;
-//	i = 0;
-//	while (i < command_count)
-//	{
-//		dprintf(STDERR_FILENO, "huh\n");
-//		cur_redir = exec_data[i].redirections;
-//		while (cur_redir != NULL)
-//		{
-//			if (!cur_redir->dest_filename) // check for with closed STDIN/STDOUT!
-//			{
-//				cur_redir = cur_redir->next;
-//				continue ;
-//			}
-//			if (cur_redir->type == trunc || cur_redir->type == append)
-//				access_mode = W_OK;
-//			else if (cur_redir->type == input)
-//				access_mode = R_OK;
-//			if (access(cur_redir->dest_filename, access_mode) != success)
-//			{
-//				msh_perror(NULL, cur_redir->dest_filename, extern_err);
-//				err = fd_err;
-//			}
-//			cur_redir = cur_redir->next;
-//		}
-//		i++;
-//	}
-//	return (err);
-//}
-
 int	executor(
 	t_msh_data *const msh_data,
 	int command_count
@@ -313,9 +274,6 @@ int	executor(
 	int				err;
 
 	err = success;
-//	err = validate_redirections(msh_data->exec_data, command_count);
-	//if (err != success)
-	//	return (err);
 	p_id_arr = malloc(sizeof(int) * command_count);
 	ft_memset(p_id_arr, -1, command_count);
 	p_exit_codes = ft_calloc(sizeof(int), command_count);
@@ -324,7 +282,7 @@ int	executor(
 	{
 		msh_data->last_pipeline_return = errno;
 		executor_cleanup(msh_data, command_io, p_id_arr, p_exit_codes);
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	}
 	msh_data->last_pipeline_return = 0;
 	err = execute_pipeline(msh_data, p_id_arr, p_exit_codes, command_io);

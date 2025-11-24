@@ -18,13 +18,16 @@ CFILES	=	minishell.c\
 			signal_handlers.c\
 			errors.c\
 			cleanup.c\
-			env_creation.c\
-			env_operations.c\
+			$(CFILES_ENVLIB)\
 			$(CFILES_VECLIB)\
 			$(CFILES_PARSER)\
 			$(CFILES_EXECUTOR)\
 			$(CFILES_BUILTINS)\
 			test_funcs.c
+CFILES_ENVLIB	=	env_creation.c\
+					env_default_var_validation.c\
+					env_operations.c\
+					env_utils.c
 CFILES_VECLIB	=	vec_lib.c\
 					vec_lib2.c\
 					vec_lib3.c
@@ -145,7 +148,7 @@ leak:
 	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
 	--leak-check=full --show-leak-kinds=all ./$(NAME) $(INPUT)
 val:
-	valgrind --track-fds=yes --track-origins=yes \
+	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
 	--leak-check=full --show-leak-kinds=all ./$(NAME) $(INPUT)
 
 .PHONY:	clangd all clean fclean re libs_clean test run leak debug gdb
