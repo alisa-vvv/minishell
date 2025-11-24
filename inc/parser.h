@@ -29,27 +29,32 @@
 # define MALLOC_ERR "Error! malloc()"
 
 typedef enum	e_token_type
+/*
+* REALLY important to remove token types we don't need.
+* there's logic tied to them that is still active, and it messes up certain edge cases
+* @alisa
+*/
 {
 	COMMAND,
 	STRING,
 	NUMBER,
 	OPERATOR,
 	PARAMETER,
-	FILENAME,
+	FILENAME, // not needed
 	NON_TERMINAL,
 
 	SINGLE_Q,
 	DOUBLE_Q,
-	OPEN_BRACKET,
-	CLOSED_BRACKET,
+	OPEN_BRACKET, // not needed
+	CLOSED_BRACKET, // not needed
 
-	DOUBLE_DOT,
-	DOT,
-	HYPHEN,
-	FORW_SLASH,
-	BACKW_SLASH,
-	QUESTION_MARK,
-	EXCLAM_MARK,
+	DOUBLE_DOT, // not needed
+	DOT, // not needed
+	HYPHEN, // not needed
+	FORW_SLASH, // not needed
+	BACKW_SLASH, // not needed
+	QUESTION_MARK, // is this for "$?" case?
+	EXCLAM_MARK, // not needed
 	
 	PIPE,
 	REDIRECT_IN,
@@ -58,7 +63,7 @@ typedef enum	e_token_type
 	REDIRECT_OUT,
 	REDIRECT_OUT_APP,
 
-	CAT,
+	CAT, // not needed
 	CD,
 	ECHO,
 	ENV,
@@ -67,7 +72,7 @@ typedef enum	e_token_type
 	PWD,
 	UNSET,
 
-	UNKNOWN
+	UNKNOWN // can leave for debug, but should never actually happen in real execution
 
 } t_token_type;
 
