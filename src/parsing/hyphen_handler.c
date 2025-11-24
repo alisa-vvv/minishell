@@ -42,13 +42,13 @@ int all_num_alph(
     return(UNKNOWN);
 }
 
-int check_hyphens(
-    const char *str_token)
-{
-    if (str_token + 1 == (void*)0)
-        return (OPERATOR);
-    else if (all_num_alph(str_token + 1) == STRING)
-        return(HYPHEN);
-    else 
-        return (all_num_alph(str_token + 1));
-}
+// int check_hyphens(
+//     const char *str_token)
+// {
+//     if (str_token + 1 == (void*)0)
+//         return (OPERATOR);
+//     else if (all_num_alph(str_token + 1) == STRING)
+//         return(HYPHEN);
+//     else 
+//         return (all_num_alph(str_token + 1));
+// }

@@ -27,8 +27,7 @@ t_token *new_token(
 		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15), NULL);
 	token->value = malloc((len + 1) * sizeof(char));
 	ft_strlcpy(token->value, str, len);
-	p_printf("TOKEN VALUE = %s\n", token->value);
-
+	p_printf("TOKEN VALUE = $%s$\n", token->value);
 	if (!token->value)
 		return (NULL);
 	token->type = match_token(token->value);
@@ -78,7 +77,6 @@ int l_red(char *str)
 int add_token(
 	element *tokenlist, 
 	char *str, 
-	// int i, 
 	size_t len)
 {
 	t_token	*token;
@@ -242,7 +240,7 @@ int	token_count(
 			while(str[i] && char_is_red(str[i]) && !ft_isspace(str[i]) && !char_is_quote(str[i]))
 				i++;
 		}
-        else
+        else if (str[i])
             i++;
 	}
     t_printf("Token count = %d\n", tokencount);
@@ -269,8 +267,7 @@ int	fill_tokenlist(
 		i += len;
 		if (len > 0)
 		{
-			if (prep_token(tokenlist, str, i, len) )
-			//if (add_token(tokenlist, str, i, len))
+			if (prep_token(tokenlist, str, i, len))
 				return (1);
 		}
         else if (str[i])

@@ -124,7 +124,7 @@ char rm_str_quotes(char *str, int count, char symbol)
 		if (str_is_quote(str, symbol))
 		{
 			str[len] = '\0';
-			while (str[i +1])
+			while (str[i])
 			{
 				str[i] = str[i + 1];
 				i++;
@@ -135,35 +135,6 @@ char rm_str_quotes(char *str, int count, char symbol)
 	return (quote);
 }
 
-//have to make another part to keep the leftover before the quoted part 
-char	prep_q_str(char *str, int count, char symbol)
-{
-	char quote;
-	char *leftover;
-	char *before;
-
-	char *cut;
-	quote = '\0';
-	cut = NULL;
-	before = NULL;
-	leftover = NULL;
-	if (str_is_quote(str, symbol))
-	{
-		quote = rm_str_quotes(str, count, symbol);
-		return(quote);
-	}
-	else 
-	{
-		leftover = refine_name_var(str, leftover, symbol);
-		cut = ft_strrchr(str, symbol);
-		cut[0] = '\0';
-	}
-	if (leftover)
-		ft_strjoin(str, leftover);
-	if (before)
-		ft_strjoin(before, str);
-	return (quote);
-}
 
 // rm quotes for certain pos in tokenlist
 int	rm_quotes(element *tokenlist, int pos, char symbol)
@@ -179,7 +150,9 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 	count = (count_symbols(check_token->value, symbol));
 	// p_printf("CHECK TOKEN = %s\n", check_token->value);
 	if (str_is_quote(check_token->value, symbol))
-		quote = prep_q_str(check_token->value, count/2, symbol);
+		quote = rm_str_quotes(check_token->value, count/2, symbol);
+	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
+		tokenlist->pf_element_delete(tokenlist, pos);
 	if (quote == '\'' && char_is_quote(symbol))
 		check_token->type = SINGLE_Q;
 	else if (quote == '"')

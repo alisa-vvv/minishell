@@ -78,11 +78,9 @@ const char* enum_to_str(t_token_type symbols)
         case NON_TERMINAL: return "Non-terminal";
         case SINGLE_Q: return "Single Quotations";
         case DOUBLE_Q: return "Double Quotations";
-        case OPEN_BRACKET: return "Open Bracket";
-        case CLOSED_BRACKET: return "Closed Bracket";
         case DOUBLE_DOT: return "Double Dot";
         case DOT: return "Dot";
-        case HYPHEN: return "Hyphen";
+        // case HYPHEN: return "Hyphen";
         case PIPE: return "PIPE";
         case HEREDOC: return "Heredoc";
         case HEREDOC_DEL: return "Heredoc Delimeter";

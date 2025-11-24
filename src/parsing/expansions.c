@@ -86,15 +86,20 @@ void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
         offset = 0;
         if (!env_value || !name)
             env_value = "";
-        offset = ft_strlen(name) + 1;
+        offset = ft_strlen(name)+1;
         char *new_str;
-        new_str = exp_str_token(check_token->value, env_value, ft_strlen(name) +1);
-        tokenlist->pf_element_set(tokenlist, pos, new_token(tokenlist, new_str, ft_strlen(new_str)));
+        t_token *n_token; 
+        n_token = NULL;
+        new_str = exp_str_token(check_token->value, env_value, offset);
+        n_token = new_token(tokenlist, new_str, ft_strlen(new_str)+1);
+        if (!n_token)
+            tokenlist->pf_element_free(tokenlist);
+        tokenlist->pf_element_set(tokenlist, pos, n_token);
         (ft_safe_free((unsigned char **)&new_str), ft_safe_free((unsigned char **)&check_token));
+        
         // check_token->value = exp_str_token(check_token->value, env_value, offset);
     }
 }
-
 
 int count_symbols(char* str_token, char symbol)
 {
@@ -170,7 +175,7 @@ int	exp_lexer(
         }
         else if (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type == OPERATOR)
             merge_tokens(tokenlist, i -1, i);
-        if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
+        else if ((int)check_token->type == SINGLE_Q && type == SINGLE_Q)
             rm_quotes(tokenlist, i, '\'');
         else if ((int)check_token->type == DOUBLE_Q && type == DOUBLE_Q)
 			rm_quotes(tokenlist, i, '"');
