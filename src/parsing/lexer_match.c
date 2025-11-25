@@ -15,24 +15,25 @@
 //check what kind of non-terminal for further action
 int match_nonterminal(char *str_token)
 {
-    if (str_token[0] == str_token[1])
-    {
-        if (str_token[0] == '<')
-            return HEREDOC;
-        else if (str_token[0] == '>')
-            return (REDIRECT_OUT_APP);
-    }
-    else if (str_token[0] == '<')
-        return (REDIRECT_IN);
-    else if (str_token[0] == '>')
-        return (REDIRECT_OUT);
-    else if (ft_strchr(str_token, '$') != NULL)
-        return (PARAMETER); 
-    else if (ft_strchr(str_token, '|') != NULL)
-        return (PIPE);
-    else if (str_token[0] == '?')
-        return (QUESTION_MARK);
-    return(UNKNOWN);
+	if (str_token[0] == str_token[1])
+	{
+		if (str_token[0] == '<')
+			return HEREDOC;
+		else if (str_token[0] == '>')
+			return (REDIRECT_OUT_APP);
+	}
+	else if (str_token[0] == '<')
+		return (REDIRECT_IN);
+	else if (str_token[0] == '>')
+		return (REDIRECT_OUT);
+	else if (ft_strchr(str_token, '$') != NULL)
+		return (PARAMETER); 
+	else if (ft_strchr(str_token, '|') != NULL)
+		return (PIPE);
+	else if (str_token[0] == '?')
+		return (QUESTION_MARK);
+	// add parsign error cases maybe?
+	return (STRING);
 }
 
 //check what commands are given
@@ -59,33 +60,23 @@ int match_string(char *str_token)
 int all_num_alph( // moved this from hyphen_handler @alisa
     const char *str)
 {
-    size_t  i;
+	size_t  i;
 
-    i = 0;
-    if (!str)
-        return (UNKNOWN);
-    if (ft_isalpha(str[i]))
-    {
-        while(str[i] && ft_isalpha(str[i]))
-            i++;
-        if (str[i] == '\0')
-            return (STRING);
-        else 
-            return (UNKNOWN);
-    } 
-    else if (ft_isdigit(str[i]))
-    { 
-        while (str[i] && ft_isdigit(str[i]))
-            i++;
-        if (str[i] == '\0')
-            return (NUMBER);
-        else 
-            return(UNKNOWN);
-    }
-    return(UNKNOWN);
+	i = 0;
+	while (str[i] && ft_isdigit(str[i]))
+		i++;
+	if (str[i] == '\0')
+		return (NUMBER);
+	else 
+		return(STRING);
 }
 
 // set a va	lue to the token so we can expand on those later
+// redirect issues:
+// ls -l>outfile - does not add "-l" to argv
+// ls -l >outfile1>outfile2 - creates a file named outfile1>outfile2 and redirects there.
+// should instead have to redirections, one to outfile1, second to outfile2
+// compare to: ls -l >"outfile1>outfile2"
 int	match_token(char *str_token) // needs rework @alisa
 {
 	if (str_token[0] == '\'')
@@ -99,8 +90,6 @@ int	match_token(char *str_token) // needs rework @alisa
 		return (OPERATOR);
 	else if (ft_isdigit(str_token[0]))
 		return (all_num_alph(str_token));
-	else if (ft_isalpha(str_token[0])) // our string could be anything I think. not jsut alpha @alisa
-		return (match_string(str_token));
-	else
-		return(UNKNOWN);
+	return (STRING);
+	// could there be parsing errors here? check
 }
