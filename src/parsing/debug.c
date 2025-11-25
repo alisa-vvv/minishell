@@ -91,7 +91,6 @@ const char* enum_to_str(t_token_type symbols)
         case EXPORT: return "EXPORT";
         case PWD: return "PWD";
         case UNSET: return "UNSET";
-        case UNKNOWN: return "Unknown";
     }
     return "???";
 }

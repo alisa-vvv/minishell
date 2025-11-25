@@ -62,8 +62,6 @@ typedef enum	e_token_type
 	PWD,
 	UNSET,
 
-	UNKNOWN // can leave for debug, but should never actually happen in real execution
-
 } t_token_type;
 
 typedef struct s_token
