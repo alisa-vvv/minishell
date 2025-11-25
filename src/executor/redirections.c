@@ -93,6 +93,8 @@ void	undup_redirections(
 {
 	t_undup_list	*cur_undup;
 
+	if (!undup_head)
+		return ;
 	cur_undup = *undup_head;
 	while (cur_undup != NULL)
 	{
