@@ -130,6 +130,11 @@ int split_redir(
 										tokenlist->element_list.total - 1);
 	dprintf(STDERR_FILENO, "what is prev_token? (%s)\n", prev_token->value);
 	dprintf(STDERR_FILENO, "what is prev_token's type? (%s)\n", enum_to_str(prev_token->type));
+	// str_piece being set to "-1" breaks this case:
+	// >outfile
+	// also:
+	// " ">outfile
+	// need something different!
 	if (ft_strncmp(str_piece, "-1", 2) == 0) // what if we pass -1 as a commnad argument? @alisa
 	{
 		len = l_red(str_b_token);

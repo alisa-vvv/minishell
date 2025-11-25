@@ -21,7 +21,7 @@
 #include <errno.h>
 #include <fcntl.h>
 
-static int	cleanup_in_parent_process(
+static void	cleanup_in_parent_process(
 	t_exec_data *command,
 	t_command_io *const command_io
 )
@@ -33,7 +33,6 @@ static int	cleanup_in_parent_process(
 		//(command_io + 1)->in_pipe[WRITE_END] = CLOSED_FD; // fix invalid read here /?
 	}
 	free_and_close_exec_data(command);
-	return (success);
 }
 
 static int	run_child_process(
@@ -85,7 +84,7 @@ static int	execute_in_child(
 	else if (*pid > 0)
 	{
 		//dprintf(STDERR_FILENO,"what is *pid when command is %s: %d\n", command->argv[0], *pid);
-		err_check = cleanup_in_parent_process(command, command_io); // there's no return here?
+		cleanup_in_parent_process(command, command_io);
 	}
 	else if (*pid < 0)
 		return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
@@ -107,9 +106,7 @@ static int	execute_command(
 	*pid = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true
 		|| command->builtin_name == not_builtin)
-	{
 		return (execute_in_child(command, command_io, msh_data, pid));
-	}
 	if (command->redirections)
 	{
 		undup_list = NULL;
@@ -118,7 +115,7 @@ static int	execute_command(
 	}
 	if (command->builtin_name != not_builtin)
 		err_check = exec_builtin(command, msh_data);
-	if (command->redirections)
+	if (command->redirections) // not needed?
 		undup_redirections(undup_list_head);
 	return (err_check);
 }
@@ -253,7 +250,7 @@ static int	execute_pipeline(
 	elem_count = 0;
 	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
 	if (err != success)
-		return (err); // current logic is simply do not execuote if can;t establish pipeline. may change to execute parts of it
+		return (err);
 	err = execute_commands(msh_data, exec_data, command_io, p_id_arr);
 	if (err != success || msh_data->is_parent == false)
 		return (err);
