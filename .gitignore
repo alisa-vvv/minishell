@@ -19,7 +19,6 @@ imgui.ini
 tester/.
 minishell
 infile
-outfile
-outfile_bash
+outfile*
 bash_outfile
 file
