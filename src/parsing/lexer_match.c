@@ -21,36 +21,18 @@ int match_nonterminal(char *str_token)
             return HEREDOC;
         else if (str_token[0] == '>')
             return (REDIRECT_OUT_APP);
-        else if (str_token[0] == '.')
-            return(DOUBLE_DOT);
     }
     else if (str_token[0] == '<')
         return (REDIRECT_IN);
     else if (str_token[0] == '>')
         return (REDIRECT_OUT);
-    else if (str_token[0] == '.')
-        return (DOT);
     else if (ft_strchr(str_token, '$') != NULL)
         return (PARAMETER); 
     else if (ft_strchr(str_token, '|') != NULL)
         return (PIPE);
     else if (str_token[0] == '?')
         return (QUESTION_MARK);
-    else if (str_token[0] == '!')
-        return (EXCLAM_MARK);
     return(UNKNOWN);
-}
-
-int check_file(const char *str_token)
-{
-    char *dot;
-    if (ft_strchr(str_token, '.') != NULL)
-    {
-        dot = ft_strchr(str_token, '.');
-        if (ft_strncmp(dot, ".txt", 5) || ft_strncmp(dot, ".doc", 5) || ft_strncmp(dot, ".sh", 4))
-            return (FILENAME);
-    }
-    return(all_num_alph(str_token));
 }
 
 //check what commands are given
@@ -58,8 +40,6 @@ int match_string(char *str_token)
 {
     if (ft_strncmp(str_token, "cd", 3) == 0)
         return (CD);
-    else if (ft_strncmp(str_token, "cat", 4) == 0)
-        return (CAT);
     else if (ft_strncmp(str_token, "pwd", 4) == 0)
         return (PWD);
     else if (ft_strncmp(str_token, "env", 4) == 0)
@@ -72,31 +52,51 @@ int match_string(char *str_token)
         return (UNSET);
     else if (ft_strncmp(str_token, "exit", 5) == 0)
         return(EXIT);
-    else if (ft_strchr(str_token, '.'))
-        return (check_file(str_token));
     else
         return (STRING);
 }
 
-// set a value to the token so we can expand on those later
+int all_num_alph( // moved this from hyphen_handler @alisa
+    const char *str)
+{
+    size_t  i;
+
+    i = 0;
+    if (!str)
+        return (UNKNOWN);
+    if (ft_isalpha(str[i]))
+    {
+        while(str[i] && ft_isalpha(str[i]))
+            i++;
+        if (str[i] == '\0')
+            return (STRING);
+        else 
+            return (UNKNOWN);
+    } 
+    else if (ft_isdigit(str[i]))
+    { 
+        while (str[i] && ft_isdigit(str[i]))
+            i++;
+        if (str[i] == '\0')
+            return (NUMBER);
+        else 
+            return(UNKNOWN);
+    }
+    return(UNKNOWN);
+}
+
+// set a va	lue to the token so we can expand on those later
 int	match_token(char *str_token) // needs rework @alisa
 {
 	if (str_token[0] == '\'')
 		return (SINGLE_Q);
-    else if (str_token[0] == '"')
+	else if (str_token[0] == '"')
 		return (DOUBLE_Q);
-    else if (str_contains_red(str_token) || (str_token[0] == '$') || str_token[0] == '|' || (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
+	else if (str_contains_red(str_token) || (str_token[0] == '$')
+			|| str_token[0] == '|' || (str_token[0] == '?'))
 		return (match_nonterminal(str_token));
-	else if (str_token[0] == '(' || str_token[0] == '{')
-		return (OPEN_BRACKET);
-	else if (str_token[0] == '-')
-		return (check_hyphens(str_token));
 	else if ((ft_strchr(str_token, '=') != NULL))
 		return (OPERATOR);
-	else if (str_token[0] == '/')
-		return (FORW_SLASH);
-	else if (str_token[0] == '\\')
-		return (BACKW_SLASH);
 	else if (ft_isdigit(str_token[0]))
 		return (all_num_alph(str_token));
 	else if (ft_isalpha(str_token[0])) // our string could be anything I think. not jsut alpha @alisa

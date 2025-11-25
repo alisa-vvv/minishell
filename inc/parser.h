@@ -40,21 +40,12 @@ typedef enum	e_token_type
 	NUMBER,
 	OPERATOR,
 	PARAMETER,
-	FILENAME, // not needed
 	NON_TERMINAL,
 
 	SINGLE_Q,
 	DOUBLE_Q,
-	OPEN_BRACKET, // not needed
-	CLOSED_BRACKET, // not needed
 
-	DOUBLE_DOT, // not needed
-	DOT, // not needed
-	HYPHEN, // not needed
-	FORW_SLASH, // not needed
-	BACKW_SLASH, // not needed
 	QUESTION_MARK, // is this for "$?" case?
-	EXCLAM_MARK, // not needed
 	
 	PIPE,
 	REDIRECT_IN,
@@ -63,7 +54,6 @@ typedef enum	e_token_type
 	REDIRECT_OUT,
 	REDIRECT_OUT_APP,
 
-	CAT, // not needed
 	CD,
 	ECHO,
 	ENV,
@@ -103,7 +93,6 @@ int			fill_tokenlist(element *tokenlist, char *str);
 const char* enum_to_str(t_token_type symbols);
 int 		clean_lexer(element *tokenlist, size_t i);
 int			merge_tokens(element *tokenlist, int pos1, int pos2);
-int			check_file(const char *str_token);
 int			check_lexer(element *tokenlist, t_msh_data *msh_data);
 int			fill_comm_list(t_exec_data *exec_data, element *tokenlist, size_t pos, int pos_red);
 int			index_lexer(element **tokenlist);
@@ -125,7 +114,6 @@ int			match_string(char *str_token);
 int			expand_var(element **tokenlist, int pos, t_msh_data *msh_data, t_token *check_token, bool quoted);
 int			rm_quotes(element *tokenlist, int pos, char symbol);
 int			all_num_alph(const char *str);
-int			check_hyphens(const char *str_token);
 int			add_arg_to_list(t_exec_data *comm_list, element *tokenlist, int *i, size_t pos, int pos_red);
 int			add_redirect(t_exec_data* execdata, element *tokenlist, int pos, int pos_red);
 int			set_heredoc(t_exec_data* execdata, element *tokenlist, int pos, int pos_red);
