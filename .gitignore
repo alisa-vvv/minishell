@@ -18,7 +18,7 @@ imgui.ini
 .cache
 tester/.
 minishell
-infile
+infile*
 outfile*
 bash_outfile
 file
