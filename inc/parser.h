@@ -35,8 +35,6 @@ typedef enum	e_token_type
 	NUMBER,
 	OPERATOR,
 	PARAMETER,
-	FILENAME,
-	NON_TERMINAL,
 
 	SINGLE_Q,
 	DOUBLE_Q,

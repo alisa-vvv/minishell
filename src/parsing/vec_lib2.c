@@ -29,6 +29,7 @@ int	element_delete(element *e, size_t index)
 {
 	unsigned long	i;
 	int	status;
+	t_token *check_token;
 
 	i = 0;
 	status = -1;
@@ -36,7 +37,10 @@ int	element_delete(element *e, size_t index)
 	{
 		if ((index < 0) || ((size_t)index >= e->element_list.total))
 			return (-1);
-		e->element_list.tokens[index] = NULL;
+		check_token = e->element_list.tokens[index];
+		// if (check_token->value)
+		// 	ft_safe_free((unsigned char **)check_token->value);
+		check_token = NULL; 
 		i = index;
 		while (i < e->element_list.total - 1)
 		{

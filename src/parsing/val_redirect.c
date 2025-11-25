@@ -75,11 +75,11 @@ static int val_redir_out(
 
     status = -1;
     check_token = (t_token *)tokenlist->element_list.tokens[pos];
-    check_token->type = check_file(check_token->value);
+    check_token->type = match_token(check_token->value);
     if (pos + 2 < (size_t)tokenlist->element_list.total)
     {
         check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos +2);
-        check_token->type = check_file(check_token->value);
+        check_token->type = match_token(check_token->value);
         status = 0;
     }
     return (status);

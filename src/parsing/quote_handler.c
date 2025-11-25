@@ -20,10 +20,13 @@ bool char_is_quote(char c)
 	return (false);
 }
 
+//checks if quotes contains something other that quotes, returns true if so 
 bool str_is_quote(const char *str, char symbol)
 {
 	int len;
+	int i;
 
+	i = 0; 
 	len = ft_strlen(str) - 1;
 	if (str[0] == symbol && str[len] == symbol)
 		return (true);
@@ -162,8 +165,8 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 		else 
 			check_token->type = DOUBLE_Q;
 	}
-	else 
-		check_token->type = match_nonterminal(check_token->value);
+	// else 
+	// 	check_token->type = match_token(check_token->value);
 	// p_printf("CHECK TOKEN AFTER = %s\n", check_token->value);
 	return (0);
 }

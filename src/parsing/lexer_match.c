@@ -15,6 +15,7 @@
 //check what kind of non-terminal for further action
 int match_nonterminal(char *str_token)
 {
+
     if (str_token[0] == str_token[1])
     {
         if (str_token[0] == '<')
@@ -24,34 +25,30 @@ int match_nonterminal(char *str_token)
         else if (str_token[0] == '.')
             return(DOUBLE_DOT);
     }
-    else if (str_token[0] == '<')
+    else if (ft_strchr(str_token, '<'))
         return (REDIRECT_IN);
-    else if (str_token[0] == '>')
+    else if (ft_strchr(str_token, '>'))
         return (REDIRECT_OUT);
     else if (str_token[0] == '.')
         return (DOT);
-    else if (ft_strchr(str_token, '$') != NULL)
-        return (PARAMETER); 
     else if (ft_strchr(str_token, '|') != NULL)
         return (PIPE);
     else if (str_token[0] == '?')
         return (QUESTION_MARK);
-    else if (str_token[0] == '!')
-        return (EXCLAM_MARK);
-    return(UNKNOWN);
+    return(STRING);
 }
 
-int check_file(const char *str_token)
-{
-    char *dot;
-    if (ft_strchr(str_token, '.') != NULL)
-    {
-        dot = ft_strchr(str_token, '.');
-        if (ft_strncmp(dot, ".txt", 5) || ft_strncmp(dot, ".doc", 5) || ft_strncmp(dot, ".sh", 4))
-            return (FILENAME);
-    }
-    return(all_num_alph(str_token));
-}
+// int check_file(const char *str_token)
+// {
+//     char *dot;
+//     if (ft_strchr(str_token, '.') != NULL)
+//     {
+//         dot = ft_strchr(str_token, '.');
+//         if (ft_strncmp(dot, ".txt", 5) || ft_strncmp(dot, ".doc", 5) || ft_strncmp(dot, ".sh", 4))
+//             return (FILENAME);
+//     }
+//     return(all_num_alph(str_token));
+// }
 
 //check what commands are given
 int match_string(char *str_token)
@@ -72,8 +69,6 @@ int match_string(char *str_token)
         return (UNSET);
     else if (ft_strncmp(str_token, "exit", 5) == 0)
         return(EXIT);
-    else if (ft_strchr(str_token, '.'))
-        return (check_file(str_token));
     else
         return (STRING);
 }
@@ -81,16 +76,19 @@ int match_string(char *str_token)
 // set a value to the token so we can expand on those later
 int	match_token(char *str_token)
 {
+
 	if (str_token[0] == '\'')
 		return (SINGLE_Q);
     else if (str_token[0] == '"')
 		return (DOUBLE_Q);
-    else if (str_contains_red(str_token) || (str_token[0] == '$') || str_token[0] == '|' || (str_token[0] == '.') || (str_token[0] == '!') || (str_token[0] == '?'))
-		return (match_nonterminal(str_token));
-	// else if (str_token[0] == '-')
-	// 	return (check_hyphens(str_token));
+    else if (ft_strchr(str_token, '$') != NULL)
+        return (PARAMETER);
+    else if (str_contains_red(str_token) || str_token[0] == '|' || (str_token[0] == '.') || (str_token[0] == '?'))
+        return(match_nonterminal(str_token));
 	else if ((ft_strchr(str_token, '=') != NULL))
 		return (OPERATOR);
+    else if (ft_strchr(str_token, '!'))
+        return (EXCLAM_MARK);
 	else if (str_token[0] == '/')
 		return (FORW_SLASH);
 	else if (str_token[0] == '\\')

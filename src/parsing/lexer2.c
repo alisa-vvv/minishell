@@ -47,6 +47,7 @@ int expand_quotes(element *tokenlist,
 
 	count = count_exp(tokenlist, '"');
 	count_single = count_exp(tokenlist, '\'');
+	// p_printf("COUNT SINGLE QUOTES = %d\n", count_single);
 	while (count_single > 0)
 	{
 		if (exp_lexer(tokenlist, msh_data, SINGLE_Q, 0))
@@ -91,7 +92,7 @@ int	check_lexer(element *tokenlist,
 	expand_param(tokenlist, msh_data);
 	expand_quotes(tokenlist, msh_data);
 	clean_lexer(tokenlist, 0);
-	contract_list(tokenlist, 0);
+	contract_list(tokenlist, tokenlist->element_list.total-1);
 	if (tokenlist->element_list.total < 2)
 	{
 		if (single_token(tokenlist))
