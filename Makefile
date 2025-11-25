@@ -36,7 +36,6 @@ CFILES_PARSER	=	debug.c\
 					lexer_utils.c\
 					expansions_utils.c\
 					expansions.c\
-					hyphen_handler.c\
 					lexer.c\
 					lexer2.c\
 					lexer3.c\

@@ -42,7 +42,7 @@ void set_pipe_cm(
 	{
 		c_token = (t_token *)tokenlist->element_list.tokens[i];
 		if ((i == 0 && lookahead(tokenlist, i)->type != HEREDOC
-			&& (c_token->type >= CAT && c_token->type <= UNSET))
+			&& (c_token->type >= CD && c_token->type <= UNSET))
 			|| (i == 0 && c_token->type == HEREDOC)
 			|| (i == tokenlist->element_list.total - 1 && c_token->type == HEREDOC_DEL))
 		{
@@ -66,20 +66,18 @@ void set_pipe_cm(
 }
 
 
-static int val_redir_out(
+static int val_redir_out( // double check, not sure what status does @alisa
     element *tokenlist, 
     size_t pos)
 {
-    t_token * check_token;
+    //t_token *check_token;
     int status;
 
     status = -1;
-    check_token = (t_token *)tokenlist->element_list.tokens[pos];
-    check_token->type = check_file(check_token->value);
+    //check_token = (t_token *)tokenlist->element_list.tokens[pos];
     if (pos + 2 < (size_t)tokenlist->element_list.total)
     {
-        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos +2);
-        check_token->type = check_file(check_token->value);
+      //  check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos +2);
         status = 0;
     }
     return (status);
