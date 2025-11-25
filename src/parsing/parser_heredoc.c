@@ -57,6 +57,7 @@ int set_heredoc_red(
         check_token = (t_token *)tokenlist->element_list.tokens[pos];
 		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 			execdata->input_is_pipe = true;
+		// heredoc parsing broken! @alisa
 		// p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
         if (check_token->type != HEREDOC && pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == HEREDOC)
             execdata->redirections->dest_filename = ft_strdup(check_token->value);
