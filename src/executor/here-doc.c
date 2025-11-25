@@ -135,7 +135,7 @@ static int heredoc_wait_for_child( // this is probably completely not needed and
 	}
 	else
 	{
-		// we probably don't need this check at all
+		// this else case is for debug only, remove it
 		perror("heredoc child: waitpid -1");
 	}
 	return (exit_code);
@@ -152,12 +152,10 @@ int	create_here_doc(
 	err_check = 0;
 	err_check = pipe(here_doc);
 	if (err_check < 0)
-		return (msh_perror(NULL, PIPE_ERR, extern_err), -1); // check return
+		return (msh_perror(NULL, PIPE_ERR, extern_err), extern_err); // check return
 	pid = fork();
 	if (pid == 0)
 	{
-		printf("here doc child lalala %d\n", getpid());
-		//safe_close(&here_doc[READ_END]); // this should not be closed here since we need to access it maybe
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		safe_close(&here_doc[WRITE_END]);
 		return (child_heredoc);
@@ -170,9 +168,6 @@ int	create_here_doc(
 		handle_signals_non_interactive();
 	}
 	if (err_check != 0)
-	{
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		msh_perror(NULL, PIPE_ERR, extern_err); // check return
-	}
+		return (msh_perror(NULL, PIPE_ERR, extern_err), extern_err); // check return
 	return (here_doc[READ_END]);
 }
