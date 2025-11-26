@@ -25,6 +25,9 @@
 
 	typedef struct s_element	element;
 
+// thoughts on this: remove all pf_element_* functions from the struct, not sure why we need them
+// just use the element_* functiuons instead
+// element_get should just return a t_token pointer since we're not using this for anything else
 	struct						s_element
 	{
 		t_elementlist			element_list;

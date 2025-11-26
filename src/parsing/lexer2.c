@@ -153,7 +153,7 @@ int	check_pipe_redirect(char *str, char symbol)
 }
 
 // validate input on quotes, pipes
-int	val_inputline(char *str)
+int	val_inputline(char *str) // hmm?
 {
 	if (check_in_quote(str, ft_strlen(str) - 1))
 		return (write(1, "command not found\n", 18));
