@@ -24,11 +24,31 @@ void	ft_free_arr(void **array)
 		ft_safe_free((unsigned char**)array);
 	}
 }
+// int ft_free_s_token(t_token *check_token)
+// {
+// 	if (!check_token)
+// 		return (1);
+// 	ft_safe_free((unsigned char **)&check_token->value);
+// 	check_token->command = 0;
+// 	check_token->pos = 0;
+// 	//ft_safe_free((unsigned char **)&check_token);
+// 	return (0);
+// }
 
+/*i = index;
+		while (i < e->element_list.total - 1)
+		{
+			e->element_list.tokens[i] = e->element_list.tokens[i + 1];
+			i++;
+		}
+		ft_free_s_token(e->element_list.tokens[e->element_list.total]);
+		e->element_list.tokens[e->element_list.total - 1] = NULL;*/
+//reverted back to old 
 int	element_delete(element *e, size_t index)
 {
 	unsigned long	i;
 	int	status;
+	//t_token *check_token;
 
 	i = 0;
 	status = -1;
@@ -37,6 +57,12 @@ int	element_delete(element *e, size_t index)
 		if ((index < 0) || ((size_t)index >= e->element_list.total))
 			return (-1);
 		e->element_list.tokens[index] = NULL;
+		// check_token = e->element_list.tokens[index];
+		// if (check_token)
+		// {
+		// 	ft_free_s_token(check_token);
+		// 	ft_safe_free((unsigned char **)&check_token);
+		// }
 		i = index;
 		while (i < e->element_list.total - 1)
 		{
@@ -44,6 +70,8 @@ int	element_delete(element *e, size_t index)
 			e->element_list.tokens[i + 1] = NULL;
 			i++;
 		}
+		// ft_free_s_token(e->element_list.tokens[e->element_list.total]);
+		// e->element_list.tokens[e->element_list.total - 1] = NULL;
 		e->element_list.total--;
 		if ((e->element_list.total > 0)
 			&& ((e->element_list.total) == (e->element_list.size / 4)))
@@ -52,6 +80,7 @@ int	element_delete(element *e, size_t index)
 	}
 	return (status);
 }
+
 
 int ft_free_tokens(void **token)
 {
@@ -64,9 +93,11 @@ int ft_free_tokens(void **token)
 	{
 		while(tokens[i])
 		{
+			//ft_free_s_token(tokens[i]);
 			ft_safe_free((unsigned char **)&tokens[i]->value);
 			tokens[i]->command = 0;
 			tokens[i]->pos = 0;
+			tokens[i]->type = 0;
 			ft_safe_free((unsigned char **)&tokens[i]);
 			i++;
 		}

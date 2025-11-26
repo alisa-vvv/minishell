@@ -21,6 +21,8 @@ bool char_is_red(char c)
 	return (0);
 }
 
+//|| ft_strchr(str, '|')
+//checks if string contains redirect 
 bool str_contains_red(char *str)
 {
 	if (ft_strchr(str, '>') || ft_strchr(str, '<'))

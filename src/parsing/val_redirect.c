@@ -92,6 +92,8 @@ static int check_heredoc(
 
     check_token = (t_token *)tokenlist->element_list.tokens[pos];
     check_token->type = HEREDOC_DEL;
+    if (pos >0)
+        tokenlist->pf_element_delete(tokenlist, pos-1);
     if (pos == tokenlist->element_list.total -1)
         return (0);
     else

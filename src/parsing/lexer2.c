@@ -38,24 +38,6 @@ int count_exp(element *tokenlist, char symbol)
 	return (count);
 }
 
-//merge tokens with pos1 and pos2 into pos 1
-int merge_tokens(element *tokenlist, int pos1, int pos2)
-{
-	t_token *check_token;
-	t_token *extra_token;
-
-	check_token = tokenlist->element_list.tokens[pos1];
-	extra_token = tokenlist->element_list.tokens[pos2];
-	if (check_token->type == OPERATOR)
-	{
-		check_token->value = ft_strjoin(check_token->value, extra_token->value);
-		tokenlist->pf_element_delete(tokenlist, pos2);
-		index_lexer(&tokenlist);
-	}
-	return (0);
-}
-
-
 //expands single and double quotes 
 int expand_quotes(element *tokenlist, 
 	t_msh_data *msh_data)
@@ -65,6 +47,7 @@ int expand_quotes(element *tokenlist,
 
 	count = count_exp(tokenlist, '"');
 	count_single = count_exp(tokenlist, '\'');
+	// p_printf("COUNT SINGLE QUOTES = %d\n", count_single);
 	while (count_single > 0)
 	{
 		if (exp_lexer(tokenlist, msh_data, SINGLE_Q, 0))
@@ -109,6 +92,7 @@ int	check_lexer(element *tokenlist,
 	expand_param(tokenlist, msh_data);
 	expand_quotes(tokenlist, msh_data);
 	clean_lexer(tokenlist, 0);
+	contract_list(tokenlist, tokenlist->element_list.total-1);
 	if (tokenlist->element_list.total < 2)
 	{
 		if (single_token(tokenlist))

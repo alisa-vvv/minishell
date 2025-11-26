@@ -55,7 +55,7 @@ char	*trim_str_space(char *str)
 	return (str);
 }
 
-// move over quoted string
+//move over quoted str and return the length of quoted text incl quotes
 int	move_over_quote(const char *str, int pos)
 {
 	int		start;
@@ -65,7 +65,7 @@ int	move_over_quote(const char *str, int pos)
 		return (0);
 	start = pos;
 	quote = str[pos];
-	pos++; // skip opening quote
+	pos++; 
 	while (str[pos] && str[pos] != quote)
 		pos++;
 	if (str[pos] == quote)
@@ -73,14 +73,14 @@ int	move_over_quote(const char *str, int pos)
 	return (pos - start);
 }
 
-//&& !char_is_red(str[i])
+
 // returns len of tokens
 int	set_len(const char *str, int i)
 {
 	int	len;
 
 	len = 0;
-	if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && str[i]))
+	if (str[i] && (!check_in_quote(str, i) && !ft_isspace(str[i])))
 	{
 		len = move_o_unquoted(str, i);
 		i += len;
@@ -114,7 +114,6 @@ int	clean_lexer(element *tokenlist, size_t i)
 			return (1);
 		if (ft_strncmp(check_token->value, "", 1) == 0)
 		{
-			p_printf("GOT IN HERE \n");
 			tokenlist->pf_element_delete(tokenlist, i);
 		}
 		i++;
@@ -136,7 +135,7 @@ int	index_lexer(element **tokenlist)
 		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
 		if (!check_token)
 			return (write(1, "No tokens available\n", 20));
-		else
+		else 
 			check_token->pos = i;
 		// e_printf("POS= %d \n", check_token->pos);
 		i++;
