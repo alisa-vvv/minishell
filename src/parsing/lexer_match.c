@@ -29,8 +29,6 @@ int match_nonterminal(char *str_token)
         return (REDIRECT_IN);
     else if (ft_strchr(str_token, '>'))
         return (REDIRECT_OUT);
-    else if (str_token[0] == '.')
-        return (DOT);
     else if (ft_strchr(str_token, '|') != NULL)
         return (PIPE);
     else if (str_token[0] == '?')
@@ -38,17 +36,6 @@ int match_nonterminal(char *str_token)
     return(STRING);
 }
 
-// int check_file(const char *str_token)
-// {
-//     char *dot;
-//     if (ft_strchr(str_token, '.') != NULL)
-//     {
-//         dot = ft_strchr(str_token, '.');
-//         if (ft_strncmp(dot, ".txt", 5) || ft_strncmp(dot, ".doc", 5) || ft_strncmp(dot, ".sh", 4))
-//             return (FILENAME);
-//     }
-//     return(all_num_alph(str_token));
-// }
 
 //check what commands are given
 int match_string(char *str_token)
@@ -76,14 +63,13 @@ int match_string(char *str_token)
 // set a value to the token so we can expand on those later
 int	match_token(char *str_token)
 {
-
 	if (str_token[0] == '\'')
 		return (SINGLE_Q);
     else if (str_token[0] == '"')
 		return (DOUBLE_Q);
     else if (ft_strchr(str_token, '$') != NULL)
         return (PARAMETER);
-    else if (str_contains_red(str_token) || str_token[0] == '|' || (str_token[0] == '.') || (str_token[0] == '?'))
+    else if (str_contains_red(str_token) || (str_token[0] == '?'))
         return(match_nonterminal(str_token));
 	else if ((ft_strchr(str_token, '=') != NULL))
 		return (OPERATOR);
@@ -93,6 +79,8 @@ int	match_token(char *str_token)
 		return (FORW_SLASH);
 	else if (str_token[0] == '\\')
 		return (BACKW_SLASH);
+    else if (str_token[0] == '.')
+        return (DOT);
 	else if (ft_isdigit(str_token[0]))
 		return (all_num_alph(str_token));
 	else

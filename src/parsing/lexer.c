@@ -32,6 +32,7 @@ t_token *new_token(
 		return (NULL);
 	token->type = match_token(token->value);
 	token->command = false;
+	token->pos = tokenlist->element_list.total;
 	return (token);
 }
 
@@ -73,7 +74,7 @@ int l_red(char *str)
 }
 
 
-//add token to the list, if failed, release whole list
+//add new token to the list and updates total
 int add_token(
 	element *tokenlist, 
 	char *str, 
@@ -86,13 +87,12 @@ int add_token(
 	token = new_token(tokenlist, str, len);
 	if (!token)
 		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
-	token->pos = tokenlist->element_list.total;
 	tokenlist->pf_element_add(tokenlist, token);
 	return (0);
 }
 
 
-//splits redirect tokens into 3 tokens "-1" if not spec
+//splits redirect tokens into 3 tokens "-1" if not specified 
 int split_redir(element *tokenlist,
 	char *str_b_token)
 {
@@ -103,10 +103,7 @@ int split_redir(element *tokenlist,
 	if (!str_piece)
 		return (write(1, MALLOC_ERR, 16));
 	if (add_token(tokenlist, str_piece, ft_strlen(str_piece) + 1))
-	{
-		ft_safe_free((unsigned char **)&str_piece);
-		return (1);
-	}
+		return(ft_safe_free((unsigned char **)&str_piece), 1);
 	if (ft_strncmp(str_piece, "-1", 2) == 0)
 	{
 		len = l_red(str_b_token);
@@ -115,20 +112,13 @@ int split_redir(element *tokenlist,
 	else
 		len = l_red(str_b_token + (ft_strlen(str_piece)));
 	if (len < 0)
-	{
-		ft_safe_free((unsigned char **)&str_piece);
-		return (1);
-	}
+		return(ft_safe_free((unsigned char **)&str_piece), 1);
 	if (add_token(tokenlist, str_b_token + ft_strlen(str_piece), len + 1))
-	{
-		ft_safe_free((unsigned char **)&str_piece);
-		return (1);
-	}
-	if (add_token(tokenlist, str_b_token + (ft_strlen(str_piece) + len), ft_strlen(str_b_token) - ft_strlen(str_piece) - len + 1))
-	{
-		ft_safe_free((unsigned char **)&str_piece);
-		return (1);
-	}
+		return(ft_safe_free((unsigned char **)&str_piece), 1);
+	if (str_contains_red(str_b_token + (ft_strlen(str_piece) + len)))
+		split_redir(tokenlist, str_b_token + (ft_strlen(str_piece) + len));
+	else if (add_token(tokenlist, str_b_token + (ft_strlen(str_piece) + len), ft_strlen(str_b_token) - ft_strlen(str_piece) - len + 1))
+		return(ft_safe_free((unsigned char **)&str_piece), 1);
 	ft_safe_free((unsigned char **)&str_piece);
 	return (0);
 }
@@ -150,16 +140,11 @@ int prep_token(element *tokenlist,
 	if (str_contains_red(str_b_token))
 	{
 		if (split_redir(tokenlist, str_b_token))
-		{
-			ft_safe_free((unsigned char **)&str_b_token);
-			return (1);
-		}
+			return(ft_safe_free((unsigned char **)&str_b_token), 1);
+
 	}
 	else if (add_token(tokenlist, str_b_token, len +1))
-	{
-		ft_safe_free((unsigned char **)&str_b_token);
-		return (1);
-	}
+		return(ft_safe_free((unsigned char **)&str_b_token), 1);
 	ft_safe_free((unsigned char **)&str_b_token);
 	return (0);
 }
@@ -173,7 +158,7 @@ int move_o_unquoted(const char *str, int i)
 
 	len = 0;
 	
-	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]))
+	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]) && !char_is_red(str[i]))
 	{
 		len++;
 		i++;
@@ -224,7 +209,7 @@ int	token_count(
 	tokencount = 0;
 	while (str[i])
 	{
-		if ((str[i] && !check_in_quote(str, i) && !ft_isspace(str[i])))
+		if ((str[i] && !check_in_quote(str, i) && !ft_isspace(str[i])) && !char_is_quote(str[i]))
 		{
 			tokencount = count_unq(str, i, tokencount); 
 			i += move_o_unquoted(str, i) ;

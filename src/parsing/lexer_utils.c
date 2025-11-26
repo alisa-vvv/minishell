@@ -55,7 +55,7 @@ char	*trim_str_space(char *str)
 	return (str);
 }
 
-//move 
+//move over quoted str and return the length of quoted text incl quotes
 int	move_over_quote(const char *str, int pos)
 {
 	int		start;
@@ -80,7 +80,7 @@ int	set_len(const char *str, int i)
 	int	len;
 
 	len = 0;
-	if ((!check_in_quote(str, i) && !ft_isspace(str[i]) && str[i]))
+	if (str[i] && (!check_in_quote(str, i) && !ft_isspace(str[i])))
 	{
 		len = move_o_unquoted(str, i);
 		i += len;

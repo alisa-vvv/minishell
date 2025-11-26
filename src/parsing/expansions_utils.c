@@ -56,8 +56,8 @@ char	*exp_str_token(char *str_token, char *value, int offset)
 				ft_safe_free((unsigned char **)&new_str),
 				ft_safe_free((unsigned char **)&temp_left), NULL));
 	(ft_safe_free((unsigned char **)&leftover),
-		ft_safe_free((unsigned char **)&temp_left),
-		ft_safe_free((unsigned char **)&str_token));
+	ft_safe_free((unsigned char **)&temp_left),
+	ft_safe_free((unsigned char **)&str_token));
 	return (new_str);
 }
 
@@ -81,7 +81,7 @@ char	*refine_name_var(char *token_name, char *result, char symbol)
 	{
 		if (symbol == '$')
 		{
-			if (char_is_quote(result[i]) || result[i] == '$' || ft_isspace(result[i])
+			if (char_is_quote(result[i]) || result[i] == '$' || ft_isspace(result[i] || char_is_red(result[i]))
 				|| !(ft_isalnum(result[i]) || result[i] == '_'))
 				break ;
 		}

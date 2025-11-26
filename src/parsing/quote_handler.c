@@ -158,15 +158,13 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 		tokenlist->pf_element_delete(tokenlist, pos);
 	if (quote == '\'' && char_is_quote(symbol))
 		check_token->type = SINGLE_Q;
-	else if (quote == '"')
+	else if (quote == '"' && check_token->value)
 	{
 		if (ft_strchr(check_token->value, '$'))
 			check_token->type = PARAMETER;
 		else 
 			check_token->type = DOUBLE_Q;
 	}
-	// else 
-	// 	check_token->type = match_token(check_token->value);
 	// p_printf("CHECK TOKEN AFTER = %s\n", check_token->value);
 	return (0);
 }
