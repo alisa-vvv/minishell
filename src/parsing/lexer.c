@@ -16,7 +16,8 @@
 t_token *new_token(
 	element *tokenlist,
 	char *str, 
-	int len)
+	int len
+)
 {
 	t_token	*token;
 
@@ -77,7 +78,6 @@ int l_red(char *str)
 	else 
 		return (-1);
 }
-
 
 //add token to the list, if failed, release whole list
 int add_token(
@@ -245,10 +245,11 @@ int count_unq(const char *str, int i, int count)
 // counts args to size up elementlist
 int	token_count(
 	const char *str,
-	int i)
+	int i
+)
 {
 	int	tokencount;
-	
+
 	tokencount = 0;
 	while (str[i])
 	{
@@ -260,7 +261,7 @@ int	token_count(
 		else if (str[i] && char_is_quote(str[i]))
 		{
 			tokencount++;
-            i += move_over_quote(str, i);
+			i += move_over_quote(str, i);
 		}
 		else if (str[i] && !ft_isspace(str[i]) && char_is_red(str[i]))
 		{
@@ -268,10 +269,10 @@ int	token_count(
 			while(str[i] && char_is_red(str[i]) && !ft_isspace(str[i]) && !char_is_quote(str[i]))
 				i++;
 		}
-        else
-            i++;
+		else
+		i++;
 	}
-    t_printf("Token count = %d\n", tokencount);
+	t_printf("Token count = %d\n", tokencount);
 	return (tokencount);
 }
 
@@ -279,7 +280,8 @@ int	token_count(
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(
 	element *tokenlist, 
-	char *str)
+	char *str
+)
 {
 	int		i;
 	size_t	len;
@@ -296,11 +298,11 @@ int	fill_tokenlist(
 		if (len > 0)
 		{
 			if (prep_token(tokenlist, str, i, len) )
-			//if (add_token(tokenlist, str, i, len))
+				//if (add_token(tokenlist, str, i, len))
 				return (1);
 		}
-        else if (str[i])
-            i++;
+		else if (str[i])
+			i++;
 	}
 	return (0);
 }
@@ -317,12 +319,12 @@ int	default_lexer(
 	if (!input_line)
 		return (1);
 	input_line = trim_str_space(input_line);
-	if (val_inputline(input_line))
+	if (val_inputline(input_line)) // what are the validations/returns/mesgs?
         return (1);
 	token_c = token_count(input_line, 0);
 	if (!token_c)
 		return (write(1, "Failed to count tokens\n", 23));
-	element_init(&token_list, token_c);
+	element_init(&token_list, token_c); //why do we need to use elements as a class?
 	fill_tokenlist(&token_list, input_line);
 	token_list.element_list.tokens[token_c] = NULL;  
 	if (!token_list.element_list.tokens)

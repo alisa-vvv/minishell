@@ -38,7 +38,7 @@ void set_pipe_cm(
     bool flag;
 
 	flag = true;
-	while(i < (size_t)tokenlist->element_list.total && (size_t)tokenlist->element_list.total > 1)
+	while(i < tokenlist->element_list.total && tokenlist->element_list.total > 1)
 	{
 		c_token = (t_token *)tokenlist->element_list.tokens[i];
 		if ((i == 0 && lookahead(tokenlist, i)->type != HEREDOC
