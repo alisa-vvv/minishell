@@ -118,12 +118,14 @@ int	count_args(element *tokenlist, int pos, int total)
 	int	redir;
 	int	i;
 
-	// t_token *check_token;
 	i = pos;
 	redir = 0;
-	redir = count_redirs(tokenlist, total, i);
-	if (redir)
+	if (find_symbol(tokenlist, 0, '>') || find_symbol(tokenlist, 0, '<') || find_symbol(tokenlist, 0, '|'))
+	{
+		redir = count_redirs(tokenlist, total, i);
+	// if (redir)
 		total = total - (redir + pos);
+	}
 	else
 		total -= (pos + 1);
 	p_printf("total = %d\n", total);

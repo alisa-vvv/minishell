@@ -28,12 +28,12 @@ t_token *new_token(
 		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15), NULL);
 	token->value = malloc((len + 1) * sizeof(char));
 	ft_strlcpy(token->value, str, len);
-	p_printf("TOKEN VALUE = %s\n", token->value);
-
+	p_printf("TOKEN VALUE = $%s$\n", token->value);
 	if (!token->value)
 		return (NULL);
 	token->type = match_token(token->value);
 	token->command = false;
+	token->pos = tokenlist->element_list.total;
 	return (token);
 }
 
@@ -79,11 +79,10 @@ int l_red(char *str)
 		return (-1);
 }
 
-//add token to the list, if failed, release whole list
+//add new token to the list and updates total
 int add_token(
 	element *tokenlist, 
 	char *str, 
-	// int i, 
 	size_t len)
 {
 	t_token	*token;
@@ -93,7 +92,6 @@ int add_token(
 	token = new_token(tokenlist, str, len);
 	if (!token)
 		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
-	token->pos = tokenlist->element_list.total;
 	tokenlist->pf_element_add(tokenlist, token);
 	return (0);
 }
@@ -126,8 +124,7 @@ int split_redir(
 		ft_safe_free((unsigned char **)&str_piece);
 		return (1);
 	}
-	prev_token = tokenlist->pf_element_get(tokenlist,
-										tokenlist->element_list.total - 1);
+	prev_token = tokenlist->pf_element_get(tokenlist, tokenlist->element_list.total - 1);
 	dprintf(STDERR_FILENO, "what is prev_token? (%s)\n", prev_token->value);
 	dprintf(STDERR_FILENO, "what is prev_token's type? (%s)\n", enum_to_str(prev_token->type));
 	// str_piece being set to "-1" breaks this case:
@@ -143,20 +140,13 @@ int split_redir(
 	else
 		len = l_red(str_b_token + (ft_strlen(str_piece)));
 	if (len < 0)
-	{
-		ft_safe_free((unsigned char **)&str_piece);
-		return (1);
-	}
+		return(ft_safe_free((unsigned char **)&str_piece), 1);
 	if (add_token(tokenlist, str_b_token + ft_strlen(str_piece), len + 1))
-	{
-		ft_safe_free((unsigned char **)&str_piece);
-		return (1);
-	}
-	if (add_token(tokenlist, str_b_token + (ft_strlen(str_piece) + len), ft_strlen(str_b_token) - ft_strlen(str_piece) - len + 1))
-	{
-		ft_safe_free((unsigned char **)&str_piece);
-		return (1);
-	}
+		return(ft_safe_free((unsigned char **)&str_piece), 1);
+	if (str_contains_red(str_b_token + (ft_strlen(str_piece) + len)))
+		split_redir(tokenlist, str_b_token + (ft_strlen(str_piece) + len));
+	else if (add_token(tokenlist, str_b_token + (ft_strlen(str_piece) + len), ft_strlen(str_b_token) - ft_strlen(str_piece) - len + 1))
+		return(ft_safe_free((unsigned char **)&str_piece), 1);
 	ft_safe_free((unsigned char **)&str_piece);
 	return (0);
 }
@@ -178,16 +168,11 @@ int prep_token(element *tokenlist,
 	if (str_contains_red(str_b_token))
 	{
 		if (split_redir(tokenlist, str_b_token))
-		{
-			ft_safe_free((unsigned char **)&str_b_token);
-			return (1);
-		}
+			return(ft_safe_free((unsigned char **)&str_b_token), 1);
+
 	}
 	else if (add_token(tokenlist, str_b_token, len +1))
-	{
-		ft_safe_free((unsigned char **)&str_b_token);
-		return (1);
-	}
+		return(ft_safe_free((unsigned char **)&str_b_token), 1);
 	ft_safe_free((unsigned char **)&str_b_token);
 	return (0);
 }
@@ -201,7 +186,7 @@ int move_o_unquoted(const char *str, int i)
 
 	len = 0;
 	
-	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]))
+	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]) && !char_is_red(str[i]))
 	{
 		len++;
 		i++;
@@ -253,7 +238,7 @@ int	token_count(
 	tokencount = 0;
 	while (str[i])
 	{
-		if ((str[i] && !check_in_quote(str, i) && !ft_isspace(str[i])))
+		if ((str[i] && !check_in_quote(str, i) && !ft_isspace(str[i])) && !char_is_quote(str[i]))
 		{
 			tokencount = count_unq(str, i, tokencount); 
 			i += move_o_unquoted(str, i) ;
@@ -297,8 +282,7 @@ int	fill_tokenlist(
 		i += len;
 		if (len > 0)
 		{
-			if (prep_token(tokenlist, str, i, len) )
-				//if (add_token(tokenlist, str, i, len))
+			if (prep_token(tokenlist, str, i, len))
 				return (1);
 		}
 		else if (str[i])

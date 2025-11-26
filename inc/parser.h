@@ -91,6 +91,7 @@ int			fill_tokenlist(element *tokenlist, char *str);
 const char* enum_to_str(t_token_type symbols);
 int 		clean_lexer(element *tokenlist, size_t i);
 int			merge_tokens(element *tokenlist, int pos1, int pos2);
+int 		contract_list(element *tokenlist, int i);
 int			check_lexer(element *tokenlist, t_msh_data *msh_data);
 int			fill_comm_list(t_exec_data *exec_data, element *tokenlist, size_t pos, int pos_red);
 int			index_lexer(element **tokenlist);
