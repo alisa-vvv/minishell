@@ -28,7 +28,7 @@ int merge_tokens(element *tokenlist,
     
     check_token->pos = pos1;
     tokenlist->pf_element_delete(tokenlist, pos2);
-    write(1, "appelsap\n", 9);
+    // write(1, "appelsap\n", 9);
     //index_lexer(&tokenlist);
 	return (0);
 }
