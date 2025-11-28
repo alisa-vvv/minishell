@@ -108,7 +108,6 @@ char symbol_in_quote(char *str, char symbol)
 }
 
 
-
 //loops count amount of times to remove outside quotes from string
 char rm_str_quotes(char *str, int count, char symbol)
 {
@@ -150,21 +149,21 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 	char quote;
 	quote = 'q';
 	check_token = (t_token *)tokenlist->tokens[pos];
-	count = (count_symbols(check_token->value, symbol));
+	count = (count_occ(check_token->value, symbol));
 	// p_printf("CHECK TOKEN = %s\n", check_token->value);
 	if (str_is_quote(check_token->value, symbol))
 		quote = rm_str_quotes(check_token->value, count/2, symbol);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
 		tokenlist_delete(tokenlist, pos);
-	if (quote == '\'' && char_is_quote(symbol))
-		check_token->type = SINGLE_Q;
-	else if (quote == '"' && check_token->value)
-	{
-		if (ft_strchr(check_token->value, '$'))
-			check_token->type = PARAMETER;
-		else 
-			check_token->type = DOUBLE_Q;
-	}
+	// if (quote == '\'' && char_is_quote(symbol))
+	// 	check_token->type = SINGLE_Q;
+	// else if (quote == '"' && check_token->value)
+	// {
+	// 	if (ft_strchr(check_token->value, '$'))
+	// 		check_token->type = PARAMETER;
+	// 	else 
+	// 		check_token->type = DOUBLE_Q;
+	// }
 	// p_printf("CHECK TOKEN AFTER = %s\n", check_token->value);
 	return (0);
 }

@@ -67,6 +67,7 @@ int	tokenlist_add(t_tokenlist *e, void *token)
 	{
 		if (e->size == e->total)
 		{
+			p_printf("RESIZE?\n");
 			status = tokenlist_resize(e, e->size, e->size
 					* 2);
 			if (status != 0)
@@ -89,6 +90,7 @@ int	tokenlist_set(t_tokenlist *e, size_t index, void *token)
 	{
 		if ((index >= 0) && (index < e->total))
 		{
+			ft_free_s_token((void **)&e->tokens[index]);
 			e->tokens[index] = token;
 			return (0);
 		}

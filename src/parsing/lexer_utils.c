@@ -70,6 +70,15 @@ int	move_over_quote(const char *str, int pos)
 		pos++;
 	if (str[pos] == quote)
 		pos++;
+	while (str[pos] && !ft_isspace(str[pos]))
+	{
+		if (char_is_quote(str[pos]))
+		{
+			pos += move_over_quote(str, pos);
+		}
+		else 
+			pos++;
+	} 
 	return (pos - start);
 }
 
@@ -107,13 +116,16 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 {
 	t_token	*check_token;
 
+	p_printf("%p %i\n", tokenlist->tokens, i);
 	while (i < tokenlist->total)
 	{
 		check_token = tokenlist->tokens[i];
-		if (!check_token || !check_token->value)
-			return (1);
-		if (ft_strncmp(check_token->value, "", 1) == 0)
+		// if (!check_token || !check_token->value)
+		// 	return (1);
+		p_printf("%p %i %s\n", tokenlist->tokens, i, check_token->value);
+		if (check_token && *check_token->value == '\0')
 		{
+			p_printf("DELETE?\n");
 			tokenlist_delete(tokenlist, i);
 		}
 		i++;

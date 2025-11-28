@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-
+//sets default values for the redirs 
 void	set_redir_def(t_redir_list	*redirlist)
 {
 	redirlist->heredoc_delim = NULL;
@@ -23,6 +23,7 @@ void	set_redir_def(t_redir_list	*redirlist)
 	redirlist->next = NULL;
 }
 
+//set specific type for the redirect list 
 int set_type(t_redir_list *redirlist,
 	t_tokenlist *tokenlist, 
 	int pos)
@@ -78,8 +79,10 @@ int	set_redirect(
 }
 
 // add redirect to list of execdata
-int	add_redirect(t_exec_data *execdata, t_tokenlist *tokenlist, int pos,
-		int pos_red)
+int	add_redirect(t_exec_data *execdata, 
+	t_tokenlist *tokenlist, 
+	int pos,
+	int pos_red)
 {
 	t_token			*check_token;
 	t_redir_list	*redirlist;

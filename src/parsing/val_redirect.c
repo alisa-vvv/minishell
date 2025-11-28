@@ -50,7 +50,7 @@ int token_is_cm(t_tokenlist *tokenlist, int pos)
 }
 
 
-//(i == 0 && lookahead(tokenlist, i)->type != HEREDOC && !token_is_redirect(c_token)) && (c_token->type >= CD && c_token->type <= UNSET)) || (i == 0 && c_token->type == HEREDOC) || (i == tokenlist->element_list.total - 1 && c_token->type == HEREDOC_DEL))
+//(i == 0 && lookahead(tokenlist, i)->type
 void set_pipe_cm(
 	t_tokenlist *tokenlist, 
     size_t i)
@@ -98,6 +98,12 @@ bool val_redir_out(
     }
     return (true);
 }
+
+// //
+// int count_str_redir(const char *str, )
+// {
+    
+// }
 
 
 //

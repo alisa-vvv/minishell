@@ -25,12 +25,12 @@ t_token *new_token(
 		return (NULL);
 	token = calloc(1, sizeof(t_token));
 	if (!token)
-		return (tokenlist_free(tokenlist), write(1, MALLOC_ERR, 15), NULL);
+		return (NULL);
 	token->value = malloc((len + 1) * sizeof(char));
 	ft_strlcpy(token->value, str, len);
 	p_printf("TOKEN VALUE = $%s$\n", token->value);
 	if (!token->value)
-		return (NULL);
+		return (free(token), NULL);
 	token->type = match_token(token->value);
 	token->command = false;
 	token->pos = tokenlist_total(tokenlist);
@@ -63,6 +63,7 @@ char *before_red(char *str_token)
 	return (result);
 }
 
+//
 int l_red(char *str)
 {
 
@@ -86,7 +87,7 @@ int add_token(
 	// l_printf("len = %zu ", len);
 	token = new_token(tokenlist, str, len);
 	if (!token)
-		return (tokenlist_free(tokenlist), write(1, MALLOC_ERR, 15));
+		return (write(2, MALLOC_ERR, 15));
 	tokenlist_add(tokenlist, token);
 	return (0);
 }
@@ -101,17 +102,18 @@ int split_redir(
 	t_token	*prev_token;
 	char	*str_piece;
 	int		len;
+	//int count;
 
+	//count = count_occ(str_b_token, );
 	str_piece = before_red(str_b_token);
 	if (!str_piece)
-		return (write(1, MALLOC_ERR, 16));
+		return (write(2, MALLOC_ERR, 16));
+
 	dprintf(STDERR_FILENO, "what is str_piece? (%s)\n", str_piece);
 	if (add_token(tokenlist, str_piece, ft_strlen(str_piece) + 1))
-	{
-		ft_safe_free((unsigned char **)&str_piece);
-		return (1);
-	}
+		return (ft_safe_free((unsigned char **)&str_piece), 1);
 	prev_token = tokenlist_get(tokenlist, tokenlist->total - 1);
+
 	dprintf(STDERR_FILENO, "what is prev_token? (%s)\n", prev_token->value);
 	dprintf(STDERR_FILENO, "what is prev_token's type? (%s)\n", enum_to_str(prev_token->type));
 	// str_piece being set to "-1" breaks this case:
@@ -146,22 +148,18 @@ int prep_token(t_tokenlist *tokenlist,
 	int len)
 {
 	char *str_b_token;
+	int status; 
 
-	str_b_token = NULL;
 	str_b_token = malloc((len + 1) * sizeof(char));
 	if (!str_b_token)
 		return (1);
 	ft_strlcpy(str_b_token, str + i - len, len +1);
-	if (str_contains_red(str_b_token))
-	{
-		if (split_redir(tokenlist, str_b_token))
-			return(ft_safe_free((unsigned char **)&str_b_token), 1);
-
-	}
-	else if (add_token(tokenlist, str_b_token, len +1))
-		return(ft_safe_free((unsigned char **)&str_b_token), 1);
+	// if (str_contains_red(str_b_token))
+	// 	status = split_redir(tokenlist, str_b_token);
+	// else
+		status = add_token(tokenlist, str_b_token, len +1);
 	ft_safe_free((unsigned char **)&str_b_token);
-	return (0);
+	return (status);
 }
 
 
@@ -299,10 +297,15 @@ int	default_lexer(
 		return (write(1, "Failed to count tokens\n", 23));
 	if (tokenlist_init(&token_list, token_c))
 		return (write(1, "Failed to init tokenlist\n", 25));
-	fill_tokenlist(token_list, input_line);
-	token_list->tokens[token_c] = NULL;  
-	if (!token_list->tokens)
-		return (write(1, "Failed to init tokenlist\n", 25));
+
+	if (fill_tokenlist(token_list, input_line))
+	{
+		tokenlist_free(token_list);
+		return (write(1, "Failed to fill tokenlist\n", 25));
+	}
+	// token_list->tokens[token_c] = NULL;  
+	// if (!token_list->tokens)
+	// 	return (write(1, "Failed to init tokenlist\n", 25));
 //	test_tokens(token_list);
 	if (check_lexer(token_list, msh_data))
 	{
@@ -310,6 +313,6 @@ int	default_lexer(
 		return (write(1, "Failed check types\n", 19));
 	}
 	tokenlist_free(token_list);
-	ft_safe_free((unsigned char **)&token_list);
+	// ft_safe_free((unsigned char **)&token_list);
 	return (0);
 }

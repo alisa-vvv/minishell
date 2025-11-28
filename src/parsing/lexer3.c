@@ -45,6 +45,7 @@ int check_all_quote(const char *str)
     return (false);
 }
 
+//contract tokens when surrounded by quote tokens 
 void contract_quotes(t_tokenlist *tokenlist,
     t_token *check_token,
     int pos)

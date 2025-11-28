@@ -12,6 +12,10 @@
 
 #include "parser.h"
 
+
+
+
+
 // prepare leftover parts of str token to keep for the updated string
 char	*prep_leftover(char *str_token, char symbol, int offset)
 {
@@ -71,7 +75,7 @@ char	*refine_name_var(char *token_name, char *result, char symbol)
 
 	i = 0;
 	start = NULL;
-	start = ft_strrchr(token_name, symbol);
+	start = ft_strchr(token_name, symbol);
 	// e_printf("\nSTART = %s\n", start);
 	result = ft_strdup(start + 1);
 	if (!result)

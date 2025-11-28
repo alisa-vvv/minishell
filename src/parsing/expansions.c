@@ -31,6 +31,7 @@
 int lpos_in_str(const char *str, char symbol)
 {
     int i;
+    i = -1;
     i = ft_strlen(str)-1;
     while (i > 0)
     {
@@ -41,32 +42,33 @@ int lpos_in_str(const char *str, char symbol)
     return (i);
 }
 
-
+// ft_strchr(check_token->value, '$')
 //expands unquoted var to the relevant environment value, keeping the rest of the string intact or replacing empty strings if env value is not present
 int expand_unquoted(t_tokenlist *tokenlist, t_token *check_token, char *name, int pos, char *env_value)
 {
-    static int flag;
-    int i;
-    
-    i = -1;
-    if (!env_value)
+   // static int flag;
+    int count;
+    count = count_occ(check_token->value, '$');
+    p_printf("GOT HERE \n");
+    if (!env_value && count == 1)
+    {
+        tokenlist_delete(tokenlist, pos);
+        return (0);
+    }
+    else if (!env_value)
         env_value = "";
-    if (flag >= 0 || ft_strchr(check_token->value, '$'))
+    if (count > 1)
     {
         char *new_str;
         new_str = exp_str_token(check_token->value, env_value, ft_strlen(name) +1);
         tokenlist_set(tokenlist, pos, new_token(tokenlist, new_str, ft_strlen(new_str) + 1));
         (ft_safe_free((unsigned char **)&new_str));
     }
-    else 
-    {
+    else
         tokenlist_set(tokenlist, pos, new_token(tokenlist, env_value, ft_strlen(env_value)+ 1));
-       // ft_safe_free((unsigned char **)&env_value);
-    }
     check_token = tokenlist->tokens[pos];
-    if (!check_token)
+    if (!check_token || !check_token->value)
         tokenlist_delete(tokenlist, pos);
-    (ft_safe_free((unsigned char **)&check_token));
     return (0);
 }
 
@@ -100,20 +102,21 @@ void expand_quoted(t_tokenlist *tokenlist, char *name, size_t pos, char *env_val
     }
 }
 
-int count_symbols(char* str_token, char symbol)
+//counts how many occurrences of a symbol are in one str
+int count_occ(
+    const char *str, 
+    char symbol)
 {
-    int i; 
-    int count;
-
-    count = 0;
-    i = 0;
-    while(str_token[i])
-    {
-        if (str_token[i] == symbol)
-            count++;
-        i++;
-    }
-    return (count);
+	int count;
+	
+	count = 0;
+	while (*str)
+	{
+		if (*str == symbol)
+			count++;
+		str++;
+	}
+	return (count);
 }
 
 //expand known var and otherwise delete and re-position all tokens
@@ -129,19 +132,23 @@ int expand_var(t_tokenlist **tokenlist,
 
 	name = NULL;
 	env_value = NULL;
-    count = count_symbols(check_token->value, '$');
+    count = count_occ(check_token->value, '$');
     while (count > 0)
     {
         check_token = (*tokenlist)->tokens[pos];
         name = refine_name_var(check_token->value, name, '$');
-        if (name && ft_strncmp(name, "?", 2))
+        p_printf("\nNAME= %s \n", name);
+        if (name && ft_strncmp(name, "?", 2) == 0)
             return(printf("%d\n", msh_data->last_pipeline_return));
         if (env_var_get_value(msh_data->env, name, &env_value) != success)
 			dprintf(STDERR_FILENO, "Failed to malloc env\n");
-        e_printf("\nNAME= %s \n", name);
+
+        if (!env_value && ft_strncmp(check_token->value, "$", 2) == 0)
+            return (tokenlist_delete(*tokenlist, pos), 0);
+
         if (quoted)
             expand_quoted(*tokenlist, name, pos, env_value);
-        else if (!quoted)
+        else 
             expand_unquoted(*tokenlist, check_token, name, pos, env_value);
         (ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
         index_lexer(tokenlist);
@@ -164,12 +171,17 @@ int	exp_lexer(
 		check_token = (t_token *)tokenlist->tokens[i];
         if (!check_token)
             return (1);
+       
         if (type == PARAMETER && (check_token->type == PARAMETER || check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q))
         {
+            p_printf("Token type = %s\n", enum_to_str(check_token->type));
             if (check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q)
                 expand_var(&tokenlist, i, msh_data, check_token, true);
             else 
+            {
+                p_printf("UNQUOTED\n");
                 expand_var(&tokenlist, i, msh_data, check_token, false);
+            }
         }
         else if (type == SINGLE_Q && (int)check_token->type == SINGLE_Q)
             rm_quotes(tokenlist, i, '\'');

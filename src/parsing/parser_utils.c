@@ -25,6 +25,7 @@ t_token	*lookahead(t_tokenlist *tokenlist, size_t index)
 		return (NULL);
 	return (check_token);
 }
+
 //returns the token behind token given 
 t_token	*lookbehind(t_tokenlist *tokenlist, size_t index)
 {
