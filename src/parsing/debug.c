@@ -77,13 +77,14 @@ const char* enum_to_str(t_token_type symbols)
         case NON_TERMINAL: return "Non-terminal";
         case SINGLE_Q: return "Single Quotations";
         case DOUBLE_Q: return "Double Quotations";
+        case WHITESPACE: return "Whitespace";
         case PIPE: return "PIPE";
         case HEREDOC: return "Heredoc";
         case HEREDOC_DEL: return "Heredoc Delimeter";
         case REDIRECT_IN: return "Redirect In";
         case REDIRECT_OUT: return "Redirect Out";
         case REDIRECT_OUT_APP: return "Redirect Out Append";
-        case QUESTION_MARK: return "Question Mark";
+        // case QUESTION_MARK: return "Question Mark";
         case EXIT: return "EXIT";
         case CD: return "CD";
         case ECHO: return "ECHO";
@@ -98,15 +99,15 @@ const char* enum_to_str(t_token_type symbols)
 
 //test token
 void test_tokens(
-	element tokenlist)
+	t_tokenlist *tokenlist)
 {
 	size_t i;
 	t_token	*token_test;
 
 	i = 0;
-	while (i < tokenlist.element_list.total)
+	while (i < tokenlist->total)
 	{
-		token_test = tokenlist.element_list.tokens[i];
+		token_test = tokenlist->tokens[i];
 		t_printf("Token value = %s$\n", token_test->value);
 		t_printf("Token type = %s\n", enum_to_str(token_test->type));
 		if (token_test->command)
@@ -122,7 +123,7 @@ const char* enum_red_type(t_redirect_type symbols)
 {
     switch (symbols)
     {
-        case 	input: return "INPUT";
+        case input: return "INPUT";
         case heredoc:  return "HEREDOC";
         case append: return "APPEND";
         case trunc: return "TRUNC";

@@ -14,7 +14,7 @@
 
 // make a new token in the array
 t_token *new_token(
-	element *tokenlist,
+	t_tokenlist *tokenlist,
 	char *str, 
 	int len
 )
@@ -25,7 +25,7 @@ t_token *new_token(
 		return (NULL);
 	token = calloc(1, sizeof(t_token));
 	if (!token)
-		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15), NULL);
+		return (tokenlist_free(tokenlist), write(1, MALLOC_ERR, 15), NULL);
 	token->value = malloc((len + 1) * sizeof(char));
 	ft_strlcpy(token->value, str, len);
 	p_printf("TOKEN VALUE = $%s$\n", token->value);
@@ -33,7 +33,7 @@ t_token *new_token(
 		return (NULL);
 	token->type = match_token(token->value);
 	token->command = false;
-	token->pos = tokenlist->element_list.total;
+	token->pos = tokenlist_total(tokenlist);
 	return (token);
 }
 
@@ -56,12 +56,7 @@ char *before_red(char *str_token)
 	}
 	if (i == 0)
 	{
-		ft_strlcpy(result, "-1", 3);
-		/* this can't be -1! then we have cases where -1 is an actual string
-		 * that are interpreted as whatever this is for!
-		 * just set it to '\0' maybe?
-		 * @alisa
-		 */
+		ft_strlcpy(result, " ", 2);
 		return (result);
 	} 
 	result[i] = '\0';
@@ -81,7 +76,7 @@ int l_red(char *str)
 
 //add new token to the list and updates total
 int add_token(
-	element *tokenlist, 
+	t_tokenlist *tokenlist, 
 	char *str, 
 	size_t len)
 {
@@ -91,26 +86,18 @@ int add_token(
 	// l_printf("len = %zu ", len);
 	token = new_token(tokenlist, str, len);
 	if (!token)
-		return (tokenlist->pf_element_free(tokenlist), write(1, MALLOC_ERR, 15));
-	tokenlist->pf_element_add(tokenlist, token);
+		return (tokenlist_free(tokenlist), write(1, MALLOC_ERR, 15));
+	tokenlist_add(tokenlist, token);
 	return (0);
 }
 
 
-//splits redirect tokens into 3 tokens "-1" if not spec
+//splits redirect tokens into 3 tokens or space if not spec
 int split_redir(
-	element *tokenlist, // look here @alisa
+	t_tokenlist *tokenlist, // look here @alisa
 	char *str_b_token
 )
 {
-	/*
-		I changed this function while testing certain changes
-		case: ls -l>outfile
-		-l is set as HYPHEN! should be command argument
-		case: echo -1>outfile
-		weird? 
-		@alisa
-	*/
 	t_token	*prev_token;
 	char	*str_piece;
 	int		len;
@@ -124,7 +111,7 @@ int split_redir(
 		ft_safe_free((unsigned char **)&str_piece);
 		return (1);
 	}
-	prev_token = tokenlist->pf_element_get(tokenlist, tokenlist->element_list.total - 1);
+	prev_token = tokenlist_get(tokenlist, tokenlist->total - 1);
 	dprintf(STDERR_FILENO, "what is prev_token? (%s)\n", prev_token->value);
 	dprintf(STDERR_FILENO, "what is prev_token's type? (%s)\n", enum_to_str(prev_token->type));
 	// str_piece being set to "-1" breaks this case:
@@ -132,7 +119,7 @@ int split_redir(
 	// also:
 	// " ">outfile
 	// need something different!
-	if (ft_strncmp(str_piece, "-1", 2) == 0) // what if we pass -1 as a commnad argument? @alisa
+	if (ft_strncmp(str_piece, " ", 2) == 0)
 	{
 		len = l_red(str_b_token);
 		str_piece[0] = '\0';
@@ -143,8 +130,8 @@ int split_redir(
 		return(ft_safe_free((unsigned char **)&str_piece), 1);
 	if (add_token(tokenlist, str_b_token + ft_strlen(str_piece), len + 1))
 		return(ft_safe_free((unsigned char **)&str_piece), 1);
-	if (str_contains_red(str_b_token + (ft_strlen(str_piece) + len)))
-		split_redir(tokenlist, str_b_token + (ft_strlen(str_piece) + len));
+	// if (str_contains_red(str_b_token + (ft_strlen(str_piece) + len)))
+	// 	split_redir(tokenlist, str_b_token + (ft_strlen(str_piece) + len));
 	else if (add_token(tokenlist, str_b_token + (ft_strlen(str_piece) + len), ft_strlen(str_b_token) - ft_strlen(str_piece) - len + 1))
 		return(ft_safe_free((unsigned char **)&str_piece), 1);
 	ft_safe_free((unsigned char **)&str_piece);
@@ -153,7 +140,7 @@ int split_redir(
 
 
 //preps str for redirect splitting and adding tokens
-int prep_token(element *tokenlist,
+int prep_token(t_tokenlist *tokenlist,
 	char *str,
 	int i, 
 	int len)
@@ -205,6 +192,7 @@ int move_o_unquoted(const char *str, int i)
 	return (len);
 }
 
+//checks the length of unquoted str token
 int count_unq(const char *str, int i, int count)
 {
 	
@@ -264,7 +252,7 @@ int	token_count(
 
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(
-	element *tokenlist, 
+	t_tokenlist *tokenlist, 
 	char *str
 )
 {
@@ -297,8 +285,9 @@ int	default_lexer(
 	t_msh_data *msh_data)
 {
 	int		token_c;
-	element token_list;
+	t_tokenlist *token_list;
 
+	token_list = NULL;
 	token_c = 0;
 	if (!input_line)
 		return (1);
@@ -308,18 +297,19 @@ int	default_lexer(
 	token_c = token_count(input_line, 0);
 	if (!token_c)
 		return (write(1, "Failed to count tokens\n", 23));
-	element_init(&token_list, token_c); //why do we need to use elements as a class?
-	fill_tokenlist(&token_list, input_line);
-	token_list.element_list.tokens[token_c] = NULL;  
-	if (!token_list.element_list.tokens)
+	if (tokenlist_init(&token_list, token_c))
+		return (write(1, "Failed to init tokenlist\n", 25));
+	fill_tokenlist(token_list, input_line);
+	token_list->tokens[token_c] = NULL;  
+	if (!token_list->tokens)
 		return (write(1, "Failed to init tokenlist\n", 25));
 //	test_tokens(token_list);
-	if (check_lexer(&token_list, msh_data))
+	if (check_lexer(token_list, msh_data))
 	{
-		token_list.pf_element_free(&token_list);
+		tokenlist_free(token_list);
 		return (write(1, "Failed check types\n", 19));
 	}
-	token_list.pf_element_free(&token_list);
+	tokenlist_free(token_list);
 	ft_safe_free((unsigned char **)&token_list);
 	return (0);
 }

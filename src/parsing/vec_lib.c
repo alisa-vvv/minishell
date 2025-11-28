@@ -40,71 +40,71 @@ void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 	return (n_ptr);
 }
 
-int	element_resize(element *e, int oldsize, int newsize)
+int	tokenlist_resize(t_tokenlist *e, int oldsize, int newsize)
 {
 	void	**tokens;
 
 	if (e)
 	{
-		tokens = ft_realloc(e->element_list.tokens, sizeof(void *) * oldsize,
+		tokens = ft_realloc(e->tokens, sizeof(void *) * oldsize,
 				sizeof(void *) * newsize);
 		if (tokens)
 		{
-			e->element_list.tokens = tokens;
-			e->element_list.size = newsize;
+			e->tokens = tokens;
+			e->size = newsize;
 			return (0);
 		}
 	}
 	return (-1);
 }
 
-int	element_push_back(element *e, void *token)
+int	tokenlist_add(t_tokenlist *e, void *token)
 {
 	int	status;
 
 	status = -1;
 	if (e)
 	{
-		if (e->element_list.size == e->element_list.total)
+		if (e->size == e->total)
 		{
-			status = element_resize(e, e->element_list.size, e->element_list.size
+			status = tokenlist_resize(e, e->size, e->size
 					* 2);
 			if (status != 0)
 				return (-1);
-			e->element_list.tokens[e->element_list.total++] = token;
+			e->tokens[e->total++] = token;
 			status = 0;
 		}
 		else
 		{
-			e->element_list.tokens[e->element_list.total++] = token;
+			e->tokens[e->total++] = token;
 			status = 0;
 		}
 	}
 	return (status);
 }
 
-int	element_set(element *e, size_t index, void *token)
+int	tokenlist_set(t_tokenlist *e, size_t index, void *token)
 {
 	if (e)
 	{
-		if ((index >= 0) && (index < e->element_list.total))
+		if ((index >= 0) && (index < e->total))
 		{
-			e->element_list.tokens[index] = token;
+			e->tokens[index] = token;
 			return (0);
 		}
 	}
 	return (-1);
 }
 
-void	*element_get(element *e, size_t index)
+void	*tokenlist_get(t_tokenlist *e, size_t index)
 {
 	void	*token_data;
 
 	token_data = NULL;
 	if (e)
 	{
-		if ((index >= 0) && (index < e->element_list.total))
-			token_data = e->element_list.tokens[index];
+		if ((index >= 0) && (index < e->total))
+			token_data = e->tokens[index];
 	}
 	return (token_data);
 }

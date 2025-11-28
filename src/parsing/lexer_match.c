@@ -30,8 +30,6 @@ int match_nonterminal(char *str_token)
 		return (PARAMETER); 
 	else if (ft_strchr(str_token, '|') != NULL)
 		return (PIPE);
-	else if (str_token[0] == '?')
-		return (QUESTION_MARK);
 	// add parsign error cases maybe?
 	return (STRING);
 }
@@ -57,7 +55,7 @@ int match_string(char *str_token)
         return (STRING);
 }
 
-int all_num_alph( // moved this from hyphen_handler @alisa
+int all_num_alph( 
     const char *str)
 {
 	size_t  i;
@@ -84,12 +82,13 @@ int	match_token(char *str_token) // needs rework @alisa
 	else if (str_token[0] == '"')
 		return (DOUBLE_Q);
 	else if (str_contains_red(str_token) || (str_token[0] == '$')
-			|| str_token[0] == '|' || (str_token[0] == '?'))
+			|| str_token[0] == '|' )
 		return (match_nonterminal(str_token));
 	else if ((ft_strchr(str_token, '=') != NULL))
 		return (OPERATOR);
 	else if (ft_isdigit(str_token[0]))
 		return (all_num_alph(str_token));
+	else if (ft_strncmp(str_token, " ", 2) == 0)
+		return (WHITESPACE);
 	return (STRING);
-	// could there be parsing errors here? check
 }

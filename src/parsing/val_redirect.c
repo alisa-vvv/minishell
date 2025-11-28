@@ -13,14 +13,14 @@
 #include "parser.h"
 
 //check single tokens
-int single_token(element *tokenlist)
+int single_token(t_tokenlist *tokenlist)
 {
     t_token *check_token;
 
-    check_token = (t_token *)tokenlist->element_list.tokens[0];
+    check_token = (t_token *)tokenlist->tokens[0];
     if (!check_token)
         return (1);
-    if ((int)tokenlist->element_list.total == 1)
+    if ((int)tokenlist->total == 1)
     {
         if (token_is_redirect(check_token))
             return (1);
@@ -30,24 +30,45 @@ int single_token(element *tokenlist)
     return (0);
 }
 
+//checks if token is supposed to be command for list 
+int token_is_cm(t_tokenlist *tokenlist, int pos)
+{
+    t_token *check_token;
+
+    check_token = tokenlist->tokens[pos];
+
+    if (!check_token)
+        return (-1);
+    else if (pos == 0 && check_token->type == HEREDOC)
+        return (1);
+    else if ((size_t)pos == (tokenlist->total - 1) && check_token->type == HEREDOC_DEL)
+        return (1);
+    else if (!token_is_redirect(check_token))
+        return (1);
+    
+    return (0);
+}
+
+
+//(i == 0 && lookahead(tokenlist, i)->type != HEREDOC && !token_is_redirect(c_token)) && (c_token->type >= CD && c_token->type <= UNSET)) || (i == 0 && c_token->type == HEREDOC) || (i == tokenlist->element_list.total - 1 && c_token->type == HEREDOC_DEL))
 void set_pipe_cm(
-	element *tokenlist, 
+	t_tokenlist *tokenlist, 
     size_t i)
 {
     t_token *c_token;
     bool flag;
 
 	flag = true;
-	while(i < tokenlist->element_list.total && tokenlist->element_list.total > 1)
+	while(i < tokenlist->total && tokenlist->total > 1)
 	{
-		c_token = (t_token *)tokenlist->element_list.tokens[i];
-		if ((i == 0 && lookahead(tokenlist, i)->type != HEREDOC
-			&& (c_token->type >= CD && c_token->type <= UNSET))
-			|| (i == 0 && c_token->type == HEREDOC)
-			|| (i == tokenlist->element_list.total - 1 && c_token->type == HEREDOC_DEL))
+		c_token = (t_token *)tokenlist->tokens[i];
+		if (i == 0)
 		{
-			c_token->command = true;
-			flag = false;
+            if (token_is_cm(tokenlist, i))
+            {
+			    c_token->command = true;
+			    flag = false;
+            }
 		}
 		else if (c_token->type == PIPE || c_token->type == HEREDOC_DEL)
 			flag = true;
@@ -66,52 +87,48 @@ void set_pipe_cm(
 }
 
 
-static int val_redir_out( // double check, not sure what status does @alisa
-    element *tokenlist, 
+//check if last token isn't redirect?
+bool val_redir_out(
+    t_tokenlist *tokenlist, 
     size_t pos)
 {
-    //t_token *check_token;
-    int status;
-
-    status = -1;
-    //check_token = (t_token *)tokenlist->element_list.tokens[pos];
-    if (pos + 2 < (size_t)tokenlist->element_list.total)
+    if (pos + 2 < (size_t)tokenlist->total)
     {
-      //  check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos +2);
-        status = 0;
+        return (false);
     }
-    return (status);
+    return (true);
 }
 
 
+//
 static int check_heredoc(
-    element *tokenlist, 
+    t_tokenlist *tokenlist, 
     size_t pos)
 {
     t_token *check_token;
 
-    check_token = (t_token *)tokenlist->element_list.tokens[pos];
+    check_token = (t_token *)tokenlist->tokens[pos];
     check_token->type = HEREDOC_DEL;
     if (pos >0)
-        tokenlist->pf_element_delete(tokenlist, pos-1);
-    if (pos == tokenlist->element_list.total -1)
+        tokenlist_delete(tokenlist, pos-1);
+    if (pos == tokenlist->total -1)
         return (0);
     else
         return (1);
 }
 
-//set values 
+//validate if redir are well placed?
 int val_redir(
-    element *tokenlist, 
+    t_tokenlist *tokenlist, 
     size_t i)
 {
     t_token *check_token;
-    while (i < tokenlist->element_list.total)
+    while (i < tokenlist->total)
     {
-        check_token = (t_token *)tokenlist->pf_element_get(tokenlist, i);
+        check_token = (t_token *)tokenlist_get(tokenlist, i);
         if (!check_token)
             return(1);
-        if (check_token->type == HEREDOC && i + 1 < tokenlist->element_list.total)
+        if (check_token->type == HEREDOC && i + 1 < tokenlist->total)
         {
             if (check_heredoc(tokenlist, i + 1))
                 i++;

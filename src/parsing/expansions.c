@@ -43,7 +43,7 @@ int lpos_in_str(const char *str, char symbol)
 
 
 //expands unquoted var to the relevant environment value, keeping the rest of the string intact or replacing empty strings if env value is not present
-int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int pos, char *env_value)
+int expand_unquoted(t_tokenlist *tokenlist, t_token *check_token, char *name, int pos, char *env_value)
 {
     static int flag;
     int i;
@@ -55,33 +55,33 @@ int expand_unquoted(element *tokenlist, t_token *check_token, char *name, int po
     {
         char *new_str;
         new_str = exp_str_token(check_token->value, env_value, ft_strlen(name) +1);
-        tokenlist->pf_element_set(tokenlist, pos, new_token(tokenlist, new_str, ft_strlen(new_str) + 1));
+        tokenlist_set(tokenlist, pos, new_token(tokenlist, new_str, ft_strlen(new_str) + 1));
         (ft_safe_free((unsigned char **)&new_str));
     }
     else 
     {
-        tokenlist->pf_element_set(tokenlist, pos, new_token(tokenlist, env_value, ft_strlen(env_value)+ 1));
+        tokenlist_set(tokenlist, pos, new_token(tokenlist, env_value, ft_strlen(env_value)+ 1));
        // ft_safe_free((unsigned char **)&env_value);
     }
-    check_token = tokenlist->element_list.tokens[pos];
+    check_token = tokenlist->tokens[pos];
     if (!check_token)
-        tokenlist->pf_element_delete(tokenlist, pos);
+        tokenlist_delete(tokenlist, pos);
     (ft_safe_free((unsigned char **)&check_token));
     return (0);
 }
 
-void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
+void expand_quoted(t_tokenlist *tokenlist, char *name, size_t pos, char *env_value)
 {
     int offset;
     t_token *check_token;
 
     char quote;
     int start;
-    check_token = tokenlist->element_list.tokens[pos];
+    check_token = tokenlist->tokens[pos];
     start = lpos_in_str(check_token->value, '$');
     quote = symbol_in_quote(check_token->value, '$');
     p_printf("QUOTE TYPE =%c\n", quote);
-    if (quote == '"' || !check_in_quote_s(check_token->value, start, '\''))
+    if ((quote == '"' && !check_in_quote_s(check_token->value, start, '\'')) || (check_in_quote_s(check_token->value, start, '"') && !check_in_quote_s(check_token->value, start, '\'')))
     {
         offset = 0;
         if (!env_value || !name)
@@ -93,8 +93,8 @@ void expand_quoted(element *tokenlist, char *name, size_t pos, char *env_value)
         new_str = exp_str_token(check_token->value, env_value, offset);
         n_token = new_token(tokenlist, new_str, ft_strlen(new_str)+1);
         if (!n_token)
-            tokenlist->pf_element_free(tokenlist);
-        tokenlist->pf_element_set(tokenlist, pos, n_token);
+            tokenlist_free(tokenlist);
+        tokenlist_set(tokenlist, pos, n_token);
         (ft_safe_free((unsigned char **)&new_str), ft_safe_free((unsigned char **)&check_token));
         // check_token->value = exp_str_token(check_token->value, env_value, offset);
     }
@@ -117,7 +117,7 @@ int count_symbols(char* str_token, char symbol)
 }
 
 //expand known var and otherwise delete and re-position all tokens
-int expand_var(element **tokenlist, 
+int expand_var(t_tokenlist **tokenlist, 
     int pos, 
     t_msh_data *msh_data, 
     t_token *check_token, 
@@ -132,10 +132,10 @@ int expand_var(element **tokenlist,
     count = count_symbols(check_token->value, '$');
     while (count > 0)
     {
-        check_token = (*tokenlist)->element_list.tokens[pos];
+        check_token = (*tokenlist)->tokens[pos];
         name = refine_name_var(check_token->value, name, '$');
         if (name && ft_strncmp(name, "?", 2))
-            printf("%d\n", msh_data->last_pipeline_return);
+            return(printf("%d\n", msh_data->last_pipeline_return));
         if (env_var_get_value(msh_data->env, name, &env_value) != success)
 			dprintf(STDERR_FILENO, "Failed to malloc env\n");
         e_printf("\nNAME= %s \n", name);
@@ -153,15 +153,15 @@ int expand_var(element **tokenlist,
 // check_in_quote(check_token->value, lpos_in_str(check_token->value, '$')
 // check lexer on expansion and quotes
 int	exp_lexer(
-    element *tokenlist, 
+    t_tokenlist *tokenlist, 
     t_msh_data *msh_data,
     int type, 
     size_t i)
 {
 	t_token	*check_token;
-	while (i < (size_t)tokenlist->element_list.total)
+	while (i < (size_t)tokenlist->total)
 	{
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		check_token = (t_token *)tokenlist->tokens[i];
         if (!check_token)
             return (1);
         if (type == PARAMETER && (check_token->type == PARAMETER || check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q))

@@ -13,26 +13,26 @@
 #include "parser.h"
 
 // func returning next token type in the array
-t_token	*lookahead(element *tokenlist, size_t index)
+t_token	*lookahead(t_tokenlist *tokenlist, size_t index)
 {
 	t_token	*check_token;
 
 	check_token = NULL;
-	if (index + 1 < tokenlist->element_list.total)
-		check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index
+	if (index + 1 < tokenlist->total)
+		check_token = (t_token *)tokenlist_get((tokenlist), index
 				+ 1);
 	if (!check_token)
 		return (NULL);
 	return (check_token);
 }
 //returns the token behind token given 
-t_token	*lookbehind(element *tokenlist, size_t index)
+t_token	*lookbehind(t_tokenlist *tokenlist, size_t index)
 {
 	t_token	*check_token;
 
 	check_token = NULL;
 	if (index > 0)
-		check_token = (t_token *)tokenlist->pf_element_get((tokenlist), index
+		check_token = (t_token *)tokenlist_get((tokenlist), index
 				- 1);
 	if (!check_token)
 		return (NULL);
@@ -40,13 +40,13 @@ t_token	*lookbehind(element *tokenlist, size_t index)
 }
 
 // func to traverse list and find a spec symbol
-int	find_symbol(element *tokenlist, int pos, char symbol)
+int	find_symbol(t_tokenlist *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
 
-	while ((size_t)pos < tokenlist->element_list.total)
+	while ((size_t)pos < tokenlist->total)
 	{
-		check_token = (t_token *)tokenlist->element_list.tokens[pos];
+		check_token = (t_token *)tokenlist->tokens[pos];
 		if (ft_strchr(check_token->value, symbol) != NULL)
 			return (pos);
 		pos++;
@@ -55,7 +55,7 @@ int	find_symbol(element *tokenlist, int pos, char symbol)
 }
 
 // searches tokenlist for specific type token
-int	find_token_type(element *tokenlist, size_t pos, int pos_red,
+int	find_token_type(t_tokenlist *tokenlist, size_t pos, int pos_red,
 		t_token_type type)
 {
 	t_token	*check_token;
@@ -63,13 +63,13 @@ int	find_token_type(element *tokenlist, size_t pos, int pos_red,
 
 	total = 0;
 	if (pos_red == -1)
-		total = (size_t)tokenlist->element_list.total;
+		total = (size_t)tokenlist->total;
 	else
 		total = pos_red;
 	while (pos < total)
 	{
 		// p_printf("total = %d\n, pos = %d\n", tokenlist->element_list.total, pos);
-		check_token = (t_token *)tokenlist->pf_element_get(tokenlist, pos);
+		check_token = (t_token *)tokenlist_get(tokenlist, pos);
 		if (check_token->type == type)
 			return (pos);
 		pos++;
@@ -77,7 +77,7 @@ int	find_token_type(element *tokenlist, size_t pos, int pos_red,
 	return (-1);
 }
 
-int	count_redirs(element *tokenlist, int total, int i)
+int	count_redirs(t_tokenlist *tokenlist, int total, int i)
 {
 	int		redir;
 	t_token	*check_token;
@@ -85,7 +85,7 @@ int	count_redirs(element *tokenlist, int total, int i)
 	redir = 0;
 	while (i < total)
 	{
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		check_token = (t_token *)tokenlist->tokens[i];
 		if (token_is_redirect(check_token))
 		{
 			if (i == 0)
@@ -113,7 +113,7 @@ int	count_redirs(element *tokenlist, int total, int i)
 }
 
 // counts no args for the execdata arv
-int	count_args(element *tokenlist, int pos, int total)
+int	count_args(t_tokenlist *tokenlist, int pos, int total)
 {
 	int	redir;
 	int	i;
@@ -123,7 +123,6 @@ int	count_args(element *tokenlist, int pos, int total)
 	if (find_symbol(tokenlist, 0, '>') || find_symbol(tokenlist, 0, '<') || find_symbol(tokenlist, 0, '|'))
 	{
 		redir = count_redirs(tokenlist, total, i);
-	// if (redir)
 		total = total - (redir + pos);
 	}
 	else

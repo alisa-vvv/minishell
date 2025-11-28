@@ -15,20 +15,19 @@
 
 
 //merge tokens with pos1 and pos2 into pos 1
-int merge_tokens(element *tokenlist, 
+int merge_tokens(t_tokenlist *tokenlist, 
     int pos1, 
     int pos2)
 {
 	t_token *check_token;
 	t_token *extra_token;
 
-	check_token = tokenlist->element_list.tokens[pos1];
-	extra_token = tokenlist->element_list.tokens[pos2];
+	check_token = tokenlist->tokens[pos1];
+	extra_token = tokenlist->tokens[pos2];
     check_token->value = ft_strjoin(check_token->value, extra_token->value);
     
     check_token->pos = pos1;
-    tokenlist->pf_element_delete(tokenlist, pos2);
-    // write(1, "appelsap\n", 9);
+    tokenlist_delete(tokenlist, pos2);
     //index_lexer(&tokenlist);
 	return (0);
 }
@@ -46,7 +45,7 @@ int check_all_quote(const char *str)
     return (false);
 }
 
-void contract_quotes(element *tokenlist,
+void contract_quotes(t_tokenlist *tokenlist,
     t_token *check_token,
     int pos)
 {
@@ -74,7 +73,7 @@ void contract_quotes(element *tokenlist,
 
 
 //contracts tokens if surrounded by token quotes 
-int contract_list(element *tokenlist,
+int contract_list(t_tokenlist *tokenlist,
     int i)
 {
     t_token *check_token;
@@ -82,7 +81,7 @@ int contract_list(element *tokenlist,
     check_token = NULL;
     while ((size_t)i > 0)
     {
-        check_token = tokenlist->element_list.tokens[i];
+        check_token = tokenlist->tokens[i];
         if (!check_token)
             return (1);
         if ((check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q))

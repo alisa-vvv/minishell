@@ -32,7 +32,7 @@ void    l_printf(const char *str, ...);
 void    t_printf(const char *str, ...);
 void    p_printf(const char *str, ...);
 void    q_printf(const char *str, ...);
-void    test_tokens(element tokenlist);
+void    test_tokens(t_tokenlist *tokenlist);
 void    test_execdata(t_exec_data execdata, size_t n);
 void    TEST_MINISHELLDATA(t_msh_data msh_data);
 

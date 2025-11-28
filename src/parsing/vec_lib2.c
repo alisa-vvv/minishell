@@ -44,7 +44,7 @@ void	ft_free_arr(void **array)
 		ft_free_s_token(e->element_list.tokens[e->element_list.total]);
 		e->element_list.tokens[e->element_list.total - 1] = NULL;*/
 //reverted back to old 
-int	element_delete(element *e, size_t index)
+int	tokenlist_delete(t_tokenlist *e, size_t index)
 {
 	unsigned long	i;
 	int	status;
@@ -54,93 +54,94 @@ int	element_delete(element *e, size_t index)
 	status = -1;
 	if (e)
 	{
-		if ((index < 0) || ((size_t)index >= e->element_list.total))
+		if ((index < 0) || ((size_t)index >= e->total))
 			return (-1);
-		e->element_list.tokens[index] = NULL;
-		// check_token = e->element_list.tokens[index];
+		e->tokens[index] = NULL;
+		// check_token = e->tokenlist_list.tokens[index];
 		// if (check_token)
 		// {
 		// 	ft_free_s_token(check_token);
 		// 	ft_safe_free((unsigned char **)&check_token);
 		// }
 		i = index;
-		while (i < e->element_list.total - 1)
+		while (i < e->total - 1)
 		{
-			e->element_list.tokens[i] = e->element_list.tokens[i + 1];
-			e->element_list.tokens[i + 1] = NULL;
+			e->tokens[i] = e->tokens[i + 1];
+			e->tokens[i + 1] = NULL;
 			i++;
 		}
-		// ft_free_s_token(e->element_list.tokens[e->element_list.total]);
-		// e->element_list.tokens[e->element_list.total - 1] = NULL;
-		e->element_list.total--;
-		if ((e->element_list.total > 0)
-			&& ((e->element_list.total) == (e->element_list.size / 4)))
-			element_resize(e, e->element_list.size, e->element_list.size / 2);
+		// ft_free_s_token(e->tokens[e->total]);
+		// e->tokens[e->total - 1] = NULL;
+		e->total--;
+		if ((e->total > 0)
+			&& ((e->total) == (e->size / 4)))
+			tokenlist_resize(e, e->size, e->size / 2);
 		status = 0;
 	}
 	return (status);
 }
 
 
-int ft_free_tokens(void **token)
+int ft_free_tokens(void **tokens)
 {
 	int i;
-	t_token **tokens;
-	i = 0;
 
-	tokens = (t_token **)token; 
-	if (tokens)
+	t_token **token;
+	token = (t_token **)tokens; 
+	i = 0;
+	if (token)
 	{
-		while(tokens[i])
+		while(token[i])
 		{
 			//ft_free_s_token(tokens[i]);
-			ft_safe_free((unsigned char **)&tokens[i]->value);
-			tokens[i]->command = 0;
-			tokens[i]->pos = 0;
-			tokens[i]->type = 0;
-			ft_safe_free((unsigned char **)&tokens[i]);
+			ft_safe_free((unsigned char **)&token[i]->value);
+			token[i]->command = 0;
+			token[i]->pos = 0;
+			token[i]->type = 0;
+			ft_safe_free((unsigned char **)&token[i]);
 			i++;
 		}
-		ft_safe_free((unsigned char **)&tokens);
+		ft_safe_free((unsigned char **)&token);
 	}
 	return (0);
 }
 
-int	element_free(element *e)
+int	tokenlist_free(t_tokenlist *e)
 {
+
+
 	if (e)
 	{
-		ft_free_tokens(e->element_list.tokens);
-		e->element_list.total = 0;
-		e->element_list.tokens = NULL;
+		ft_free_tokens(e->tokens);
+		e->total = 0;
+		e->tokens = NULL;
 		return (0);
 	}
 	return (-1);
 }
 
-void	element_init(element *e, int size)
+int	tokenlist_init(t_tokenlist **e, int size)
 {
-	e->pf_element_total = element_total;
-	e->pf_element_resize = element_resize;
-	e->pf_element_add = element_push_back;
-	// e->pf_element_swap = element_swap;
-	// e->pf_element_insert = element_insert;
-	e->pf_element_set = element_set;
-	e->pf_element_get = element_get;
-	e->pf_element_free = element_free;
-	e->pf_element_delete = element_delete;
-	e->element_list.size = size;
-	e->element_list.total = 0;
-	if (e->element_list.size <= 0)
+	// e->total = tokenlist_total;
+	// e->pf_tokenlist_resize = tokenlist_resize;
+	// e->pf_tokenlist_add = tokenlist_push_back;
+	// e->pf_tokenlist_swap = tokenlist_swap;
+	// e->pf_tokenlist_insert = tokenlist_insert;
+	*e = calloc(1, sizeof(t_tokenlist));
+	if (!(*e))
+		return (1);
+	(*e)->size = size;
+	if ((*e)->size <= 0)
 	{
-		e->element_list.tokens = NULL;
-		return ;
+		(*e)->tokens = NULL;
+		return (1);
 	}
-	e->element_list.tokens = calloc((size_t)e->element_list.size +1, sizeof(void *));
-	if (!e->element_list.tokens)
+	(*e)->tokens = calloc((size_t)(*e)->size +1, sizeof(void *));
+	if (!(*e)->tokens)
 	{
 		fprintf(stderr, "Memory alloc failed in init tokenlist\n");
 		exit(EXIT_FAILURE);
 	}
-	e->element_list.tokens[size] = NULL;
+	(*e)->tokens[size] = NULL;
+	return (0);
 }

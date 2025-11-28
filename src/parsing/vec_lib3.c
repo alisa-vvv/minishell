@@ -12,10 +12,10 @@
 
 #include "parser.h"
 
-int	element_total(element *e)
+int	tokenlist_total(t_tokenlist *e)
 {
 	if (e)
-		return (e->element_list.total);
+		return (e->total);
 	return (-1);
 }
 

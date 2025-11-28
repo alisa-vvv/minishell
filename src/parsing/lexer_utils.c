@@ -103,18 +103,18 @@ int	set_len(const char *str, int i)
 }
 
 // deletes empty tokens from the tokenlist
-int	clean_lexer(element *tokenlist, size_t i)
+int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 {
 	t_token	*check_token;
 
-	while (i < tokenlist->element_list.total)
+	while (i < tokenlist->total)
 	{
-		check_token = tokenlist->element_list.tokens[i];
-		if (!check_token)
+		check_token = tokenlist->tokens[i];
+		if (!check_token || !check_token->value)
 			return (1);
 		if (ft_strncmp(check_token->value, "", 1) == 0)
 		{
-			tokenlist->pf_element_delete(tokenlist, i);
+			tokenlist_delete(tokenlist, i);
 		}
 		i++;
 	}
@@ -123,16 +123,16 @@ int	clean_lexer(element *tokenlist, size_t i)
 }
 
 // index lexer by traversing
-int	index_lexer(element **tokenlist)
+int	index_lexer(t_tokenlist **tokenlist)
 {
 	size_t	i;
 	t_token	*check_token;
 
 	i = 0;
 	// e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
-	while (i < (size_t)(*tokenlist)->element_list.total)
+	while (i < (size_t)(*tokenlist)->total)
 	{
-		check_token = (t_token *)(*tokenlist)->element_list.tokens[i];
+		check_token = (t_token *)(*tokenlist)->tokens[i];
 		if (!check_token)
 			return (write(1, "No tokens available\n", 20));
 		else 

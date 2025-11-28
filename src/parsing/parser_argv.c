@@ -13,11 +13,11 @@
 #include "parser.h"
 
 // sets default values for execdata
-int	set_exec_def(t_exec_data *execdata, element *tokenlist, size_t pos)
+int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
 {
 	t_token	*check_token;
 
-	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	check_token = tokenlist_get(tokenlist, pos);
 	execdata->builtin_name = set_builtins(check_token->type);
 	execdata->input_is_pipe = false;
 	execdata->output_is_pipe = false;
@@ -28,7 +28,7 @@ int	set_exec_def(t_exec_data *execdata, element *tokenlist, size_t pos)
 //sets command details in the argv for execdata
 void set_command(
 	t_exec_data *comm_list,
-	element *tokenlist,
+	t_tokenlist *tokenlist,
 	int pos,
 	t_token *check_token,
 	int *i)
@@ -53,14 +53,14 @@ void set_command(
 // returns: 1 if an argv entry was added, 0 if nothing was added, -1 on malloc/error
 int	add_arg_to_list(
 	t_exec_data *comm_list,
-	element *tokenlist,
+	t_tokenlist *tokenlist,
 	int *i,
 	size_t pos,
 	int pos_red)
 {
 	t_token *check_token;
 
-	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+	check_token = (t_token *)tokenlist->tokens[pos];
 	if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
 		return (0);
 	if (check_token->command && !token_is_redirect(check_token))
@@ -90,7 +90,7 @@ int	add_arg_to_list(
 //fill the execdata with specified argv from tokenlist
 int	fill_comm_list(
 	t_exec_data *exec_data,
-	element *tokenlist,
+	t_tokenlist *tokenlist,
 	size_t pos,
 	int pos_red)
 {
@@ -101,7 +101,7 @@ int	fill_comm_list(
 	i = 0;
 	set_exec_def(exec_data, tokenlist, pos);
 	if (pos_red < 0)
-		total = tokenlist->element_list.total;
+		total = tokenlist->total;
 	else
 		total = pos_red;
 	while (pos < total)

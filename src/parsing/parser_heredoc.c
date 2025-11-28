@@ -47,19 +47,19 @@ void set_heredoc_def(t_exec_data* execdata)
 
 int set_heredoc_red(
 	t_exec_data* execdata, 
-	element *tokenlist, 
+	t_tokenlist *tokenlist, 
 	size_t pos,
 	int i)
 {
     t_token *check_token;
-	while (pos++ < tokenlist->element_list.total)
+	while (pos++ < tokenlist->total)
 	{	
-        check_token = (t_token *)tokenlist->element_list.tokens[pos];
+        check_token = (t_token *)tokenlist->tokens[pos];
 		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 			execdata->input_is_pipe = true;
 		// heredoc parsing broken! @alisa
 		// p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
-        if (check_token->type != HEREDOC && pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == HEREDOC)
+        if (check_token->type != HEREDOC && pos + 1 < tokenlist->total && lookahead(tokenlist, pos)->type == HEREDOC)
             execdata->redirections->dest_filename = ft_strdup(check_token->value);
 		if (check_token->type == (size_t) HEREDOC_DEL)
 			execdata->redirections->heredoc_delim = ft_strdup(check_token->value);
@@ -69,7 +69,7 @@ int set_heredoc_red(
             execdata->builtin_name = set_builtins(check_token->type);
 			i++;
 		}
-        if (pos + 1 < tokenlist->element_list.total && lookahead(tokenlist, pos)->type == PIPE)
+        if (pos + 1 < tokenlist->total && lookahead(tokenlist, pos)->type == PIPE)
         {
             execdata->output_is_pipe = true;
             break;
@@ -83,7 +83,7 @@ int set_heredoc_red(
 // set heredoc 
 int set_heredoc(
 	t_exec_data* execdata, 
-	element *tokenlist, 
+	t_tokenlist *tokenlist, 
 	int pos,
 	int pos_red)
 {

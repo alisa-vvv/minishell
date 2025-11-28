@@ -13,7 +13,7 @@
 #include "parser.h"
 
 //counts how many expansions need to be done
-int count_exp(element *tokenlist, char symbol)
+int count_exp(t_tokenlist *tokenlist, char symbol)
 {
 	int count;
 	size_t i;
@@ -22,9 +22,9 @@ int count_exp(element *tokenlist, char symbol)
 	i = 0;
 	count = 0;
 	check_token = NULL;
-	while (i < tokenlist->element_list.total)
+	while (i < tokenlist->total)
 	{
-		check_token = tokenlist->element_list.tokens[i];
+		check_token = tokenlist->tokens[i];
 		if (!check_token)
 			return (count);
 		if (symbol == '$' && ft_strchr(check_token->value, '$'))
@@ -39,7 +39,7 @@ int count_exp(element *tokenlist, char symbol)
 }
 
 //expands single and double quotes 
-int expand_quotes(element *tokenlist, 
+int expand_quotes(t_tokenlist *tokenlist, 
 	t_msh_data *msh_data)
 {
 	int count;
@@ -64,7 +64,7 @@ int expand_quotes(element *tokenlist,
 }
 
 //expand vars and merge operators for export
-int expand_param(element *tokenlist,
+int expand_param(t_tokenlist *tokenlist,
 	t_msh_data *msh_data)
 {
 	int count;
@@ -86,14 +86,14 @@ int expand_param(element *tokenlist,
 }
 
 // go through lexer and clean up data
-int	check_lexer(element *tokenlist, 
+int	check_lexer(t_tokenlist *tokenlist, 
 	t_msh_data *msh_data)
 {
 	expand_param(tokenlist, msh_data);
 	expand_quotes(tokenlist, msh_data);
 	clean_lexer(tokenlist, 0);
-	contract_list(tokenlist, tokenlist->element_list.total-1);
-	if (tokenlist->element_list.total < 2)
+	contract_list(tokenlist, tokenlist->total-1);
+	if (tokenlist->total < 2)
 	{
 		if (single_token(tokenlist))
 			return (write(1, "Single token redir\n", 19));

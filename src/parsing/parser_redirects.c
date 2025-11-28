@@ -12,19 +12,6 @@
 
 #include "parser.h"
 
-// int	set_src(t_redir_list	*redirlist, element *tokenlist, int pos)
-// {
-// 	t_token	*check_token;
-
-// 	check_token = tokenlist->element_list.tokens[pos];
-// 	if (pos > 0)
-// 		check_token = tokenlist->pf_element_get(tokenlist, pos - 1);
-// 	if (check_token->type == NUMBER)
-// 	{
-// 		redirlist->src_fd = ft_atoi(check_token->value);
-// 	}
-// 	return (0);
-// }
 
 void	set_redir_def(t_redir_list	*redirlist)
 {
@@ -37,13 +24,13 @@ void	set_redir_def(t_redir_list	*redirlist)
 }
 
 int set_type(t_redir_list *redirlist,
-	element *tokenlist, 
+	t_tokenlist *tokenlist, 
 	int pos)
 {
 	t_token	*check_token;
 	t_token *prev_token;
 
-	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	check_token = tokenlist_get(tokenlist, pos);
 	if (check_token->type == REDIRECT_IN)
 		redirlist->type = input;
 	else if (check_token->type == REDIRECT_OUT)
@@ -63,24 +50,21 @@ int set_type(t_redir_list *redirlist,
 				|| check_token->type == REDIRECT_OUT_APP)
 			redirlist->src_fd = STDOUT_FILENO;
 	}
-	// ^ I added this if-else
-	// -- @alisa
 	return (0);
 }
 
 
 int	set_redirect(
 	t_redir_list	*redirlist, 
-	element *tokenlist, 
+	t_tokenlist *tokenlist, 
 	int pos)
 {
 	t_token	*check_token;
 
-	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	check_token = tokenlist_get(tokenlist, pos);
 	set_redir_def(redirlist);
 	if (token_is_redirect(check_token))
 	{
-		//set_src(redirlist, tokenlist, pos);
 		if (lookahead(tokenlist, pos))
 			redirlist->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
 		if (lookahead(tokenlist, pos + 1) && token_is_redirect(lookahead(tokenlist, pos +1)))
@@ -94,14 +78,14 @@ int	set_redirect(
 }
 
 // add redirect to list of execdata
-int	add_redirect(t_exec_data *execdata, element *tokenlist, int pos,
+int	add_redirect(t_exec_data *execdata, t_tokenlist *tokenlist, int pos,
 		int pos_red)
 {
 	t_token			*check_token;
 	t_redir_list	*redirlist;
 	t_redir_list 	*next;
 
-	check_token = tokenlist->pf_element_get(tokenlist, pos);
+	check_token = tokenlist_get(tokenlist, pos);
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));

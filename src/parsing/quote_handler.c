@@ -140,7 +140,7 @@ char rm_str_quotes(char *str, int count, char symbol)
 
 
 // rm quotes for certain pos in tokenlist
-int	rm_quotes(element *tokenlist, int pos, char symbol)
+int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
 	int		i;
@@ -149,13 +149,13 @@ int	rm_quotes(element *tokenlist, int pos, char symbol)
 	i = 0;
 	char quote;
 	quote = 'q';
-	check_token = (t_token *)tokenlist->element_list.tokens[pos];
+	check_token = (t_token *)tokenlist->tokens[pos];
 	count = (count_symbols(check_token->value, symbol));
 	// p_printf("CHECK TOKEN = %s\n", check_token->value);
 	if (str_is_quote(check_token->value, symbol))
 		quote = rm_str_quotes(check_token->value, count/2, symbol);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
-		tokenlist->pf_element_delete(tokenlist, pos);
+		tokenlist_delete(tokenlist, pos);
 	if (quote == '\'' && char_is_quote(symbol))
 		check_token->type = SINGLE_Q;
 	else if (quote == '"' && check_token->value)

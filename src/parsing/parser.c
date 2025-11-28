@@ -25,43 +25,39 @@
 //     - env with no options or arguments
 //     - exit with no options
 
-
 // count how many exec data structs need to be made
-int	count_lists(
-	element *tokenlist)
+int	count_lists(t_tokenlist *tokenlist)
 {
 	size_t	i;
 	size_t	count;
-	t_token *check_token;
+	t_token	*check_token;
 
 	i = 0;
 	count = 1;
-	while (i < tokenlist->element_list.total)
+	while (i < tokenlist->total)
 	{
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		check_token = (t_token *)tokenlist->tokens[i];
 		if (check_token->type == PIPE)
 			count++;
-		if (i == tokenlist->element_list.total -1 && check_token->type == PIPE)
-			return(-1);
+		if (i == tokenlist->total - 1 && check_token->type == PIPE)
+			return (-1);
 		i++;
 	}
 	return (count);
 }
 
 // count until the next pos that is a command
-int	count_next_cm(
-	element *tokenlist, 
-	int pos)
+int	count_next_cm(t_tokenlist *tokenlist, int pos)
 {
-	int redir;
-	size_t i;
-	t_token *check_token;
+	int		redir;
+	size_t	i;
+	t_token	*check_token;
 
-	i = pos +1;
+	i = pos + 1;
 	redir = 0;
-	while (i < tokenlist->element_list.total)
+	while (i < tokenlist->total)
 	{
-		check_token = (t_token *)tokenlist->element_list.tokens[i];
+		check_token = (t_token *)tokenlist->tokens[i];
 		if (check_token->type == PIPE && lookahead(tokenlist, pos))
 			return (check_token->pos + 1);
 		if (check_token->command)
@@ -72,14 +68,13 @@ int	count_next_cm(
 }
 
 // make an empty execdata
-int	make_cm_list(
-	element *tokenlist, 
+int	make_cm_list(t_tokenlist *tokenlist, 
 	t_exec_data *comm_list, 
 	size_t pos,
 	int pos_red)
 {
 	int	total;
-	int i;
+	int	i;
 
 	i = -1;
 	total = 0;
@@ -90,7 +85,7 @@ int	make_cm_list(
 	if (pos_red > 0)
 		total = count_args(tokenlist, pos, pos_red);
 	else
-		total = count_args(tokenlist, pos, tokenlist->element_list.total);
+		total = count_args(tokenlist, pos, tokenlist->total);
 	if (total == 0)
 		return (0);
 	comm_list->argv = malloc(sizeof(char *) * (total + 1));
@@ -103,18 +98,15 @@ int	make_cm_list(
 }
 
 // start conversion by making lists of commands
-int	pass_comm(
-	element *tokenlist, 
-	t_msh_data *msh_data, 
-	int i,
-	int pos)
+int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, int i, int pos)
 {
 	int	pos_red;
 
 	if (count_lists(tokenlist) == -1)
 		return (write(1, "No lists counted\n", 17));
 	msh_data->command_count = count_lists(tokenlist);
-	msh_data->exec_data = ft_calloc(msh_data->command_count, sizeof(t_exec_data));
+	msh_data->exec_data = ft_calloc(msh_data->command_count,
+			sizeof(t_exec_data));
 	if (!msh_data->exec_data)
 		return (write(1, MALLOC_ERR, 15));
 	while (i < msh_data->command_count)
@@ -137,12 +129,8 @@ int	pass_comm(
 }
 
 // convert the tokenlist to executable data
-int	convert_data(
-	element *tokenlist, 
-	t_msh_data *msh_data, 
-	int i,
-	size_t pos, 
-	int pos_red)
+int	convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, int i, size_t pos,
+		int pos_red)
 {
 	t_exec_data	*comm_list;
 
