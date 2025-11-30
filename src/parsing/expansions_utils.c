@@ -24,7 +24,10 @@ char	*prep_leftover(char *str_token, char symbol, int offset)
 	temp_left = NULL;
 	if (!str_token)
 		return (NULL);
-	start = ft_strchr(str_token, symbol);
+	if (symbol == '$')
+		start = ft_strchr(str_token, symbol);
+	else if (char_is_quote(symbol))
+		start = ft_strrchr(str_token, symbol);
 	if (!start)
 		return (NULL);
 
@@ -46,22 +49,23 @@ char	*exp_str_token(char *str_token, char *value, int offset)
 	char	*new_str;
 	char	*leftover;
 	char	*temp_left;
-	//int len;
 
 	temp_left = NULL;
-	// len = fpos_in_str(str_token, '$');
-	// p_printf("LEN = %d\n", len);
 	temp_left = prep_leftover(str_token, '$', offset);
 	leftover = ft_strjoin(value, temp_left);
 	new_str = ft_strjoin(str_token, leftover);
-	if (!new_str || !leftover)
-		return ((ft_safe_free((unsigned char **)&leftover),
-				ft_safe_free((unsigned char **)&value),
+	if (!leftover)
+	{
+		return ((ft_safe_free((unsigned char **)&value),
 				ft_safe_free((unsigned char **)&new_str),
 				ft_safe_free((unsigned char **)&temp_left), NULL));
+	}
+	else if (!new_str)
+		return ((ft_safe_free((unsigned char **)&leftover),
+				ft_safe_free((unsigned char **)&value),
+				ft_safe_free((unsigned char **)&temp_left), NULL));
 	(ft_safe_free((unsigned char **)&leftover),
-	ft_safe_free((unsigned char **)&temp_left),
-	ft_safe_free((unsigned char **)&str_token));
+	ft_safe_free((unsigned char **)&temp_left));
 	return (new_str);
 }
 
@@ -75,7 +79,10 @@ char	*refine_name_var(char *token_name, char *result, char symbol)
 
 	i = 0;
 	start = NULL;
-	start = ft_strchr(token_name, symbol);
+	if (symbol == '$')
+		start = ft_strchr(token_name, symbol);
+	else if (char_is_quote(symbol))
+		start = ft_strrchr(token_name, symbol);
 	// e_printf("\nSTART = %s\n", start);
 	result = ft_strdup(start + 1);
 	if (!result)

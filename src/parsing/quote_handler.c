@@ -95,46 +95,89 @@ char symbol_in_quote(char *str, char symbol)
 	int	i;
 	char l_symbol;
 
-	i = ft_strlen(str)-1;
-	while (i >0 && str[i] != symbol)
+	i = 0;
+	while (str[i])
 	{	
 		if (char_is_quote(str[i]))
-		{
 			l_symbol = str[i];
-		}
-		i--;
+		if (str[i] == symbol)
+			break;
+		i++;
 	}
 	return (l_symbol);
 }
 
 
-//loops count amount of times to remove outside quotes from string
-char rm_str_quotes(char *str, int count, char symbol)
-{
-	char quote;
-	int	i;
-	int	len;
+char *move_str(char *str, int i)
+{ 
 
-	while (count > 0)
-	{	
-		i = 0;
-		len = ft_strlen(str)-1;
-		if (char_is_quote(str[0]))
-			quote = str[0];
-		if (str[i] == symbol)
-			count--;
-		if (str_is_quote(str, symbol))
-		{
-			str[len] = '\0';
-			while (str[i])
-			{
-				str[i] = str[i + 1];
-				i++;
-			}
-			str[i] = '\0';
-		}
+	while (str[i])
+	{
+		str[i] = str[i + 1];
+		i++;
 	}
-	return (quote);
+	str[i] = '\0';
+	return(str);
+}
+
+
+//loops count amount of times to remove outside quotes from string
+void rm_str_quotes(char *str, int count, char symbol)
+{
+	int o_count;
+	char o_quote;
+	int	i;
+
+	i = 0;
+	if (symbol == '"')
+		o_quote = '\'';
+	else 
+		o_quote = '"';
+	o_count = count_occ(str, o_quote, true)/2;
+	p_printf(" COUNT O OCC = %d\n", o_count);
+	while (str[i])
+	{	
+		if ((str[i] == o_quote && o_count > 0))
+		{
+			o_count--;
+			str = move_str(str, i);
+			move_str(ft_strrchr(str, o_quote), 0);
+			p_printf("STRING = %s\n", str);
+		}
+		else if (str[i] == symbol && count > 0)
+		{
+			count--;
+			str = move_str(str, i);
+			move_str(ft_strrchr(str, symbol), 0);
+			p_printf("STRING = %s\n", str);
+		}
+		else 
+			i++;
+	}
+}
+
+
+char *split_quote(t_tokenlist *tokenlist, int pos, char symbol)
+{
+	int i;
+	t_token *check_token;
+	char *result;
+	char *leftover;
+	
+	i = 0;
+	leftover = NULL; 
+	check_token = tokenlist->tokens[pos];
+	result = check_token->value;
+	//leftover = refine_name_var(result, leftover, symbol);
+	
+	while (result[i])
+	{
+		if (result[i] == symbol)
+			result = move_str(result, i);
+		else 
+			i++;
+	}
+	return (result);
 }
 
 
@@ -146,24 +189,19 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 	int		count;
 
 	i = 0;
-	char quote;
-	quote = 'q';
+	// char quote;
+	//quote = 'q';
 	check_token = (t_token *)tokenlist->tokens[pos];
-	count = (count_occ(check_token->value, symbol));
-	// p_printf("CHECK TOKEN = %s\n", check_token->value);
-	if (str_is_quote(check_token->value, symbol))
-		quote = rm_str_quotes(check_token->value, count/2, symbol);
+	count = (count_occ(check_token->value, symbol, false));
+
+	p_printf("CHECK TOKEN = %s\n", check_token->value);
+	// if (str_is_quote(check_token->value, symbol))
+	if (char_is_quote(symbol))
+		rm_str_quotes(check_token->value, count, symbol);
+	// else 
+	// 	split_quote(tokenlist, pos, symbol);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
 		tokenlist_delete(tokenlist, pos);
-	// if (quote == '\'' && char_is_quote(symbol))
-	// 	check_token->type = SINGLE_Q;
-	// else if (quote == '"' && check_token->value)
-	// {
-	// 	if (ft_strchr(check_token->value, '$'))
-	// 		check_token->type = PARAMETER;
-	// 	else 
-	// 		check_token->type = DOUBLE_Q;
-	// }
-	// p_printf("CHECK TOKEN AFTER = %s\n", check_token->value);
+
 	return (0);
 }

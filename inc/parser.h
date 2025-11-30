@@ -113,7 +113,7 @@ int			set_heredoc(t_exec_data* execdata, t_tokenlist *tokenlist, int pos, int po
 void		set_pipe_cm(t_tokenlist *tokenlist, size_t i);
 void 		set_command(t_exec_data *comm_list, t_tokenlist *tokenlist, int pos, t_token *check_token, int *i);
 int			set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos);
-int 		count_occ(const char* str, char symbol);
+int 		count_occ(const char* str, char symbol, bool inside);
 int 		count_args(t_tokenlist *tokenlist, int pos, int total);
 int			count_lists(t_tokenlist *tokenlist);
 int			count_next_cm(t_tokenlist *tokenlist, int pos);

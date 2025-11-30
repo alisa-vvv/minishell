@@ -36,9 +36,10 @@ int ft_free_s_token(void **check_token)
 		if ((*token)->value)
 			ft_safe_free((unsigned char **)&(*token)->value);
 		(*token)->command = 0;
+		(*token)->type = 0;
 		(*token)->pos = 0;
 	}
-	ft_safe_free((unsigned char **)token);
+	ft_safe_free((unsigned char **)check_token);
 	
 	// ft_safe_free((unsigned char **)&token[i]->value);
 	// 		token[i]->command = 0;
@@ -89,7 +90,6 @@ int	tokenlist_free(t_tokenlist *e)
 	i = 0;
 	if (e)
 	{
-		//ft_free_tokens(e->tokens);
 		while (e->tokens[i])
 		{
 			ft_free_s_token((void **)&e->tokens[i]);
