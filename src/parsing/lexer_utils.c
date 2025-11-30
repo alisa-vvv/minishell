@@ -111,12 +111,13 @@ int	set_len(const char *str, int i)
 	return (len);
 }
 
+//*check_token->value == '\0'
 // deletes empty tokens from the tokenlist
 int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 {
 	t_token	*check_token;
 
-	p_printf("%p %i\n", tokenlist->tokens, i);
+	//p_printf("%p %i\n", tokenlist->tokens, i);
 	while (i < tokenlist->total)
 	{
 		check_token = tokenlist->tokens[i];
@@ -130,7 +131,6 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 		}
 		i++;
 	}
-	index_lexer(&tokenlist);
 	return (0);
 }
 
@@ -145,6 +145,7 @@ int	index_lexer(t_tokenlist **tokenlist)
 	while (i < (size_t)(*tokenlist)->total)
 	{
 		check_token = (t_token *)(*tokenlist)->tokens[i];
+		p_printf("CHECK TOKEN = %s, POS = %d, ADDRESS = %p", check_token->value, i, &check_token);
 		if (!check_token)
 			return (write(1, "No tokens available\n", 20));
 		else 

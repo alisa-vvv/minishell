@@ -24,15 +24,22 @@ void	ft_free_arr(void **array)
 		ft_safe_free((unsigned char**)array);
 	}
 }
+
 int ft_free_s_token(void **check_token)
 {
 	t_token **token = (t_token**)check_token;
-	
-	ft_safe_free((unsigned char **)&(*token)->value);
-	(*token)->command = 0;
-	(*token)->pos = 0;
-	ft_safe_free((unsigned char **)token);
 
+	if (!token || !(*token))
+		return (write (2, "No Token Found\n", 15));
+	if ((*token))
+	{
+		if ((*token)->value)
+			ft_safe_free((unsigned char **)&(*token)->value);
+		(*token)->command = 0;
+		(*token)->pos = 0;
+	}
+	ft_safe_free((unsigned char **)token);
+	
 	// ft_safe_free((unsigned char **)&token[i]->value);
 	// 		token[i]->command = 0;
 	// 		token[i]->pos = 0;
@@ -41,86 +48,56 @@ int ft_free_s_token(void **check_token)
 	return (0);
 }
 
-/*i = index;
-		while (i < e->element_list.total - 1)
-		{
-			e->element_list.tokens[i] = e->element_list.tokens[i + 1];
-			i++;
-		}
-		ft_free_s_token(e->element_list.tokens[e->element_list.total]);
-		e->element_list.tokens[e->element_list.total - 1] = NULL;*/
-//reverted back to old 
+
+// if (index < e->total -1)
+// 	ft_memmove(&e->tokens[index], &e->tokens[index+1], (e->total - index -1)(sizeof)t_token);
+// check_token = e->tokens[index +1];
+// if (check_token)
+// 	p_printf("CURR TOKEN = %s\n", check_token->value); 
+//better implementation
 int	tokenlist_delete(t_tokenlist *e, size_t index)
 {
 	unsigned long	i;
-	int	status;
-	//t_token *check_token;
+	t_token *check_token;
 
 	i = 0;
-	status = -1;
 	if (e)
 	{
 		if ((index < 0) || ((size_t)index >= e->total))
-			return (-1);
+			return (1);
 		if (e->tokens[index] != NULL)
-			ft_free_s_token(&e->tokens[index]);
-		// memmove();
-		// check_token = e->tokenlist_list.tokens[index];
-		// if (check_token)
-		// {
-		// 	ft_free_s_token(check_token);
-		// 	ft_safe_free((unsigned char **)&check_token);
-		// }
-		i = index;
-		while (i < e->total - 1)
+			ft_free_s_token((void **)&e->tokens[index]);
+		while (index < e->total-1)
 		{
-			e->tokens[i] = e->tokens[i + 1];
-			e->tokens[i + 1] = NULL;
-			i++;
+			e->tokens[index] = e->tokens[index+1];
+			check_token = e->tokens[index]; 
+			check_token->pos--;
+			index++;
 		}
-		// ft_free_s_token(e->tokens[e->total]);
-		// e->tokens[e->total - 1] = NULL;
 		e->total--;
 		if ((e->total > 0)
 			&& ((e->total) == (e->size / 4)))
 			tokenlist_resize(e, e->size, e->size / 2);
-		status = 0;
 	}
-	return (status);
-}
-
-
-int ft_free_tokens(void **tokens)
-{
-	int i;
-
-	t_token **token;
-	token = (t_token **)tokens; 
-	i = 0;
-	if (token)
-	{
-		while(token[i])
-		{
-			ft_free_s_token((void **)&token[i]);
-			// ft_safe_free((unsigned char **)&token[i]->value);
-			// token[i]->command = 0;
-			// token[i]->pos = 0;
-			// token[i]->type = 0;
-			// ft_safe_free((unsigned char **)&token[i]);
-			i++;
-		}
-		ft_safe_free((unsigned char **)&token);
-	}
+//	index_lexer(&e);
 	return (0);
 }
 
 int	tokenlist_free(t_tokenlist *e)
 {
+	size_t i;
+	i = 0;
 	if (e)
 	{
-		ft_free_tokens(e->tokens);
+		//ft_free_tokens(e->tokens);
+		while (e->tokens[i])
+		{
+			ft_free_s_token((void **)&e->tokens[i]);
+			i++;
+		}
 		e->total = 0;
-		e->tokens = NULL;
+		ft_safe_free((unsigned char **)&e->tokens);
+	//	e->tokens = NULL;
 		return (0);
 	}
 	return (-1);
@@ -128,11 +105,6 @@ int	tokenlist_free(t_tokenlist *e)
 
 int	tokenlist_init(t_tokenlist **e, int size)
 {
-	// e->total = tokenlist_total;
-	// e->pf_tokenlist_resize = tokenlist_resize;
-	// e->pf_tokenlist_add = tokenlist_push_back;
-	// e->pf_tokenlist_swap = tokenlist_swap;
-	// e->pf_tokenlist_insert = tokenlist_insert;
 	*e = calloc(1, sizeof(t_tokenlist));
 	if (!(*e))
 		return (1);

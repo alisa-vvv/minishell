@@ -63,7 +63,7 @@ char *before_red(char *str_token)
 	return (result);
 }
 
-//
+//last position
 int l_red(char *str)
 {
 
@@ -257,7 +257,6 @@ int	fill_tokenlist(
 	int		i;
 	size_t	len;
 
-
 	i = 0;
 	len = 0;
 	if (!str)
@@ -297,15 +296,11 @@ int	default_lexer(
 		return (write(1, "Failed to count tokens\n", 23));
 	if (tokenlist_init(&token_list, token_c))
 		return (write(1, "Failed to init tokenlist\n", 25));
-
 	if (fill_tokenlist(token_list, input_line))
 	{
 		tokenlist_free(token_list);
 		return (write(1, "Failed to fill tokenlist\n", 25));
 	}
-	// token_list->tokens[token_c] = NULL;  
-	// if (!token_list->tokens)
-	// 	return (write(1, "Failed to init tokenlist\n", 25));
 //	test_tokens(token_list);
 	if (check_lexer(token_list, msh_data))
 	{
@@ -313,6 +308,7 @@ int	default_lexer(
 		return (write(1, "Failed check types\n", 19));
 	}
 	tokenlist_free(token_list);
+	free(token_list);
 	// ft_safe_free((unsigned char **)&token_list);
 	return (0);
 }

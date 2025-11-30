@@ -13,9 +13,6 @@
 #include "parser.h"
 
 
-
-
-
 // prepare leftover parts of str token to keep for the updated string
 char	*prep_leftover(char *str_token, char symbol, int offset)
 {
@@ -27,10 +24,10 @@ char	*prep_leftover(char *str_token, char symbol, int offset)
 	temp_left = NULL;
 	if (!str_token)
 		return (NULL);
-	start = ft_strrchr(str_token, symbol);
+	start = ft_strchr(str_token, symbol);
 	if (!start)
 		return (NULL);
-	
+
 	rem_len = ft_strlen(start + offset)+1;
 	// p_printf("OFFSET = %s$\n", start +offset);
 	// p_printf("LEN IS = %d\n", rem_len);
@@ -49,8 +46,11 @@ char	*exp_str_token(char *str_token, char *value, int offset)
 	char	*new_str;
 	char	*leftover;
 	char	*temp_left;
+	//int len;
 
 	temp_left = NULL;
+	// len = fpos_in_str(str_token, '$');
+	// p_printf("LEN = %d\n", len);
 	temp_left = prep_leftover(str_token, '$', offset);
 	leftover = ft_strjoin(value, temp_left);
 	new_str = ft_strjoin(str_token, leftover);
