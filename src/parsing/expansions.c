@@ -83,7 +83,7 @@ int	expand_unquoted(t_tokenlist *tokenlist, t_token *check_token, char *name,
 	{
 		new_str = exp_str_token(check_token->value, env_value, ft_strlen(name)+ 1);
 		tokenlist_set(tokenlist, pos, new_token(tokenlist, new_str, ft_strlen(new_str) + 1));
-		//(ft_safe_free((unsigned char **)&new_str));
+		(ft_safe_free((unsigned char **)&new_str));
 	}
 	else
 		tokenlist_set(tokenlist, pos, new_token(tokenlist, env_value,
@@ -110,12 +110,7 @@ bool	check_quote_e(char *str, int pos)
 		return (0);
 }
 
-// char quote;
-// if (check_in_quote_s(check_token->value, start, '\''))
-//     start = fpos_in_str(check_token->value + start+1, '$');
-// quote = symbol_in_quote(check_token->value, '$');
-//  p_printf("QUOTE TYPE =%c\n", quote);
-// quote == '"' && !check_in_quote_s(check_token->value, start, '\''))	|| (check_in_quote_s(check_token->value, start, '"') &&
+
 
 //expands quoted var when they fulfill check_quote_e conditions
 void	expand_quoted(t_tokenlist *tokenlist, char *name, size_t pos,
@@ -164,9 +159,10 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 		name = refine_name_var(check_token->value, name, '$');
 		p_printf("\nNAME= %s \n", name);
 		p_printf("TOKEN VAL= %s\n", check_token->value);
-		if (name && ft_strncmp(name, "?", 2) == 0)
-			return (printf("%d\n", msh_data->last_pipeline_return));
-		if (env_var_get_value(msh_data->env, name, &env_value) != success)
+		if (name && (ft_strncmp(name, "?", 2) == 0))
+            env_value = ft_itoa(msh_data->last_pipeline_return);
+			//return (printf("%d\n", msh_data->last_pipeline_return));
+		else if (env_var_get_value(msh_data->env, name, &env_value) != success)
 			dprintf(STDERR_FILENO, "Failed to malloc env\n");
 		if (!env_value && ft_strncmp(check_token->value, "$", 2) == 0)
 			return (tokenlist_delete(*tokenlist, pos), 0);

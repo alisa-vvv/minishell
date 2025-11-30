@@ -33,8 +33,8 @@ int ft_free_s_token(void **check_token)
 		return (write (2, "No Token Found\n", 15));
 	if ((*token))
 	{
-		if ((*token)->value)
-			ft_safe_free((unsigned char **)&(*token)->value);
+		// if ((*token)->value)
+		ft_safe_free((unsigned char **)&(*token)->value);
 		(*token)->command = 0;
 		(*token)->type = 0;
 		(*token)->pos = 0;
@@ -49,12 +49,6 @@ int ft_free_s_token(void **check_token)
 	return (0);
 }
 
-
-// if (index < e->total -1)
-// 	ft_memmove(&e->tokens[index], &e->tokens[index+1], (e->total - index -1)(sizeof)t_token);
-// check_token = e->tokens[index +1];
-// if (check_token)
-// 	p_printf("CURR TOKEN = %s\n", check_token->value); 
 //better implementation
 int	tokenlist_delete(t_tokenlist *e, size_t index)
 {
@@ -80,7 +74,6 @@ int	tokenlist_delete(t_tokenlist *e, size_t index)
 			&& ((e->total) == (e->size / 4)))
 			tokenlist_resize(e, e->size, e->size / 2);
 	}
-//	index_lexer(&e);
 	return (0);
 }
 
