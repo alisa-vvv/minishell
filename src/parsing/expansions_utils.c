@@ -87,7 +87,7 @@ char	*refine_name_var(char *token_name, char *result, char symbol)
 	{
 		if (symbol == '$')
 		{
-			if (char_is_quote(result[i]) || result[i] == '$' || ft_isspace(result[i] || char_is_red(result[i]))
+			if (char_is_quote(result[i]) || result[i] == '$' || ft_isspace(result[i]) || char_is_red(result[i])
 				|| !(ft_isprint(result[i]) || result[i] == '_'))
 				break ;
 			

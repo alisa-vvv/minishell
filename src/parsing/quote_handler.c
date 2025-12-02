@@ -107,7 +107,7 @@ char symbol_in_quote(char *str, char symbol)
 	return (l_symbol);
 }
 
-
+//removes 1 pos by shifting string 
 char *move_str(char *str, int i)
 { 
 
@@ -120,7 +120,7 @@ char *move_str(char *str, int i)
 	return(str);
 }
 
-
+//	p_printf("STRING = %s\n", str);
 //loops count amount of times to remove outside quotes from string
 void rm_str_quotes(char *str, int count, char symbol)
 {
@@ -142,43 +142,17 @@ void rm_str_quotes(char *str, int count, char symbol)
 			o_count--;
 			str = move_str(str, i);
 			move_str(ft_strrchr(str, o_quote), 0);
-			p_printf("STRING = %s\n", str);
 		}
 		else if (str[i] == symbol && count > 0)
 		{
 			count--;
 			str = move_str(str, i);
 			move_str(ft_strrchr(str, symbol), 0);
-			p_printf("STRING = %s\n", str);
 		}
 		else 
 			i++;
 	}
 }
-
-
-// char *split_quote(t_tokenlist *tokenlist, int pos, char symbol)
-// {
-// 	int i;
-// 	t_token *check_token;
-// 	char *result;
-// 	char *leftover;
-	
-// 	i = 0;
-// 	leftover = NULL; 
-// 	check_token = tokenlist->tokens[pos];
-// 	result = check_token->value;
-// 	//leftover = refine_name_var(result, leftover, symbol);
-	
-// 	while (result[i])
-// 	{
-// 		if (result[i] == symbol)
-// 			result = move_str(result, i);
-// 		else 
-// 			i++;
-// 	}
-// 	return (result);
-// }
 
 
 // rm quotes for certain pos in tokenlist
@@ -190,7 +164,7 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 
 	i = 0;
 	check_token = (t_token *)tokenlist->tokens[pos];
-	count = (count_occ(check_token->value, symbol, false));
+	count = (count_occ(check_token->value, symbol, true));
 
 	p_printf("CHECK TOKEN = %s\n", check_token->value);
 	// if (str_is_quote(check_token->value, symbol))

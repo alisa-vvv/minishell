@@ -33,7 +33,9 @@ int ft_free_s_token(void **check_token)
 		return (write (2, "No Token Found\n", 15));
 	if ((*token))
 	{
-		// if ((*token)->value)
+		p_printf("GOT HERE YAY!\n");
+		if ((*token)->value)
+			p_printf("STRING = $%s$\n", (*token)->value);
 		ft_safe_free((unsigned char **)&(*token)->value);
 		(*token)->command = 0;
 		(*token)->type = 0;
@@ -60,6 +62,7 @@ int	tokenlist_delete(t_tokenlist *e, size_t index)
 	{
 		if ((index < 0) || ((size_t)index >= e->total))
 			return (1);
+		p_printf("DELETE THIS: %p %p\n", e->tokens[index], ((t_token*)e->tokens[index])->value);
 		if (e->tokens[index] != NULL)
 			ft_free_s_token((void **)&e->tokens[index]);
 		while (index < e->total-1)
@@ -85,6 +88,7 @@ int	tokenlist_free(t_tokenlist *e)
 	{
 		while (e->tokens[i])
 		{
+			p_printf("FREE THIS: %p %p\n", e->tokens[i], ((t_token*)e->tokens[i])->value);
 			ft_free_s_token((void **)&e->tokens[i]);
 			i++;
 		}

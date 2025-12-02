@@ -15,7 +15,7 @@
 # define DEBUG_H
 
 # define DEBUG_ON 1
-# define LEX_ON 0
+# define LEX_ON 1
 # define EXP_ON 0
 # define QUOTE_ON 0
 # define PARSE_ON 1

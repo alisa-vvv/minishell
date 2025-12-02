@@ -77,6 +77,7 @@ int			set_len(const char *str, int i);
 bool		char_is_red(char c);
 bool 		str_contains_red(char *str);
 bool		token_is_redirect(t_token *check_token);
+bool 		check_val_redir(char *str);
 char 		symbol_in_quote(char *str, char symbol);
 int 		fpos_in_str(const char *str, char symbol);
 int			check_in_quote_s(const char *str, int pos, char quote);

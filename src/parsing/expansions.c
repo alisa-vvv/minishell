@@ -40,6 +40,23 @@ int	fpos_in_str(const char *str, char symbol)
 	return (i);
 }
 
+bool count_q(const char *str, int i, char symbol)
+{
+
+	if (str[i] && str[i] == symbol)
+	{
+		if (check_in_quote_s(str, i, '\''))
+			return (false);
+		else if (!check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i, '"'))
+			return (false);
+		else if (!check_in_quote_s(str, i, '\'') && !check_in_quote_s(str, i, '"'))
+			return (true);
+	}
+	return (false);
+}
+
+
+
 // counts how many occurrences of a symbol are in one str
 int	count_occ(const char *str, char symbol, bool inside)
 {
@@ -52,7 +69,8 @@ int	count_occ(const char *str, char symbol, bool inside)
 	{
 		if (inside)
 		{
-			if (str[i] == symbol && !check_in_quote_s(str, i, '\''))
+			//prolly not right yet --> needs to not count if quoted quotes are there 
+			if (count_q(str, i, symbol))
 				count++;
 		}
 		else if (inside == false)
@@ -164,8 +182,8 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 			//return (printf("%d\n", msh_data->last_pipeline_return));
 		else if (env_var_get_value(msh_data->env, name, &env_value) != success)
 			dprintf(STDERR_FILENO, "Failed to malloc env\n");
-		if (!env_value && ft_strncmp(check_token->value, "$", 2) == 0)
-			return (tokenlist_delete(*tokenlist, pos), 0);
+		// if (!env_value && ft_strncmp(check_token->value, "$", 2) == 0)
+		// 	return (ft_safe_free((unsigned char **)&name), tokenlist_delete(*tokenlist, pos), 0);
 		if (quoted)
 			expand_quoted(*tokenlist, name, pos, env_value);
 		else
