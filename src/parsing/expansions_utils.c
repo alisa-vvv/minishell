@@ -74,11 +74,10 @@ char	*refine_name_var(char *token_name, char *result, char symbol)
 
 	i = 0;
 	start = NULL;
-	if (symbol == '$')
-		start = ft_strchr(token_name, symbol);
-	else if (char_is_quote(symbol))
-		start = ft_strrchr(token_name, symbol);
+	start = ft_strchr(token_name, symbol);
 	// e_printf("\nSTART = %s\n", start);
+	if (!start)
+		return (NULL);
 	result = ft_strdup(start + 1);
 	if (!result)
 		return (NULL);

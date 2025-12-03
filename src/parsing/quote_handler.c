@@ -120,6 +120,23 @@ char *move_str(char *str, int i)
 	return(str);
 }
 
+
+bool	check_quote_rm(const char *str, int i, char symbol)
+{
+
+	if (str[i] && str[i] == symbol)
+	{
+		if (check_in_quote_s(str, i, '\''))
+			return (false);
+		else if (!check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i, '"'))
+			return (true);
+		else if (!check_in_quote(str, i))
+			return (true);
+	}
+	return (false);
+}
+
+
 //	p_printf("STRING = %s\n", str);
 //loops count amount of times to remove outside quotes from string
 void rm_str_quotes(char *str, int count, char symbol)
@@ -133,24 +150,25 @@ void rm_str_quotes(char *str, int count, char symbol)
 		o_quote = '\'';
 	else 
 		o_quote = '"';
-	o_count = count_occ(str, o_quote, true)/2;
-	p_printf(" COUNT O OCC = %d\n", o_count);
-	while (str[i])
+	o_count = count_occ(str, o_quote, true);
+	//p_printf(" COUNT O OCC = %d\n", o_count);
+	while (str[i] && (count || o_count))
 	{	
-		if ((str[i] == o_quote && o_count > 0))
-		{
-			o_count--;
-			str = move_str(str, i);
-			move_str(ft_strrchr(str, o_quote), 0);
-		}
-		else if (str[i] == symbol && count > 0)
+		if (check_quote_rm(str, i , symbol))
 		{
 			count--;
 			str = move_str(str, i);
 			move_str(ft_strrchr(str, symbol), 0);
 		}
+		else if (check_quote_rm(str, i , o_quote))
+		{
+			o_count--;
+			str = move_str(str, i);
+			move_str(ft_strrchr(str, o_quote), 0);
+		}
 		else 
 			i++;
+		p_printf("STRING = %s\n", str);
 	}
 }
 
@@ -161,6 +179,9 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 	t_token	*check_token;
 	int		i;
 	int		count;
+
+	if (symbol == '\'')
+
 
 	i = 0;
 	check_token = (t_token *)tokenlist->tokens[pos];

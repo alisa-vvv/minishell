@@ -33,9 +33,8 @@ int ft_free_s_token(void **check_token)
 		return (write (2, "No Token Found\n", 15));
 	if ((*token))
 	{
-		p_printf("GOT HERE YAY!\n");
 		if ((*token)->value)
-			p_printf("STRING = $%s$\n", (*token)->value);
+			//p_printf("STRING = $%s$\n", (*token)->value);
 		ft_safe_free((unsigned char **)&(*token)->value);
 		(*token)->command = 0;
 		(*token)->type = 0;
