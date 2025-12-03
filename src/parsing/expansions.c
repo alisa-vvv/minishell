@@ -84,7 +84,7 @@ bool	check_quote_e(char *str, int pos)
 }
 
 
-void expand_new(t_tokenlist *tokenlist, size_t pos, char *start, char *name,
+void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, char *start, char *name,
 		char *env_value)
 {
 	int offset; 
@@ -101,7 +101,7 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *start, char *name,
 	else 
 		offset = ft_strlen(name) + 1;
 
-	new_str = exp_str_token(start, env_value, offset);
+	new_str = exp_str_token(str_token, start, env_value, offset);
 	n_token = new_token(tokenlist, new_str, ft_strlen(new_str) + 1);
 	if (!n_token)
 		tokenlist_free(tokenlist);
@@ -129,12 +129,13 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 		name = refine_name_var(start_var, name, '$');
 		if (name && (ft_strncmp(name, "?", 2) == 0))
 			env_value = ft_itoa(msh_data->last_pipeline_return);
-
+			
 		p_printf("\nNAME= %s \n", name);
 		if (check_in_quote_s(check_token->value, start_pos, '\''))
 		{
-			expand_new(*tokenlist, pos, check_token->value, name, name);
+			expand_new(*tokenlist, pos, check_token->value, start_var, name, name);
 			start_var = ft_strchr(start_var +1, '$');
+			p_printf("START VAR = -%s-\n", start_var);
 			start_pos = start_var - check_token->value;
 		}
 		else 
@@ -146,16 +147,17 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 			p_printf("START POS = %d, STR = -%s-\n", start_pos, check_token->value + start_pos);
 			p_printf("TOKEN VAL= %s\n", check_token->value);
 				//return (printf("%d\n", msh_data->last_pipeline_return));
-			expand_new(*tokenlist, pos, check_token->value, name, env_value);
+			expand_new(*tokenlist, pos, check_token->value, start_var, name, env_value);
 			(ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
-		
-		check_token = (*tokenlist)->tokens[pos];
-		start_var = ft_strchr(check_token->value, '$');
-		start_pos = start_var - check_token->value;
+			check_token = (*tokenlist)->tokens[pos];
+			start_var = ft_strchr(check_token->value, '$');
+			start_pos = start_var - check_token->value;
 		}
 	}
 	return (0);
 }
+
+//$"adecheri and '$USER' or $HOME "$
 
 // check_in_quote(check_token->value, lpos_in_str(check_token->value, '$')
 // check lexer on expansion and quotes

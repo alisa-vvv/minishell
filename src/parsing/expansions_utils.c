@@ -14,20 +14,15 @@
 
 
 // prepare leftover parts of str token to keep for the updated string
-char	*prep_leftover(char *str_token, char symbol, int offset)
+char	*prep_leftover(char *str_token, char *start, int offset)
 {
-	char	*start;
 	char	*temp_left;
 	size_t  rem_len;
 
-	start = NULL;
 	temp_left = NULL;
 	if (!str_token)
 		return (NULL);
-	if (symbol == '$')
-		start = ft_strchr(str_token, symbol);
-	else if (char_is_quote(symbol))
-		start = ft_strrchr(str_token, symbol);
+
 	if (!start)
 		return (NULL);
 
@@ -44,14 +39,14 @@ char	*prep_leftover(char *str_token, char symbol, int offset)
 }
 
 // expand the var when token is in quotes
-char	*exp_str_token(char *str_token, char *value, int offset)
+char	*exp_str_token(char *str_token, char *start, char *value, int offset)
 {
 	char	*new_str;
 	char	*leftover;
 	char	*temp_left;
 
 	temp_left = NULL;
-	temp_left = prep_leftover(str_token, '$', offset);
+	temp_left = prep_leftover(str_token, start, offset);
 	leftover = ft_strjoin(value, temp_left);
 	new_str = ft_strjoin(str_token, leftover);
 	if (!new_str || !leftover)
