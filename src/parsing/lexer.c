@@ -321,6 +321,5 @@ int	default_lexer(
 	}
 	tokenlist_free(token_list);
 	free(token_list);
-	// ft_safe_free((unsigned char **)&token_list);
 	return (0);
 }
