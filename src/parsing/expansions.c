@@ -79,11 +79,12 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, char *start
 
 	n_token = NULL;
 
-	if (ft_strncmp(name, env_value, ft_strlen(name)) == 0)
-		return ;
+	// if (ft_strncmp(name, env_value, ft_strlen(name)) == 0)
+	// 	return ;
 	if (!env_value && !name)
 		env_value = "";
- 
+	else if (!env_value && name)
+		
 	offset = ft_strlen(name)+1;
 
 	new_str = exp_str_token(str_token, start, env_value, offset);
@@ -114,7 +115,7 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 		name = refine_name_var(start_var, name, '$');
 		if (name && (ft_strncmp(name, "?", 2) == 0))
 			env_value = ft_itoa(msh_data->last_pipeline_return);
-		//needs to ward when there is an expansion without a env value -->esp in quotes  
+		
 		if (!env_value && ft_strncmp(check_token->value, "$", 2) == 0)
 			return (ft_safe_free((unsigned char **)&name), tokenlist_delete(*tokenlist, pos), 0);
 		else if (env_var_get_value(msh_data->env, name, &env_value) != success)
@@ -137,8 +138,8 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 			(ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
 			check_token = (*tokenlist)->tokens[pos];
 			start_var = ft_strchr(check_token->value, '$');
-			if (!start_var)
-				break;
+			// if (!start_var)
+			// 	break;
 		}
 		start_pos = start_var - check_token->value;
 	}
