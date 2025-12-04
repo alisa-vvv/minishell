@@ -41,14 +41,15 @@ int ft_free_s_token(void **check_token)
 		(*token)->pos = 0;
 	}
 	ft_safe_free((unsigned char **)check_token);
-	
-	// ft_safe_free((unsigned char **)&token[i]->value);
-	// 		token[i]->command = 0;
-	// 		token[i]->pos = 0;
-	// 		token[i]->type = 0;
-	// 	ft_safe_free((unsigned char **)&token[i]);
 	return (0);
 }
+	
+// ft_safe_free((unsigned char **)&token[i]->value);
+// 		token[i]->command = 0;
+// 		token[i]->pos = 0;
+// 		token[i]->type = 0;
+// 	ft_safe_free((unsigned char **)&token[i]);
+
 
 //better implementation
 int	tokenlist_delete(t_tokenlist *e, size_t index)

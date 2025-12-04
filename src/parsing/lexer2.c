@@ -92,7 +92,7 @@ int	check_lexer(t_tokenlist *tokenlist,
 	expand_param(tokenlist, msh_data);
 	expand_quotes(tokenlist, msh_data);
 	clean_lexer(tokenlist, 0);
-	contract_list(tokenlist, tokenlist->total-1);
+	//contract_list(tokenlist, tokenlist->total-1);
 	if (tokenlist->total < 2)
 	{
 		if (single_token(tokenlist))

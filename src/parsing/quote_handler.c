@@ -168,7 +168,7 @@ void rm_str_quotes(char *str, int count, char symbol)
 		}
 		else 
 			i++;
-		p_printf("STRING = %s\n", str);
+		// p_printf("STRING = %s\n", str);
 	}
 }
 

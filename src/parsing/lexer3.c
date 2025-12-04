@@ -28,7 +28,6 @@ int merge_tokens(t_tokenlist *tokenlist,
     
     check_token->pos = pos1;
     tokenlist_delete(tokenlist, pos2);
-    //index_lexer(&tokenlist);
 	return (0);
 }
 

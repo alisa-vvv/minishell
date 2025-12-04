@@ -78,7 +78,6 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, char *start
 	t_token *n_token;
 
 	n_token = NULL;
-
 	if (env_value && name) 
 		offset = ft_strlen(name)+1;
 	else if (!env_value && !name)
@@ -87,10 +86,12 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, char *start
 		offset = 1;
 	}
 	else if (!env_value && name)
+	{
+		env_value = "";
 		offset = ft_strlen(name)+1;
+	}
 	else 
 		offset = 1;
-
 	new_str = exp_str_token(str_token, start, env_value, offset);
 	n_token = new_token(tokenlist, new_str, ft_strlen(new_str)+1);
 	if (!n_token)
@@ -98,8 +99,6 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, char *start
 	tokenlist_set(tokenlist, pos, n_token);
 	(ft_safe_free((unsigned char **)&new_str));
 }
-
-
 
 
 
