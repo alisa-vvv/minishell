@@ -147,7 +147,8 @@ int split_redir(
 int prep_token(t_tokenlist *tokenlist,
 	char *str,
 	int i, 
-	int len)
+	int len
+)
 {
 	char *str_b_token;
 	int status; 
@@ -157,14 +158,14 @@ int prep_token(t_tokenlist *tokenlist,
 		return (1);
 	ft_strlcpy(str_b_token, str + i - len, len +1);
 
-	if (str_contains_red(str_b_token))
-	{
-		//count_occ(str_b_token, )
-		if (check_val_redir(str_b_token))
-			return (write(1, "Invalid redirect\n", 18), 1);
-		else 
-			status = split_redir(tokenlist, str_b_token); 
-	}
+//	if (str_contains_red(str_b_token))
+//	{
+//		//count_occ(str_b_token, )
+//		if (check_val_redir(str_b_token))
+//			return (write(1, "Invalid redirect\n", 18), 1);
+//		else 
+//			status = split_redir(tokenlist, str_b_token); 
+//	}
 	// if (str_contains_red(str_b_token))
 	// 	status = split_redir(tokenlist, str_b_token);
 	// else
