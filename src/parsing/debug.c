@@ -71,7 +71,7 @@ const char* enum_to_str(t_token_type symbols)
     {
         case STRING: return "String";
         case COMMAND: return "Command";
-        case NUMBER: return "Number";
+        //case NUMBER: return "Number";
         case OPERATOR: return "Operator";
         case PARAMETER: return "Parameter";
         case NON_TERMINAL: return "Non-terminal";

@@ -93,8 +93,8 @@ int	count_redirs(t_tokenlist *tokenlist, int total, int i)
 				redir++;
 			else if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
 			{
-				if (lookbehind(tokenlist, i)->type == NUMBER
-					&& (check_token->type == REDIRECT_OUT
+				if (//lookbehind(tokenlist, i)->type == NUMBER &&
+					(check_token->type == REDIRECT_OUT
 						|| check_token->type == REDIRECT_OUT_APP))
 					redir++;
 				else if (lookahead(tokenlist, i) && lookahead(tokenlist,

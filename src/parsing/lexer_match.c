@@ -55,19 +55,19 @@ int match_string(char *str_token)
         return (STRING);
 }
 
-int all_num_alph( 
-    const char *str)
-{
-	size_t  i;
-
-	i = 0;
-	while (str[i] && ft_isdigit(str[i]))
-		i++;
-	if (str[i] == '\0')
-		return (NUMBER);
-	else 
-		return(STRING);
-}
+//int all_num_alph( 
+//    const char *str)
+//{
+//	size_t  i;
+//
+//	i = 0;
+//	while (str[i] && ft_isdigit(str[i]))
+//		i++;
+//	if (str[i] == '\0')
+//		return (NUMBER);
+//	else 
+//		return(STRING);
+//}
 
 // set a va	lue to the token so we can expand on those later
 // redirect issues:
@@ -86,8 +86,8 @@ int	match_token(char *str_token) // needs rework @alisa
 		return (match_nonterminal(str_token));
 	else if ((ft_strchr(str_token, '=') != NULL))
 		return (OPERATOR);
-	else if (ft_isdigit(str_token[0]))
-		return (all_num_alph(str_token));
+	//else if (ft_isdigit(str_token[0]))
+	//	return (all_num_alph(str_token));
 	else if (ft_strncmp(str_token, " ", 2) == 0)
 		return (WHITESPACE);
 	return (STRING);

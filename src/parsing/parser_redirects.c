@@ -29,7 +29,7 @@ int set_type(t_redir_list *redirlist,
 	int pos)
 {
 	t_token	*check_token;
-	t_token *prev_token;
+	//t_token *prev_token;
 
 	check_token = tokenlist_get(tokenlist, pos);
 	if (check_token->type == REDIRECT_IN)
@@ -38,12 +38,12 @@ int set_type(t_redir_list *redirlist,
 		redirlist->type = trunc;
 	else if (check_token->type == REDIRECT_OUT_APP)
 		redirlist->type = append;
-	prev_token = lookbehind(tokenlist, pos);
-	if (prev_token->type == NUMBER)
-	{
-		redirlist->src_fd = ft_atoi(prev_token->value);
-	}
-	else
+//	prev_token = lookbehind(tokenlist, pos);
+//	if (prev_token->type == NUMBER)
+//	{
+//		redirlist->src_fd = ft_atoi(prev_token->value);
+//	}
+	//else
 	{
 		if (check_token->type == REDIRECT_IN)
 			redirlist->src_fd = STDIN_FILENO;
@@ -68,7 +68,7 @@ int	set_redirect(
 	{
 		if (lookahead(tokenlist, pos))
 			redirlist->dest_filename = ft_strdup(lookahead(tokenlist, pos)->value);
-		if (lookahead(tokenlist, pos + 1) && token_is_redirect(lookahead(tokenlist, pos +1)))
+		if (token_is_redirect(lookahead(tokenlist, pos +1)))
 		{
 			check_token = lookahead(tokenlist, pos);
 			check_token->type = STRING;

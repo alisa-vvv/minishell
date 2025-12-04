@@ -32,7 +32,7 @@ typedef enum	e_token_type
 {
 	COMMAND,
 	STRING,
-	NUMBER,
+	//NUMBER,
 	OPERATOR,
 	PARAMETER,
 	WHITESPACE,
