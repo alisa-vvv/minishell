@@ -213,7 +213,23 @@ int count_unq(const char *str, int i, int count)
 	return (count); 
 }
 
-// counts args to size up elementlist
+int	validate_redirect(
+	const char *str,
+	int i
+)
+{
+	if ((str[i] == '>' && str[i + 1] == '>' && str[i + 2] == '>')
+		|| (str[i] == '<' && str[i + 1] == '<' && str[i + 2] == '<')
+		|| (str[i] == '<' && str[i + 1] == '>')
+		|| (str[i] == '>' && str[i + 1] == '<'))
+	{
+		dprintf(STDERR_FILENO, "PLACEHOLDER, ADD ERROR CHECKING\n");
+		return (-1);
+	}
+	return (success);
+}
+
+ //counts args to size up elementlist
 int	token_count(
 	const char *str,
 	int i
@@ -222,26 +238,32 @@ int	token_count(
 	int	tokencount;
 
 	tokencount = 0;
+
 	while (str[i])
 	{
-		if ((str[i] && !check_in_quote(str, i) && !ft_isspace(str[i])) && !char_is_quote(str[i]))
+		dprintf(STDERR_FILENO, "str: %s\n", str);
+		dprintf(STDERR_FILENO, "i: %d\n", i);
+		if ((!check_in_quote(str, i) && !ft_isspace(str[i])) && !char_is_quote(str[i])
+			&& !char_is_red(str[i]))
 		{
 			tokencount = count_unq(str, i, tokencount); 
 			i += move_o_unquoted(str, i) ;
 		}
-		else if (str[i] && char_is_quote(str[i]))
+		else if (char_is_quote(str[i]))
 		{
 			tokencount++;
 			i += move_over_quote(str, i);
 		}
-		else if (str[i] && !ft_isspace(str[i]) && char_is_red(str[i]))
+		else if (char_is_red(str[i]))
 		{
 			tokencount++;
-			while(str[i] && char_is_red(str[i]) && !ft_isspace(str[i]) && !char_is_quote(str[i]))
+			if (validate_redirect(str, i) != success)
+				return (-1); // this is placeholder, might need better error logic
+			while (char_is_red(str[i]))
 				i++;
 		}
 		else
-		i++;
+			i++;
 	}
 	t_printf("Token count = %d\n", tokencount);
 	return (tokencount);
@@ -292,8 +314,8 @@ int	default_lexer(
 	if (val_inputline(input_line)) // what are the validations/returns/mesgs?
         return (1);
 	token_c = token_count(input_line, 0);
-	if (!token_c)
-		return (write(1, "Failed to count tokens\n", 23));
+	if (!token_c || token_c < 0) // check the !token_c condition relevance
+		return (write(1, "Failed to count tokens\n", 23)); // these error messages should not show in final
 	if (tokenlist_init(&token_list, token_c))
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (fill_tokenlist(token_list, input_line))
