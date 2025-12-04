@@ -122,7 +122,7 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 		name = refine_name_var(start_var, name, '$');
 		if (name && (ft_strncmp(name, "?", 2) == 0))
 			env_value = ft_itoa(msh_data->last_pipeline_return);
-		if (!env_value && ft_strncmp(check_token->value, "$", 2) == 0)
+		else if (!env_value && ft_strncmp(check_token->value, "$", 2) == 0)
 			return (ft_safe_free((unsigned char **)&name), tokenlist_delete(*tokenlist, pos), 0);
 		else if (env_var_get_value(msh_data->env, name, &env_value) != success)
 				dprintf(STDERR_FILENO, "Failed to malloc env\n");
