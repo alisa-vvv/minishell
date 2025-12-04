@@ -95,46 +95,81 @@ char symbol_in_quote(char *str, char symbol)
 	int	i;
 	char l_symbol;
 
-	i = ft_strlen(str)-1;
-	while (i >0 && str[i] != symbol)
+	i = 0;
+	while (str[i])
 	{	
 		if (char_is_quote(str[i]))
-		{
 			l_symbol = str[i];
-		}
-		i--;
+		if (str[i] == symbol)
+			break;
+		i++;
 	}
 	return (l_symbol);
 }
 
+//removes 1 pos by shifting string 
+char *move_str(char *str, int i)
+{ 
 
-//loops count amount of times to remove outside quotes from string
-char rm_str_quotes(char *str, int count, char symbol)
-{
-	char quote;
-	int	i;
-	int	len;
-
-	while (count > 0)
-	{	
-		i = 0;
-		len = ft_strlen(str)-1;
-		if (char_is_quote(str[0]))
-			quote = str[0];
-		if (str[i] == symbol)
-			count--;
-		if (str_is_quote(str, symbol))
-		{
-			str[len] = '\0';
-			while (str[i])
-			{
-				str[i] = str[i + 1];
-				i++;
-			}
-			str[i] = '\0';
-		}
+	while (str[i])
+	{
+		str[i] = str[i + 1];
+		i++;
 	}
-	return (quote);
+	str[i] = '\0';
+	return(str);
+}
+
+
+bool	check_quote_rm(const char *str, int i, char symbol)
+{
+
+	if (str[i] && str[i] == symbol)
+	{
+		if (check_in_quote_s(str, i, '\''))
+			return (false);
+		else if (!check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i, '"'))
+			return (true);
+		else if (!check_in_quote(str, i))
+			return (true);
+	}
+	return (false);
+}
+
+
+//	p_printf("STRING = %s\n", str);
+//loops count amount of times to remove outside quotes from string
+void rm_str_quotes(char *str, int count, char symbol)
+{
+	int o_count;
+	char o_quote;
+	int	i;
+
+	i = 0;
+	if (symbol == '"')
+		o_quote = '\'';
+	else 
+		o_quote = '"';
+	o_count = count_occ(str, o_quote, true);
+	//p_printf(" COUNT O OCC = %d\n", o_count);
+	while (str[i] && (count || o_count))
+	{	
+		if (check_quote_rm(str, i , symbol))
+		{
+			count--;
+			str = move_str(str, i);
+			move_str(ft_strrchr(str, symbol), 0);
+		}
+		else if (check_quote_rm(str, i , o_quote))
+		{
+			o_count--;
+			str = move_str(str, i);
+			move_str(ft_strrchr(str, o_quote), 0);
+		}
+		else 
+			i++;
+		p_printf("STRING = %s\n", str);
+	}
 }
 
 
@@ -145,25 +180,19 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 	int		i;
 	int		count;
 
+	if (symbol == '\'')
+
+
 	i = 0;
-	char quote;
-	quote = 'q';
 	check_token = (t_token *)tokenlist->tokens[pos];
-	count = (count_occ(check_token->value, symbol));
-	// p_printf("CHECK TOKEN = %s\n", check_token->value);
-	if (str_is_quote(check_token->value, symbol))
-		quote = rm_str_quotes(check_token->value, count/2, symbol);
+	count = (count_occ(check_token->value, symbol, true));
+
+	p_printf("CHECK TOKEN = %s\n", check_token->value);
+	// if (str_is_quote(check_token->value, symbol))
+	if (char_is_quote(symbol))
+		rm_str_quotes(check_token->value, count, symbol);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
 		tokenlist_delete(tokenlist, pos);
-	// if (quote == '\'' && char_is_quote(symbol))
-	// 	check_token->type = SINGLE_Q;
-	// else if (quote == '"' && check_token->value)
-	// {
-	// 	if (ft_strchr(check_token->value, '$'))
-	// 		check_token->type = PARAMETER;
-	// 	else 
-	// 		check_token->type = DOUBLE_Q;
-	// }
-	// p_printf("CHECK TOKEN AFTER = %s\n", check_token->value);
+
 	return (0);
 }

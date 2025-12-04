@@ -69,7 +69,6 @@ int expand_param(t_tokenlist *tokenlist,
 {
 	int count;
 	count = count_exp(tokenlist, '$');
-	// p_printf("COUNT EXP = %d$\n", count);
 	while (count > 0)
 	{
 		if (exp_lexer(tokenlist, msh_data, PARAMETER, 0))

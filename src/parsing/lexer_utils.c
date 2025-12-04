@@ -117,18 +117,21 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 {
 	t_token	*check_token;
 
-	//p_printf("%p %i\n", tokenlist->tokens, i);
+	p_printf("CLEAN LEXER: %p %i\n", tokenlist->tokens, tokenlist->total);
+	test_tokens(tokenlist);
 	while (i < tokenlist->total)
 	{
 		check_token = tokenlist->tokens[i];
 		// if (!check_token || !check_token->value)
 		// 	return (1);
-		p_printf("%p %i %s\n", tokenlist->tokens, i, check_token->value);
-		if (check_token && *check_token->value == '\0')
+		if (check_token && check_token->value && *check_token->value == '\0')
 		{
 			p_printf("DELETE?\n");
 			tokenlist_delete(tokenlist, i);
 		}
+		else if (check_token->type == HEREDOC && check_token->pos > 0 && lookbehind(tokenlist, i)->type == WHITESPACE)
+			tokenlist_delete(tokenlist, i-1);
+		
 		i++;
 	}
 	return (0);
@@ -145,12 +148,11 @@ int	index_lexer(t_tokenlist **tokenlist)
 	while (i < (size_t)(*tokenlist)->total)
 	{
 		check_token = (t_token *)(*tokenlist)->tokens[i];
-		p_printf("CHECK TOKEN = %s, POS = %d, ADDRESS = %p", check_token->value, i, &check_token);
+		e_printf("CHECK TOKEN = %s, POS = %d, ADDRESS = %p", check_token->value, i, &check_token);
 		if (!check_token)
 			return (write(1, "No tokens available\n", 20));
 		else 
 			check_token->pos = i;
-		// e_printf("POS= %d \n", check_token->pos);
 		i++;
 	}
 	return (0);

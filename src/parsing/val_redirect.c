@@ -99,12 +99,6 @@ bool val_redir_out(
     return (true);
 }
 
-// //
-// int count_str_redir(const char *str, )
-// {
-    
-// }
-
 
 //
 static int check_heredoc(
