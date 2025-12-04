@@ -44,7 +44,7 @@ bool check_val_redir(char *str)
 		if (char_is_red(str[i]))
 		{
 			type = str[i];
-			if (str[i +1] == type && str[i+2] != type)
+			if (str[i +1] == type && str[i+2] != type && ft_isalnum(str[i+2]))
 				return (true);
 			else if (str[i +1] != type && !ft_isspace(str[i+1]) && !char_is_red(str[i+1]))
 				return (true);

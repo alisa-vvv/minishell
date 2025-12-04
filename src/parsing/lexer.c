@@ -94,53 +94,53 @@ int add_token(
 }
 
 
-//splits redirect tokens into 3 tokens or space if not spec
-int split_redir(
-	t_tokenlist *tokenlist, // look here @alisa
-	char *str_b_token
-)
-{
-//	t_token	*prev_token;
-	char	*str_piece;
-	int		len;
-	//int count;
+// //splits redirect tokens into 3 tokens or space if not spec
+// int split_redir(
+// 	t_tokenlist *tokenlist, // look here @alisa
+// 	char *str_b_token
+// )
+// {
+// //	t_token	*prev_token;
+// 	char	*str_piece;
+// 	int		len;
+// 	//int count;
 
-	//count = count_occ(str_b_token, );
-	str_piece = before_red(str_b_token);
-	if (!str_piece)
-		return (write(2, MALLOC_ERR, 16));
+// 	//count = count_occ(str_b_token, );
+// 	str_piece = before_red(str_b_token);
+// 	if (!str_piece)
+// 		return (write(2, MALLOC_ERR, 16));
 
-	// dprintf(STDERR_FILENO, "what is str_piece? (%s)\n", str_piece);
-	// if (add_token(tokenlist, str_piece, ft_strlen(str_piece) + 1))
-	// 	return (ft_safe_free((unsigned char **)&str_piece), 1);
-	// prev_token = tokenlist_get(tokenlist, tokenlist->total - 1);
+// 	// dprintf(STDERR_FILENO, "what is str_piece? (%s)\n", str_piece);
+// 	// if (add_token(tokenlist, str_piece, ft_strlen(str_piece) + 1))
+// 	// 	return (ft_safe_free((unsigned char **)&str_piece), 1);
+// 	// prev_token = tokenlist_get(tokenlist, tokenlist->total - 1);
 
 
-	// dprintf(STDERR_FILENO, "what is prev_token? (%s)\n", prev_token->value);
-	// dprintf(STDERR_FILENO, "what is prev_token's type? (%s)\n", enum_to_str(prev_token->type));
-	// str_piece being set to "-1" breaks this case:
-	// >outfile
-	// also:
-	// " ">outfile
-	// need something different!
-	if (ft_strncmp(str_piece, " ", 2) == 0)
-	{
-		len = l_red(str_b_token);
-		str_piece[0] = '\0';
-	}
-	else
-		len = l_red(str_b_token + (ft_strlen(str_piece)));
-	if (len < 0)
-		return(ft_safe_free((unsigned char **)&str_piece), 1);
-	if (add_token(tokenlist, str_b_token + ft_strlen(str_piece), len + 1))
-		return(ft_safe_free((unsigned char **)&str_piece), 1);
-	//if (str_contains_red(str_b_token + (ft_strlen(str_piece) + len)))
-	// 	split_redir(tokenlist, str_b_token + (ft_strlen(str_piece) + len));
-	else if (add_token(tokenlist, str_b_token + (ft_strlen(str_piece) + len), ft_strlen(str_b_token) - ft_strlen(str_piece) - len + 1))
-		return(ft_safe_free((unsigned char **)&str_piece), 1);
-	ft_safe_free((unsigned char **)&str_piece);
-	return (0);
-}
+// 	// dprintf(STDERR_FILENO, "what is prev_token? (%s)\n", prev_token->value);
+// 	// dprintf(STDERR_FILENO, "what is prev_token's type? (%s)\n", enum_to_str(prev_token->type));
+// 	// str_piece being set to "-1" breaks this case:
+// 	// >outfile
+// 	// also:
+// 	// " ">outfile
+// 	// need something different!
+// 	if (ft_strncmp(str_piece, " ", 2) == 0)
+// 	{
+// 		len = l_red(str_b_token);
+// 		str_piece[0] = '\0';
+// 	}
+// 	else
+// 		len = l_red(str_b_token + (ft_strlen(str_piece)));
+// 	if (len < 0)
+// 		return(ft_safe_free((unsigned char **)&str_piece), 1);
+// 	if (add_token(tokenlist, str_b_token + ft_strlen(str_piece), len + 1))
+// 		return(ft_safe_free((unsigned char **)&str_piece), 1);
+// 	//if (str_contains_red(str_b_token + (ft_strlen(str_piece) + len)))
+// 	// 	split_redir(tokenlist, str_b_token + (ft_strlen(str_piece) + len));
+// 	else if (add_token(tokenlist, str_b_token + (ft_strlen(str_piece) + len), ft_strlen(str_b_token) - ft_strlen(str_piece) - len + 1))
+// 		return(ft_safe_free((unsigned char **)&str_piece), 1);
+// 	ft_safe_free((unsigned char **)&str_piece);
+// 	return (0);
+// }
 
 
 //preps str for redirect splitting and adding tokens
@@ -157,20 +157,20 @@ int prep_token(t_tokenlist *tokenlist,
 		return (1);
 	ft_strlcpy(str_b_token, str + i - len, len +1);
 
-	if (str_contains_red(str_b_token))
-	{
-		//count_occ(str_b_token, )
-		if (check_val_redir(str_b_token))
-			return (write(1, "Invalid redirect\n", 18), 1);
-		else 
-			status = split_redir(tokenlist, str_b_token); 
-	}
+	// if (str_contains_red(str_b_token))
+	// {
+	// 	//count_occ(str_b_token, )
+	// 	if (check_val_redir(str_b_token))
+	// 		return (write(1, "Invalid redirect\n", 18), 1);
+	// 	else 
+	// 		status = split_redir(tokenlist, str_b_token); 
+	// }
 	// if (str_contains_red(str_b_token))
 	// 	status = split_redir(tokenlist, str_b_token);
 	// else
 		status = add_token(tokenlist, str_b_token, len +1);
 	ft_safe_free((unsigned char **)&str_b_token);
-	return (status);
+	return (status); 
 }
 
 

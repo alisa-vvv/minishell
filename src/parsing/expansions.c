@@ -79,13 +79,17 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, char *start
 
 	n_token = NULL;
 
-	// if (ft_strncmp(name, env_value, ft_strlen(name)) == 0)
-	// 	return ;
-	if (!env_value && !name)
+	if (env_value && name) 
+		offset = ft_strlen(name)+1;
+	else if (!env_value && !name)
+	{
 		env_value = "";
+		offset = 1;
+	}
 	else if (!env_value && name)
-		
-	offset = ft_strlen(name)+1;
+		offset = ft_strlen(name)+1;
+	else 
+		offset = 1;
 
 	new_str = exp_str_token(str_token, start, env_value, offset);
 	n_token = new_token(tokenlist, new_str, ft_strlen(new_str)+1);
@@ -94,6 +98,9 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, char *start
 	tokenlist_set(tokenlist, pos, n_token);
 	(ft_safe_free((unsigned char **)&new_str));
 }
+
+
+
 
 
 // expand known var and otherwise delete and re-position all tokens
@@ -108,40 +115,30 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 	name = NULL;
 	env_value = NULL;
 	start_var = ft_strchr(check_token->value, '$');
-	start_pos = start_var - check_token->value;
 	while (start_var)
 	{
 		check_token = (*tokenlist)->tokens[pos];
+		start_pos = start_var - check_token->value;
 		name = refine_name_var(start_var, name, '$');
 		if (name && (ft_strncmp(name, "?", 2) == 0))
 			env_value = ft_itoa(msh_data->last_pipeline_return);
-		
 		if (!env_value && ft_strncmp(check_token->value, "$", 2) == 0)
 			return (ft_safe_free((unsigned char **)&name), tokenlist_delete(*tokenlist, pos), 0);
 		else if (env_var_get_value(msh_data->env, name, &env_value) != success)
 				dprintf(STDERR_FILENO, "Failed to malloc env\n");
 		p_printf("\nNAME= %s \n", name);
+		p_printf("ENV VAL= ==%s==\n", env_value);
+		p_printf("START VAR = -%s-\n", start_var);
 		if (check_in_quote_s(check_token->value, start_pos, '\''))
-		{
-			expand_new(*tokenlist, pos, check_token->value, start_var, name, name);
 			start_var = ft_strchr(start_var +1, '$');
-			p_printf("START VAR = -%s-\n", start_var);
-		}
 		else 
 		{	
-			if (env_var_get_value(msh_data->env, name, &env_value) != success)
-				dprintf(STDERR_FILENO, "Failed to malloc env\n");
 			p_printf("TOKEN VAL= %s\n", check_token->value);
-			p_printf("ENV VAL= ==%s==\n", env_value);
-				//return (printf("%d\n", msh_data->last_pipeline_return));
 			expand_new(*tokenlist, pos, check_token->value, start_var, name, env_value);
 			(ft_safe_free((unsigned char **)&name), ft_safe_free((unsigned char **)&env_value));
 			check_token = (*tokenlist)->tokens[pos];
 			start_var = ft_strchr(check_token->value, '$');
-			// if (!start_var)
-			// 	break;
 		}
-		start_pos = start_var - check_token->value;
 	}
 	return (0);
 }
