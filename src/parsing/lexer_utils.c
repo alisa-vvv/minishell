@@ -22,7 +22,6 @@ int	skip_blanks(char *str, int pos)
 		count++;
 		str++;
 	}
-	// l_printf("%d\n", count);
 	return (count);
 }
 
