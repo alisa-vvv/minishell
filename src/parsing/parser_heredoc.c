@@ -12,21 +12,40 @@
 
 #include "parser.h"
 
-t_builtin_name set_builtins(t_token_type tokentype)
+t_builtin_name set_builtins(t_token *check_token)
 {
-	if (tokentype == CD)
+	//  if (ft_strncmp(check_token->value, "cd", 3) == 0)
+    //     return (builtin_cd);
+    // else if (ft_strncmp(check_token->value, "pwd", 4) == 0)
+    //     return (builtin_pwd);
+    // else if (ft_strncmp(check_token->value, "env", 4) == 0)
+	// 	return (builtin_env);
+    // else if (ft_strncmp(check_token->value, "echo", 5) == 0)
+    //     return (builtin_echo);
+    // else if (ft_strncmp(check_token->value, "export", 7) == 0)
+    //     return (builtin_export);
+    // else if (ft_strncmp(check_token->value, "unset", 6) == 0)
+    //     return (builtin_unset);
+    // else if (ft_strncmp(check_token->value, "exit", 5) == 0)
+	// 	return (builtin_exit);
+	// else 
+	// 	return(not_builtin);
+
+
+
+	if (check_token->type == CD)
 		return (builtin_cd);
-	else if (tokentype == ECHO)
+	else if (check_token->type == ECHO)
 		return (builtin_echo);
-	else if (tokentype == EXPORT)
+	else if (check_token->type == EXPORT)
 		return (builtin_export);
-	else if (tokentype == ENV)
+	else if (check_token->type == ENV)
 		return (builtin_env);
-	else if (tokentype == EXIT)
+	else if (check_token->type == EXIT)
 		return (builtin_exit);
-	else if (tokentype == PWD)
+	else if (check_token->type == PWD)
 		return (builtin_pwd);
-	else if (tokentype == UNSET)
+	else if (check_token->type == UNSET)
 		return (builtin_unset);
 	else 
 		return(not_builtin);
@@ -66,7 +85,7 @@ int set_heredoc_red(
 		if (!token_is_redirect(check_token) && check_token->type != HEREDOC_DEL && lookahead(tokenlist, pos) && lookahead(tokenlist, pos)->type != HEREDOC)
 		{
 			execdata->argv[i] = ft_strdup(check_token->value);
-            execdata->builtin_name = set_builtins(check_token->type);
+            execdata->builtin_name = set_builtins(check_token);
 			i++;
 		}
         if (pos + 1 < tokenlist->total && lookahead(tokenlist, pos)->type == PIPE)

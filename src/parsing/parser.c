@@ -108,7 +108,7 @@ int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, int i, int pos)
 	msh_data->exec_data = ft_calloc(msh_data->command_count,
 			sizeof(t_exec_data));
 	if (!msh_data->exec_data)
-		return (write(1, MALLOC_ERR, 15));
+		return (write(2, MALLOC_ERR, 15));
 	while (i < msh_data->command_count)
 	{
 		pos_red = count_next_cm(tokenlist, pos);

@@ -122,7 +122,7 @@ int			count_next_cm(t_tokenlist *tokenlist, int pos);
 char *		prep_leftover(char *str_token, char *start,  int offset);
 char *		exp_str_token(char *str_token, char *start, char *value, int offset);
 char *		refine_name_var(char *token_name, char *result, char symbol);
-t_builtin_name set_builtins(t_token_type tokentype);
+t_builtin_name set_builtins(t_token *check_token);
 int			find_token_type(t_tokenlist *tokenlist, size_t pos, int pos_red, t_token_type type);
 int			fill_comm_list(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos, int pos_red);
 int			make_cm_list(t_tokenlist *tokenlist, t_exec_data *comm_list, size_t pos, int pos_red);

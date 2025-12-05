@@ -18,7 +18,7 @@ int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
 	t_token	*check_token;
 
 	check_token = tokenlist_get(tokenlist, pos);
-	execdata->builtin_name = set_builtins(check_token->type);
+	execdata->builtin_name = set_builtins(check_token);
 	execdata->input_is_pipe = false;
 	execdata->output_is_pipe = false;
 	execdata->redirections = NULL;
@@ -46,7 +46,7 @@ void set_command(
 	}
 	else if (!token_is_redirect(check_token))
 		comm_list->argv[*i] = ft_strdup(check_token->value);
-	comm_list->builtin_name = set_builtins(check_token->type);
+	comm_list->builtin_name = set_builtins(check_token);
 }
 
 //(lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos)))
@@ -83,7 +83,11 @@ int	add_arg_to_list(
 		return (0);
 	}
 	if (!token_is_redirect(check_token))
+	{
 		comm_list->argv[*i] = ft_strdup(check_token->value);
+		if (comm_list->builtin_name == not_builtin)
+			comm_list->builtin_name = set_builtins(check_token);
+	}
 	return (1);
 }
 
