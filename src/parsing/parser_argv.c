@@ -35,7 +35,7 @@ void set_command(
 {
 	if (pos == 0 && token_is_redirect(check_token))
 		return;
-	else if (pos == 0 && (lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos))) && check_token->type == NUMBER)
+	else if (pos == 0 && (lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos))))
 	{
 		return;
 	}

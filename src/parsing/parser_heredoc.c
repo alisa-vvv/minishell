@@ -72,7 +72,7 @@ int set_heredoc_red(
 	int i)
 {
     t_token *check_token;
-	while (pos++ < tokenlist->total)
+	while (pos++ < tokenlist->total -1)
 	{	
         check_token = (t_token *)tokenlist->tokens[pos];
 		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
@@ -107,8 +107,8 @@ int set_heredoc(
 	int pos_red)
 {
     t_redir_list *redirlist;
-
-    redirlist = ft_calloc(1, sizeof(t_redir_list));
+	
+	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));
 	if (execdata->redirections == NULL)
