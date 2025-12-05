@@ -140,12 +140,12 @@ int	check_pipe_redirect(char *str, char symbol)
 int	val_inputline(char *str) // hmm?
 {
 	if (check_in_quote(str, ft_strlen(str) - 1))
-		return (write(1, "command not found\n", 18));
+		return (write(2, "command not found\n", 18));
 	if (check_pipe_redirect(str, '|'))
-		return (write(1, "command not found\n", 18));
+		return (write(2, "command not found\n", 18));
 	if (check_pipe_redirect(str, '>'))
-		return (write(1, "command not found\n", 18));
+		return (write(2, "command not found\n", 18));
 	if (check_pipe_redirect(str, '<'))
-		return (write(1, "command not found\n", 18));
+		return (write(2, "command not found\n", 18));
 	return (0);
 }

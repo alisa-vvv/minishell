@@ -77,9 +77,9 @@ int all_num_alph(
 // compare to: ls -l >"outfile1>outfile2"
 int	match_token(char *str_token) // needs rework @alisa
 {
-	if (str_token[0] == '\'')
+	if (ft_strchr(str_token, '\''))
 		return (SINGLE_Q);
-	else if (str_token[0] == '"')
+	else if (ft_strchr(str_token, '"'))
 		return (DOUBLE_Q);
 	else if (str_contains_red(str_token) || (str_token[0] == '$')
 			|| str_token[0] == '|' )
