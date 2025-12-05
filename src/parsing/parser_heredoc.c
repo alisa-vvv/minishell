@@ -80,8 +80,8 @@ int set_heredoc_red(
 		p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
         if (check_token->type != HEREDOC && pos + 1 < tokenlist->total && lookahead(tokenlist, pos)->type == HEREDOC)
             execdata->redirections->dest_filename = ft_strdup(check_token->value);
-		if (lookahead(tokenlist, i) && lookahead(tokenlist, i)->type == (size_t) HEREDOC_DEL)
-			execdata->redirections->heredoc_delim = ft_strdup(lookahead(tokenlist, i)->value);
+		if (check_token->type == (size_t) HEREDOC_DEL)
+			execdata->redirections->heredoc_delim = ft_strdup(check_token->value);
 		if (!token_is_redirect(check_token) && check_token->type != HEREDOC_DEL && lookahead(tokenlist, pos) && lookahead(tokenlist, pos)->type != HEREDOC)
 		{
 			execdata->argv[i] = ft_strdup(check_token->value);
