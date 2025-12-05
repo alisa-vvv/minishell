@@ -17,10 +17,11 @@ void	safe_close(
 	int *fd
 )
 {
-	if (*fd != CLOSED_FD
-		&& *fd != STDOUT_FILENO && *fd != STDIN_FILENO && *fd != STDERR_FILENO)
+	if (*fd == CLOSED_FD
+		|| *fd == STDOUT_FILENO || *fd == STDIN_FILENO || *fd == STDERR_FILENO)
 	{
-		test_close(*fd);
-		*fd = CLOSED_FD;
+		return ;
 	}
+	test_close(*fd);
+	*fd = CLOSED_FD;
 }

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "executor.h"
+#include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
 

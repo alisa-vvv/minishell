@@ -24,33 +24,23 @@ int	msh_exit(
 	exit_code = 0;
 	if (args[0] == NULL)
 		clean_exit(msh_data, NULL, 0, false);
-	else if (args[1] != NULL)
+	if (args[1] != NULL)
 	{
-		//should return and not exit
-		// "bash: exit: too many arguments"
-		printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-		return (1);
+		msh_perror("exit: ", "too many arguments", msh_err);
+		return (builtin_err); // is this an error case?
 	}
-	else
+	exit_code = ft_atoi(args[0]);
+	if (exit_code == 0 && args[0][0] != '0')
 	{
-		exit_code = ft_atoi(args[0]);
-		printf("[n]: %d\n", exit_code);
-		if (exit_code == 0 && args[0][0] != '0')
+		if ((args[0][0] == '-' || args[0][0] == '+') &&
+				args[0][1] == '0')
+			;
+		else
 		{
-			if ((args[0][0] == '-' || args[0][0] == '+') &&
-					args[0][1] == '0')
-				;
-			else
-			{
-				//should return and exit, throw appropriate error
-				// "bash: exit: numeric argument required"
-				// also for whatever reason i think bash exits with 2 here (dumb?)
-				printf("PLACEHOLDER, ADD ERROR MANAGEMENT\n");
-				clean_exit(msh_data, NULL, exit_code, false);
-			}
+			msh_perror("exit: ", "numeric argument required", msh_err);
+			clean_exit(msh_data, NULL, 2, false);
 		}
 	}
 	clean_exit(msh_data, NULL, exit_code, false);
-	// should NEVER get here, something is COMPLETELY fucked if we are here
 	return (-1);
 }

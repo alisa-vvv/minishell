@@ -14,17 +14,8 @@
 # define MINISHELL_H
 
 /*	readline	*/ 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h> /* isatty */
 /* for waits	*/
-# include <sys/types.h>
-# include <sys/time.h>
-# include <sys/resource.h>
-# include <sys/wait.h>
 /*	signals		*/
-# include <signal.h>
 /* for true/false macro (and bool if we need it) */
 # include <stdbool.h>
 

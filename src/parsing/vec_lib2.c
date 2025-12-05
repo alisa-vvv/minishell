@@ -103,21 +103,18 @@ int	tokenlist_free(t_tokenlist *e)
 
 int	tokenlist_init(t_tokenlist **e, int size)
 {
-	*e = calloc(1, sizeof(t_tokenlist));
+	*e = ft_calloc(1, sizeof(t_tokenlist));
 	if (!(*e))
-		return (1);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	(*e)->size = size;
-	if ((*e)->size <= 0)
+	if ((*e)->size <= 0) // this if case is suspect, might need to fix logic here
 	{
 		(*e)->tokens = NULL;
 		return (1);
 	}
-	(*e)->tokens = calloc((size_t)(*e)->size +1, sizeof(void *));
+	(*e)->tokens = ft_calloc((size_t)(*e)->size +1, sizeof(void *));
 	if (!(*e)->tokens)
-	{
-		fprintf(stderr, "Memory alloc failed in init tokenlist\n");
-		exit(EXIT_FAILURE);
-	}
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	(*e)->tokens[size] = NULL;
 	return (0);
 }

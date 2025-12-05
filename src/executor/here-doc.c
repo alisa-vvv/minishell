@@ -13,8 +13,12 @@
 #include "libft.h"
 #include "minishell.h"
 #include "executor.h"
+#include <signal.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <readline/readline.h>
 
 static void	ignore_sigint(
 )

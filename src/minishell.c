@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell_testfuncs.h"
-#include <assert.h>
-
 #include <stdlib.h>
 #include <errno.h>
 #include "minishell.h"
@@ -22,15 +20,6 @@
 #include <stdio.h> /*	readline	*/
 #include <readline/readline.h> // Needed for rl_catch_signals
 #include <readline/history.h>
-#include <unistd.h> /* isatty */
-
-/* for waits	*/
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <sys/wait.h>
-/*	signals		*/
-#include <signal.h>
 
 static void	reset_msh_data(
 	t_msh_data *msh_data
@@ -57,7 +46,6 @@ static void	setup_msh_data(
 	if (!msh_data->cur_dir)
 		clean_exit(msh_data, NULL, errno, true); // add error message
 	getcwd(msh_data->cur_dir, PATH_MAX); // ADD ERROR CHECKING!
-	printf("did we get it? %s\n", msh_data->cur_dir);
 	if (msh_data->cur_dir[0] == '\0')
 		msh_data->cur_dir[0] = '/';
 }
@@ -79,25 +67,13 @@ int	main(int argc, char **argv, char *envp[])
 	// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
 	//
 	rl_catch_signals = false;
-	printf("pid of parrent: %d\n", getpid());
 	setup_msh_data(&msh_data, envp);
 	while (is_open != 0)
 	{
 		handle_signals_interactive();
 		read_line = readline("msh$ ");
 		if (!read_line)
-		{
-			printf("pid of of null return: %d\n", getpid());
-			printf("read_line return NULL!\n");
-			clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
-		}
-	//	if (g_msh_signal == SIGINT)
-	//	{
-	//		if (read_line)
-	//			free(read_line);
-	//		g_msh_signal = 0;
-	//		continue ;
-	//	}
+			clean_exit(&msh_data, NULL, EXIT_SUCCESS, false); // check exit code interaction here
 		int	TEST_lexer_return;
 		if (read_line)
 			add_history(read_line);
@@ -108,7 +84,6 @@ int	main(int argc, char **argv, char *envp[])
 		{
 			handle_signals_non_interactive();
 			msh_data.exec_data = test_get_dummy_exec_data(&msh_data);
-			printf("\n");
 			err_check = executor(&msh_data, TEST_len);
 		}
 		/*	endof Test Executor*/
@@ -116,7 +91,6 @@ int	main(int argc, char **argv, char *envp[])
 		else
 		{
 			TEST_lexer_return = default_lexer(read_line, &msh_data);
-			printf("Parsing COMPLETE\n");
 			TEST_MINISHELLDATA(msh_data);
 			if (TEST_lexer_return != 0)
 				write(2, "syntax error\n", 13);

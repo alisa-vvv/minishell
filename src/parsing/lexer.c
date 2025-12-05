@@ -88,9 +88,9 @@ int add_token(
 	// l_printf("len = %zu ", len);
 	token = new_token(tokenlist, str, len);
 	if (!token)
-		return (write(2, MALLOC_ERR, 15));
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	tokenlist_add(tokenlist, token);
-	return (0);
+	return (success);
 }
 
 
@@ -101,15 +101,15 @@ int prep_token(t_tokenlist *tokenlist,
 	int len
 )
 {
-	char *str_b_token;
-	int status; 
+	char	*str_b_token;
+	int		status; 
 
-	str_b_token = malloc((len + 1) * sizeof(char));
+	str_b_token = ft_calloc((len + 1), sizeof(char));
 	if (!str_b_token)
-		return (1);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	ft_strlcpy(str_b_token, str + i - len, len +1);
 		status = add_token(tokenlist, str_b_token, len +1);
-	ft_safe_free((unsigned char **)&str_b_token);
+	ft_safe_free((unsigned char **) &str_b_token);
 	return (status); 
 }
 
@@ -229,6 +229,7 @@ int	fill_tokenlist(
 {
 	int		i;
 	size_t	len;
+	int		err;
 
 	i = 0;
 	len = 0;
@@ -240,9 +241,9 @@ int	fill_tokenlist(
 		i += len;
 		if (len > 0)
 		{
-			if (prep_token(tokenlist, str, i, len))
-
-				return (1);
+			err = prep_token(tokenlist, str, i, len);
+			if (err != success)
+				return (err);
 		}
 		else if (str[i])
 			i++;
@@ -270,7 +271,7 @@ int	default_lexer(
 		return (write(1, "Failed to count tokens\n", 23)); // these error messages should not show in final
 	if (tokenlist_init(&token_list, token_c))
 		return (write(1, "Failed to init tokenlist\n", 25));
-	if (fill_tokenlist(token_list, input_line))
+	if (fill_tokenlist(token_list, input_line) < success)
 	{
 		tokenlist_free(token_list);
 		return (write(1, "Failed to fill tokenlist\n", 25));

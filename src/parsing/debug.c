@@ -169,7 +169,7 @@ void TEST_MINISHELLDATA(t_msh_data msh_data)
             test_execdata(*(msh_data.exec_data + i), i);
             i++;
         }
-        printf("\n");
+        p_printf("\n");
     }
     i = 0;
     while (i < (size_t)msh_data.env_var_count)
@@ -179,7 +179,6 @@ void TEST_MINISHELLDATA(t_msh_data msh_data)
     }
     p_printf("Last pipeline return = %d\n", msh_data.last_pipeline_return);
     p_printf("COMMAND COUNT: %d\n", msh_data.command_count);
-    p_printf("\n");
 }
 
 
