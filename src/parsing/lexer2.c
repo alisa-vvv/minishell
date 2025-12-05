@@ -28,7 +28,10 @@ int count_exp(t_tokenlist *tokenlist, char symbol)
 		if (!check_token)
 			return (count);
 		if (symbol == '$' && ft_strchr(check_token->value, '$'))
-			count++;
+		{
+			if (i == 0 || (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type != HEREDOC))
+				count++;
+		}
 		else if (symbol == '"' && check_token->type == DOUBLE_Q)
 			count++;
 		else if (symbol == '\'' && check_token->type == SINGLE_Q)
@@ -69,7 +72,6 @@ int expand_param(t_tokenlist *tokenlist,
 {
 	int count;
 	count = count_exp(tokenlist, '$');
-	// p_printf("COUNT EXP = %d$\n", count);
 	while (count > 0)
 	{
 		if (exp_lexer(tokenlist, msh_data, PARAMETER, 0))
@@ -141,12 +143,12 @@ int	check_pipe_redirect(char *str, char symbol)
 int	val_inputline(char *str) // hmm?
 {
 	if (check_in_quote(str, ft_strlen(str) - 1))
-		return (write(1, "command not found\n", 18));
+		return (write(2, "command not found\n", 18));
 	if (check_pipe_redirect(str, '|'))
-		return (write(1, "command not found\n", 18));
+		return (write(2, "command not found\n", 18));
 	if (check_pipe_redirect(str, '>'))
-		return (write(1, "command not found\n", 18));
+		return (write(2, "command not found\n", 18));
 	if (check_pipe_redirect(str, '<'))
-		return (write(1, "command not found\n", 18));
+		return (write(2, "command not found\n", 18));
 	return (0);
 }

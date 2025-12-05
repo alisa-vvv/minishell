@@ -18,7 +18,7 @@ int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
 	t_token	*check_token;
 
 	check_token = tokenlist_get(tokenlist, pos);
-	execdata->builtin_name = set_builtins(check_token->type);
+	execdata->builtin_name = set_builtins(check_token);
 	execdata->input_is_pipe = false;
 	execdata->output_is_pipe = false;
 	execdata->redirections = NULL;
@@ -35,10 +35,10 @@ void set_command(
 {
 	if (pos == 0 && token_is_redirect(check_token))
 		return;
-	//else if (pos == 0 && (lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos))) && check_token->type == NUMBER)
-	//{
-	//	return;
-	//}
+	else if (pos == 0 && (lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos))))
+	{
+		return;
+	}
 	if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 	{
 		comm_list->argv[*i] = ft_strdup(check_token->value);
@@ -46,9 +46,10 @@ void set_command(
 	}
 	else if (!token_is_redirect(check_token))
 		comm_list->argv[*i] = ft_strdup(check_token->value);
-	comm_list->builtin_name = set_builtins(check_token->type);
+	comm_list->builtin_name = set_builtins(check_token);
 }
 
+//(lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos)))
 // push appropriate token to argv skipping redirects, heredoc delim and pipes 
 // returns: 1 if an argv entry was added, 0 if nothing was added, -1 on malloc/error
 int	add_arg_to_list(
@@ -70,9 +71,9 @@ int	add_arg_to_list(
 			return (0);
 		return (1);
 	}
-	if (lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos)))
+	if (token_is_redirect(check_token))
 	{
-		if (add_redirect(comm_list, tokenlist, pos+1, pos_red))
+		if (add_redirect(comm_list, tokenlist, pos, pos_red))
 			return (-1);
 		return (0);
 	}
@@ -82,7 +83,11 @@ int	add_arg_to_list(
 		return (0);
 	}
 	if (!token_is_redirect(check_token))
+	{
 		comm_list->argv[*i] = ft_strdup(check_token->value);
+		if (comm_list->builtin_name == not_builtin)
+			comm_list->builtin_name = set_builtins(check_token);
+	}
 	return (1);
 }
 

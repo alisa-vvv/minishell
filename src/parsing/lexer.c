@@ -37,7 +37,8 @@ t_token *new_token(
 	return (token);
 }
 
-//returns part of the string before redirect token
+//returns part of the string before redirect token,
+// returning a space token if there is no arg there
 char *before_red(char *str_token)
 {
 	char *result;
@@ -93,59 +94,12 @@ int add_token(
 }
 
 
-//splits redirect tokens into 3 tokens or space if not spec
-int split_redir(
-	t_tokenlist *tokenlist, // look here @alisa
-	char *str_b_token
-)
-{
-	t_token	*prev_token;
-	char	*str_piece;
-	int		len;
-	//int count;
-
-	//count = count_occ(str_b_token, );
-	str_piece = before_red(str_b_token);
-	if (!str_piece)
-		return (write(2, MALLOC_ERR, 16));
-
-	dprintf(STDERR_FILENO, "what is str_piece? (%s)\n", str_piece);
-	if (add_token(tokenlist, str_piece, ft_strlen(str_piece) + 1))
-		return (ft_safe_free((unsigned char **)&str_piece), 1);
-	prev_token = tokenlist_get(tokenlist, tokenlist->total - 1);
-
-	dprintf(STDERR_FILENO, "what is prev_token? (%s)\n", prev_token->value);
-	dprintf(STDERR_FILENO, "what is prev_token's type? (%s)\n", enum_to_str(prev_token->type));
-	// str_piece being set to "-1" breaks this case:
-	// >outfile
-	// also:
-	// " ">outfile
-	// need something different!
-	if (ft_strncmp(str_piece, " ", 2) == 0)
-	{
-		len = l_red(str_b_token);
-		str_piece[0] = '\0';
-	}
-	else
-		len = l_red(str_b_token + (ft_strlen(str_piece)));
-	if (len < 0)
-		return(ft_safe_free((unsigned char **)&str_piece), 1);
-	if (add_token(tokenlist, str_b_token + ft_strlen(str_piece), len + 1))
-		return(ft_safe_free((unsigned char **)&str_piece), 1);
-	// if (str_contains_red(str_b_token + (ft_strlen(str_piece) + len)))
-	// 	split_redir(tokenlist, str_b_token + (ft_strlen(str_piece) + len));
-	else if (add_token(tokenlist, str_b_token + (ft_strlen(str_piece) + len), ft_strlen(str_b_token) - ft_strlen(str_piece) - len + 1))
-		return(ft_safe_free((unsigned char **)&str_piece), 1);
-	ft_safe_free((unsigned char **)&str_piece);
-	return (0);
-}
-
-
 //preps str for redirect splitting and adding tokens
 int prep_token(t_tokenlist *tokenlist,
 	char *str,
 	int i, 
-	int len)
+	int len
+)
 {
 	char *str_b_token;
 	int status; 
@@ -154,12 +108,9 @@ int prep_token(t_tokenlist *tokenlist,
 	if (!str_b_token)
 		return (1);
 	ft_strlcpy(str_b_token, str + i - len, len +1);
-	// if (str_contains_red(str_b_token))
-	// 	status = split_redir(tokenlist, str_b_token);
-	// else
 		status = add_token(tokenlist, str_b_token, len +1);
 	ft_safe_free((unsigned char **)&str_b_token);
-	return (status);
+	return (status); 
 }
 
 
@@ -223,7 +174,7 @@ int	validate_redirect(
 		|| (str[i] == '<' && str[i + 1] == '>')
 		|| (str[i] == '>' && str[i + 1] == '<'))
 	{
-		dprintf(STDERR_FILENO, "PLACEHOLDER, ADD ERROR CHECKING\n");
+		dprintf(STDERR_FILENO, "Wrong redirect\n");
 		return (-1);
 	}
 	return (success);
@@ -241,8 +192,8 @@ int	token_count(
 
 	while (str[i])
 	{
-		dprintf(STDERR_FILENO, "str: %s\n", str);
-		dprintf(STDERR_FILENO, "i: %d\n", i);
+		// dprintf(STDERR_FILENO, "str: %s\n", str);
+		// dprintf(STDERR_FILENO, "i: %d\n", i);
 		if ((!check_in_quote(str, i) && !ft_isspace(str[i])) && !char_is_quote(str[i])
 			&& !char_is_red(str[i]))
 		{
@@ -290,6 +241,7 @@ int	fill_tokenlist(
 		if (len > 0)
 		{
 			if (prep_token(tokenlist, str, i, len))
+
 				return (1);
 		}
 		else if (str[i])
@@ -323,14 +275,16 @@ int	default_lexer(
 		tokenlist_free(token_list);
 		return (write(1, "Failed to fill tokenlist\n", 25));
 	}
-//	test_tokens(token_list);
+	// test_tokens(token_list);
 	if (check_lexer(token_list, msh_data))
 	{
 		tokenlist_free(token_list);
+		free(token_list);
 		return (write(1, "Failed check types\n", 19));
 	}
+	// p_printf("\n\n");
+	// test_tokens(token_list);
 	tokenlist_free(token_list);
 	free(token_list);
-	// ft_safe_free((unsigned char **)&token_list);
 	return (0);
 }

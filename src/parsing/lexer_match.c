@@ -31,7 +31,7 @@ int match_nonterminal(char *str_token)
 	else if (ft_strchr(str_token, '|') != NULL)
 		return (PIPE);
 	// add parsign error cases maybe?
-	return (STRING);
+	return (match_string(str_token));
 }
 
 //check what commands are given
@@ -77,18 +77,14 @@ int match_string(char *str_token)
 // compare to: ls -l >"outfile1>outfile2"
 int	match_token(char *str_token) // needs rework @alisa
 {
-	if (str_token[0] == '\'')
+	if (ft_strchr(str_token, '\''))
 		return (SINGLE_Q);
-	else if (str_token[0] == '"')
+	else if (ft_strchr(str_token, '"'))
 		return (DOUBLE_Q);
 	else if (str_contains_red(str_token) || (str_token[0] == '$')
 			|| str_token[0] == '|' )
 		return (match_nonterminal(str_token));
 	else if ((ft_strchr(str_token, '=') != NULL))
 		return (OPERATOR);
-	//else if (ft_isdigit(str_token[0]))
-	//	return (all_num_alph(str_token));
-	else if (ft_strncmp(str_token, " ", 2) == 0)
-		return (WHITESPACE);
-	return (STRING);
+	return (match_string(str_token));
 }

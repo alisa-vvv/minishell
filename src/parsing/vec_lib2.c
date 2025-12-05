@@ -34,26 +34,23 @@ int ft_free_s_token(void **check_token)
 	if ((*token))
 	{
 		if ((*token)->value)
-			ft_safe_free((unsigned char **)&(*token)->value);
+			//p_printf("STRING = $%s$\n", (*token)->value);
+		ft_safe_free((unsigned char **)&(*token)->value);
 		(*token)->command = 0;
+		(*token)->type = 0;
 		(*token)->pos = 0;
 	}
-	ft_safe_free((unsigned char **)token);
-	
-	// ft_safe_free((unsigned char **)&token[i]->value);
-	// 		token[i]->command = 0;
-	// 		token[i]->pos = 0;
-	// 		token[i]->type = 0;
-	// 	ft_safe_free((unsigned char **)&token[i]);
+	ft_safe_free((unsigned char **)check_token);
 	return (0);
 }
+	
+// ft_safe_free((unsigned char **)&token[i]->value);
+// 		token[i]->command = 0;
+// 		token[i]->pos = 0;
+// 		token[i]->type = 0;
+// 	ft_safe_free((unsigned char **)&token[i]);
 
 
-// if (index < e->total -1)
-// 	ft_memmove(&e->tokens[index], &e->tokens[index+1], (e->total - index -1)(sizeof)t_token);
-// check_token = e->tokens[index +1];
-// if (check_token)
-// 	p_printf("CURR TOKEN = %s\n", check_token->value); 
 //better implementation
 int	tokenlist_delete(t_tokenlist *e, size_t index)
 {
@@ -65,6 +62,7 @@ int	tokenlist_delete(t_tokenlist *e, size_t index)
 	{
 		if ((index < 0) || ((size_t)index >= e->total))
 			return (1);
+		p_printf("DELETE THIS: %p %p\n", e->tokens[index], ((t_token*)e->tokens[index])->value);
 		if (e->tokens[index] != NULL)
 			ft_free_s_token((void **)&e->tokens[index]);
 		while (index < e->total-1)
@@ -74,12 +72,12 @@ int	tokenlist_delete(t_tokenlist *e, size_t index)
 			check_token->pos--;
 			index++;
 		}
+		e->tokens[index]= NULL;
 		e->total--;
 		if ((e->total > 0)
 			&& ((e->total) == (e->size / 4)))
 			tokenlist_resize(e, e->size, e->size / 2);
 	}
-//	index_lexer(&e);
 	return (0);
 }
 
@@ -89,9 +87,9 @@ int	tokenlist_free(t_tokenlist *e)
 	i = 0;
 	if (e)
 	{
-		//ft_free_tokens(e->tokens);
 		while (e->tokens[i])
 		{
+			p_printf("FREE THIS: %p %p\n", e->tokens[i], ((t_token*)e->tokens[i])->value);
 			ft_free_s_token((void **)&e->tokens[i]);
 			i++;
 		}

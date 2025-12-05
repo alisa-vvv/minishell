@@ -119,7 +119,7 @@ int	main(int argc, char **argv, char *envp[])
 			printf("Parsing COMPLETE\n");
 			TEST_MINISHELLDATA(msh_data);
 			if (TEST_lexer_return != 0)
-				printf("PLACEHOLDER ERROR\n");
+				write(2, "syntax error\n", 13);
 			err_check = executor(&msh_data, msh_data.command_count);
 		}
 		/*	endof Test Lexer*/
