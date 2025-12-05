@@ -49,6 +49,7 @@ void set_command(
 	comm_list->builtin_name = set_builtins(check_token->type);
 }
 
+//(lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos)))
 // push appropriate token to argv skipping redirects, heredoc delim and pipes 
 // returns: 1 if an argv entry was added, 0 if nothing was added, -1 on malloc/error
 int	add_arg_to_list(
@@ -61,8 +62,8 @@ int	add_arg_to_list(
 	t_token *check_token;
 
 	check_token = (t_token *)tokenlist->tokens[pos];
-	// if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
-	// 	return (0);
+	if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
+		return (0);
 	if (check_token->command && !token_is_redirect(check_token))
 	{
 		set_command(comm_list, tokenlist, pos, check_token, i);
@@ -70,9 +71,9 @@ int	add_arg_to_list(
 			return (0);
 		return (1);
 	}
-	if (lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos)))
+	if (token_is_redirect(check_token))
 	{
-		if (add_redirect(comm_list, tokenlist, pos+1, pos_red))
+		if (add_redirect(comm_list, tokenlist, pos, pos_red))
 			return (-1);
 		return (0);
 	}
