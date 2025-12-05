@@ -57,6 +57,7 @@ static void	setup_msh_data(
 	if (!msh_data->cur_dir)
 		clean_exit(msh_data, NULL, errno, true); // add error message
 	getcwd(msh_data->cur_dir, PATH_MAX); // ADD ERROR CHECKING!
+	//printf("did we get it? %s\n", msh_data->cur_dir);
 	if (msh_data->cur_dir[0] == '\0')
 		msh_data->cur_dir[0] = '/';
 }

@@ -21,7 +21,7 @@ bool char_is_red(char c)
 	return (0);
 }
 
-//|| ft_strchr(str, '|')
+
 //checks if string contains redirect 
 bool str_contains_red(char *str)
 {
@@ -31,28 +31,28 @@ bool str_contains_red(char *str)
 }
 
 
-//checks if the redirs are only 1 or 2 correct tokens
-bool check_val_redir(char *str)
-{
-	int i;
-	char type;
+// //checks if the redirs are only 1 or 2 correct tokens
+// bool check_val_redir(char *str)
+// {
+// 	int i;
+// 	char type;
 
-	i = 0;
-	type = '0';
-	while (str[i])
-	{
-		if (char_is_red(str[i]))
-		{
-			type = str[i];
-			if (str[i +1] == type && str[i+2] != type && ft_isalnum(str[i+2]))
-				return (true);
-			else if (str[i +1] != type && !ft_isspace(str[i+1]) && !char_is_red(str[i+1]))
-				return (true);
-		}
-		i++;
-	}
-	return(false);
-}
+// 	i = 0;
+// 	type = '0';
+// 	while (str[i])
+// 	{
+// 		if (char_is_red(str[i]))
+// 		{
+// 			type = str[i];
+// 			if (str[i +1] == type && str[i+2] != type && ft_isalnum(str[i+2]))
+// 				return (true);
+// 			else if (str[i +1] != type && !ft_isspace(str[i+1]) && !char_is_red(str[i+1]))
+// 				return (true);
+// 		}
+// 		i++;
+// 	}
+// 	return(false);
+// }
 
 
 //check if redirect

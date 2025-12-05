@@ -61,10 +61,18 @@ typedef enum	e_token_type
 typedef struct s_token
 {
 	t_token_type	type;
-	char		*value;
-	bool		command;
-	size_t		pos;
+	char			*value;
+	bool			command;
+	size_t			pos;
 }			t_token;
+
+typedef struct s_exp_data
+{
+	char 	*name;
+	char	*env_value;
+	char 	*start_var;
+	int 	start_pos;
+}	t_exp_data;
 
 
 int 		all_num_alph(const char *str);

@@ -44,12 +44,6 @@ int ft_free_s_token(void **check_token)
 	return (0);
 }
 	
-// ft_safe_free((unsigned char **)&token[i]->value);
-// 		token[i]->command = 0;
-// 		token[i]->pos = 0;
-// 		token[i]->type = 0;
-// 	ft_safe_free((unsigned char **)&token[i]);
-
 
 //better implementation
 int	tokenlist_delete(t_tokenlist *e, size_t index)
@@ -115,7 +109,7 @@ int	tokenlist_init(t_tokenlist **e, int size)
 	(*e)->tokens = calloc((size_t)(*e)->size +1, sizeof(void *));
 	if (!(*e)->tokens)
 	{
-		fprintf(stderr, "Memory alloc failed in init tokenlist\n");
+		//fprintf(stderr, "Memory alloc failed in init tokenlist\n");
 		exit(EXIT_FAILURE);
 	}
 	(*e)->tokens[size] = NULL;

@@ -50,7 +50,6 @@ int expand_quotes(t_tokenlist *tokenlist,
 
 	count = count_exp(tokenlist, '"');
 	count_single = count_exp(tokenlist, '\'');
-	// p_printf("COUNT SINGLE QUOTES = %d\n", count_single);
 	while (count_single > 0)
 	{
 		if (exp_lexer(tokenlist, msh_data, SINGLE_Q, 0))
@@ -104,8 +103,6 @@ int	check_lexer(t_tokenlist *tokenlist,
 	else if (val_redir(tokenlist, 0))
 		return (write(1, "Wrong redirect\n", 15));
 	set_pipe_cm(tokenlist, 0);
-	// t_printf("\nAfter expansion, rm quotes and set commands:\n");
-	// test_tokens(*tokenlist);
 	if (tokenlist)
 	{
 		if (pass_comm(tokenlist, msh_data, 0, 0))
@@ -152,3 +149,4 @@ int	val_inputline(char *str) // hmm?
 		return (write(2, "command not found\n", 18));
 	return (0);
 }
+

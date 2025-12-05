@@ -136,6 +136,7 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 	return (0);
 }
 
+//e_printf("CHECK TOKEN = %s, POS = %d, ADDRESS = %p", check_token->value, i, &check_token);
 // index lexer by traversing
 int	index_lexer(t_tokenlist **tokenlist)
 {
@@ -147,7 +148,6 @@ int	index_lexer(t_tokenlist **tokenlist)
 	while (i < (size_t)(*tokenlist)->total)
 	{
 		check_token = (t_token *)(*tokenlist)->tokens[i];
-		e_printf("CHECK TOKEN = %s, POS = %d, ADDRESS = %p", check_token->value, i, &check_token);
 		if (!check_token)
 			return (write(1, "No tokens available\n", 20));
 		else 
