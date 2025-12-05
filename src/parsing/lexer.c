@@ -28,7 +28,6 @@ t_token *new_token(
 		return (NULL);
 	token->value = malloc((len + 1) * sizeof(char));
 	ft_strlcpy(token->value, str, len);
-	p_printf("TOKEN VALUE = $%s$\n", token->value);
 	if (!token->value)
 		return (free(token), NULL);
 	token->type = match_token(token->value);
@@ -164,6 +163,7 @@ int count_unq(const char *str, int i, int count)
 	return (count); 
 }
 
+//function to check validity of redirects syntax (better than prev so deleted that one)
 int	validate_redirect(
 	const char *str,
 	int i
@@ -250,6 +250,7 @@ int	fill_tokenlist(
 	return (0);
 }
 
+// test_tokens(token_list);
 // default option to put trimmed input in tokenlist
 int	default_lexer(
 	char *input_line, 
@@ -275,15 +276,12 @@ int	default_lexer(
 		tokenlist_free(token_list);
 		return (write(1, "Failed to fill tokenlist\n", 25));
 	}
-	// test_tokens(token_list);
 	if (check_lexer(token_list, msh_data))
 	{
 		tokenlist_free(token_list);
 		free(token_list);
 		return (write(1, "Failed check types\n", 19));
 	}
-	// p_printf("\n\n");
-	// test_tokens(token_list);
 	tokenlist_free(token_list);
 	free(token_list);
 	return (0);

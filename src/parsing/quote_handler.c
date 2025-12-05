@@ -33,6 +33,7 @@ bool str_is_quote(const char *str, char symbol)
 	return (false);
 }
 
+//	q_printf("count_d = %d & count_s = %d\n", count_d, count_s);
 // check if a certain pos is inside quotes
 int	check_in_quote(const char *str, int pos)
 {
@@ -60,7 +61,6 @@ int	check_in_quote(const char *str, int pos)
 	}
 	count_d %= 2;
 	count_s %= 2;
-	q_printf("count_d = %d & count_s = %d\n", count_d, count_s);
 	return (count_d || count_s);
 }
 
@@ -123,7 +123,6 @@ char *move_str(char *str, int i)
 
 bool	check_quote_rm(const char *str, int i, char symbol)
 {
-
 	if (str[i] && str[i] == symbol)
 	{
 		if (check_in_quote_s(str, i, '\''))
@@ -151,7 +150,6 @@ void rm_str_quotes(char *str, int count, char symbol)
 	else 
 		o_quote = '"';
 	o_count = count_occ(str, o_quote, true);
-	//p_printf(" COUNT O OCC = %d\n", o_count);
 	while (str[i] && (count || o_count))
 	{	
 		if (check_quote_rm(str, i , symbol))
@@ -168,7 +166,6 @@ void rm_str_quotes(char *str, int count, char symbol)
 		}
 		else 
 			i++;
-		// p_printf("STRING = %s\n", str);
 	}
 }
 

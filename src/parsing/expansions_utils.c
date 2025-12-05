@@ -12,6 +12,8 @@
 
 #include "parser.h"
 
+//	p_printf("OFFSET = %s$\n", start + offset);
+// p_printf("LEN IS = %d\n", rem_len);
 
 // prepare leftover parts of str token to keep for the updated string
 char	*prep_leftover(char *str_token, char *start, int offset)
@@ -27,14 +29,11 @@ char	*prep_leftover(char *str_token, char *start, int offset)
 		return (NULL);
 
 	rem_len = ft_strlen(start + offset)+1;
-	p_printf("OFFSET = %s$\n", start + offset);
-	// p_printf("LEN IS = %d\n", rem_len);
 	temp_left = malloc(rem_len * sizeof(char));
 	if (!temp_left)
 		return (NULL);
 	ft_strlcpy(temp_left, start + offset, rem_len +1);
 	*start = '\0';
-	p_printf("TEMP LEFT = %s$\n", temp_left);
 	return (temp_left);
 }
 
@@ -67,7 +66,6 @@ char	*refine_name_var(char *token_name, char *result, char symbol)
 	int		i;
 
 	i = 0;
-	// e_printf("\nSTART = %s\n", start);
 	if (!token_name)
 		return (NULL);
 	result = ft_strdup(token_name + 1);
