@@ -72,6 +72,7 @@ int	tokenlist_delete(t_tokenlist *e, size_t index)
 			check_token->pos--;
 			index++;
 		}
+		e->tokens[index]= NULL;
 		e->total--;
 		if ((e->total > 0)
 			&& ((e->total) == (e->size / 4)))

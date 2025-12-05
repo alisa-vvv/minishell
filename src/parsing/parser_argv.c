@@ -61,8 +61,8 @@ int	add_arg_to_list(
 	t_token *check_token;
 
 	check_token = (t_token *)tokenlist->tokens[pos];
-	if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
-		return (0);
+	// if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
+	// 	return (0);
 	if (check_token->command && !token_is_redirect(check_token))
 	{
 		set_command(comm_list, tokenlist, pos, check_token, i);
