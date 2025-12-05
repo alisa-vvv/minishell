@@ -12,27 +12,28 @@
 
 #include "parser.h"
 
+
+
+//  if (ft_strncmp(check_token->value, "cd", 3) == 0)
+//     return (builtin_cd);
+// else if (ft_strncmp(check_token->value, "pwd", 4) == 0)
+//     return (builtin_pwd);
+// else if (ft_strncmp(check_token->value, "env", 4) == 0)
+// 	return (builtin_env);
+// else if (ft_strncmp(check_token->value, "echo", 5) == 0)
+//     return (builtin_echo);
+// else if (ft_strncmp(check_token->value, "export", 7) == 0)
+//     return (builtin_export);
+// else if (ft_strncmp(check_token->value, "unset", 6) == 0)
+//     return (builtin_unset);
+// else if (ft_strncmp(check_token->value, "exit", 5) == 0)
+// 	return (builtin_exit);
+// else 
+// 	return(not_builtin);
+
+//return the correct builtin for execdata from the token-type 
 t_builtin_name set_builtins(t_token *check_token)
 {
-	//  if (ft_strncmp(check_token->value, "cd", 3) == 0)
-    //     return (builtin_cd);
-    // else if (ft_strncmp(check_token->value, "pwd", 4) == 0)
-    //     return (builtin_pwd);
-    // else if (ft_strncmp(check_token->value, "env", 4) == 0)
-	// 	return (builtin_env);
-    // else if (ft_strncmp(check_token->value, "echo", 5) == 0)
-    //     return (builtin_echo);
-    // else if (ft_strncmp(check_token->value, "export", 7) == 0)
-    //     return (builtin_export);
-    // else if (ft_strncmp(check_token->value, "unset", 6) == 0)
-    //     return (builtin_unset);
-    // else if (ft_strncmp(check_token->value, "exit", 5) == 0)
-	// 	return (builtin_exit);
-	// else 
-	// 	return(not_builtin);
-
-
-
 	if (check_token->type == CD)
 		return (builtin_cd);
 	else if (check_token->type == ECHO)
@@ -76,12 +77,11 @@ int set_heredoc_red(
         check_token = (t_token *)tokenlist->tokens[pos];
 		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 			execdata->input_is_pipe = true;
-		// heredoc parsing broken! @alisa
-		// p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
+		p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
         if (check_token->type != HEREDOC && pos + 1 < tokenlist->total && lookahead(tokenlist, pos)->type == HEREDOC)
             execdata->redirections->dest_filename = ft_strdup(check_token->value);
-		if (check_token->type == (size_t) HEREDOC_DEL)
-			execdata->redirections->heredoc_delim = ft_strdup(check_token->value);
+		if (lookahead(tokenlist, i) && lookahead(tokenlist, i)->type == (size_t) HEREDOC_DEL)
+			execdata->redirections->heredoc_delim = ft_strdup(lookahead(tokenlist, i)->value);
 		if (!token_is_redirect(check_token) && check_token->type != HEREDOC_DEL && lookahead(tokenlist, pos) && lookahead(tokenlist, pos)->type != HEREDOC)
 		{
 			execdata->argv[i] = ft_strdup(check_token->value);

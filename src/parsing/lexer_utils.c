@@ -129,9 +129,8 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 			p_printf("DELETE?\n");
 			tokenlist_delete(tokenlist, i);
 		}
-		else if (check_token->type == HEREDOC && check_token->pos > 0 && lookbehind(tokenlist, i)->type == WHITESPACE)
-			tokenlist_delete(tokenlist, i-1);
-		
+		else if (check_token->type == HEREDOC && lookahead(tokenlist, i))
+			lookahead(tokenlist, i)->type = HEREDOC_DEL;
 		i++;
 	}
 	return (0);

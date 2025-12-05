@@ -275,12 +275,15 @@ int	default_lexer(
 		tokenlist_free(token_list);
 		return (write(1, "Failed to fill tokenlist\n", 25));
 	}
-//	test_tokens(token_list);
+	// test_tokens(token_list);
 	if (check_lexer(token_list, msh_data))
 	{
 		tokenlist_free(token_list);
+		free(token_list);
 		return (write(1, "Failed check types\n", 19));
 	}
+	// p_printf("\n\n");
+	// test_tokens(token_list);
 	tokenlist_free(token_list);
 	free(token_list);
 	return (0);

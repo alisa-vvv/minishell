@@ -28,7 +28,10 @@ int count_exp(t_tokenlist *tokenlist, char symbol)
 		if (!check_token)
 			return (count);
 		if (symbol == '$' && ft_strchr(check_token->value, '$'))
-			count++;
+		{
+			if (i == 0 || (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type != HEREDOC))
+				count++;
+		}
 		else if (symbol == '"' && check_token->type == DOUBLE_Q)
 			count++;
 		else if (symbol == '\'' && check_token->type == SINGLE_Q)
@@ -92,7 +95,7 @@ int	check_lexer(t_tokenlist *tokenlist,
 	expand_param(tokenlist, msh_data);
 	expand_quotes(tokenlist, msh_data);
 	clean_lexer(tokenlist, 0);
-	//contract_list(tokenlist, tokenlist->total-1);
+	contract_list(tokenlist, tokenlist->total-1);
 	if (tokenlist->total < 2)
 	{
 		if (single_token(tokenlist))
