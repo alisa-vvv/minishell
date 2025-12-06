@@ -119,11 +119,9 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 
 	p_printf("CLEAN LEXER: %p %i\n", tokenlist->tokens, tokenlist->total);
 	test_tokens(tokenlist);
-	while (i < tokenlist->total)
+	while (i < tokenlist->total -1)
 	{
 		check_token = tokenlist->tokens[i];
-		// if (!check_token || !check_token->value)
-		// 	return (1);
 		if (check_token && check_token->value && *check_token->value == '\0')
 		{
 			p_printf("DELETE?\n");
