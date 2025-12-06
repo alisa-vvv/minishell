@@ -93,8 +93,8 @@ int	count_redirs(t_tokenlist *tokenlist, int total, int i)
 				redir++;
 			else if (i > 0 && lookbehind(tokenlist, i)->type != PIPE)
 			{
-				if (lookahead(tokenlist, i) && lookahead(tokenlist,
-						i)->type == REDIRECT_IN)
+				if (lookahead(tokenlist, i) && (lookahead(tokenlist,
+						i)->type == REDIRECT_IN || lookahead(tokenlist, i)->type == HEREDOC))
 					redir++;
 			}
 			if (lookahead(tokenlist, i) && (lookahead(tokenlist,

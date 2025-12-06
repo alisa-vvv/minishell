@@ -169,7 +169,8 @@ void rm_str_quotes(char *str, int count, char symbol)
 	}
 }
 
-
+//	p_printf("CHECK TOKEN = %s\n", check_token->value);
+// if (str_is_quote(check_token->value, symbol))
 // rm quotes for certain pos in tokenlist
 int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 {
@@ -177,15 +178,9 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 	int		i;
 	int		count;
 
-	if (symbol == '\'')
-
-
 	i = 0;
 	check_token = (t_token *)tokenlist->tokens[pos];
 	count = (count_occ(check_token->value, symbol, true));
-
-	p_printf("CHECK TOKEN = %s\n", check_token->value);
-	// if (str_is_quote(check_token->value, symbol))
 	if (char_is_quote(symbol))
 		rm_str_quotes(check_token->value, count, symbol);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)

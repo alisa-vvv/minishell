@@ -12,25 +12,6 @@
 
 #include "parser.h"
 
-
-
-//  if (ft_strncmp(check_token->value, "cd", 3) == 0)
-//     return (builtin_cd);
-// else if (ft_strncmp(check_token->value, "pwd", 4) == 0)
-//     return (builtin_pwd);
-// else if (ft_strncmp(check_token->value, "env", 4) == 0)
-// 	return (builtin_env);
-// else if (ft_strncmp(check_token->value, "echo", 5) == 0)
-//     return (builtin_echo);
-// else if (ft_strncmp(check_token->value, "export", 7) == 0)
-//     return (builtin_export);
-// else if (ft_strncmp(check_token->value, "unset", 6) == 0)
-//     return (builtin_unset);
-// else if (ft_strncmp(check_token->value, "exit", 5) == 0)
-// 	return (builtin_exit);
-// else 
-// 	return(not_builtin);
-
 //return the correct builtin for execdata from the token-type 
 t_builtin_name set_builtins(t_token *check_token)
 {
@@ -65,6 +46,9 @@ void set_heredoc_def(t_exec_data* execdata)
 	execdata->redirections->src_fd = -1;
 }
 
+// if (execdata->argv)
+// 	execdata->argv[i] = NULL;
+// p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
 int set_heredoc_red(
 	t_exec_data* execdata, 
 	t_tokenlist *tokenlist, 
@@ -77,7 +61,6 @@ int set_heredoc_red(
         check_token = (t_token *)tokenlist->tokens[pos];
 		if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
 			execdata->input_is_pipe = true;
-		p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value, pos);
         if (check_token->type != HEREDOC && pos + 1 < tokenlist->total && lookahead(tokenlist, pos)->type == HEREDOC)
             execdata->redirections->dest_filename = ft_strdup(check_token->value);
 		if (check_token->type == (size_t) HEREDOC_DEL)
@@ -94,12 +77,11 @@ int set_heredoc_red(
             break;
         }
 	}
-	if (execdata->argv)
-		execdata->argv[i] = NULL;
 	return (0);
 }
 
-// set heredoc 
+// p_printf("POS_RED = %d\n", pos_red);
+// set heredoc default values and red values 
 int set_heredoc(
 	t_exec_data* execdata, 
 	t_tokenlist *tokenlist, 
@@ -115,7 +97,6 @@ int set_heredoc(
 		execdata->redirections = redirlist;
 	set_heredoc_def(execdata);
     set_heredoc_red(execdata, tokenlist, pos, pos_red);
-   // p_printf("POS_RED = %d\n", pos_red);
 	return (0);
 }
 

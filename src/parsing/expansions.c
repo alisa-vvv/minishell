@@ -69,7 +69,7 @@ bool	check_quote_e(char *str, int pos)
 		return (false);
 }
 
-
+// expands variables to env value if found 
 void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, t_exp_data *exp_data)
 {
 	int offset; 
@@ -93,14 +93,20 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, t_exp_data 
 	else 
 		offset = 1;
 	new_str = exp_str_token(str_token, exp_data->start_var, exp_data->env_value, offset);
-	n_token = new_token(tokenlist, new_str, ft_strlen(new_str)+1);
-	if (!n_token)
-		tokenlist_free(tokenlist);
-	tokenlist_set(tokenlist, pos, n_token);
-	(ft_safe_free((unsigned char **)&new_str));
+	if (*new_str == '\0')
+		tokenlist_delete(tokenlist, pos);
+	else
+	{ 
+		n_token = new_token(tokenlist, new_str, ft_strlen(new_str)+1);
+		if (!n_token)
+			tokenlist_free(tokenlist);
+		tokenlist_set(tokenlist, pos, n_token);
+		(ft_safe_free((unsigned char **)&new_str));
+	}
 }
 
-
+//	(ft_safe_free((unsigned char **)(*exp_data)->name), ft_safe_free((unsigned char **)(*exp_data)->env_value));
+//(*exp_data)->start_var = ft_strchr((*exp_data)->start_var +1, '$');
 void exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
 {
 	t_token *check_token; 
@@ -116,9 +122,11 @@ void exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
 	{	
 		expand_new(tokenlist, pos, check_token->value, *exp_data);
 		check_token = tokenlist->tokens[pos];
-		(*exp_data)->start_var = ft_strchr(check_token->value, '$');
+		if (!check_token)
+			(*exp_data)->start_var = NULL;
+		else 
+			(*exp_data)->start_var = ft_strchr(check_token->value, '$');
 	}
-	// (ft_safe_free((unsigned char **)&(*exp_data)->name));
 }
 
 
@@ -140,9 +148,10 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 		if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
 			exp_data->env_value = ft_itoa(msh_data->last_pipeline_return);
 		else if (env_var_get_value(msh_data->env, exp_data->name, &exp_data->env_value) != success)
-				dprintf(STDERR_FILENO, "Failed to malloc env\n");
+			dprintf(STDERR_FILENO, "Failed to malloc env\n");
 		exp_further(*tokenlist, pos, &exp_data);
-		(ft_safe_free((unsigned char **)&exp_data->name));
+		if (exp_data->name) 
+		(	ft_safe_free((unsigned char **)&exp_data->name));
 		if (exp_data->env_value)
 			free(exp_data->env_value);
 	}

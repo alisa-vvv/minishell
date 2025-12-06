@@ -88,7 +88,5 @@ int	match_token(char *str_token) // needs rework @alisa
 		return (OPERATOR);
 	else if (ft_isdigit(str_token[0]))
 		return (all_num_alph(str_token));
-	// else if (ft_strncmp(str_token, " ", 2) == 0)
-	// 	return (WHITESPACE);
 	return (match_string(str_token));
 }
