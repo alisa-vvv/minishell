@@ -36,32 +36,7 @@ t_token *new_token(
 	return (token);
 }
 
-//returns part of the string before redirect token,
-// returning a space token if there is no arg there
-char *before_red(char *str_token)
-{
-	char *result;
-	int i; 
 
-	i = 0;
-	result = NULL;
-	result = ft_strdup(str_token);
-	if (!result)
-		return (NULL);
-	while (result[i])
-	{
-		if (char_is_red(str_token[i]))
-			break;
-		i++;
-	}
-	if (i == 0)
-	{
-		ft_strlcpy(result, " ", 2);
-		return (result);
-	} 
-	result[i] = '\0';
-	return (result);
-}
 
 //last position
 int l_red(char *str)
@@ -264,10 +239,10 @@ int	default_lexer(
 	if (!input_line)
 		return (1);
 	input_line = trim_str_space(input_line);
-	if (val_inputline(input_line)) // what are the validations/returns/mesgs?
+	if (val_inputline(input_line)) 
         return (1);
 	token_c = token_count(input_line, 0);
-	if (!token_c || token_c < 0) // check the !token_c condition relevance
+	if (!token_c || token_c < 0) 
 		return (write(1, "Failed to count tokens\n", 23)); // these error messages should not show in final
 	if (tokenlist_init(&token_list, token_c))
 		return (write(1, "Failed to init tokenlist\n", 25));

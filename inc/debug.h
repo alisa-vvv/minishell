@@ -18,7 +18,7 @@
 # define LEX_ON 0
 # define EXP_ON 0
 # define QUOTE_ON 0
-# define PARSE_ON 1
+# define PARSE_ON 0
 
 # include <stdlib.h>
 # include <stdio.h>

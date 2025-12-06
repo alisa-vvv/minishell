@@ -25,7 +25,6 @@ int merge_tokens(t_tokenlist *tokenlist,
 	check_token = tokenlist->tokens[pos1];
 	extra_token = tokenlist->tokens[pos2];
     check_token->value = ft_strjoin(check_token->value, extra_token->value);
-    
     check_token->pos = pos1;
     tokenlist_delete(tokenlist, pos2);
 	return (0);

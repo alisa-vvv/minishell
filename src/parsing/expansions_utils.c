@@ -12,9 +12,6 @@
 
 #include "parser.h"
 
-//	p_printf("OFFSET = %s$\n", start + offset);
-// p_printf("LEN IS = %d\n", rem_len);
-
 // prepare leftover parts of str token to keep for the updated string
 char	*prep_leftover(char *str_token, char *start, int offset)
 {

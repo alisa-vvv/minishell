@@ -49,7 +49,17 @@ void set_command(
 	comm_list->builtin_name = set_builtins(check_token);
 }
 
-//(lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos)))
+
+void add_arg(t_exec_data *execdata, t_token *check_token, int *i)
+{
+	if (!token_is_redirect(check_token))
+	{
+		execdata->argv[*i] = ft_strdup(check_token->value);
+		if (execdata->builtin_name == not_builtin)
+			execdata->builtin_name = set_builtins(check_token);
+	}
+}
+
 // push appropriate token to argv skipping redirects, heredoc delim and pipes 
 // returns: 1 if an argv entry was added, 0 if nothing was added, -1 on malloc/error
 int	add_arg_to_list(
@@ -71,27 +81,20 @@ int	add_arg_to_list(
 			return (0);
 		return (1);
 	}
-	if (token_is_redirect(check_token))
+	if (token_is_redirect(check_token) || check_token->type == PIPE)
 	{
-		if (add_redirect(comm_list, tokenlist, pos, pos_red))
+		if (check_token->type == PIPE)
+			comm_list->output_is_pipe = true;
+		else if (add_redirect(comm_list, tokenlist, pos, pos_red))
 			return (-1);
 		return (0);
 	}
-	if (check_token->type == PIPE)
-	{
-		comm_list->output_is_pipe = true;
-		return (0);
-	}
-	if (!token_is_redirect(check_token))
-	{
-		comm_list->argv[*i] = ft_strdup(check_token->value);
-		if (comm_list->builtin_name == not_builtin)
-			comm_list->builtin_name = set_builtins(check_token);
-	}
+	add_arg(comm_list, check_token, i);
 	return (1);
 }
 
 
+// p_printf("Token list total = %d\n Token list i = %d\n Token list pos = %d\n", total, i, pos);
 //fill the execdata with specified argv from tokenlist
 int	fill_comm_list(
 	t_exec_data *exec_data,
@@ -121,7 +124,6 @@ int	fill_comm_list(
 			i++;
 		pos++;
 	}
-	p_printf("Token list total = %d\n Token list i = %d\n Token list pos = %d\n", total, i, pos);
 	exec_data->argv[i] = NULL;
 	return (0);
 }

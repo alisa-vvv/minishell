@@ -20,13 +20,6 @@
 // $@ value of each shell arg
 // $* value of all shell arg
 
-// var expansion: $sign, $@sign
-// path expansion
-//--> make expansion first, remove quotes later
-// expand $EMPTY to nothing
-// look for return value in msh struct when accessing $?
-
-
 // counts how many occurrences of a symbol are in one str
 int	count_occ(const char *str, char symbol, bool inside)
 {
@@ -69,15 +62,11 @@ bool	check_quote_e(char *str, int pos)
 		return (false);
 }
 
-// expands variables to env value if found 
-void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, t_exp_data *exp_data)
+int get_offset(t_exp_data *exp_data)
 {
-	int offset; 
-	char *new_str;
-	t_token *n_token;
+	int offset;
 
-	n_token = NULL;
-	p_printf("NAME = %s\n", exp_data->name);
+	offset = 0;
 	if (exp_data->env_value && exp_data->name) 
 		offset = ft_strlen(exp_data->name)+1;
 	else if (!exp_data->env_value && !exp_data->name)
@@ -90,11 +79,29 @@ void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, t_exp_data 
 		exp_data->env_value = "";
 		offset = ft_strlen(exp_data->name)+1;
 	}
-	else 
+	else	
 		offset = 1;
+	return (offset);
+}
+
+
+// p_printf("NAME = %s\n", exp_data->name);
+// expands variables to env value if found 
+void expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token, t_exp_data *exp_data)
+{
+	int offset; 
+	char *new_str;
+	t_token *n_token;
+
+	n_token = NULL;
+	offset = get_offset(exp_data);
 	new_str = exp_str_token(str_token, exp_data->start_var, exp_data->env_value, offset);
 	if (*new_str == '\0')
+	{
+		(ft_safe_free((unsigned char **)&new_str));
+		exp_data->env_value = NULL;
 		tokenlist_delete(tokenlist, pos);
+	}
 	else
 	{ 
 		n_token = new_token(tokenlist, new_str, ft_strlen(new_str)+1);
@@ -153,7 +160,7 @@ int	expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data,
 		if (exp_data->name) 
 		(	ft_safe_free((unsigned char **)&exp_data->name));
 		if (exp_data->env_value)
-			free(exp_data->env_value);
+			ft_safe_free((unsigned char **)&exp_data->env_value);
 	}
 	(ft_safe_free((unsigned char**)&exp_data));
 	return (0);

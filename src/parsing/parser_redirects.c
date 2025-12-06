@@ -38,19 +38,13 @@ int set_type(t_redir_list *redirlist,
 		redirlist->type = trunc;
 	else if (check_token->type == REDIRECT_OUT_APP)
 		redirlist->type = append;
-	prev_token = lookbehind(tokenlist, pos);
-	if (prev_token->type == NUMBER)
-	{
-		redirlist->src_fd = ft_atoi(prev_token->value);
-	}
-	else
-	{
-		if (check_token->type == REDIRECT_IN)
-			redirlist->src_fd = STDIN_FILENO;
-		else if (check_token->type == REDIRECT_OUT
-				|| check_token->type == REDIRECT_OUT_APP)
-			redirlist->src_fd = STDOUT_FILENO;
-	}
+	if (pos > 0)
+		prev_token = lookbehind(tokenlist, pos);
+	if (check_token->type == REDIRECT_IN)
+		redirlist->src_fd = STDIN_FILENO;
+	else if (check_token->type == REDIRECT_OUT
+			|| check_token->type == REDIRECT_OUT_APP)
+		redirlist->src_fd = STDOUT_FILENO;
 	return (0);
 }
 
@@ -78,6 +72,7 @@ int	set_redirect(
 	return (0);
 }
 
+// p_printf("HEREDOC TOKEN VAL = %s\n", check_token->value);
 // add redirect to list of execdata
 int	add_redirect(t_exec_data *execdata, 
 	t_tokenlist *tokenlist, 
@@ -90,7 +85,6 @@ int	add_redirect(t_exec_data *execdata,
 
 	check_token = tokenlist_get(tokenlist, pos);
 
-	p_printf("HEREDOC TOKEN VAL = %s\n", check_token->value);
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));
