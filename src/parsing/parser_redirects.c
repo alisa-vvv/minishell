@@ -84,7 +84,6 @@ int	add_redirect(t_exec_data *execdata,
 	t_redir_list 	*next;
 
 	check_token = tokenlist_get(tokenlist, pos);
-
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
 		return (write(1, MALLOC_ERR, 15));

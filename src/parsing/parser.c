@@ -66,7 +66,9 @@ int	count_next_cm(t_tokenlist *tokenlist, int pos)
 	}
 	return (-1);
 }
-	//	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
+
+// p_printf("TOTAL = %d\n", total);
+//	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
 // make an empty execdata
 int	make_cm_list(t_tokenlist *tokenlist, 
 	t_exec_data *comm_list, 
@@ -89,7 +91,6 @@ int	make_cm_list(t_tokenlist *tokenlist,
 	if (total == 0)
 		return (0);
 	comm_list->argv = malloc(sizeof(char *) * (total + 1));
-	p_printf("TOTAL = %d\n", total);
 	if (!comm_list->argv)
 		return (write(1, MALLOC_ERR, 15));
 	while (++i < total)
@@ -106,8 +107,7 @@ int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, int i, int pos)
 	if (count_lists(tokenlist) == -1)
 		return (write(1, "No lists counted\n", 17));
 	msh_data->command_count = count_lists(tokenlist);
-	msh_data->exec_data = ft_calloc(msh_data->command_count,
-			sizeof(t_exec_data));
+	msh_data->exec_data = ft_calloc(msh_data->command_count, sizeof(t_exec_data));
 	if (!msh_data->exec_data)
 		return (write(2, MALLOC_ERR, 15));
 	while (i < msh_data->command_count)

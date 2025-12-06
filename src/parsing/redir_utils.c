@@ -30,30 +30,22 @@ bool str_contains_red(char *str)
 	return (0);
 }
 
-
-// //checks if the redirs are only 1 or 2 correct tokens
-// bool check_val_redir(char *str)
-// {
-// 	int i;
-// 	char type;
-
-// 	i = 0;
-// 	type = '0';
-// 	while (str[i])
-// 	{
-// 		if (char_is_red(str[i]))
-// 		{
-// 			type = str[i];
-// 			if (str[i +1] == type && str[i+2] != type && ft_isalnum(str[i+2]))
-// 				return (true);
-// 			else if (str[i +1] != type && !ft_isspace(str[i+1]) && !char_is_red(str[i+1]))
-// 				return (true);
-// 		}
-// 		i++;
-// 	}
-// 	return(false);
-// }
-
+//function to check validity of redirects syntax (better than prev so deleted that one)
+int	validate_redirect(
+	const char *str,
+	int i
+)
+{
+	if ((str[i] == '>' && str[i + 1] == '>' && str[i + 2] == '>')
+		|| (str[i] == '<' && str[i + 1] == '<' && str[i + 2] == '<')
+		|| (str[i] == '<' && str[i + 1] == '>')
+		|| (str[i] == '>' && str[i + 1] == '<'))
+	{
+		dprintf(STDERR_FILENO, "Wrong redirect\n");
+		return (-1);
+	}
+	return (success);
+}
 
 //check if redirect
 bool	token_is_redirect(

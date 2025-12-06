@@ -185,6 +185,5 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 		rm_str_quotes(check_token->value, count, symbol);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
 		tokenlist_delete(tokenlist, pos);
-
 	return (0);
 }

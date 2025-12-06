@@ -137,8 +137,11 @@ int	check_pipe_redirect(char *str, char symbol)
 }
 
 // validate input on quotes, pipes
-int	val_inputline(char *str) // hmm?
+int	val_inputline(char *str) 
 {
+	int	i;
+
+	i = 0;
 	if (check_in_quote(str, ft_strlen(str) - 1))
 		return (write(2, "command not found\n", 18));
 	if (check_pipe_redirect(str, '|'))
@@ -147,6 +150,13 @@ int	val_inputline(char *str) // hmm?
 		return (write(2, "command not found\n", 18));
 	if (check_pipe_redirect(str, '<'))
 		return (write(2, "command not found\n", 18));
+	while (str[i])
+	{
+		if (char_is_red(str[i]))
+			if (validate_redirect(str, i) != success)
+				return (msh_perror(NULL, "Wrong redirect", parse_err), 1);
+		i++;
+	}
 	return (0);
 }
 
