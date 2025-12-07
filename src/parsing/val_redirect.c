@@ -14,13 +14,12 @@
 
 bool	set_cm_heredoc(t_tokenlist *tokenlist, int i)
 {
-	if (lookahead(tokenlist, i) != NULL && lookahead(tokenlist,
-			i)->type == HEREDOC)
+	if (looknxt(tokenlist, i) != NULL && looknxt(tokenlist, i)->type == HEREDOC)
 		return (false);
 	return (true);
 }
 
-//(i == 0 && lookahead(tokenlist, i)->type
+//(i == 0 && looknxt(tokenlist, i)->type
 void	set_pipe_cm(
 	t_tokenlist *tlist,
 	size_t i)
@@ -77,26 +76,24 @@ static int	check_heredoc(
 //validate if redir are well placed
 int	val_redir(
 	t_tokenlist *tlist,
-	size_t i)
+	size_t i,
+	t_token *ctok)
 {
-	t_token	*c_token;
-
 	while (i < tlist->total)
 	{
-		c_token = (t_token *)tokenlist_get(tlist, i);
-		if (!c_token)
+		ctok = (t_token *)tokenlist_get(tlist, i);
+		if (!ctok)
 			return (1);
-		if (c_token->type == HEREDOC && i + 1 < tlist->total)
+		if (ctok->type == HEREDOC && i + 1 < tlist->total)
 		{
 			if (check_heredoc(tlist, i + 1))
 				i++;
 			else
 				return (0);
 		}
-		else if ((token_is_redirect(c_token) || c_token->type == PIPE) && !lookahead(tlist, i))
+		else if ((tok_is_red(ctok) || ctok->type == PIPE) && !looknxt(tlist, i))
 			return (1);
-		else if (lookahead(tlist, i) != NULL
-			&& token_is_redirect(lookahead(tlist, i)))
+		else if (looknxt(tlist, i) != NULL && tok_is_red(looknxt(tlist, i)))
 		{
 			if (val_redir_out(tlist, i))
 				return (1);

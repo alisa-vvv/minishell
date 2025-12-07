@@ -94,8 +94,10 @@ int	check_lexer(t_tokenlist *tokenlist,
 				t_msh_data *msh_data)
 {
 	t_pos	*epos;
+	t_token	*token;
 
 	epos = NULL;
+	token = NULL;
 	expand_param(tokenlist, msh_data);
 	expand_quotes(tokenlist, msh_data);
 	clean_lexer(tokenlist, 0);
@@ -105,7 +107,7 @@ int	check_lexer(t_tokenlist *tokenlist,
 		if (single_token(tokenlist))
 			return (write(1, "Single token redir\n", 19));
 	}
-	else if (val_redir(tokenlist, 0))
+	else if (val_redir(tokenlist, 0, token))
 		return (write(1, "Wrong redirect\n", 15));
 	set_pipe_cm(tokenlist, 0);
 	if (tokenlist)

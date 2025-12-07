@@ -45,7 +45,7 @@ int	count_next_cm(t_tokenlist *tokenlist, int pos)
 	while (i < tokenlist->total)
 	{
 		check_token = (t_token *)tokenlist->tokens[i];
-		if (check_token->type == PIPE && lookahead(tokenlist, pos))
+		if (check_token->type == PIPE && looknxt(tokenlist, pos))
 			return (check_token->pos + 1);
 		if (check_token->command)
 			return (check_token->pos);
@@ -97,7 +97,7 @@ int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xp)
 	while ((int)xp->i < msh_data->command_count)
 	{
 		xp->red = count_next_cm(tokenlist, xp->pos);
-		if (xp->red > 0 && lookahead(tokenlist, xp->pos)->type == HEREDOC)
+		if (xp->red > 0 && looknxt(tokenlist, xp->pos)->type == HEREDOC)
 			xp->red = count_next_cm(tokenlist, xp->pos + 1);
 		convert_data(tokenlist, msh_data, xp);
 		if (xp->red > 0 && find_type(tokenlist, xp->pos,

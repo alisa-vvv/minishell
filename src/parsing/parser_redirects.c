@@ -72,15 +72,15 @@ int	set_redirect(
 
 	check_token = tokenlist_get(tokenlist, pos);
 	set_redir_def(redirlist);
-	if (token_is_redirect(check_token))
+	if (tok_is_red(check_token))
 	{
-		if (lookahead(tokenlist, pos))
-			redirlist->dest_filename = ft_strdup(lookahead(tokenlist,
+		if (looknxt(tokenlist, pos))
+			redirlist->dest_filename = ft_strdup(looknxt(tokenlist,
 						pos)->value);
-		if (lookahead(tokenlist, pos + 1)
-			&& token_is_redirect(lookahead(tokenlist, pos + 1)))
+		if (looknxt(tokenlist, pos + 1)
+			&& tok_is_red(looknxt(tokenlist, pos + 1)))
 		{
-			check_token = lookahead(tokenlist, pos);
+			check_token = looknxt(tokenlist, pos);
 			check_token->type = STRING;
 		}
 		set_type(redirlist, tokenlist, pos);
