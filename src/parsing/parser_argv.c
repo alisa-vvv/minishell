@@ -26,20 +26,23 @@ int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
 }
 
 //sets command details in the argv for execdata
-void set_command(
+void	set_command(
 	t_exec_data *comm_list,
 	t_tokenlist *tokenlist,
-	int pos,
-	t_token *check_token,
+	t_pos *xpos,
 	int *i)
 {
-	if (pos == 0 && token_is_redirect(check_token))
-		return;
-	else if (pos == 0 && (lookahead(tokenlist, pos) && token_is_redirect(lookahead(tokenlist, pos))))
+	t_token	*check_token;
+
+	check_token = tokenlist->tokens[xpos->pos];
+	if (xpos->pos == 0 && token_is_redirect(check_token))
+		return ;
+	else if (xpos->pos == 0 && (lookahead(tokenlist, xpos->pos)
+			&& token_is_redirect(lookahead(tokenlist, xpos->pos))))
 	{
-		return;
+		return ;
 	}
-	if (pos > 0 && lookbehind(tokenlist, pos)->type == PIPE)
+	if (xpos->pos > 0 && lookbehind(tokenlist, xpos->pos)->type == PIPE)
 	{
 		comm_list->argv[*i] = ft_strdup(check_token->value);
 		comm_list->input_is_pipe = true;
@@ -49,8 +52,7 @@ void set_command(
 	comm_list->builtin_name = set_builtins(check_token);
 }
 
-
-void add_arg(t_exec_data *execdata, t_token *check_token, int *i)
+void	add_arg(t_exec_data *execdata, t_token *check_token, int *i)
 {
 	if (!token_is_redirect(check_token))
 	{
@@ -60,23 +62,23 @@ void add_arg(t_exec_data *execdata, t_token *check_token, int *i)
 	}
 }
 
-// push appropriate token to argv skipping redirects, heredoc delim and pipes 
-// returns: 1 if an argv entry was added, 0 if nothing was added, -1 on malloc/error
+// push appropriate token to argv skipping redirects, heredoc delim and pipes
+// returns: 1 if an argv entry was added, 0 if nothing was added,
+//	-1 on malloc/error
 int	add_arg_to_list(
 	t_exec_data *comm_list,
 	t_tokenlist *tokenlist,
-	int *i,
-	size_t pos,
-	int pos_red)
+	t_pos *xpos,
+	int *i)
 {
-	t_token *check_token;
+	t_token	*check_token;
 
-	check_token = (t_token *)tokenlist->tokens[pos];
-	if (pos > 0 && token_is_redirect(lookbehind(tokenlist, pos)))
+	check_token = (t_token *)tokenlist->tokens[xpos->pos];
+	if (xpos->pos > 0 && token_is_redirect(lookbehind(tokenlist, xpos->pos)))
 		return (0);
 	if (check_token->command && !token_is_redirect(check_token))
 	{
-		set_command(comm_list, tokenlist, pos, check_token, i);
+		set_command(comm_list, tokenlist, xpos, i);
 		if (!comm_list->argv[*i])
 			return (0);
 		return (1);
@@ -85,7 +87,7 @@ int	add_arg_to_list(
 	{
 		if (check_token->type == PIPE)
 			comm_list->output_is_pipe = true;
-		else if (add_redirect(comm_list, tokenlist, pos, pos_red))
+		else if (add_redirect(comm_list, tokenlist, xpos->pos, xpos->red))
 			return (-1);
 		return (0);
 	}
@@ -93,28 +95,27 @@ int	add_arg_to_list(
 	return (1);
 }
 
-
-// p_printf("Token list total = %d\n Token list i = %d\n Token list pos = %d\n", total, i, pos);
+// p_printf("Token list total = %d\n Token list i = %d\n Token list pos = %d\n",
+//		total, i, pos);
 //fill the execdata with specified argv from tokenlist
 int	fill_comm_list(
 	t_exec_data *exec_data,
 	t_tokenlist *tokenlist,
-	size_t pos,
-	int pos_red)
+	t_pos *xpos)
 {
 	size_t	total;
 	int		i;
 	int		added;
 
 	i = 0;
-	set_exec_def(exec_data, tokenlist, pos);
-	if (pos_red < 0)
+	set_exec_def(exec_data, tokenlist, xpos->pos);
+	if (xpos->red < 0)
 		total = tokenlist->total;
 	else
-		total = pos_red;
-	while (pos < total)
+		total = xpos->red;
+	while ((size_t)xpos->pos < total)
 	{
-		added = add_arg_to_list(exec_data, tokenlist, &i, pos, pos_red);
+		added = add_arg_to_list(exec_data, tokenlist, xpos, &i);
 		if (added == -1)
 		{
 			free_2d_arr((void *)exec_data->argv);
@@ -122,7 +123,7 @@ int	fill_comm_list(
 		}
 		if (added == 1)
 			i++;
-		pos++;
+		xpos->pos++;
 	}
 	exec_data->argv[i] = NULL;
 	return (0);

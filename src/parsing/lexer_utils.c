@@ -12,49 +12,6 @@
 
 #include "parser.h"
 
-int	skip_blanks(char *str, int pos)
-{
-	int	count;
-
-	count = 0;
-	while (!check_in_quote(str, pos) && ft_isspace(*str))
-	{
-		count++;
-		str++;
-	}
-	// l_printf("%d\n", count);
-	return (count);
-}
-
-// trims input to have 1 space
-char	*trim_str_space(char *str)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = ft_strlen(str) - 1;
-	while (ft_isspace(str[j] && char_is_quote(str[j])))
-	{
-		str[j] = '\0';
-		j--;
-	}
-	j = 0;
-	while (str[j])
-	{
-		if ((i == 0 && skip_blanks(str, j) >= 1))
-			j += skip_blanks(str, j);
-		else if (skip_blanks(str, j) > 1)
-			j += skip_blanks(str, j + 1);
-		str[i] = str[j];
-		i++;
-		j++;
-	}
-	str[i] = '\0';
-	l_printf("trimmed str = %s$\n", str);
-	return (str);
-}
-
 //move over quoted str and return the length of quoted text incl quotes
 int	move_over_quote(const char *str, int pos)
 {
@@ -65,7 +22,7 @@ int	move_over_quote(const char *str, int pos)
 		return (0);
 	start = pos;
 	quote = str[pos];
-	pos++; 
+	pos++;
 	while (str[pos] && str[pos] != quote)
 		pos++;
 	if (str[pos] == quote)
@@ -76,12 +33,11 @@ int	move_over_quote(const char *str, int pos)
 		{
 			pos += move_over_quote(str, pos);
 		}
-		else 
+		else
 			pos++;
-	} 
+	}
 	return (pos - start);
 }
-
 
 // returns len of tokens
 int	set_len(const char *str, int i)
@@ -111,20 +67,21 @@ int	set_len(const char *str, int i)
 	return (len);
 }
 
+// p_printf("DELETE?\n");
 //*check_token->value == '\0'
+// p_printf("CLEAN LEXER: %p %i\n", tokenlist->tokens, tokenlist->total);
+// test_tokens(tokenlist);
+
 // deletes empty tokens from the tokenlist
 int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 {
 	t_token	*check_token;
 
-	p_printf("CLEAN LEXER: %p %i\n", tokenlist->tokens, tokenlist->total);
-	test_tokens(tokenlist);
-	while (i < tokenlist->total -1)
+	while (i < tokenlist->total - 1)
 	{
 		check_token = tokenlist->tokens[i];
 		if (check_token && check_token->value && *check_token->value == '\0')
 		{
-			p_printf("DELETE?\n");
 			tokenlist_delete(tokenlist, i);
 		}
 		else if (check_token->type == HEREDOC && lookahead(tokenlist, i))
@@ -134,7 +91,9 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 	return (0);
 }
 
-//e_printf("CHECK TOKEN = %s, POS = %d, ADDRESS = %p", check_token->value, i, &check_token);
+// e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
+//e_printf("CHECK TOKEN = %s, POS = %d, ADDRESS = %p", check_token->value, i,
+//		&check_token);
 // index lexer by traversing
 int	index_lexer(t_tokenlist **tokenlist)
 {
@@ -142,13 +101,12 @@ int	index_lexer(t_tokenlist **tokenlist)
 	t_token	*check_token;
 
 	i = 0;
-	// e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
 	while (i < (size_t)(*tokenlist)->total)
 	{
 		check_token = (t_token *)(*tokenlist)->tokens[i];
 		if (!check_token)
 			return (write(1, "No tokens available\n", 20));
-		else 
+		else
 			check_token->pos = i;
 		i++;
 	}

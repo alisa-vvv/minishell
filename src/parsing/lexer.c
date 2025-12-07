@@ -12,96 +12,19 @@
 
 #include "parser.h"
 
-// make a new token in the array
-t_token *new_token(
-	t_tokenlist *tokenlist,
-	char *str, 
-	int len
-)
-{
-	t_token	*token;
-
-	if (!*str)
-		return (NULL);
-	token = calloc(1, sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->value = malloc((len + 1) * sizeof(char));
-	ft_strlcpy(token->value, str, len);
-	if (!token->value)
-		return (free(token), NULL);
-	token->type = match_token(token->value);
-	token->command = false;
-	token->pos = tokenlist_total(tokenlist);
-	return (token);
-}
-
-
-
-//last position
-int l_red(char *str)
-{
-
-	if (str[0] == str[1] && str[2] != str[1] && char_is_red(str[0]))
-		return (2);
-	else if (char_is_red(str[0]) && str[0] != str[1])
-		return (1);
-	else 
-		return (-1);
-}
-
-//add new token to the list and updates total
-int add_token(
-	t_tokenlist *tokenlist, 
-	char *str, 
-	size_t len)
-{
-	t_token	*token;
-
-	token = NULL;
-	// l_printf("len = %zu ", len);
-	token = new_token(tokenlist, str, len);
-	if (!token)
-		return (write(2, MALLOC_ERR, 15));
-	tokenlist_add(tokenlist, token);
-	return (0);
-}
-
-
-//preps str for redirect splitting and adding tokens
-int prep_token(t_tokenlist *tokenlist,
-	char *str,
-	int i, 
-	int len
-)
-{
-	char *str_b_token;
-	int status; 
-
-	str_b_token = malloc((len + 1) * sizeof(char));
-	if (!str_b_token)
-		return (1);
-	ft_strlcpy(str_b_token, str + i - len, len +1);
-		status = add_token(tokenlist, str_b_token, len +1);
-	ft_safe_free((unsigned char **)&str_b_token);
-	return (status); 
-}
-
-
-
 //returns len of unquoted token
-int move_o_unquoted(const char *str, int i)
+int	move_o_unquoted(const char *str, int i)
 {
-	int len;
+	int	len;
 
 	len = 0;
-	
-	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]) && !char_is_red(str[i]))
+	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i])
+		&& !char_is_red(str[i]))
 	{
 		len++;
 		i++;
 	}
-	if (str[i] && char_is_quote(str[i]) && str[i -1] == '=')
+	if (str[i] && char_is_quote(str[i]) && str[i - 1] == '=')
 	{
 		i++;
 		while (str[i] && !char_is_quote(str[i]))
@@ -110,15 +33,14 @@ int move_o_unquoted(const char *str, int i)
 			i++;
 		}
 		i++;
-		len += 2; 
+		len += 2;
 	}
 	return (len);
 }
 
 //checks the length of unquoted str token
-int count_unq(const char *str, int i, int count)
+int	count_unq(const char *str, int i, int count)
 {
-	
 	if (!char_is_red(str[i]))
 		count++;
 	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]))
@@ -126,54 +48,34 @@ int count_unq(const char *str, int i, int count)
 		if (char_is_red(str[i]))
 		{
 			count++;
-			if ((char_is_red(str[i]) && i == 0 ) || (i > 0 && ft_isspace(str[i-1]) && char_is_red(str[i])))
+			if ((char_is_red(str[i]) && i == 0) || (i > 0 && ft_isspace(str[i
+							- 1]) && char_is_red(str[i])))
 				count++;
 			while (str[i] && char_is_red(str[i]))
 				i++;
 			if (str[i] && !char_is_red(str[i]) && !ft_isspace(str[i]))
 				count++;
-		} 
+		}
 		i++;
 	}
-	return (count); 
+	return (count);
 }
 
-//function to check validity of redirects syntax (better than prev so deleted that one)
-int	validate_redirect(
-	const char *str,
-	int i
-)
-{
-	if ((str[i] == '>' && str[i + 1] == '>' && str[i + 2] == '>')
-		|| (str[i] == '<' && str[i + 1] == '<' && str[i + 2] == '<')
-		|| (str[i] == '<' && str[i + 1] == '>')
-		|| (str[i] == '>' && str[i + 1] == '<'))
-	{
-		dprintf(STDERR_FILENO, "Wrong redirect\n");
-		return (-1);
-	}
-	return (success);
-}
-
- //counts args to size up elementlist
+//counts args to size up elementlist
 int	token_count(
 	const char *str,
-	int i
-)
+	int i)
 {
 	int	tokencount;
 
 	tokencount = 0;
-
 	while (str[i])
 	{
-		// dprintf(STDERR_FILENO, "str: %s\n", str);
-		// dprintf(STDERR_FILENO, "i: %d\n", i);
-		if ((!check_in_quote(str, i) && !ft_isspace(str[i])) && !char_is_quote(str[i])
-			&& !char_is_red(str[i]))
+		if ((!check_in_quote(str, i) && !ft_isspace(str[i]))
+			&& !char_is_quote(str[i]) && !char_is_red(str[i]))
 		{
-			tokencount = count_unq(str, i, tokencount); 
-			i += move_o_unquoted(str, i) ;
+			tokencount = count_unq(str, i, tokencount);
+			i += move_o_unquoted(str, i);
 		}
 		else if (char_is_quote(str[i]))
 		{
@@ -183,24 +85,19 @@ int	token_count(
 		else if (char_is_red(str[i]))
 		{
 			tokencount++;
-			if (validate_redirect(str, i) != success)
-				return (-1); // this is placeholder, might need better error logic
 			while (char_is_red(str[i]))
 				i++;
 		}
 		else
 			i++;
 	}
-	t_printf("Token count = %d\n", tokencount);
 	return (tokencount);
 }
 
-
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(
-	t_tokenlist *tokenlist, 
-	char *str
-)
+	t_tokenlist *tokenlist,
+	char *str)
 {
 	int		i;
 	size_t	len;
@@ -208,7 +105,7 @@ int	fill_tokenlist(
 	i = 0;
 	len = 0;
 	if (!str)
-		return(1);
+		return (1);
 	while (str[i])
 	{
 		len = set_len(str, i);
@@ -216,7 +113,6 @@ int	fill_tokenlist(
 		if (len > 0)
 		{
 			if (prep_token(tokenlist, str, i, len))
-
 				return (1);
 		}
 		else if (str[i])
@@ -228,22 +124,22 @@ int	fill_tokenlist(
 // test_tokens(token_list);
 // default option to put trimmed input in tokenlist
 int	default_lexer(
-	char *input_line, 
+	char *input_line,
 	t_msh_data *msh_data)
 {
-	int		token_c;
-	t_tokenlist *token_list;
+	int			token_c;
+	t_tokenlist	*token_list;
 
 	token_list = NULL;
 	token_c = 0;
 	if (!input_line)
 		return (1);
 	input_line = trim_str_space(input_line);
-	if (val_inputline(input_line)) 
-        return (1);
+	if (val_inputline(input_line))
+		return (1);
 	token_c = token_count(input_line, 0);
-	if (!token_c || token_c < 0) 
-		return (write(1, "Failed to count tokens\n", 23)); // these error messages should not show in final
+	if (!token_c || token_c < 0)
+		return (write(1, "Failed to count tokens\n", 23));
 	if (tokenlist_init(&token_list, token_c))
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (fill_tokenlist(token_list, input_line))
@@ -258,6 +154,5 @@ int	default_lexer(
 		return (write(1, "Failed check types\n", 19));
 	}
 	tokenlist_free(token_list);
-	free(token_list);
-	return (0);
+	return (free(token_list), 0);
 }
