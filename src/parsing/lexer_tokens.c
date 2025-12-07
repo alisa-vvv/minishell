@@ -1,0 +1,82 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                         ::::::::           */
+/*   lexer_tokens.c                                      :+:    :+:           */
+/*                                                      +:+                   */
+/*   By: adecheri <marvin@42.fr>                       +#+                    */
+/*                                                    +#+                     */
+/*   Created: 2025/12/07 20:34:47 by adecheri       #+#    #+#                */
+/*   Updated: 2025/12/07 20:34:49 by adecheri       ########   odam.nl        */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "parser.h"
+
+// make a new token in the array
+t_token	*new_token(
+	t_tokenlist *tokenlist,
+	char *str,
+	int len)
+{
+	t_token	*token;
+
+	if (!*str)
+		return (NULL);
+	token = calloc(1, sizeof(t_token));
+	if (!token)
+		return (NULL);
+	token->value = malloc((len + 1) * sizeof(char));
+	ft_strlcpy(token->value, str, len);
+	if (!token->value)
+		return (free(token), NULL);
+	token->type = match_token(token->value);
+	token->command = false;
+	token->pos = tokenlist_total(tokenlist);
+	return (token);
+}
+
+//last position
+int	l_red(char *str)
+{
+	if (str[0] == str[1] && str[2] != str[1] && char_is_red(str[0]))
+		return (2);
+	else if (char_is_red(str[0]) && str[0] != str[1])
+		return (1);
+	else
+		return (-1);
+}
+
+// l_printf("len = %zu ", len);
+//add new token to the list and updates total
+int	add_token(
+	t_tokenlist *tokenlist,
+	char *str,
+	size_t len)
+{
+	t_token	*token;
+
+	token = NULL;
+	token = new_token(tokenlist, str, len);
+	if (!token)
+		return (write(2, MALLOC_ERR, 15));
+	tokenlist_add(tokenlist, token);
+	return (0);
+}
+
+//preps str for redirect splitting and adding tokens
+int	prep_token(t_tokenlist *tokenlist,
+				char *str,
+				int i,
+				int len)
+{
+	char	*str_b_token;
+	int		status;
+
+	str_b_token = malloc((len + 1) * sizeof(char));
+	if (!str_b_token)
+		return (1);
+	ft_strlcpy(str_b_token, str + i - len, len + 1);
+	status = add_token(tokenlist, str_b_token, len + 1);
+	ft_safe_free((unsigned char **)&str_b_token);
+	return (status);
+}

@@ -10,58 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "parser.h"
 
-
-bool char_is_red(char c)
+bool	char_is_red(char c)
 {
 	if (c == '<' || c == '>' || c == '|')
 		return (1);
 	return (0);
 }
 
-
-//checks if string contains redirect 
-bool str_contains_red(char *str)
+//checks if string contains redirect
+bool	str_contains_red(char *str)
 {
 	if (ft_strchr(str, '>') || ft_strchr(str, '<'))
 		return (1);
 	return (0);
 }
 
-//function to check validity of redirects syntax (better than prev so deleted that one)
+//function to check validity of redirects syntax 
 int	validate_redirect(
 	const char *str,
-	int i
-)
+	int i)
 {
 	if ((str[i] == '>' && str[i + 1] == '>' && str[i + 2] == '>')
 		|| (str[i] == '<' && str[i + 1] == '<' && str[i + 2] == '<')
-		|| (str[i] == '<' && str[i + 1] == '>')
-		|| (str[i] == '>' && str[i + 1] == '<'))
+		|| (str[i] == '<' && str[i + 1] == '>') || (str[i] == '>' && str[i
+				+ 1] == '<'))
 	{
 		dprintf(STDERR_FILENO, "Wrong redirect\n");
 		return (-1);
 	}
 	return (success);
 }
-
-//check if redirect
-bool	token_is_redirect(
-	t_token *check_token)
-{
-	if (!check_token)
-		return (NULL);
-	if (check_token->type == HEREDOC || check_token->type == REDIRECT_IN
-		|| check_token->type == REDIRECT_OUT
-		|| check_token->type == REDIRECT_OUT_APP)
-		return (true);
-	return (false);
-}
-
-
-
-
-
-

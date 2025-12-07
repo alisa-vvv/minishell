@@ -33,13 +33,17 @@ CFILES_VECLIB	=	vec_lib.c\
 					vec_lib3.c
 CFILES_PARSER	=	debug.c\
 					lexer_match.c\
+					lexer_utils2.c\
 					lexer_utils.c\
 					expansions_utils.c\
 					expansions.c\
+					lexer_tokens.c\
 					lexer.c\
-					lexer2.c\
 					lexer3.c\
+					lexer2.c\
+					quote_utils.c\
 					quote_handler.c\
+					redir_utils2.c\
 					redir_utils.c\
 					val_redirect.c\
 					parser_utils.c\
