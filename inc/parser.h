@@ -26,8 +26,6 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-# define MALLOC_ERR "Error! malloc()"
-
 typedef enum	e_token_type
 {
 	COMMAND,
@@ -145,7 +143,7 @@ int			count_lists(t_tokenlist *tokenlist);
 int			count_next_cm(t_tokenlist *tokenlist, int pos);
 char *		prep_leftover(char *str_token, char *start,  int offset);
 char *		exp_str_token(char *str_token, char *start, char *value, int offset);
-char *		refine_name(char *token_name, char *result, char symbol);
+int			refine_name(char *token_name, char **result, char symbol);
 t_builtin_name set_builtins(t_token *check_token);
 int			find_type(t_tokenlist *tokenlist, size_t pos, int red, t_token_type type);
 int			fill_comm_list(t_exec_data *execdata, t_tokenlist *tokenlist, t_pos *xpos);

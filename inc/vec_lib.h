@@ -37,7 +37,7 @@
 	int						tokenlist_set(t_tokenlist *e, size_t index, void *token);
 	void					*tokenlist_get(t_tokenlist *e, size_t index);
 	int						tokenlist_delete(t_tokenlist *e, size_t index);
-	int						tokenlist_free(t_tokenlist *e);
+	void						tokenlist_free(t_tokenlist *e);
 	int						tokenlist_init(t_tokenlist **e, int size);
 	int						ft_free_s_token(void **check_token);
 	// int					element_swap(element *e, void *token, size_t pos1,

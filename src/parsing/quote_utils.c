@@ -24,9 +24,7 @@ bool	char_is_quote(char c)
 bool	str_is_quote(const char *str, char symbol)
 {
 	int	len;
-	int	i;
 
-	i = 0;
 	len = ft_strlen(str) - 1;
 	if (str[0] == symbol && str[len] == symbol)
 		return (true);

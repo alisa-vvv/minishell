@@ -56,29 +56,32 @@ char	*exp_str_token(char *str_token, char *start, char *value, int offset)
 
 // e_printf("\nRESULT = %s$\n", result);
 // get name of env var from token_name
-char	*refine_name(char *token_name, char *result, char symbol)
+int	refine_name(char *token_name, char **result, char symbol)
 {
 	int	i;
 
 	i = 0;
 	if (!token_name)
-		return (NULL);
-	result = ft_strdup(token_name + 1);
-	if (!result)
-		return (NULL);
-	while (result[i])
+	{
+		*result = NULL;
+		return (success);
+	}
+	*result = ft_strdup(token_name + 1);
+	if (!*result)
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+	while ((*result)[i])
 	{
 		if (symbol == '$')
 		{
-			if (char_is_quote(result[i]) || result[i] == '$'
-				|| ft_isspace(result[i]) || char_is_red(result[i])
-				|| !(ft_isprint(result[i]) || result[i] == '_'))
+			if (char_is_quote((*result)[i]) || (*result)[i] == '$'
+				|| ft_isspace((*result)[i]) || char_is_red((*result)[i])
+				|| !(ft_isprint((*result)[i]) || (*result)[i] == '_'))
 				break ;
 		}
 		i++;
 	}
-	result[i] = '\0';
-	return (result);
+	(*result)[i] = '\0';
+	return (success);
 }
 
 // counts how many occurrences of a symbol are in one str

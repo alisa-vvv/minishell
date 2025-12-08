@@ -37,8 +37,7 @@ int	validate_redirect(
 		|| (str[i] == '<' && str[i + 1] == '>') || (str[i] == '>' && str[i
 				+ 1] == '<'))
 	{
-		dprintf(STDERR_FILENO, "Wrong redirect\n");
-		return (-1);
+		return (-1); // change return value
 	}
 	return (success);
 }

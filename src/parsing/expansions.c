@@ -91,27 +91,31 @@ void	exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
 }
 
 // expand known var and otherwise delete and re-position all tokens
-int	expand_var(t_tokenlist **tokenlist,
-				int pos,
-				t_msh_data *msh_data,
-				t_token *check_token)
+int	expand_var(
+	t_tokenlist **tokenlist,
+	int pos,
+	t_msh_data *msh_data,
+	t_token *check_token
+)
 {
 	t_exp_data	*exp_data;
+	int			err;
 
 	exp_data = ft_calloc(1, sizeof(t_exp_data));
 	if (!exp_data)
-		return (write(1, MALLOC_ERR, 15));
+		return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
 	exp_data->start_var = ft_strchr(check_token->value, '$');
 	while (exp_data->start_var)
 	{
 		check_token = (*tokenlist)->tokens[pos];
 		exp_data->start_pos = exp_data->start_var - check_token->value;
-		exp_data->name = refine_name(exp_data->start_var, exp_data->name, '$');
+		err = refine_name(exp_data->start_var, &exp_data->name, '$');
+		if (err != success)
+			return (err);
 		if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
-			exp_data->env_value = ft_itoa(msh_data->last_pipeline_return);
-		else if (env_var_get_value(msh_data->env, exp_data->name,
-				&exp_data->env_value) != success)
-			dprintf(STDERR_FILENO, "Failed to malloc env\n");
+			exp_data->env_value = ft_itoa(msh_data->last_pipeline_return); // malloc err?
+		else if (env_var_get_value(msh_data->env, exp_data->name, &exp_data->env_value) != success)
+			return (malloc_err); // free anything?
 		exp_further(*tokenlist, pos, &exp_data);
 		if (exp_data->name)
 			(ft_safe_free((unsigned char **)&exp_data->name));
@@ -119,7 +123,7 @@ int	expand_var(t_tokenlist **tokenlist,
 			ft_safe_free((unsigned char **)&exp_data->env_value);
 	}
 	(ft_safe_free((unsigned char **)&exp_data));
-	return (0);
+	return (success);
 }
 
 // e_printf("Token type = %s\n", enum_to_str(check_token->type));
@@ -138,12 +142,12 @@ int	exp_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data, int type, size_t i)
 				|| check_token->type == DOUBLE_Q
 				|| check_token->type == SINGLE_Q))
 		{
-			expand_var(&tokenlist, i, msh_data, check_token);
+			expand_var(&tokenlist, i, msh_data, check_token); // this needs to check
 		}
 		else if (type == SINGLE_Q && (int)check_token->type == SINGLE_Q)
-			rm_quotes(tokenlist, i, '\'');
+			rm_quotes(tokenlist, i, '\''); // err check
 		else if (type == DOUBLE_Q && (int)check_token->type == DOUBLE_Q)
-			rm_quotes(tokenlist, i, '"');
+			rm_quotes(tokenlist, i, '"'); // err check
 		i++;
 	}
 	return (0);

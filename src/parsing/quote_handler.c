@@ -92,7 +92,7 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 	if (char_is_quote(symbol))
 		rm_str_quotes(check_token->value, q);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
-		tokenlist_delete(tokenlist, pos);
+		tokenlist_delete(tokenlist, pos); // errro check
 	free(q);
 	return (0);
 }

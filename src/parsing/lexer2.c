@@ -75,7 +75,7 @@ int	expand_param(t_tokenlist *tokenlist,
 	count = count_exp(tokenlist, '$');
 	while (count > 0)
 	{
-		if (exp_lexer(tokenlist, msh_data, PARAMETER, 0))
+		if (exp_lexer(tokenlist, msh_data, PARAMETER, 0)) // lots of error checking to be done here
 			return (write(1, "Wrong variable\n", 15));
 		count--;
 	}
@@ -95,10 +95,13 @@ int	check_lexer(t_tokenlist *tokenlist,
 {
 	t_pos	*epos;
 	t_token	*token;
+	int		err;
 
 	epos = NULL;
 	token = NULL;
-	expand_param(tokenlist, msh_data);
+	err = expand_param(tokenlist, msh_data); // err check on all these?
+	if (err != success)
+		return (err);
 	expand_quotes(tokenlist, msh_data);
 	clean_lexer(tokenlist, 0);
 	contract_list(tokenlist, tokenlist->total - 1);

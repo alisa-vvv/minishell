@@ -48,14 +48,12 @@ int	tokenlist_resize(t_tokenlist *e, int oldsize, int newsize)
 	{
 		tokens = ft_realloc(e->tokens, sizeof(void *) * oldsize, sizeof(void *)
 				* newsize);
-		if (tokens)
-		{
-			e->tokens = tokens;
-			e->size = newsize;
-			return (0);
-		}
+		if (!tokens)
+			return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
+		e->tokens = tokens;
+		e->size = newsize;
 	}
-	return (-1);
+	return (success);
 }
 
 // p_printf("RESIZE?\n");
@@ -66,19 +64,16 @@ int	tokenlist_add(t_tokenlist *e, void *token)
 	status = -1;
 	if (e)
 	{
+		status = success;
 		if (e->size == e->total)
 		{
 			status = tokenlist_resize(e, e->size, e->size * 2);
-			if (status != 0)
-				return (-1);
+			if (status != success)
+				return (status);
 			e->tokens[e->total++] = token;
-			status = 0;
 		}
 		else
-		{
 			e->tokens[e->total++] = token;
-			status = 0;
-		}
 	}
 	return (status);
 }

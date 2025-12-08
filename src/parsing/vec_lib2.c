@@ -50,9 +50,11 @@ int	ft_free_s_token(void **check_token)
 //better implementation
 int	tokenlist_delete(t_tokenlist *e, size_t index)
 {
-	t_token			*check_token;
-	
-	if (e)
+	t_token	*check_token;
+	int		err;
+
+	err = 0;
+	if (e) // does this happen?
 	{
 		if ((index < 0) || ((size_t)index >= e->total))
 			return (1);
@@ -68,14 +70,14 @@ int	tokenlist_delete(t_tokenlist *e, size_t index)
 		e->tokens[index] = NULL;
 		e->total--;
 		if ((e->total > 0) && ((e->total) == (e->size / 4)))
-			tokenlist_resize(e, e->size, e->size / 2);
+			err = tokenlist_resize(e, e->size, e->size / 2); // make sure this catches errors
 	}
-	return (0);
+	return (err);
 }
 
 // p_printf("FREE THIS: %p %p\n", e->tokens[i],
 //((t_token*)e->tokens[i])->value);
-int	tokenlist_free(t_tokenlist *e)
+void	tokenlist_free(t_tokenlist *e)
 {
 	size_t	i;
 
@@ -89,9 +91,8 @@ int	tokenlist_free(t_tokenlist *e)
 		}
 		e->total = 0;
 		ft_safe_free((unsigned char **)&e->tokens);
-		return (0);
+		free(e);
 	}
-	return (-1);
 }
 
 //fprintf(stderr, "Memory alloc failed in init tokenlist\n");
@@ -101,14 +102,9 @@ int	tokenlist_init(t_tokenlist **e, int size)
 	if (!(*e))
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	(*e)->size = size;
-	if ((*e)->size <= 0) // this if case is suspect, might need to fix logic here
-	{
-		(*e)->tokens = NULL;
-		return (1);
-	}
-	(*e)->tokens = ft_calloc((size_t)(*e)->size + 1, sizeof(void *));
+	(*e)->tokens = ft_calloc((size_t)(*e)->size +1, sizeof(void *));
 	if (!(*e)->tokens)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	(*e)->tokens[size] = NULL;
-	return (0);
+	return (success);
 }
