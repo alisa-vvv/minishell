@@ -35,10 +35,10 @@ void	set_command(
 	t_token	*check_token;
 
 	check_token = tokenlist->tokens[xpos->pos];
-	if (xpos->pos == 0 && token_is_redirect(check_token))
+	if (xpos->pos == 0 && tok_is_red(check_token))
 		return ;
-	else if (xpos->pos == 0 && (lookahead(tokenlist, xpos->pos)
-			&& token_is_redirect(lookahead(tokenlist, xpos->pos))))
+	else if (xpos->pos == 0 && (looknxt(tokenlist, xpos->pos)
+			&& tok_is_red(looknxt(tokenlist, xpos->pos))))
 	{
 		return ;
 	}
@@ -47,14 +47,14 @@ void	set_command(
 		comm_list->argv[*i] = ft_strdup(check_token->value);
 		comm_list->input_is_pipe = true;
 	}
-	else if (!token_is_redirect(check_token))
+	else if (!tok_is_red(check_token))
 		comm_list->argv[*i] = ft_strdup(check_token->value);
 	comm_list->builtin_name = set_builtins(check_token);
 }
 
 void	add_arg(t_exec_data *execdata, t_token *check_token, int *i)
 {
-	if (!token_is_redirect(check_token))
+	if (!tok_is_red(check_token))
 	{
 		execdata->argv[*i] = ft_strdup(check_token->value);
 		if (execdata->builtin_name == not_builtin)
@@ -74,16 +74,16 @@ int	add_arg_to_list(
 	t_token	*check_token;
 
 	check_token = (t_token *)tokenlist->tokens[xpos->pos];
-	if (xpos->pos > 0 && token_is_redirect(lookbehind(tokenlist, xpos->pos)))
+	if (xpos->pos > 0 && tok_is_red(lookbehind(tokenlist, xpos->pos)))
 		return (0);
-	if (check_token->command && !token_is_redirect(check_token))
+	if (check_token->command && !tok_is_red(check_token))
 	{
 		set_command(comm_list, tokenlist, xpos, i);
 		if (!comm_list->argv[*i])
 			return (0);
 		return (1);
 	}
-	if (token_is_redirect(check_token) || check_token->type == PIPE)
+	if (tok_is_red(check_token) || check_token->type == PIPE)
 	{
 		if (check_token->type == PIPE)
 			comm_list->output_is_pipe = true;

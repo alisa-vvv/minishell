@@ -48,9 +48,8 @@ void	set_heredoc_def(t_exec_data *execdata)
 
 // if (execdata->argv)
 // 	execdata->argv[i] = NULL;
-// p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value,
-//		pos);
-int	set_heredoc_red(
+// sets data for heredocs
+void	set_heredoc_red(
 	t_exec_data *execdata,
 	t_tokenlist *tlist,
 	size_t pos,
@@ -64,23 +63,23 @@ int	set_heredoc_red(
 		if (pos > 0 && lookbehind(tlist, pos)->type == PIPE)
 			execdata->input_is_pipe = true;
 		if (c_token->type != HEREDOC && pos + 1 < tlist->total
-			&& lookahead(tlist, pos)->type == HEREDOC)
+			&& looknxt(tlist, pos)->type == HEREDOC)
 			execdata->redirections->dest_filename = ft_strdup(c_token->value);
 		if (c_token->type == (size_t)HEREDOC_DEL)
 			execdata->redirections->heredoc_delim = ft_strdup(c_token->value);
-		if (!token_is_redirect(c_token) && c_token->type != HEREDOC_DEL && lookahead(tlist, pos) && lookahead(tlist, pos)->type != HEREDOC)
+		if (!tok_is_red(c_token) && c_token->type != HEREDOC_DEL
+			&& looknxt(tlist, pos) && looknxt(tlist, pos)->type != HEREDOC)
 		{
 			execdata->argv[i] = ft_strdup(c_token->value);
 			execdata->builtin_name = set_builtins(c_token);
 			i++;
 		}
-		if (pos + 1 < tlist->total && lookahead(tlist, pos)->type == PIPE)
+		if (pos + 1 < tlist->total && looknxt(tlist, pos)->type == PIPE)
 		{
 			execdata->output_is_pipe = true;
 			break ;
 		}
 	}
-	return (0);
 }
 
 // p_printf("POS_RED = %d\n", pos_red);

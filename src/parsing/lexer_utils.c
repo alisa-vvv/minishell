@@ -84,8 +84,8 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 		{
 			tokenlist_delete(tokenlist, i);
 		}
-		else if (check_token->type == HEREDOC && lookahead(tokenlist, i))
-			lookahead(tokenlist, i)->type = HEREDOC_DEL;
+		else if (check_token->type == HEREDOC && looknxt(tokenlist, i))
+			looknxt(tokenlist, i)->type = HEREDOC_DEL;
 		i++;
 	}
 	return (0);

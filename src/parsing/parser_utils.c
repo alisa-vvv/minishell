@@ -13,7 +13,7 @@
 #include "parser.h"
 
 // func returning next token type in the array
-t_token	*lookahead(t_tokenlist *tokenlist, size_t index)
+t_token	*looknxt(t_tokenlist *tokenlist, size_t index)
 {
 	t_token	*check_token;
 
@@ -68,18 +68,18 @@ int	count_redirs(t_tokenlist *tlist, int total, int i, int redir)
 	while (i < total)
 	{
 		check_token = (t_token *)tlist->tokens[i];
-		if (token_is_redirect(check_token))
+		if (tok_is_red(check_token))
 		{
 			if (i == 0)
 				redir++;
 			else if (i > 0 && lookbehind(tlist, i)->type != PIPE)
 			{
-				if (lookahead(tlist, i) && (lookahead(tlist, i)->type == RED_IN
-						|| lookahead(tlist, i)->type == HEREDOC))
+				if (looknxt(tlist, i) && (looknxt(tlist, i)->type == RED_IN
+						|| looknxt(tlist, i)->type == HEREDOC))
 					redir++;
 			}
-			if (lookahead(tlist, i) && (lookahead(tlist, i)->type == RED_APP
-					|| lookahead(tlist, i)->type == RED_OUT))
+			if (looknxt(tlist, i) && (looknxt(tlist, i)->type == RED_APP
+					|| looknxt(tlist, i)->type == RED_OUT))
 				redir++;
 		}
 		else if (check_token->type == PIPE)

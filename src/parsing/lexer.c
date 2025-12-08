@@ -64,11 +64,9 @@ int	count_unq(const char *str, int i, int count)
 //counts args to size up elementlist
 int	token_count(
 	const char *str,
-	int i)
+	int i,
+	int tokencount)
 {
-	int	tokencount;
-
-	tokencount = 0;
 	while (str[i])
 	{
 		if ((!check_in_quote(str, i) && !ft_isspace(str[i]))
@@ -137,7 +135,7 @@ int	default_lexer(
 	input_line = trim_str_space(input_line);
 	if (val_inputline(input_line))
 		return (1);
-	token_c = token_count(input_line, 0);
+	token_c = token_count(input_line, 0, token_c);
 	if (!token_c || token_c < 0)
 		return (write(1, "Failed to count tokens\n", 23));
 	if (tokenlist_init(&token_list, token_c))

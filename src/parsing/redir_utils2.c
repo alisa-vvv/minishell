@@ -13,7 +13,7 @@
 #include "parser.h"
 
 //check if redirect
-bool	token_is_redirect(
+bool	tok_is_red(
 	t_token *check_token)
 {
 	if (!check_token)
@@ -34,7 +34,7 @@ int	single_token(t_tokenlist *tokenlist)
 		return (1);
 	if ((int)tokenlist->total == 1)
 	{
-		if (token_is_redirect(check_token))
+		if (tok_is_red(check_token))
 			return (1);
 		else
 			check_token->command = true;
@@ -55,7 +55,7 @@ int	token_is_cm(t_tokenlist *tokenlist, int pos, t_token *c_token)
 	else if ((size_t)pos == (tokenlist->total - 1)
 		&& check_token->type == HEREDOC_DEL)
 		return (c_token->command = true, 1);
-	else if (!token_is_redirect(check_token))
+	else if (!tok_is_red(check_token))
 		return (c_token->command = true, 1);
 	return (0);
 }
