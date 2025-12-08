@@ -48,8 +48,7 @@ void	set_heredoc_def(t_exec_data *execdata)
 
 // if (execdata->argv)
 // 	execdata->argv[i] = NULL;
-// p_printf("check_token->value: %s\n and POS is: %d\n", check_token->value,
-//		pos);
+// sets data for heredocs
 void	set_heredoc_red(
 	t_exec_data *execdata,
 	t_tokenlist *tlist,
