@@ -51,7 +51,7 @@ int	ft_free_s_token(void **check_token)
 int	tokenlist_delete(t_tokenlist *e, size_t index)
 {
 	t_token			*check_token;
-
+	
 	if (e)
 	{
 		if ((index < 0) || ((size_t)index >= e->total))
@@ -106,7 +106,7 @@ int	tokenlist_init(t_tokenlist **e, int size)
 		(*e)->tokens = NULL;
 		return (1);
 	}
-	(*e)->tokens = ft_calloc((size_t)(*e)->size +1, sizeof(void *));
+	(*e)->tokens = ft_calloc((size_t)(*e)->size + 1, sizeof(void *));
 	if (!(*e)->tokens)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	(*e)->tokens[size] = NULL;
