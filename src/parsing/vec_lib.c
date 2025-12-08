@@ -17,8 +17,8 @@
 // realloc for shrink and expand size
 void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 {
-	unsigned int    copy_size;
-	void            *n_ptr;
+	unsigned int	copy_size;
+	void			*n_ptr;
 
 	if (newsize == 0)
 	{
@@ -30,7 +30,7 @@ void	*ft_realloc(void *ptr, unsigned int oldsize, unsigned int newsize)
 		return (NULL);
 	if (oldsize < newsize)
 		copy_size = oldsize;
-	else 
+	else
 		copy_size = newsize;
 	if (ptr && copy_size)
 		memcpy(n_ptr, ptr, copy_size);
@@ -46,8 +46,8 @@ int	tokenlist_resize(t_tokenlist *e, int oldsize, int newsize)
 
 	if (e)
 	{
-		tokens = ft_realloc(e->tokens, sizeof(void *) * oldsize,
-				sizeof(void *) * newsize);
+		tokens = ft_realloc(e->tokens, sizeof(void *) * oldsize, sizeof(void *)
+				* newsize);
 		if (tokens)
 		{
 			e->tokens = tokens;
@@ -58,6 +58,7 @@ int	tokenlist_resize(t_tokenlist *e, int oldsize, int newsize)
 	return (-1);
 }
 
+// p_printf("RESIZE?\n");
 int	tokenlist_add(t_tokenlist *e, void *token)
 {
 	int	status;
@@ -67,9 +68,7 @@ int	tokenlist_add(t_tokenlist *e, void *token)
 	{
 		if (e->size == e->total)
 		{
-			p_printf("RESIZE?\n");
-			status = tokenlist_resize(e, e->size, e->size
-					* 2);
+			status = tokenlist_resize(e, e->size, e->size * 2);
 			if (status != 0)
 				return (-1);
 			e->tokens[e->total++] = token;
@@ -82,31 +81,4 @@ int	tokenlist_add(t_tokenlist *e, void *token)
 		}
 	}
 	return (status);
-}
-
-int	tokenlist_set(t_tokenlist *e, size_t index, void *token)
-{
-	if (e)
-	{
-		if ((index >= 0) && (index < e->total))
-		{
-			ft_free_s_token(&e->tokens[index]);
-			e->tokens[index] = token;
-			return (0);
-		}
-	}
-	return (-1);
-}
-
-void	*tokenlist_get(t_tokenlist *e, size_t index)
-{
-	void	*token_data;
-
-	token_data = NULL;
-	if (e)
-	{
-		if ((index >= 0) && (index < e->total))
-			token_data = e->tokens[index];
-	}
-	return (token_data);
 }

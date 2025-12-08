@@ -12,122 +12,19 @@
 
 #include "parser.h"
 
-// make a new token in the array
-t_token *new_token(
-	t_tokenlist *tokenlist,
-	char *str, 
-	int len
-)
-{
-	t_token	*token;
-
-	if (!*str)
-		return (NULL);
-	token = calloc(1, sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->value = malloc((len + 1) * sizeof(char));
-	ft_strlcpy(token->value, str, len);
-	p_printf("TOKEN VALUE = $%s$\n", token->value);
-	if (!token->value)
-		return (free(token), NULL);
-	token->type = match_token(token->value);
-	token->command = false;
-	token->pos = tokenlist_total(tokenlist);
-	return (token);
-}
-
-//returns part of the string before redirect token,
-// returning a space token if there is no arg there
-char *before_red(char *str_token)
-{
-	char *result;
-	int i; 
-
-	i = 0;
-	result = NULL;
-	result = ft_strdup(str_token);
-	if (!result)
-		return (NULL);
-	while (result[i])
-	{
-		if (char_is_red(str_token[i]))
-			break;
-		i++;
-	}
-	if (i == 0)
-	{
-		ft_strlcpy(result, " ", 2);
-		return (result);
-	} 
-	result[i] = '\0';
-	return (result);
-}
-
-//last position
-int l_red(char *str)
-{
-
-	if (str[0] == str[1] && str[2] != str[1] && char_is_red(str[0]))
-		return (2);
-	else if (char_is_red(str[0]) && str[0] != str[1])
-		return (1);
-	else 
-		return (-1);
-}
-
-//add new token to the list and updates total
-int add_token(
-	t_tokenlist *tokenlist, 
-	char *str, 
-	size_t len)
-{
-	t_token	*token;
-
-	token = NULL;
-	// l_printf("len = %zu ", len);
-	token = new_token(tokenlist, str, len);
-	if (!token)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	tokenlist_add(tokenlist, token);
-	return (success);
-}
-
-
-//preps str for redirect splitting and adding tokens
-int prep_token(t_tokenlist *tokenlist,
-	char *str,
-	int i, 
-	int len
-)
-{
-	char	*str_b_token;
-	int		status; 
-
-	str_b_token = ft_calloc((len + 1), sizeof(char));
-	if (!str_b_token)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	ft_strlcpy(str_b_token, str + i - len, len +1);
-		status = add_token(tokenlist, str_b_token, len +1);
-	ft_safe_free((unsigned char **) &str_b_token);
-	return (status); 
-}
-
-
-
 //returns len of unquoted token
-int move_o_unquoted(const char *str, int i)
+int	move_o_unquoted(const char *str, int i)
 {
-	int len;
+	int	len;
 
 	len = 0;
-	
-	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]) && !char_is_red(str[i]))
+	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i])
+		&& !char_is_red(str[i]))
 	{
 		len++;
 		i++;
 	}
-	if (str[i] && char_is_quote(str[i]) && str[i -1] == '=')
+	if (str[i] && char_is_quote(str[i]) && str[i - 1] == '=')
 	{
 		i++;
 		while (str[i] && !char_is_quote(str[i]))
@@ -136,15 +33,14 @@ int move_o_unquoted(const char *str, int i)
 			i++;
 		}
 		i++;
-		len += 2; 
+		len += 2;
 	}
 	return (len);
 }
 
 //checks the length of unquoted str token
-int count_unq(const char *str, int i, int count)
+int	count_unq(const char *str, int i, int count)
 {
-	
 	if (!char_is_red(str[i]))
 		count++;
 	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]))
@@ -152,53 +48,32 @@ int count_unq(const char *str, int i, int count)
 		if (char_is_red(str[i]))
 		{
 			count++;
-			if ((char_is_red(str[i]) && i == 0 ) || (i > 0 && ft_isspace(str[i-1]) && char_is_red(str[i])))
+			if ((char_is_red(str[i]) && i == 0) || (i > 0 && ft_isspace(str[i
+							- 1]) && char_is_red(str[i])))
 				count++;
 			while (str[i] && char_is_red(str[i]))
 				i++;
 			if (str[i] && !char_is_red(str[i]) && !ft_isspace(str[i]))
 				count++;
-		} 
+		}
 		i++;
 	}
-	return (count); 
+	return (count);
 }
 
-int	validate_redirect(
-	const char *str,
-	int i
-)
-{
-	if ((str[i] == '>' && str[i + 1] == '>' && str[i + 2] == '>')
-		|| (str[i] == '<' && str[i + 1] == '<' && str[i + 2] == '<')
-		|| (str[i] == '<' && str[i + 1] == '>')
-		|| (str[i] == '>' && str[i + 1] == '<'))
-	{
-		dprintf(STDERR_FILENO, "Wrong redirect\n");
-		return (-1);
-	}
-	return (success);
-}
-
- //counts args to size up elementlist
+//counts args to size up elementlist
 int	token_count(
 	const char *str,
-	int i
-)
+	int i,
+	int tokencount)
 {
-	int	tokencount;
-
-	tokencount = 0;
-
 	while (str[i])
 	{
-		// dprintf(STDERR_FILENO, "str: %s\n", str);
-		// dprintf(STDERR_FILENO, "i: %d\n", i);
-		if ((!check_in_quote(str, i) && !ft_isspace(str[i])) && !char_is_quote(str[i])
-			&& !char_is_red(str[i]))
+		if ((!check_in_quote(str, i) && !ft_isspace(str[i]))
+			&& !char_is_quote(str[i]) && !char_is_red(str[i]))
 		{
-			tokencount = count_unq(str, i, tokencount); 
-			i += move_o_unquoted(str, i) ;
+			tokencount = count_unq(str, i, tokencount);
+			i += move_o_unquoted(str, i);
 		}
 		else if (char_is_quote(str[i]))
 		{
@@ -208,24 +83,19 @@ int	token_count(
 		else if (char_is_red(str[i]))
 		{
 			tokencount++;
-			if (validate_redirect(str, i) != success)
-				return (-1); // this is placeholder, might need better error logic
 			while (char_is_red(str[i]))
 				i++;
 		}
 		else
 			i++;
 	}
-	t_printf("Token count = %d\n", tokencount);
 	return (tokencount);
 }
 
-
 // pushes tokens in the elementlist from the back, immediately indexing
 int	fill_tokenlist(
-	t_tokenlist *tokenlist, 
-	char *str
-)
+	t_tokenlist *tokenlist,
+	char *str)
 {
 	int		i;
 	size_t	len;
@@ -234,7 +104,7 @@ int	fill_tokenlist(
 	i = 0;
 	len = 0;
 	if (!str)
-		return(1);
+		return (1);
 	while (str[i])
 	{
 		len = set_len(str, i);
@@ -251,25 +121,26 @@ int	fill_tokenlist(
 	return (0);
 }
 
+// test_tokens(token_list);
 // default option to put trimmed input in tokenlist
 int	default_lexer(
 	char *input_line, 
 	t_msh_data *msh_data
 )
 {
-	int		token_c;
-	t_tokenlist *token_list;
+	int			token_c;
+	t_tokenlist	*token_list;
 
 	token_list = NULL;
 	token_c = 0;
 	if (!input_line)
 		return (1);
 	input_line = trim_str_space(input_line);
-	if (val_inputline(input_line)) // what are the validations/returns/mesgs?
-        return (1);
-	token_c = token_count(input_line, 0);
-	if (!token_c || token_c < 0) // check the !token_c condition relevance
-		return (write(1, "Failed to count tokens\n", 23)); // these error messages should not show in final
+	if (val_inputline(input_line))
+		return (1);
+	token_c = token_count(input_line, 0, token_c);
+	if (!token_c || token_c < 0)
+		return (write(1, "Failed to count tokens\n", 23));
 	if (tokenlist_init(&token_list, token_c))
 		return (write(1, "Failed to init tokenlist\n", 25));
 	if (fill_tokenlist(token_list, input_line) < success)
@@ -277,16 +148,12 @@ int	default_lexer(
 		tokenlist_free(token_list);
 		return (write(1, "Failed to fill tokenlist\n", 25));
 	}
-	// test_tokens(token_list);
 	if (check_lexer(token_list, msh_data))
 	{
 		tokenlist_free(token_list);
 		free(token_list);
 		return (write(1, "Failed check types\n", 19));
 	}
-	// p_printf("\n\n");
-	// test_tokens(token_list);
 	tokenlist_free(token_list);
-	free(token_list);
-	return (0);
+	return (free(token_list), 0);
 }

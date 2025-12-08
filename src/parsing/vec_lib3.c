@@ -12,49 +12,36 @@
 
 #include "parser.h"
 
+int	tokenlist_set(t_tokenlist *e, size_t index, void *token)
+{
+	if (e)
+	{
+		if ((index >= 0) && (index < e->total))
+		{
+			ft_free_s_token(&e->tokens[index]);
+			e->tokens[index] = token;
+			return (0);
+		}
+	}
+	return (-1);
+}
+
+void	*tokenlist_get(t_tokenlist *e, size_t index)
+{
+	void	*token_data;
+
+	token_data = NULL;
+	if (e)
+	{
+		if ((index >= 0) && (index < e->total))
+			token_data = e->tokens[index];
+	}
+	return (token_data);
+}
+
 int	tokenlist_total(t_tokenlist *e)
 {
 	if (e)
 		return (e->total);
 	return (-1);
 }
-
-// int element_swap(element *e, void *token, size_t pos_dest, size_t pos_src)
-// {
-//     int status; 
-
-//     status = -1;
-//     while (pos_src > pos_dest)
-//     {
-//         e->element_list.tokens[pos_src -1] = e->element_list.tokens[pos_src + 1];
-//         pos_src--;
-//     }
-//     e->element_list.tokens[pos_dest] = token;
-//     return (0);
-// }
-
-
-//insert into 
-// int	element_insert(element *e, void *token, int pos)
-// {
-// 	int	status;
-
-// 	status = -1;
-// 	if (e)
-// 	{
-// 		if (e->element_list.size == e->element_list.total)
-// 		{
-// 			status = element_resize(e, e->element_list.size, e->element_list.size
-// 					* 2);
-// 			if (status == -1)
-// 				e->element_list.tokens[e->element_list.total++] = token;
-// 		}
-// 		else
-// 		{
-// 			e->element_list.tokens[e->element_list.total++] = token;
-//             element_swap(e, e->element_list.tokens[e->element_list.total], pos + 1, (size_t)e->element_list.total);
-// 			status = 0;
-// 		}
-// 	}
-// 	return (status);
-// }

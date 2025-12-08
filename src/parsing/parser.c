@@ -12,19 +12,6 @@
 
 #include "parser.h"
 
-// construc parsing table
-// first() and follow() funcs
-// lookahead func for check next token
-// match function to check and expand on aliases
-// Your shell must implement the following built-in commands:
-//     - echo with option -n
-//     - cd with only a relative or absolute path
-//     - pwd with no options
-//     - export with no options
-//     - unset with no options
-//     - env with no options or arguments
-//     - exit with no options
-
 // count how many exec data structs need to be made
 int	count_lists(t_tokenlist *tokenlist)
 {
@@ -58,7 +45,7 @@ int	count_next_cm(t_tokenlist *tokenlist, int pos)
 	while (i < tokenlist->total)
 	{
 		check_token = (t_token *)tokenlist->tokens[i];
-		if (check_token->type == PIPE && lookahead(tokenlist, pos))
+		if (check_token->type == PIPE && looknxt(tokenlist, pos))
 			return (check_token->pos + 1);
 		if (check_token->command)
 			return (check_token->pos);
@@ -67,25 +54,25 @@ int	count_next_cm(t_tokenlist *tokenlist, int pos)
 	return (-1);
 }
 
+// p_printf("TOTAL = %d\n", total);
+//	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
 // make an empty execdata
-int	make_cm_list(t_tokenlist *tokenlist, 
-	t_exec_data *comm_list, 
-	size_t pos,
-	int pos_red)
+int	make_cm_list(t_tokenlist *tokenlist,
+					t_exec_data *comm_list,
+					t_pos *xpos)
 {
 	int	total;
 	int	i;
 
 	i = -1;
 	total = 0;
-	//	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
 	if (!comm_list)
 		return (write(1, "No command list\n", 16));
 	comm_list->argv = NULL;
-	if (pos_red > 0)
-		total = count_args(tokenlist, pos, pos_red);
+	if (xpos->red > 0)
+		total = count_args(tokenlist, xpos->pos, xpos->red);
 	else
-		total = count_args(tokenlist, pos, tokenlist->total);
+		total = count_args(tokenlist, xpos->pos, tokenlist->total);
 	if (total == 0)
 		return (0);
 	comm_list->argv = malloc(sizeof(char *) * (total + 1));
@@ -98,10 +85,8 @@ int	make_cm_list(t_tokenlist *tokenlist,
 }
 
 // start conversion by making lists of commands
-int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, int i, int pos)
+int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xp)
 {
-	int	pos_red;
-
 	if (count_lists(tokenlist) == -1)
 		return (write(1, "No lists counted\n", 17));
 	msh_data->command_count = count_lists(tokenlist);
@@ -109,41 +94,40 @@ int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, int i, int pos)
 			sizeof(t_exec_data));
 	if (!msh_data->exec_data)
 		return (write(2, MALLOC_ERR, 15));
-	while (i < msh_data->command_count)
+	while ((int)xp->i < msh_data->command_count)
 	{
-		pos_red = count_next_cm(tokenlist, pos);
-		if (pos_red > 0 && lookahead(tokenlist, pos)->type == HEREDOC)
-			pos_red = count_next_cm(tokenlist, pos + 1);
-		convert_data(tokenlist, msh_data, i, pos, pos_red);
-		if (pos_red > 0 && find_token_type(tokenlist, pos,
-				find_token_type(tokenlist, pos, pos_red, PIPE), HEREDOC) == -1)
-			pos = pos_red;
-		else if (pos_red > 0 && find_token_type(tokenlist, pos, pos_red,
+		xp->red = count_next_cm(tokenlist, xp->pos);
+		if (xp->red > 0 && looknxt(tokenlist, xp->pos)->type == HEREDOC)
+			xp->red = count_next_cm(tokenlist, xp->pos + 1);
+		convert_data(tokenlist, msh_data, xp);
+		if (xp->red > 0 && find_type(tokenlist, xp->pos,
+				find_type(tokenlist, xp->pos, xp->red, PIPE), HEREDOC) == -1)
+			xp->pos = xp->red;
+		else if (xp->red > 0 && find_type(tokenlist, xp->pos, xp->red,
 				PIPE) != -1)
-			pos = find_token_type(tokenlist, pos, pos_red, PIPE) + 1;
+			xp->pos = find_type(tokenlist, xp->pos, xp->red, PIPE) + 1;
 		else
-			pos = count_next_cm(tokenlist, pos_red);
-		i++;
+			xp->pos = count_next_cm(tokenlist, xp->red);
+		xp->i++;
 	}
 	return (0);
 }
 
+//	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
+//	p_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
 // convert the tokenlist to executable data
-int	convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, int i, size_t pos,
-		int pos_red)
+int	convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xpos)
 {
 	t_exec_data	*comm_list;
 
 	comm_list = NULL;
-	comm_list = msh_data->exec_data + i;
-	//	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
-	if (make_cm_list(tokenlist, comm_list, pos, pos_red))
+	comm_list = msh_data->exec_data + xpos->i;
+	if (make_cm_list(tokenlist, comm_list, xpos))
 		return (write(1, "Command list failed\n", 20));
 	comm_list->redirections = NULL;
-	if (find_token_type(tokenlist, pos, pos_red, HEREDOC) != -1)
-		set_heredoc(comm_list, tokenlist, pos, pos_red);
-	else if (fill_comm_list(comm_list, tokenlist, pos, pos_red))
+	if (find_type(tokenlist, xpos->pos, xpos->red, HEREDOC) != -1)
+		set_heredoc(comm_list, tokenlist, xpos->pos, xpos->red);
+	else if (fill_comm_list(comm_list, tokenlist, xpos))
 		return (write(1, "Fill list failed\n", 17));
-	//	p_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
 	return (0);
 }

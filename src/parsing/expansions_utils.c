@@ -12,29 +12,23 @@
 
 #include "parser.h"
 
-
 // prepare leftover parts of str token to keep for the updated string
 char	*prep_leftover(char *str_token, char *start, int offset)
 {
 	char	*temp_left;
-	size_t  rem_len;
+	size_t	rem_len;
 
 	temp_left = NULL;
 	if (!str_token)
 		return (NULL);
-
 	if (!start)
 		return (NULL);
-
-	rem_len = ft_strlen(start + offset)+1;
-	p_printf("OFFSET = %s$\n", start + offset);
-	// p_printf("LEN IS = %d\n", rem_len);
+	rem_len = ft_strlen(start + offset) + 1;
 	temp_left = malloc(rem_len * sizeof(char));
 	if (!temp_left)
 		return (NULL);
-	ft_strlcpy(temp_left, start + offset, rem_len +1);
+	ft_strlcpy(temp_left, start + offset, rem_len + 1);
 	*start = '\0';
-	p_printf("TEMP LEFT = %s$\n", temp_left);
 	return (temp_left);
 }
 
@@ -53,32 +47,31 @@ char	*exp_str_token(char *str_token, char *start, char *value, int offset)
 		return ((ft_safe_free((unsigned char **)&leftover),
 				ft_safe_free((unsigned char **)&value),
 				ft_safe_free((unsigned char **)&new_str),
-				ft_safe_free((unsigned char **)&temp_left), NULL));
+				ft_safe_free((unsigned char **)&temp_left),
+				NULL));
 	(ft_safe_free((unsigned char **)&leftover),
-	ft_safe_free((unsigned char **)&temp_left));
+		ft_safe_free((unsigned char **)&temp_left));
 	return (new_str);
 }
 
-
-
+// e_printf("\nRESULT = %s$\n", result);
 // get name of env var from token_name
-char	*refine_name_var(char *token_name, char *result, char symbol)
+char	*refine_name(char *token_name, char *result, char symbol)
 {
-	int		i;
+	int	i;
 
 	i = 0;
-	// e_printf("\nSTART = %s\n", start);
 	if (!token_name)
 		return (NULL);
 	result = ft_strdup(token_name + 1);
 	if (!result)
 		return (NULL);
-	// e_printf("\nRESULT = %s$\n", result);
 	while (result[i])
 	{
 		if (symbol == '$')
 		{
-			if (char_is_quote(result[i]) || result[i] == '$' || ft_isspace(result[i]) || char_is_red(result[i])
+			if (char_is_quote(result[i]) || result[i] == '$'
+				|| ft_isspace(result[i]) || char_is_red(result[i])
 				|| !(ft_isprint(result[i]) || result[i] == '_'))
 				break ;
 		}
@@ -86,4 +79,45 @@ char	*refine_name_var(char *token_name, char *result, char symbol)
 	}
 	result[i] = '\0';
 	return (result);
+}
+
+// counts how many occurrences of a symbol are in one str
+int	count_occ(const char *str, char symbol, bool inside)
+{
+	int	count;
+	int	i;
+
+	i = 0;
+	count = 0;
+	while (str[i])
+	{
+		if (inside)
+		{
+			if (!check_in_quote_s(str, i, '\''))
+				count++;
+		}
+		else if (inside == false)
+		{
+			if (str[i] == symbol)
+				count++;
+		}
+		i++;
+	}
+	return (count);
+}
+
+//&& !check_in_quote_s(str, pos, '\'')
+bool	check_quote_e(char *str, int pos)
+{
+	int	quote;
+
+	quote = symbol_in_quote(str, '$');
+	if (quote == '"' && !check_in_quote_s(str, pos, '\''))
+		return (true);
+	else if (quote == '\'' && check_in_quote_s(str, pos, '"'))
+		return (true);
+	else if (quote == '\'' && !check_in_quote_s(str, pos, '\''))
+		return (true);
+	else
+		return (false);
 }

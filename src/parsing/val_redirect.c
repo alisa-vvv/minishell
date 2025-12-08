@@ -12,139 +12,95 @@
 
 #include "parser.h"
 
-//check single tokens
-int single_token(t_tokenlist *tokenlist)
+bool	set_cm_heredoc(t_tokenlist *tokenlist, int i)
 {
-    t_token *check_token;
-
-    check_token = (t_token *)tokenlist->tokens[0];
-    if (!check_token)
-        return (1);
-    if ((int)tokenlist->total == 1)
-    {
-        if (token_is_redirect(check_token))
-            return (1);
-        else 
-            check_token->command = true;
-    }
-    return (0);
+	if (looknxt(tokenlist, i) != NULL && looknxt(tokenlist, i)->type == HEREDOC)
+		return (false);
+	return (true);
 }
 
-//checks if token is supposed to be command for list 
-int token_is_cm(t_tokenlist *tokenlist, int pos)
+//(i == 0 && looknxt(tokenlist, i)->type
+void	set_pipe_cm(
+	t_tokenlist *tlist,
+	size_t i)
 {
-    t_token *check_token;
-
-    check_token = tokenlist->tokens[pos];
-
-    if (!check_token)
-        return (-1);
-    else if (pos == 0 && check_token->type == HEREDOC)
-        return (1);
-    else if ((size_t)pos == (tokenlist->total - 1) && check_token->type == HEREDOC_DEL)
-        return (1);
-    else if (!token_is_redirect(check_token))
-        return (1);
-    
-    return (0);
-}
-
-
-//(i == 0 && lookahead(tokenlist, i)->type
-void set_pipe_cm(
-	t_tokenlist *tokenlist, 
-    size_t i)
-{
-    t_token *c_token;
-    bool flag;
+	t_token	*c_token;
+	bool	flag;
 
 	flag = true;
-	while(i < tokenlist->total && tokenlist->total > 1)
+	while (i < tlist->total && tlist->total > 1)
 	{
-		c_token = (t_token *)tokenlist->tokens[i];
+		c_token = (t_token *)tlist->tokens[i];
 		if (i == 0)
 		{
-            if (token_is_cm(tokenlist, i))
-            {
-			    c_token->command = true;
-			    flag = false;
-            }
+			if (token_is_cm(tlist, i, c_token))
+				flag = false;
 		}
 		else if (c_token->type == PIPE || c_token->type == HEREDOC_DEL)
 			flag = true;
 		else if (flag == true)
 		{
-            if (lookahead(tokenlist, i) != NULL && lookahead(tokenlist, i)->type == HEREDOC)
-			    c_token->command = false;
-            else
-                c_token->command = true; 
+			c_token->command = set_cm_heredoc(tlist, i);
 			flag = false;
 		}
 		else
-			c_token->command = false; 
+			c_token->command = false;
 		i++;
 	}
 }
 
-
 //check if last token isn't redirect?
-bool val_redir_out(
-    t_tokenlist *tokenlist, 
-    size_t pos)
+bool	val_redir_out(
+	t_tokenlist *tokenlist,
+	size_t pos)
 {
-    if (pos + 2 < (size_t)tokenlist->total)
-    {
-        return (false);
-    }
-    return (true);
+	if (pos + 2 < (size_t)tokenlist->total)
+		return (false);
+	return (true);
 }
 
-
-//
-static int check_heredoc(
-    t_tokenlist *tokenlist, 
-    size_t pos)
+//check if statement contains a heredoc
+static int	check_heredoc(
+	t_tokenlist *tokenlist,
+	size_t pos)
 {
-    t_token *check_token;
+	t_token	*check_token;
 
-    check_token = (t_token *)tokenlist->tokens[pos];
-    check_token->type = HEREDOC_DEL;
-    // if (pos >0)
-    //     tokenlist_delete(tokenlist, pos-1);
-    if (pos == tokenlist->total -1)
-        return (0);
-    else
-        return (1);
+	check_token = (t_token *)tokenlist->tokens[pos];
+	check_token->type = HEREDOC_DEL;
+	if (pos == tokenlist->total - 1)
+		return (0);
+	return (1);
 }
 
-//validate if redir are well placed?
-int val_redir(
-    t_tokenlist *tokenlist, 
-    size_t i)
+//validate if redir are well placed
+int	val_redir(
+	t_tokenlist *tlist,
+	size_t i,
+	t_token *ctok)
 {
-    t_token *check_token;
-    while (i < tokenlist->total)
-    {
-        check_token = (t_token *)tokenlist_get(tokenlist, i);
-        if (!check_token)
-            return(1);
-        if (check_token->type == HEREDOC && i + 1 < tokenlist->total)
-        {
-            if (check_heredoc(tokenlist, i + 1))
-                i++;
-            else 
-                return (0);
-        }
-        else if ((token_is_redirect(check_token) || check_token->type == PIPE) && !lookahead(tokenlist, i))
-            return (1);
-        else if (lookahead(tokenlist, i) != NULL && token_is_redirect(lookahead(tokenlist, i)))
-        {
-            if (val_redir_out(tokenlist, i))
-                return(1);
-            i++;
-        }
-        else
-            i++;
-    }
-    return (0);
+	while (i < tlist->total)
+	{
+		ctok = (t_token *)tokenlist_get(tlist, i);
+		if (!ctok)
+			return (1);
+		if (ctok->type == HEREDOC && i + 1 < tlist->total)
+		{
+			if (check_heredoc(tlist, i + 1))
+				i++;
+			else
+				return (0);
+		}
+		else if ((tok_is_red(ctok) || ctok->type == PIPE) && !looknxt(tlist, i))
+			return (1);
+		else if (looknxt(tlist, i) != NULL && tok_is_red(looknxt(tlist, i)))
+		{
+			if (val_redir_out(tlist, i))
+				return (1);
+			i++;
+		}
+		else
+			i++;
+	}
+	return (0);
 }

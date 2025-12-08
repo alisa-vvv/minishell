@@ -13,12 +13,12 @@
 #include "parser.h"
 
 //counts how many expansions need to be done
-int count_exp(t_tokenlist *tokenlist, char symbol)
+int	count_exp(t_tokenlist *tokenlist, char symbol)
 {
-	int count;
-	size_t i;
-	t_token *check_token;
-	
+	int		count;
+	size_t	i;
+	t_token	*check_token;
+
 	i = 0;
 	count = 0;
 	check_token = NULL;
@@ -29,7 +29,8 @@ int count_exp(t_tokenlist *tokenlist, char symbol)
 			return (count);
 		if (symbol == '$' && ft_strchr(check_token->value, '$'))
 		{
-			if (i == 0 || (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist, i)->type != HEREDOC))
+			if (i == 0 || (i > 0 && lookbehind(tokenlist, i)
+					&& lookbehind(tokenlist, i)->type != HEREDOC))
 				count++;
 		}
 		else if (symbol == '"' && check_token->type == DOUBLE_Q)
@@ -41,16 +42,15 @@ int count_exp(t_tokenlist *tokenlist, char symbol)
 	return (count);
 }
 
-//expands single and double quotes 
-int expand_quotes(t_tokenlist *tokenlist, 
-	t_msh_data *msh_data)
+//expands single and double quotes
+int	expand_quotes(t_tokenlist *tokenlist,
+					t_msh_data *msh_data)
 {
-	int count;
-	int count_single;
+	int	count;
+	int	count_single;
 
 	count = count_exp(tokenlist, '"');
 	count_single = count_exp(tokenlist, '\'');
-	// p_printf("COUNT SINGLE QUOTES = %d\n", count_single);
 	while (count_single > 0)
 	{
 		if (exp_lexer(tokenlist, msh_data, SINGLE_Q, 0))
@@ -67,10 +67,11 @@ int expand_quotes(t_tokenlist *tokenlist,
 }
 
 //expand vars and merge operators for export
-int expand_param(t_tokenlist *tokenlist,
-	t_msh_data *msh_data)
+int	expand_param(t_tokenlist *tokenlist,
+					t_msh_data *msh_data)
 {
-	int count;
+	int	count;
+
 	count = count_exp(tokenlist, '$');
 	while (count > 0)
 	{
@@ -89,29 +90,35 @@ int expand_param(t_tokenlist *tokenlist,
 }
 
 // go through lexer and clean up data
-int	check_lexer(t_tokenlist *tokenlist, 
-	t_msh_data *msh_data)
+int	check_lexer(t_tokenlist *tokenlist,
+				t_msh_data *msh_data)
 {
+	t_pos	*epos;
+	t_token	*token;
+
+	epos = NULL;
+	token = NULL;
 	expand_param(tokenlist, msh_data);
 	expand_quotes(tokenlist, msh_data);
 	clean_lexer(tokenlist, 0);
-	contract_list(tokenlist, tokenlist->total-1);
+	contract_list(tokenlist, tokenlist->total - 1);
 	if (tokenlist->total < 2)
 	{
 		if (single_token(tokenlist))
 			return (write(1, "Single token redir\n", 19));
 	}
-	else if (val_redir(tokenlist, 0))
+	else if (val_redir(tokenlist, 0, token))
 		return (write(1, "Wrong redirect\n", 15));
 	set_pipe_cm(tokenlist, 0);
-	// t_printf("\nAfter expansion, rm quotes and set commands:\n");
-	// test_tokens(*tokenlist);
 	if (tokenlist)
 	{
-		if (pass_comm(tokenlist, msh_data, 0, 0))
+		epos = ft_calloc(1, sizeof(t_pos));
+		if (!epos)
+			return (1);
+		if (pass_comm(tokenlist, msh_data, epos))
 			return (write(1, "Failed passing exec data\n", 25));
 	}
-	return (0);
+	return (free(epos), 0);
 }
 
 // check if left and right are args for pipe
@@ -136,19 +143,5 @@ int	check_pipe_redirect(char *str, char symbol)
 				+ 1 == '"'))
 			return (1);
 	}
-	return (0);
-}
-
-// validate input on quotes, pipes
-int	val_inputline(char *str) // hmm?
-{
-	if (check_in_quote(str, ft_strlen(str) - 1))
-		return (write(2, "command not found\n", 18));
-	if (check_pipe_redirect(str, '|'))
-		return (write(2, "command not found\n", 18));
-	if (check_pipe_redirect(str, '>'))
-		return (write(2, "command not found\n", 18));
-	if (check_pipe_redirect(str, '<'))
-		return (write(2, "command not found\n", 18));
 	return (0);
 }
