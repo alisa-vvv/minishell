@@ -81,10 +81,8 @@ void	rm_str_quotes(char *str, t_quote *q)
 int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
-	int		i;
 	t_quote	*q;
 
-	i = 0;
 	q = ft_calloc(1, sizeof(t_quote));
 	if (!q)
 		return (1);

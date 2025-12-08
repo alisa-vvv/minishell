@@ -109,7 +109,8 @@ int	expand_var(t_tokenlist **tokenlist,
 		exp_data->name = refine_name(exp_data->start_var, exp_data->name, '$');
 		if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
 			exp_data->env_value = ft_itoa(msh_data->last_pipeline_return);
-		else if (env_var_get_value(msh_data->env, exp_data->name, &exp_data->env_value) != success)
+		else if (env_var_get_value(msh_data->env, exp_data->name,
+				&exp_data->env_value) != success)
 			dprintf(STDERR_FILENO, "Failed to malloc env\n");
 		exp_further(*tokenlist, pos, &exp_data);
 		if (exp_data->name)

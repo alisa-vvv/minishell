@@ -50,10 +50,8 @@ int	ft_free_s_token(void **check_token)
 //better implementation
 int	tokenlist_delete(t_tokenlist *e, size_t index)
 {
-	unsigned long	i;
 	t_token			*check_token;
-
-	i = 0;
+	
 	if (e)
 	{
 		if ((index < 0) || ((size_t)index >= e->total))
@@ -99,7 +97,7 @@ int	tokenlist_free(t_tokenlist *e)
 //fprintf(stderr, "Memory alloc failed in init tokenlist\n");
 int	tokenlist_init(t_tokenlist **e, int size)
 {
-	*e = calloc(1, sizeof(t_tokenlist));
+	*e = ft_calloc(1, sizeof(t_tokenlist));
 	if (!(*e))
 		return (1);
 	(*e)->size = size;
@@ -108,7 +106,7 @@ int	tokenlist_init(t_tokenlist **e, int size)
 		(*e)->tokens = NULL;
 		return (1);
 	}
-	(*e)->tokens = calloc((size_t)(*e)->size + 1, sizeof(void *));
+	(*e)->tokens = ft_calloc((size_t)(*e)->size + 1, sizeof(void *));
 	if (!(*e)->tokens)
 		exit(EXIT_FAILURE);
 	(*e)->tokens[size] = NULL;
