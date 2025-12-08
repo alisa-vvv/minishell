@@ -91,7 +91,7 @@ LIBFT	= $(LIBFT_DIR)libft.a
 INCLUDE = $(INCDIR) $(LIBFT_DIR)
 
 RM	= rm -rf
-CC	= cc -g
+CC	= cc
 
 # this apparently achieves dependency gen on per-file basis, on compilation
 # without relying on hacky solutions like the one on GNU Makefile docs
@@ -137,7 +137,7 @@ clangd:
 	intercept-build-14 $(MAKE)
 
 #debugging
-debug: CPPFLAGS += -g
+debug: CFLAGS += -g
 debug: clean $(NAME)
 gdb: fclean debug
 	gdb -tui ./$(NAME)

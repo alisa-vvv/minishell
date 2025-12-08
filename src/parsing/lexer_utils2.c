@@ -33,6 +33,8 @@ char	*trim_str_space(char *str)
 	int	i;
 	int	j;
 
+	if (!str)
+		return (NULL);
 	i = 0;
 	j = ft_strlen(str) - 1;
 	while (ft_isspace(str[j] && char_is_quote(str[j])))

@@ -20,15 +20,13 @@ t_token	*new_token(
 {
 	t_token	*token;
 
-	if (!*str)
-		return (NULL);
-	token = calloc(1, sizeof(t_token));
+	token = ft_calloc(1, sizeof(t_token));
 	if (!token)
 		return (NULL);
-	token->value = malloc((len + 1) * sizeof(char));
-	ft_strlcpy(token->value, str, len);
+	token->value = ft_calloc((len + 1), sizeof(char));
 	if (!token->value)
 		return (free(token), NULL);
+	ft_strlcpy(token->value, str, len);
 	token->type = match_token(token->value);
 	token->command = false;
 	token->pos = tokenlist_total(tokenlist);
@@ -58,23 +56,24 @@ int	add_token(
 	token = NULL;
 	token = new_token(tokenlist, str, len);
 	if (!token)
-		return (write(2, MALLOC_ERR, 15));
-	tokenlist_add(tokenlist, token);
-	return (0);
+		return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
+	return (tokenlist_add(tokenlist, token));
 }
 
 //preps str for redirect splitting and adding tokens
-int	prep_token(t_tokenlist *tokenlist,
-				char *str,
-				int i,
-				int len)
+int	prep_token(
+	t_tokenlist *tokenlist,
+	char *str,
+	int i,
+	int len
+)
 {
 	char	*str_b_token;
 	int		status;
 
-	str_b_token = malloc((len + 1) * sizeof(char));
+	str_b_token = ft_calloc((len + 1), sizeof(char));
 	if (!str_b_token)
-		return (1);
+		return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
 	ft_strlcpy(str_b_token, str + i - len, len + 1);
 	status = add_token(tokenlist, str_b_token, len + 1);
 	ft_safe_free((unsigned char **)&str_b_token);

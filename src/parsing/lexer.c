@@ -103,8 +103,6 @@ int	fill_tokenlist(
 
 	i = 0;
 	len = 0;
-	if (!str)
-		return (1);
 	while (str[i])
 	{
 		len = set_len(str, i);
@@ -118,7 +116,7 @@ int	fill_tokenlist(
 		else if (str[i])
 			i++;
 	}
-	return (0);
+	return (success);
 }
 
 // test_tokens(token_list);
@@ -130,30 +128,38 @@ int	default_lexer(
 {
 	int			token_c;
 	t_tokenlist	*token_list;
+	int			err;
 
 	token_list = NULL;
 	token_c = 0;
-	if (!input_line)
-		return (1);
+
+	if (input_line[0] == '\0')
+		return (success);
 	input_line = trim_str_space(input_line);
-	if (val_inputline(input_line))
-		return (1);
+	err = val_inputline(input_line);
+	if (err != success)
+		return (err);
+
 	token_c = token_count(input_line, 0, token_c);
-	if (!token_c || token_c < 0)
-		return (write(1, "Failed to count tokens\n", 23));
-	if (tokenlist_init(&token_list, token_c))
-		return (write(1, "Failed to init tokenlist\n", 25));
-	if (fill_tokenlist(token_list, input_line) < success)
+	if (token_c == 0)
+		return (success);
+	if (token_c < 0)
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+	if (tokenlist_init(&token_list, token_c) != success)
+		return (malloc_err);
+	err = fill_tokenlist(token_list, input_line);
+	if (err != success)
 	{
 		tokenlist_free(token_list);
-		return (write(1, "Failed to fill tokenlist\n", 25));
+		return (err);
 	}
-	if (check_lexer(token_list, msh_data))
+
+	err = check_lexer(token_list, msh_data); // currently doing this
+	if (err) // fjdskfjkds
 	{
 		tokenlist_free(token_list);
-		free(token_list);
 		return (write(1, "Failed check types\n", 19));
 	}
 	tokenlist_free(token_list);
-	return (free(token_list), 0);
+	return (success);
 }

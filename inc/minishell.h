@@ -37,6 +37,7 @@
 # define DUP2_ERR "Error! dup2()"
 # define EXECVE_ERR "Error! execve()"
 # define FD_ERR "Error! Wrong file descriptor"
+# define SYNTAX_ERR "syntax error"
 /**/
 
 typedef enum	e_msh_errno // can define specific values later
@@ -58,6 +59,7 @@ typedef enum	e_msh_errno // can define specific values later
 	child_heredoc = -14,
 	child_success = -15,
 	no_command = -16,
+	syntax_err = -17
 }	t_msh_errno;
 
 # define LIBFUNC_ERR 0

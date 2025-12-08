@@ -19,21 +19,21 @@ int	val_inputline(char *str)
 
 	i = 0;
 	if (check_in_quote(str, ft_strlen(str) - 1))
-		return (write(2, "command not found\n", 18));
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	if (check_pipe_redirect(str, '|'))
-		return (write(2, "command not found\n", 18));
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	if (check_pipe_redirect(str, '>'))
-		return (write(2, "command not found\n", 18));
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	if (check_pipe_redirect(str, '<'))
-		return (write(2, "command not found\n", 18));
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	while (str[i])
 	{
 		if (char_is_red(str[i]))
 			if (validate_redirect(str, i) != success)
-				return (msh_perror(NULL, "Wrong redirect", parse_err), 1);
+				return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 		i++;
 	}
-	return (0);
+	return (success);
 }
 
 //merge tokens with pos1 and pos2 into pos 1
