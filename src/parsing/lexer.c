@@ -122,7 +122,7 @@ int	fill_tokenlist(
 // test_tokens(token_list);
 // default option to put trimmed input in tokenlist
 int	default_lexer(
-	char *input_line, 
+	char *input_line,
 	t_msh_data *msh_data
 )
 {
