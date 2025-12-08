@@ -126,7 +126,7 @@ int	env_var_get_value(// change this to be int for errors. and write to buffer.
 		{
 			value = ft_strdup(&env[i][name_len + 1]);
 			if (!value)
-				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
+				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 			break ;
 		}
 		else
