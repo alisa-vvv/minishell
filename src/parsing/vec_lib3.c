@@ -14,16 +14,13 @@
 
 int	tokenlist_set(t_tokenlist *e, size_t index, void *token)
 {
-	if (e)
+	if ((index >= 0) && (index < e->total))
 	{
-		if ((index >= 0) && (index < e->total))
-		{
-			ft_free_s_token(&e->tokens[index]);
-			e->tokens[index] = token;
-			return (0);
-		}
+		ft_free_s_token(&e->tokens[index]);
+		e->tokens[index] = token;
+		return (0);
 	}
-	return (-1);
+	return (0);
 }
 
 void	*tokenlist_get(t_tokenlist *e, size_t index)

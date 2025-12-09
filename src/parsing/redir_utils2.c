@@ -32,7 +32,7 @@ int	single_token(t_tokenlist *tokenlist)
 	check_token = (t_token *)tokenlist->tokens[0];
 	if (!check_token)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	if ((int)tokenlist->total == 1)
+	if ((int) tokenlist->total == 1)
 	{
 		if (tok_is_red(check_token))
 			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);

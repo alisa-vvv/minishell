@@ -22,10 +22,14 @@ t_token	*new_token(
 
 	token = ft_calloc(1, sizeof(t_token));
 	if (!token)
-		return (NULL);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), NULL);
 	token->value = ft_calloc((len + 1), sizeof(char));
 	if (!token->value)
-		return (free(token), NULL);
+	{
+		msh_perror(NULL, MALLOC_ERR, extern_err);
+		free(token);
+		return (NULL);
+	}
 	ft_strlcpy(token->value, str, len);
 	token->type = match_token(token->value);
 	token->command = false;

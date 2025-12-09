@@ -104,7 +104,7 @@ int	check_lexer(t_tokenlist *tokenlist,
 	int		err;
 
 	token = NULL;
-	err = expand_param(tokenlist, msh_data); // err check on all these?
+	err = expand_param(tokenlist, msh_data);
 	if (err != success)
 		return (err);
 	err = expand_quotes(tokenlist, msh_data);

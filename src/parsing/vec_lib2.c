@@ -32,7 +32,7 @@ int	ft_free_s_token(void **check_token)
 
 	token = (t_token **)check_token;
 	if (!token || !(*token))
-		return (write(2, "No Token Found\n", 15));
+		return (1);
 	if ((*token))
 	{
 		if ((*token)->value)

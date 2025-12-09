@@ -62,13 +62,14 @@ bool	val_redir_out(
 //check if statement contains a heredoc
 static int	check_heredoc(
 	t_tokenlist *tokenlist,
-	size_t pos)
+	size_t pos
+)
 {
 	t_token	*check_token;
 
 	check_token = (t_token *)tokenlist->tokens[pos];
 	check_token->type = HEREDOC_DEL;
-	if (pos == tokenlist->total - 1)
+	if (pos - 1 < tokenlist->total - 1)
 		return (success);
 	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 }
@@ -86,10 +87,10 @@ int	val_redir(
 			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 		if (ctok->type == HEREDOC && i + 1 < tlist->total)
 		{
-			if (check_heredoc(tlist, i + 1))
-				i++;
+			if (check_heredoc(tlist, i + 1) != success) // maybe remove
+				return (syntax_err);
 			else
-				return (success);
+				i++;
 		}
 		else if ((tok_is_red(ctok) || ctok->type == PIPE) && !looknxt(tlist, i))
 			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);

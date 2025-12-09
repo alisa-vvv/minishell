@@ -155,7 +155,7 @@ int	default_lexer(
 	}
 
 	err = check_lexer(token_list, msh_data); // currently doing this
-	if (err) // fjdskfjkds
+	if (err != success) // fjdskfjkds
 	{
 		tokenlist_free(token_list);
 		return (write(1, "Failed check types\n", 19));

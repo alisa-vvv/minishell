@@ -37,7 +37,7 @@ int	get_offset(t_exp_data *exp_data)
 
 // p_printf("NAME = %s\n", exp_data->name);
 // expands variables to env value if found
-int 	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
+int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 		t_exp_data *exp_data)
 {
 	int		offset;
@@ -45,33 +45,36 @@ int 	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 	t_token	*n_token;
 	int 	err;
 
+	err = success;
 	n_token = NULL;
 	offset = get_offset(exp_data);
 	new_str = exp_str_token(str_token, exp_data->start_var, exp_data->env_value,
 			offset);
 	if (*new_str == '\0')
 	{
-		(ft_safe_free((unsigned char **)&new_str));
+		ft_safe_free((unsigned char **) &new_str);
 		exp_data->env_value = NULL;
 		err = tokenlist_delete(tokenlist, pos);
 	}
 	else
 	{
 		n_token = new_token(tokenlist, new_str, ft_strlen(new_str) + 1);
+		n_token = NULL;
+		ft_safe_free((unsigned char **)&new_str);
 		if (!n_token)
-			return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
-			// tokenlist_free(tokenlist);
-		err = tokenlist_set(tokenlist, pos, n_token);
-		(ft_safe_free((unsigned char **)&new_str));
+			return (malloc_err);
+		tokenlist_set(tokenlist, pos, n_token);
 	}
 	return (err);
 }
 
 //(*exp_data)->start_var = ft_strchr((*exp_data)->start_var +1, '$');
-void	exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
+int	exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
 {
 	t_token	*check_token;
+	int		err;
 
+	err = success;
 	check_token = tokenlist->tokens[pos];
 	if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '\''))
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
@@ -84,13 +87,14 @@ void	exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else
 	{
-		expand_new(tokenlist, pos, check_token->value, *exp_data);
+		err = expand_new(tokenlist, pos, check_token->value, *exp_data);
 		check_token = tokenlist->tokens[pos];
 		if (!check_token)
 			(*exp_data)->start_var = NULL;
 		else
 			(*exp_data)->start_var = ft_strchr(check_token->value, '$');
 	}
+	return (err);
 }
 
 // expand known var and otherwise delete and re-position all tokens
@@ -104,9 +108,10 @@ int	expand_var(
 	t_exp_data	*exp_data;
 	int			err;
 
+	err = success;
 	exp_data = ft_calloc(1, sizeof(t_exp_data));
 	if (!exp_data)
-		return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	exp_data->start_var = ft_strchr(check_token->value, '$');
 	while (exp_data->start_var)
 	{
@@ -119,13 +124,14 @@ int	expand_var(
 			exp_data->env_value = ft_itoa(msh_data->last_pipeline_return); 
 		else if (env_var_get_value(msh_data->env, exp_data->name, &exp_data->env_value) != success)
 			return (malloc_err);
-		exp_further(*tokenlist, pos, &exp_data);
-		if (exp_data->name)
-			(ft_safe_free((unsigned char **)&exp_data->name));
+		err = exp_further(*tokenlist, pos, &exp_data);
+		ft_safe_free((unsigned char **)&exp_data->name);
 		if (exp_data->env_value && ft_strncmp(exp_data->env_value, "", 1) != 0)
 			ft_safe_free((unsigned char **)&exp_data->env_value);
+		if (err != success)
+			break ;
 	}
-	return (ft_safe_free((unsigned char **)&exp_data), success);
+	return (ft_safe_free((unsigned char **)&exp_data), err);
 }
 
 // e_printf("Token type = %s\n", enum_to_str(check_token->type));
@@ -145,13 +151,13 @@ int	exp_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data, int type, size_t i)
 		if (type == PARAMETER && (check_token->type == PARAMETER
 				|| check_token->type == DOUBLE_Q
 				|| check_token->type == SINGLE_Q))
-		{
 			err = expand_var(&tokenlist, i, msh_data, check_token);
-		}
 		else if (type == SINGLE_Q && (int)check_token->type == SINGLE_Q)
 			err = rm_quotes(tokenlist, i, '\'');
 		else if (type == DOUBLE_Q && (int)check_token->type == DOUBLE_Q)
-			err = rm_quotes(tokenlist, i, '"'); 
+			err = rm_quotes(tokenlist, i, '"');
+		if (err != success)
+			break ;
 		i++;
 	}
 	return (err);

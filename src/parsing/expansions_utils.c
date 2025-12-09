@@ -18,15 +18,14 @@ char	*prep_leftover(char *str_token, char *start, int offset)
 	char	*temp_left;
 	size_t	rem_len;
 
-	temp_left = NULL;
 	if (!str_token)
 		return (NULL);
 	if (!start)
 		return (NULL);
 	rem_len = ft_strlen(start + offset) + 1;
-	temp_left = malloc(rem_len * sizeof(char));
+	temp_left = ft_calloc(rem_len, sizeof(char));
 	if (!temp_left)
-		return (NULL);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), NULL);
 	ft_strlcpy(temp_left, start + offset, rem_len + 1);
 	*start = '\0';
 	return (temp_left);
@@ -39,18 +38,21 @@ char	*exp_str_token(char *str_token, char *start, char *value, int offset)
 	char	*leftover;
 	char	*temp_left;
 
-	temp_left = NULL;
 	temp_left = prep_leftover(str_token, start, offset);
+	if (!temp_left)
+		return (NULL);
 	leftover = ft_strjoin(value, temp_left);
 	new_str = ft_strjoin(str_token, leftover);
 	if (!new_str || !leftover)
-		return ((ft_safe_free((unsigned char **)&leftover),
-				ft_safe_free((unsigned char **)&value),
-				ft_safe_free((unsigned char **)&new_str),
-				ft_safe_free((unsigned char **)&temp_left),
-				NULL));
-	(ft_safe_free((unsigned char **)&leftover),
-		ft_safe_free((unsigned char **)&temp_left));
+	{
+		msh_perror(NULL, MALLOC_ERR, extern_err);
+		ft_safe_free((unsigned char **)&leftover);
+		ft_safe_free((unsigned char **)&new_str);
+		ft_safe_free((unsigned char **)&temp_left);
+		return (NULL);
+	}
+	ft_safe_free((unsigned char **)&leftover);
+	ft_safe_free((unsigned char **)&temp_left);
 	return (new_str);
 }
 
