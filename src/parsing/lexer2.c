@@ -48,22 +48,26 @@ int	expand_quotes(t_tokenlist *tokenlist,
 {
 	int	count;
 	int	count_single;
+	int err;
 
+	err = 0;
 	count = count_exp(tokenlist, '"');
 	count_single = count_exp(tokenlist, '\'');
 	while (count_single > 0)
 	{
-		if (exp_lexer(tokenlist, msh_data, SINGLE_Q, 0))
-			return (write(1, "Wrong single quotes\n", 20));
+		err = exp_lexer(tokenlist, msh_data, SINGLE_Q, 0);
+		if (err != success)
+			return (err); 
 		count_single--;
 	}
 	while (count > 0)
 	{
-		if (exp_lexer(tokenlist, msh_data, DOUBLE_Q, 0))
-			return (write(1, "Wrong double quotes\n", 20));
+		err = exp_lexer(tokenlist, msh_data, DOUBLE_Q, 0);
+		if (err != success)
+			return (err);
 		count--;
 	}
-	return (0);
+	return (err);
 }
 
 //expand vars and merge operators for export
@@ -71,57 +75,59 @@ int	expand_param(t_tokenlist *tokenlist,
 					t_msh_data *msh_data)
 {
 	int	count;
+	int err; 
 
 	count = count_exp(tokenlist, '$');
 	while (count > 0)
 	{
-		if (exp_lexer(tokenlist, msh_data, PARAMETER, 0)) // lots of error checking to be done here
-			return (write(1, "Wrong variable\n", 15));
+		err = exp_lexer(tokenlist, msh_data, PARAMETER, 0);
+		if (err != success)
+			return (err);
 		count--;
 	}
 	count = count_exp(tokenlist, '=');
 	while (count > 0)
 	{
-		if (exp_lexer(tokenlist, msh_data, OPERATOR, 0))
-			return (write(1, "Wrong operator\n", 15));
+		err = exp_lexer(tokenlist, msh_data, OPERATOR, 0);
+		if (err != success)
+			return (err);
 		count--;
 	}
-	return (0);
+	return (success);
 }
 
 // go through lexer and clean up data
 int	check_lexer(t_tokenlist *tokenlist,
 				t_msh_data *msh_data)
 {
-	t_pos	*epos;
 	t_token	*token;
 	int		err;
 
-	epos = NULL;
 	token = NULL;
 	err = expand_param(tokenlist, msh_data); // err check on all these?
 	if (err != success)
 		return (err);
-	expand_quotes(tokenlist, msh_data);
-	clean_lexer(tokenlist, 0);
-	contract_list(tokenlist, tokenlist->total - 1);
+	err = expand_quotes(tokenlist, msh_data);
+	if (err != success)
+		return (err);
+	err = clean_lexer(tokenlist, 0);
+	if (err != success)
+		return (err);
+	err = contract_list(tokenlist, tokenlist->total - 1);
+	if (err != success)
+		return (err);
 	if (tokenlist->total < 2)
 	{
-		if (single_token(tokenlist))
-			return (write(1, "Single token redir\n", 19));
+		err = single_token(tokenlist);
+		if (err != success)
+			return (err); 
 	}
-	else if (val_redir(tokenlist, 0, token))
-		return (write(1, "Wrong redirect\n", 15));
-	set_pipe_cm(tokenlist, 0);
-	if (tokenlist)
-	{
-		epos = ft_calloc(1, sizeof(t_pos));
-		if (!epos)
-			return (1);
-		if (pass_comm(tokenlist, msh_data, epos))
-			return (write(1, "Failed passing exec data\n", 25));
-	}
-	return (free(epos), 0);
+	else
+		err = val_redir(tokenlist, 0, token);
+	if (err != success)
+		return (err);
+	err = prep_execdata(tokenlist, msh_data);
+	return (err);
 }
 
 // check if left and right are args for pipe
@@ -144,7 +150,7 @@ int	check_pipe_redirect(char *str, char symbol)
 			return (1);
 		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i
 				+ 1 == '"'))
-			return (1);
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	}
-	return (0);
+	return (success);
 }

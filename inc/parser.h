@@ -112,6 +112,7 @@ int			merge_tokens(t_tokenlist *tokenlist, int pos1, int pos2);
 int 		contract_list(t_tokenlist *tokenlist, int i);
 int			check_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data);
 int			fill_comm_list(t_exec_data *exec_data, t_tokenlist *tokenlist, t_pos *xpos);
+int 		prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data);
 int			index_lexer(t_tokenlist **tokenlist);
 t_token		*looknxt(t_tokenlist *tokenlist, size_t index);
 t_token		*lookbehind(t_tokenlist *tokenlist, size_t index);

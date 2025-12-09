@@ -91,6 +91,7 @@ int	main(int argc, char **argv, char *envp[])
 		else
 		{
 			TEST_lexer_return = default_lexer(read_line, &msh_data);
+			
 			TEST_MINISHELLDATA(msh_data);
 			if (TEST_lexer_return == success)
 				err_check = executor(&msh_data, msh_data.command_count);

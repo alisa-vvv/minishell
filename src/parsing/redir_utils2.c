@@ -31,15 +31,15 @@ int	single_token(t_tokenlist *tokenlist)
 
 	check_token = (t_token *)tokenlist->tokens[0];
 	if (!check_token)
-		return (1);
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	if ((int)tokenlist->total == 1)
 	{
 		if (tok_is_red(check_token))
-			return (1);
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 		else
 			check_token->command = true;
 	}
-	return (0);
+	return (success);
 }
 
 //checks if token is supposed to be command for list

@@ -41,6 +41,7 @@ CFILES_PARSER	=	debug.c\
 					lexer.c\
 					lexer3.c\
 					lexer2.c\
+					parser2.c\
 					quote_utils.c\
 					quote_handler.c\
 					redir_utils2.c\

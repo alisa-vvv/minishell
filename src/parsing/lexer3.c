@@ -43,13 +43,17 @@ int	merge_tokens(t_tokenlist *tokenlist,
 {
 	t_token	*check_token;
 	t_token	*extra_token;
+	int		err;
 
+	err = 0;
 	check_token = tokenlist->tokens[pos1];
 	extra_token = tokenlist->tokens[pos2];
 	check_token->value = ft_strjoin(check_token->value, extra_token->value);
+	if (!check_token->value)
+		return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
 	check_token->pos = pos1;
-	tokenlist_delete(tokenlist, pos2);
-	return (0);
+	err = tokenlist_delete(tokenlist, pos2);
+	return (err);
 }
 
 // checks if str only contains quotes
@@ -97,8 +101,10 @@ int	contract_list(t_tokenlist *tokenlist,
 					int i)
 {
 	t_token	*check_token;
+	int	err;
 
 	check_token = NULL;
+	err = success;
 	while ((size_t)i > 0)
 	{
 		check_token = tokenlist->tokens[i];
@@ -108,10 +114,12 @@ int	contract_list(t_tokenlist *tokenlist,
 			&& (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist,
 					i)->type == OPERATOR))
 		{
-			merge_tokens(tokenlist, i - 1, i);
+			err = merge_tokens(tokenlist, i - 1, i);
+			if (err != success)
+				return (err);
 		}
 		i--;
 	}
-	index_lexer(&tokenlist);
-	return (0);
+	err = index_lexer(&tokenlist);
+	return (err);
 }

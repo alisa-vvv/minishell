@@ -69,8 +69,8 @@ static int	check_heredoc(
 	check_token = (t_token *)tokenlist->tokens[pos];
 	check_token->type = HEREDOC_DEL;
 	if (pos == tokenlist->total - 1)
-		return (0);
-	return (1);
+		return (success);
+	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 }
 
 //validate if redir are well placed
@@ -83,24 +83,24 @@ int	val_redir(
 	{
 		ctok = (t_token *)tokenlist_get(tlist, i);
 		if (!ctok)
-			return (1);
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 		if (ctok->type == HEREDOC && i + 1 < tlist->total)
 		{
 			if (check_heredoc(tlist, i + 1))
 				i++;
 			else
-				return (0);
+				return (success);
 		}
 		else if ((tok_is_red(ctok) || ctok->type == PIPE) && !looknxt(tlist, i))
-			return (1);
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 		else if (looknxt(tlist, i) != NULL && tok_is_red(looknxt(tlist, i)))
 		{
 			if (val_redir_out(tlist, i))
-				return (1);
+				return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 			i++;
 		}
 		else
 			i++;
 	}
-	return (0);
+	return (success);
 }

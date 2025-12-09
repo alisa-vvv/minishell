@@ -76,19 +76,21 @@ int	set_len(const char *str, int i)
 int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 {
 	t_token	*check_token;
+	int err; 
 
+	err = success;
 	while (i < tokenlist->total - 1)
 	{
 		check_token = tokenlist->tokens[i];
 		if (check_token && check_token->value && *check_token->value == '\0')
 		{
-			tokenlist_delete(tokenlist, i);
+			err = tokenlist_delete(tokenlist, i);
 		}
 		else if (check_token->type == HEREDOC && looknxt(tokenlist, i))
 			looknxt(tokenlist, i)->type = HEREDOC_DEL;
 		i++;
 	}
-	return (0);
+	return (err);
 }
 
 // e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
@@ -105,10 +107,10 @@ int	index_lexer(t_tokenlist **tokenlist)
 	{
 		check_token = (t_token *)(*tokenlist)->tokens[i];
 		if (!check_token)
-			return (write(1, "No tokens available\n", 20));
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 		else
 			check_token->pos = i;
 		i++;
 	}
-	return (0);
+	return (success);
 }

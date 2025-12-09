@@ -82,17 +82,19 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
 	t_quote	*q;
+	int err;
 
+	err = success;
 	q = ft_calloc(1, sizeof(t_quote));
 	if (!q)
-		return (1);
+		return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
 	q->quote = symbol;
 	check_token = (t_token *)tokenlist->tokens[pos];
 	q->count = (count_occ(check_token->value, symbol, true));
 	if (char_is_quote(symbol))
 		rm_str_quotes(check_token->value, q);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
-		tokenlist_delete(tokenlist, pos); // errro check
+		err = tokenlist_delete(tokenlist, pos); 
 	free(q);
-	return (0);
+	return (err);
 }
