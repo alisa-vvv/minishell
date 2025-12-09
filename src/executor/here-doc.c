@@ -146,6 +146,7 @@ static int heredoc_wait_for_child( // this is probably completely not needed and
 }
 
 int	create_here_doc(
+	t_msh_data *const msh_data,
 	const char *heredoc_delim
 )
 {
@@ -156,10 +157,11 @@ int	create_here_doc(
 	err_check = 0;
 	err_check = pipe(here_doc);
 	if (err_check < 0)
-		return (msh_perror(NULL, PIPE_ERR, extern_err), extern_err); // check return
+		return (msh_perror(NULL, PIPE_ERR, extern_err), malloc_err);
 	pid = fork();
 	if (pid == 0)
 	{
+		msh_data->is_parent = false;
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		safe_close(&here_doc[WRITE_END]);
 		return (child_heredoc);
@@ -172,6 +174,6 @@ int	create_here_doc(
 		handle_signals_non_interactive();
 	}
 	if (err_check != 0)
-		return (msh_perror(NULL, PIPE_ERR, extern_err), extern_err); // check return
+		return (msh_perror(NULL, PIPE_ERR, extern_err), err_check);
 	return (here_doc[READ_END]);
 }

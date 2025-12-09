@@ -16,6 +16,7 @@
 #include <fcntl.h>
 
 static int	find_and_create_heredocs(
+	t_msh_data *const msh_data,
 	t_redir_list *redirection
 )	
 {
@@ -26,7 +27,8 @@ static int	find_and_create_heredocs(
 	{
 		if (redirection->type == heredoc)
 		{
-			fd_or_exit_code = create_here_doc(redirection->heredoc_delim);	
+			fd_or_exit_code = create_here_doc(msh_data,
+									 redirection->heredoc_delim);
 			if (fd_or_exit_code > 0)
 				redirection->dest_fd = fd_or_exit_code;
 			else
@@ -34,11 +36,12 @@ static int	find_and_create_heredocs(
 		}
 		redirection = redirection->next;
 	}
-	return (0);
+	return (success);
 }
 
 int g_TEST_IO;
 int	prepare_command_io(
+	t_msh_data *const msh_data,
 	const t_exec_data *command,
 	t_command_io *const command_io,
 	int i
@@ -60,7 +63,7 @@ int	prepare_command_io(
 			return (msh_perror(NULL, PIPE_ERR, extern_err), pipe_err); // do we need to reutrn here???
 	}
 	if (command->redirections)
-		err_check = find_and_create_heredocs(command->redirections);
+		err_check = find_and_create_heredocs(msh_data, command->redirections);
 	//if (g_TEST_IO == 1)
 	//	return (-1);
 	return (err_check);

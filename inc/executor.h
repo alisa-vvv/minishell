@@ -48,12 +48,14 @@ int	executor(
 
 /*		Here-doc		*/
 int	create_here_doc(
+	t_msh_data *const msh_data,
 	const char *heredoc_delim
 );
 /**/
 
 /*		Sets up the input and output of the command		*/
 int	prepare_command_io(
+	t_msh_data *const msh_data,
 	const t_exec_data *command,
 	t_command_io *const command_io,
 	int i

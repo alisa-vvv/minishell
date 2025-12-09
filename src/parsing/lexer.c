@@ -133,6 +133,7 @@ int	default_lexer(
 	token_list = NULL;
 	token_c = 0;
 
+	err = success;
 	if (input_line[0] == '\0')
 		return (success);
 	input_line = trim_str_space(input_line);
@@ -148,18 +149,8 @@ int	default_lexer(
 	if (tokenlist_init(&token_list, token_c) != success)
 		return (malloc_err);
 	err = fill_tokenlist(token_list, input_line);
-	if (err != success)
-	{
-		tokenlist_free(token_list);
-		return (err);
-	}
-
-	err = check_lexer(token_list, msh_data); // currently doing this
-	if (err != success) // fjdskfjkds
-	{
-		tokenlist_free(token_list);
-		return (write(1, "Failed check types\n", 19));
-	}
+	if (err == success)
+		err = check_lexer(token_list, msh_data); // currently doing this
 	tokenlist_free(token_list);
-	return (success);
+	return (err);
 }

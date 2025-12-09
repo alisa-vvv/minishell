@@ -27,7 +27,7 @@ int	count_lists(t_tokenlist *tokenlist)
 		if (check_token->type == PIPE)
 			count++;
 		if (i == tokenlist->total - 1 && check_token->type == PIPE)
-			return (-1);
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 		i++;
 	}
 	return (count);
@@ -36,12 +36,10 @@ int	count_lists(t_tokenlist *tokenlist)
 // count until the next pos that is a command
 int	count_next_cm(t_tokenlist *tokenlist, int pos)
 {
-	int		redir;
 	size_t	i;
 	t_token	*check_token;
 
 	i = pos + 1;
-	redir = 0;
 	while (i < tokenlist->total)
 	{
 		check_token = (t_token *)tokenlist->tokens[i];
@@ -51,22 +49,24 @@ int	count_next_cm(t_tokenlist *tokenlist, int pos)
 			return (check_token->pos);
 		i++;
 	}
-	return (-1);
+	return (-1); // what's up with this return case?
 }
 
 // p_printf("TOTAL = %d\n", total);
 //	p_printf("POS = %d and POS_RED = %d\n", pos, pos_red);
 // make an empty execdata
-int	make_cm_list(t_tokenlist *tokenlist,
-					t_exec_data *comm_list,
-					t_pos *xpos)
+int	make_cm_list(
+	t_tokenlist *tokenlist,
+	t_exec_data *comm_list,
+	t_pos *xpos
+)
 {
 	int	total;
 	int	i;
 
 	i = -1;
 	total = 0;
-	if (!comm_list)
+	if (!comm_list) // how can this condition ever be true?
 		return (write(1, "No command list\n", 16));
 	comm_list->argv = NULL;
 	if (xpos->red > 0)
@@ -75,26 +75,26 @@ int	make_cm_list(t_tokenlist *tokenlist,
 		total = count_args(tokenlist, xpos->pos, tokenlist->total);
 	if (total == 0)
 		return (0);
-	comm_list->argv = malloc(sizeof(char *) * (total + 1));
+	comm_list->argv = ft_calloc(sizeof(char *), (total + 1));
 	if (!comm_list->argv)
-		return (write(1, MALLOC_ERR, 15));
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	while (++i < total)
 		comm_list->argv[i] = NULL;
 	comm_list->argv[total] = NULL;
-	return (0);
+	return (success);
 }
 
 // start conversion by making lists of commands
 int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xp)
 {
-	if (count_lists(tokenlist) == -1)
-		return (write(1, "No lists counted\n", 17));
 	msh_data->command_count = count_lists(tokenlist);
+	if (msh_data->command_count == syntax_err) // check if we even need error check here for this
+		return (syntax_err);
 	msh_data->exec_data = ft_calloc(msh_data->command_count,
 			sizeof(t_exec_data));
 	if (!msh_data->exec_data)
-		return (write(2, MALLOC_ERR, 15));
-	while ((int)xp->i < msh_data->command_count)
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+	while ((int) xp->i < msh_data->command_count)
 	{
 		xp->red = count_next_cm(tokenlist, xp->pos);
 		if (xp->red > 0 && looknxt(tokenlist, xp->pos)->type == HEREDOC)
@@ -110,7 +110,7 @@ int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xp)
 			xp->pos = count_next_cm(tokenlist, xp->red);
 		xp->i++;
 	}
-	return (0);
+	return (success);
 }
 
 //	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
@@ -123,10 +123,10 @@ int	convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xpos)
 	comm_list = NULL;
 	comm_list = msh_data->exec_data + xpos->i;
 	if (make_cm_list(tokenlist, comm_list, xpos))
-		return (write(1, "Command list failed\n", 20));
+		return (write(1, "Command list failed\n", 20)); // how can this ever happen?
 	comm_list->redirections = NULL;
-	if (find_type(tokenlist, xpos->pos, xpos->red, HEREDOC) != -1)
-		set_heredoc(comm_list, tokenlist, xpos->pos, xpos->red);
+	if (find_type(tokenlist, xpos->pos, xpos->red, HEREDOC) != -1) // what if it is -1?
+		set_heredoc(comm_list, tokenlist, xpos->pos, xpos->red); // waiting for changes to heredoc bug i think
 	else if (fill_comm_list(comm_list, tokenlist, xpos))
 		return (write(1, "Fill list failed\n", 17));
 	return (0);

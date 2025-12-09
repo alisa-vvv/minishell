@@ -192,12 +192,13 @@ static void	executor_cleanup(
 // this will tell the caller function that not all pipes were created.
 // currently, what happens on fail is unclear
 int	build_pipeline(
-	t_exec_data *exec_data,
+	t_msh_data *const msh_data,
 	t_command_io *command_io,
-	int command_count,
 	int *elem_count
 )
 {
+	t_exec_data *const	exec_data = msh_data->exec_data;
+	const int			command_count = msh_data->command_count;
 	int	status_check;
 	int	i;
 
@@ -205,7 +206,8 @@ int	build_pipeline(
 	status_check = success;
 	while (++i < command_count)
 	{
-		status_check = prepare_command_io(&exec_data[i], command_io, i);
+		status_check = prepare_command_io(msh_data,
+									&exec_data[i], command_io, i);
 		if (status_check != success)
 			break ;
 	}
@@ -248,7 +250,7 @@ static int	execute_pipeline(
 
 	err = success;
 	elem_count = 0;
-	err = build_pipeline(exec_data, command_io, command_count, &elem_count);
+	err = build_pipeline(msh_data, command_io, &elem_count);
 	if (err != success)
 		return (err);
 	err = execute_commands(msh_data, exec_data, command_io, p_id_arr);
