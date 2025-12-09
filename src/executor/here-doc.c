@@ -115,7 +115,7 @@ int	heredoc_readline_loop(
 	}
 	if (input_str)
 		free(input_str);
-	return (0);
+	return (success);
 }
 
 static int heredoc_wait_for_child( // this is probably completely not needed and we can just wait(NULL)

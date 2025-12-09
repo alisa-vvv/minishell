@@ -98,11 +98,11 @@ static int	execute_command(
 	pid_t *pid
 )
 {
-	int				err_check;
+	int				err;
 	t_undup_list	**undup_list_head;
 	t_undup_list	*undup_list;
 
-	err_check = success;
+	err = success;
 	*pid = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true
 		|| command->builtin_name == not_builtin)
@@ -111,13 +111,13 @@ static int	execute_command(
 	{
 		undup_list = NULL;
 		undup_list_head = &undup_list;
-		perform_redirections(command->redirections, undup_list_head, true); // add error checking here
+		err = perform_redirections(command->redirections, undup_list_head, true);
 	}
-	if (command->builtin_name != not_builtin)
-		err_check = exec_builtin(command, msh_data);
+	if (command->builtin_name != not_builtin && err == success)
+		err = exec_builtin(command, msh_data);
 	if (command->redirections) // not needed?
 		undup_redirections(undup_list_head);
-	return (err_check);
+	return (err);
 }
 
 static int	wait_for_children(

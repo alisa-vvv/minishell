@@ -134,19 +134,30 @@ int	perform_redirections(
 	while (redirections != NULL)
 	{
 		if (record == true)
-			cur_undup = ft_calloc(1, sizeof(t_undup_list)); // ugh
+		{
+			cur_undup = ft_calloc(1, sizeof(t_undup_list)); // change to add the undup to the list here.
+			// to make less code
+			if (cur_undup == NULL)
+			{
+				undup_redirections(undup_list_head);
+				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+			}
+		}
 		if (redirections->type == input || redirections->type == heredoc)
 			err_check = input_redirect(redirections, cur_undup, record);
 		else
 			err_check = output_redirect(redirections, cur_undup, record);
 		if (err_check != success)
 		{
+			if (cur_undup)
+				free(cur_undup);
 			undup_redirections(undup_list_head); // FIX this!
 			return (err_check);
 		}
 		redirections = redirections->next;
 		if (record == true)
-			record_undup(undup_list_head, cur_undup);
+			record_undup(undup_list_head, cur_undup); // this function should be able to recognise
+		// that the undup was not fully recorded, only allocated, and act accordingly. add safety check inside.
 	}
 	return (err_check);
 }
