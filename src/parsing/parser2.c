@@ -15,12 +15,12 @@
 
 int check_spcases(t_tokenlist *tokenlist)
 {
-    t_token	*token;
-    int err;
+	t_token	*token;
+	int err;
 
-    err = success;
-    token = NULL;
-    if (tokenlist->total < 2)
+	err = success;
+	token = NULL;
+	if (tokenlist->total < 2)
 	{
 		err = single_token(tokenlist);
 		if (err != success)

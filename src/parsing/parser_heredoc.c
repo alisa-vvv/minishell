@@ -94,7 +94,10 @@ int	set_heredoc(
 	t_pos *xpos)
 {
 	t_redir_list	*redirlist;
-	int total;
+	int 			total;
+	int				err;
+
+	err = success;
 	total = find_type(tokenlist, xpos->pos, tokenlist->total-1, PIPE);
 	if (total < 0)
 		total = tokenlist->total;
@@ -106,5 +109,5 @@ int	set_heredoc(
 	set_heredoc_def(execdata);
 	xpos->pos = 0;
 	set_heredoc_red(execdata, tokenlist, xpos, total);
-	return (success);
+	return (err);
 }

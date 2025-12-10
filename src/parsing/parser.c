@@ -34,7 +34,7 @@ int	make_cm_list(
 		return (0);
 	comm_list->argv = ft_calloc(sizeof(char *), (total + 1));
 	if (!comm_list->argv)
-		return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	while (++i < total)
 		comm_list->argv[i] = NULL;
 	comm_list->argv[total] = NULL;
@@ -67,21 +67,20 @@ int pass_list_pos(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 	return (err);
 }
 
-
 // start conversion by making lists of commands
 int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 {
 	int err;
 	err = success;
-	if (count_lists(tokenlist) == -1)
+	if (count_lists(tokenlist) == syntax_err)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	msh_data->command_count = count_lists(tokenlist);
-	if (msh_data->command_count == syntax_err) // check if we even need error check here for this
+	if (msh_data->command_count == syntax_err)
 		return (syntax_err);
 	msh_data->exec_data = ft_calloc(msh_data->command_count,
 			sizeof(t_exec_data));
 	if (!msh_data->exec_data)
-		return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err = pass_list_pos(tokenlist, msh_data, ind);
 	return (err);
 }

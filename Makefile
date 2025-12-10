@@ -56,6 +56,7 @@ CFILES_PARSER	=	debug.c\
 CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\
 					redirections.c\
+					undups.c\
 					here-doc.c\
 					try_execve.c\
 					executor_utils.c\
