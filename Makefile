@@ -48,6 +48,7 @@ CFILES_PARSER	=	debug.c\
 					redir_utils.c\
 					val_redirect.c\
 					parser_utils.c\
+					parser_utils2.c\
 					parser_argv.c\
 					parser_redirects.c\
 					parser_heredoc.c\

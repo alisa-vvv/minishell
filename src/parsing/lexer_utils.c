@@ -67,10 +67,6 @@ int	set_len(const char *str, int i)
 	return (len);
 }
 
-// p_printf("DELETE?\n");
-//*check_token->value == '\0'
-// p_printf("CLEAN LEXER: %p %i\n", tokenlist->tokens, tokenlist->total);
-// test_tokens(tokenlist);
 
 // deletes empty tokens from the tokenlist
 int	clean_lexer(t_tokenlist *tokenlist, size_t i)
@@ -93,9 +89,7 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 	return (err);
 }
 
-// e_printf("TOTAL= %zu \n", (size_t)(*tokenlist)->element_list.total);
-//e_printf("CHECK TOKEN = %s, POS = %d, ADDRESS = %p", check_token->value, i,
-//		&check_token);
+
 // index lexer by traversing
 int	index_lexer(t_tokenlist **tokenlist)
 {

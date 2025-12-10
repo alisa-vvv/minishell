@@ -13,6 +13,25 @@
 #include "parser.h"
 
 
+int check_spcases(t_tokenlist *tokenlist)
+{
+    t_token	*token;
+    int err;
+
+    err = success;
+    token = NULL;
+    if (tokenlist->total < 2)
+	{
+		err = single_token(tokenlist);
+		if (err != success)
+			return (err); 
+	}
+	else
+		err = val_redir(tokenlist, 0, token);
+	return (err);
+}
+
+
 int prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data)
 {
     t_pos *xpos;

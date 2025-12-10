@@ -119,7 +119,7 @@ int	fill_comm_list(
 		if (added == -1)
 		{
 			free_2d_arr((void *)exec_data->argv);
-			return (write(1, MALLOC_ERR, 15));
+			return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
 		}
 		if (added == 1)
 			i++;

@@ -12,31 +12,6 @@
 
 #include "parser.h"
 
-//returns len of unquoted token
-int	move_o_unquoted(const char *str, int i)
-{
-	int	len;
-
-	len = 0;
-	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i])
-		&& !char_is_red(str[i]))
-	{
-		len++;
-		i++;
-	}
-	if (str[i] && char_is_quote(str[i]) && str[i - 1] == '=')
-	{
-		i++;
-		while (str[i] && !char_is_quote(str[i]))
-		{
-			len++;
-			i++;
-		}
-		i++;
-		len += 2;
-	}
-	return (len);
-}
 
 //checks the length of unquoted str token
 int	count_unq(const char *str, int i, int count)
@@ -119,6 +94,16 @@ int	fill_tokenlist(
 	return (success);
 }
 
+int check_tcount(int token_c)
+{
+	if (token_c == 0)
+		return (success);
+	if (token_c < 0)
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+	return (success);
+}
+
+
 // test_tokens(token_list);
 // default option to put trimmed input in tokenlist
 int	default_lexer(
@@ -140,12 +125,9 @@ int	default_lexer(
 	err = val_inputline(input_line);
 	if (err != success)
 		return (err);
-
 	token_c = token_count(input_line, 0, token_c);
-	if (token_c == 0)
-		return (success);
-	if (token_c < 0)
-		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+	if (check_tcount(token_c))
+		return (check_tcount(token_c));
 	if (tokenlist_init(&token_list, token_c) != success)
 		return (malloc_err);
 	err = fill_tokenlist(token_list, input_line);

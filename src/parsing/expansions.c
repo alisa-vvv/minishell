@@ -142,7 +142,7 @@ int	exp_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data, int type, size_t i)
 	t_token	*check_token;
 	int err;
 
-	err = 0; 
+	err = success; 
 	while (i < (size_t)tokenlist->total)
 	{
 		check_token = (t_token *)tokenlist->tokens[i];

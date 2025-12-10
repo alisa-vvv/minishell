@@ -106,5 +106,5 @@ int	set_heredoc(
 	set_heredoc_def(execdata);
 	xpos->pos = 0;
 	set_heredoc_red(execdata, tokenlist, xpos, total);
-	return (0);
+	return (success);
 }
