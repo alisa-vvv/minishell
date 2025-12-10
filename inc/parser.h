@@ -144,7 +144,7 @@ int 		count_args(t_tokenlist *tokenlist, int pos, int total);
 int			count_lists(t_tokenlist *tokenlist);
 int			count_next_cm(t_tokenlist *tokenlist, int pos);
 char *		prep_leftover(char *str_token, char *start,  int offset);
-char *		exp_str_token(char *str_token, char *start, char *value, int offset);
+char *		exp_token(char *str_token, char *start, char *value, int offset);
 int			refine_name(char *token_name, char **result, char symbol);
 t_builtin_name set_builtins(t_token *check_token);
 int			find_type(t_tokenlist *tokenlist, size_t pos, int red, t_token_type type);

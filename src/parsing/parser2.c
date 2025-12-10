@@ -46,6 +46,8 @@ int prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data)
 		if (!xpos)
 			return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
         err = pass_comm(tlist, msh_data, xpos);
+		if (err != success)
+			return (err);
 	}
 	free(xpos);
     return (err);

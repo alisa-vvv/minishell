@@ -51,7 +51,9 @@ int pass_list_pos(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xp)
 		xp->red = count_next_cm(tokenlist, xp->pos);
 		if (xp->red > 0 && looknxt(tokenlist, xp->pos)->type == HEREDOC)
 			xp->red = count_next_cm(tokenlist, xp->pos + 1);
-		convert_data(tokenlist, msh_data, xp);
+		err = convert_data(tokenlist, msh_data, xp);
+		if (err != success)
+			return (err);
 		if (xp->red > 0 && find_type(tokenlist, xp->pos,
 				find_type(tokenlist, xp->pos, xp->red, PIPE), HEREDOC) == -1)
 			xp->pos = xp->red;
@@ -69,6 +71,8 @@ int pass_list_pos(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xp)
 // start conversion by making lists of commands
 int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xp)
 {
+	int err;
+	err = success;
 	if (count_lists(tokenlist) == -1)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	msh_data->command_count = count_lists(tokenlist);
@@ -78,8 +82,8 @@ int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xp)
 			sizeof(t_exec_data));
 	if (!msh_data->exec_data)
 		return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
-	pass_list_pos(tokenlist, msh_data, xp);
-	return (success);
+	err = pass_list_pos(tokenlist, msh_data, xp);
+	return (err);
 }
 
 //	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
