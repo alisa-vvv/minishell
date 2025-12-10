@@ -42,7 +42,7 @@ int	prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data)
 		set_pipe_cm(tlist, 0);
 		ind = ft_calloc(1, sizeof(t_pos));
 		if (!ind)
-			return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 		err = pass_comm(tlist, msh_data, ind);
 		if (err != success)
 			return (err);
