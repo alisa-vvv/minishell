@@ -130,7 +130,6 @@ int	convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xpos)
 	comm_list = msh_data->exec_data + xpos->i;
 	if (make_cm_list(tokenlist, comm_list, xpos))
 		return (write(1, "Command list failed\n", 20)); // how can this ever happen?
-		return (write(1, "Command list failed\n", 20));
 	printf("POSCOM = %d\n, POS_RED = %d\n", xpos->pos, xpos->red);
 	comm_list->redirections = NULL;
 	if (find_type(tokenlist, xpos->pos, xpos->red, HEREDOC) != -1)
