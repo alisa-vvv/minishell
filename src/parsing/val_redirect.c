@@ -87,7 +87,7 @@ int	val_redir(
 			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 		if (ctok->type == HEREDOC && i + 1 < tlist->total)
 		{
-			if (check_heredoc(tlist, i + 1) != success) // maybe remove
+			if (check_heredoc(tlist, i + 1) != success)
 				return (syntax_err);
 			else
 				i++;

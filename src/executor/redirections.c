@@ -24,7 +24,7 @@ static void	 safe_open(
 	int flags
 )
 {
-	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC; // make these into defines maybe? can we?
+	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
 	const int	app_f = O_WRONLY | O_CREAT | O_APPEND;
 
 	if (filename == NULL)
@@ -44,16 +44,19 @@ static int	input_redirect(
 {
 	if (record == true)
 	{
-		undup_elem->orig_fd = dup(STDIN_FILENO); // investigate this dup
-		undup_elem->dup_fd = STDIN_FILENO; // wrong i think
+		undup_elem->orig_fd = dup(STDIN_FILENO);
+		undup_elem->dup_fd = STDIN_FILENO;
 		undup_elem->dest_fd = redirection->dest_fd;
-		undup_elem->next = NULL; // wahto do we do here again
+		undup_elem->next = NULL;
 	}
 	safe_open(redirection->dest_filename, &redirection->dest_fd, O_RDONLY);
 	if (redirection->dest_fd < 0)
-		return (msh_perror(NULL, redirection->dest_filename, extern_err), fd_err);// check return
+	{
+		msh_perror(NULL, redirection->dest_filename, extern_err);
+		return (fd_err);
+	}
 	test_dup2(redirection->dest_fd, STDIN_FILENO);
-	safe_close(&redirection->dest_fd); //ingestigae this close
+	safe_close(&redirection->dest_fd);
 	return (success);
 }
 
@@ -87,39 +90,6 @@ static int	output_redirect(
 	return (success);
 }
 
-void	undup_redirections(
-	t_undup_list **undup_head
-)
-{
-	t_undup_list	*cur_undup;
-
-	if (!undup_head)
-		return ;
-	cur_undup = *undup_head;
-	while (cur_undup != NULL)
-	{
-		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd); // add error handling ?
-		safe_close(&cur_undup->orig_fd);
-		cur_undup = cur_undup->prev;
-		free(*undup_head);
-		*undup_head = cur_undup;
-	}
-}
-
-void	record_undup(
-	t_undup_list **undup_list_head,
-	t_undup_list *cur_undup
-)
-{
-	cur_undup->prev = *undup_list_head;
-	if (*undup_list_head == NULL)
-		(*undup_list_head) = cur_undup;
-	else
-		(*undup_list_head)->next = cur_undup;
-	cur_undup->next = NULL;
-	*undup_list_head = cur_undup;
-}
-
 int	perform_redirections(
 	t_redir_list *redirections,
 	t_undup_list **undup_list_head,
@@ -135,13 +105,8 @@ int	perform_redirections(
 	{
 		if (record == true)
 		{
-			cur_undup = ft_calloc(1, sizeof(t_undup_list)); // change to add the undup to the list here.
-			// to make less code
-			if (cur_undup == NULL)
-			{
-				undup_redirections(undup_list_head);
-				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-			}
+			if (record_undup(undup_list_head, &cur_undup) != success)
+				return (malloc_err);
 		}
 		if (redirections->type == input || redirections->type == heredoc)
 			err_check = input_redirect(redirections, cur_undup, record);
@@ -149,15 +114,10 @@ int	perform_redirections(
 			err_check = output_redirect(redirections, cur_undup, record);
 		if (err_check != success)
 		{
-			if (cur_undup)
-				free(cur_undup);
-			undup_redirections(undup_list_head); // FIX this!
+			undup_redirections(undup_list_head);
 			return (err_check);
 		}
 		redirections = redirections->next;
-		if (record == true)
-			record_undup(undup_list_head, cur_undup); // this function should be able to recognise
-		// that the undup was not fully recorded, only allocated, and act accordingly. add safety check inside.
 	}
 	return (err_check);
 }

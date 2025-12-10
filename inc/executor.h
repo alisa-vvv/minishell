@@ -74,6 +74,16 @@ int	perform_redirections(
 );
 /**/
 
+/*		Undups		*/
+int	record_undup(
+	t_undup_list **undup_list_head,
+	t_undup_list **cur_undup
+);
+void	undup_redirections(
+	t_undup_list **undup_head
+);
+/**/
+
 /*		Try_execve		*/
 const char	*const *find_env_path(
 	char **env

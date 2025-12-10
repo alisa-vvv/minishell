@@ -60,7 +60,8 @@ int	set_hered_pipe(t_exec_data *execdata,
 	{
 		execdata->redirections->heredoc_delim = ft_strdup(looknxt(tlist,
 					ind->pos)->value);
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+		if (!execdata->redirections->heredoc_delim)
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 		ind->pos++;
 	}
 	if ((size_t)ind->pos < tlist->total && looknxt(tlist, ind->pos)
