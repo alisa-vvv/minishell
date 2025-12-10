@@ -117,6 +117,9 @@ int	check_lexer(t_tokenlist *tokenlist,
 	err = check_spcases(tokenlist);
 	if (err != success)
 		return (err);
+	err = check_pipes(tokenlist);
+	if (err != success)
+		return (err);
 	err = prep_execdata(tokenlist, msh_data);
 	return (err);
 }

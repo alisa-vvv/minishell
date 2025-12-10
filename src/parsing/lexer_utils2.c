@@ -80,3 +80,25 @@ int	move_o_unquoted(const char *str, int i)
 	}
 	return (len);
 }
+
+//checks valid syntax for order of pipes /redirects 
+int check_pipes(t_tokenlist *tlist)
+{
+	size_t i;
+	i = 0;
+
+	while (i < tlist->total)
+	{
+		t_token *check_token;
+		check_token = tlist->tokens[i];
+		if (check_token->type == PIPE && looknxt(tlist, i) && looknxt(tlist, i)->type == PIPE)
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+		else if (tok_is_red(check_token))
+		{
+			if (looknxt(tlist, i) && looknxt(tlist, i)->type == PIPE)
+				return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+		}
+		i++;
+	}
+	return (success);
+}

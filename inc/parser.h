@@ -102,6 +102,7 @@ bool 		str_contains_red(char *str);
 bool		tok_is_red(t_token *check_token);
 char 		symbol_in_quote(char *str, char symbol);
 int			validate_redirect(const char *str, int i);
+int 		check_pipes(t_tokenlist *tlist);
 int			get_offset(t_exp_data *exp_data);
 int			check_in_quote_s(const char *str, int pos, char quote);
 int 		move_o_unquoted(const char *str, int i);
