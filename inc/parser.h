@@ -137,7 +137,7 @@ int			add_arg_to_list(t_exec_data *comm_list, t_tokenlist *tokenlist, t_pos* ind
 int			add_redirect(t_exec_data* execdata, t_tokenlist *tokenlist, t_pos *ind);
 int			set_heredoc(t_exec_data* execdata, t_tokenlist *tokenlist, t_pos *ind);
 void		set_pipe_cm(t_tokenlist *tokenlist, size_t i);
-void 		set_command(t_exec_data *comm_list, t_tokenlist *tokenlist, t_pos *ind, int *i);
+int			set_command(t_exec_data *comm_list, t_tokenlist *tokenlist, t_pos *ind, int *i);
 int			set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos);
 int			token_is_cm(t_tokenlist *tokenlist, int pos, t_token *c_token);
 int 		count_occ(const char* str, char symbol, bool inside);

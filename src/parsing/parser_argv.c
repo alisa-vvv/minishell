@@ -26,7 +26,7 @@ int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
 }
 
 //sets command details in the argv for execdata
-void	set_command(
+int	set_command(
 	t_exec_data *comm_list,
 	t_tokenlist *tokenlist,
 	t_pos *ind,
@@ -36,20 +36,25 @@ void	set_command(
 
 	check_token = tokenlist->tokens[ind->pos];
 	if (ind->pos == 0 && tok_is_red(check_token))
-		return ;
+		return (success);
 	else if (ind->pos == 0 && (looknxt(tokenlist, ind->pos)
 			&& tok_is_red(looknxt(tokenlist, ind->pos))))
-	{
-		return ;
-	}
+		return (success);
 	if (ind->pos > 0 && lookbehind(tokenlist, ind->pos)->type == PIPE)
 	{
 		comm_list->argv[*i] = ft_strdup(check_token->value);
+		if (!comm_list->argv[*i])
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 		comm_list->input_is_pipe = true;
 	}
 	else if (!tok_is_red(check_token))
+	{
 		comm_list->argv[*i] = ft_strdup(check_token->value);
+		if (!comm_list->argv[*i])
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+	}
 	comm_list->builtin_name = set_builtins(check_token);
+	return (success);
 }
 
 void	add_arg(t_exec_data *execdata, t_token *check_token, int *i)
@@ -69,7 +74,8 @@ int	add_arg_to_list(
 	t_exec_data *comm_list,
 	t_tokenlist *tokenlist,
 	t_pos *ind,
-	int *i)
+	int *i
+)
 {
 	t_token	*check_token;
 
@@ -78,7 +84,8 @@ int	add_arg_to_list(
 		return (0);
 	if (check_token->command && !tok_is_red(check_token))
 	{
-		set_command(comm_list, tokenlist, ind, i);
+		if (set_command(comm_list, tokenlist, ind, i) < 0)
+			return (malloc_err);
 		if (!comm_list->argv[*i])
 			return (0);
 		return (1);
@@ -116,10 +123,10 @@ int	fill_comm_list(
 	while ((size_t)ind->pos < total)
 	{
 		added = add_arg_to_list(exec_data, tokenlist, ind, &i);
-		if (added == -1)
+		if (added < 0) // here
 		{
 			free_2d_arr((void *)exec_data->argv);
-			return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
+			return (added);
 		}
 		if (added == 1)
 			i++;
