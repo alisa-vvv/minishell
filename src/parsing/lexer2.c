@@ -137,6 +137,8 @@ int	check_pipe_redirect(char *str, char symbol)
 	if (ft_strchr(str, symbol) != (void *)0)
 	{
 		while (&str[i] <= ft_strchr(str, symbol))
+
+
 		{
 			if (ft_isalpha(str[i]))
 				command++;

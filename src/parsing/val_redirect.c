@@ -20,34 +20,34 @@
 // }
 
 //(i == 0 && looknxt(tokenlist, i)->type
-void	set_pipe_cm(
-	t_tokenlist *tlist,
-	size_t i)
-{
-	t_token	*c_token;
-	bool	flag;
+// void	set_pipe_cm(
+// 	t_tokenlist *tlist,
+// 	size_t i)
+// {
+// 	t_token	*c_token;
+// 	bool	flag;
 
-	flag = true;
-	while (i < tlist->total && tlist->total > 1)
-	{
-		c_token = (t_token *)tlist->tokens[i];
-		if (i == 0)
-		{
-			if (token_is_cm(tlist, i, c_token))
-				flag = false;
-		}
-		else if (c_token->type == PIPE || c_token->type == HEREDOC_DEL)
-			flag = true;
-		else if (flag == true)
-		{
-			c_token->command = set_cm_heredoc(tlist, i);
-			flag = false;
-		}
-		else
-			c_token->command = false;
-		i++;
-	}
-}
+// 	flag = true;
+// 	while (i < tlist->total && tlist->total > 1)
+// 	{
+// 		c_token = (t_token *)tlist->tokens[i];
+// 		if (i == 0)
+// 		{
+// 			if (token_is_cm(tlist, i, c_token))
+// 				flag = false;
+// 		}
+// 		else if (c_token->type == PIPE || c_token->type == HEREDOC_DEL)
+// 			flag = true;
+// 		else if (flag == true)
+// 		{
+// 			c_token->command = set_cm_heredoc(tlist, i);
+// 			flag = false;
+// 		}
+// 		else
+// 			c_token->command = false;
+// 		i++;
+// 	}
+// }
 
 //check if last token isn't redirect?
 bool	val_redir_out(

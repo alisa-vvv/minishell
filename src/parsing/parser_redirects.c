@@ -63,30 +63,30 @@ int	set_type(t_redir_list *redirlist,
 	return (0);
 }
 
-int	set_redirect(
-	t_redir_list *redirlist,
-	t_tokenlist *tokenlist,
-	int pos)
-{
-	t_token	*check_token;
+// int	set_redirect(
+// 	t_redir_list *redirlist,
+// 	t_tokenlist *tokenlist,
+// 	int pos)
+// {
+// 	t_token	*check_token;
 
-	check_token = tokenlist_get(tokenlist, pos);
-	set_redir_def(redirlist);
-	if (tok_is_red(check_token))
-	{
-		if (looknxt(tokenlist, pos))
-			redirlist->dest_filename = ft_strdup(looknxt(tokenlist,
-						pos)->value);
-		if (looknxt(tokenlist, pos + 1)
-			&& tok_is_red(looknxt(tokenlist, pos + 1)))
-		{
-			check_token = looknxt(tokenlist, pos);
-			check_token->type = STRING;
-		}
-		set_type(redirlist, tokenlist, pos);
-	}
-	return (0);
-}
+// 	check_token = tokenlist_get(tokenlist, pos);
+// 	set_redir_def(redirlist);
+// 	if (tok_is_red(check_token))
+// 	{
+// 		if (looknxt(tokenlist, pos))
+// 			redirlist->dest_filename = ft_strdup(looknxt(tokenlist,
+// 						pos)->value);
+// 		if (looknxt(tokenlist, pos + 1)
+// 			&& tok_is_red(looknxt(tokenlist, pos + 1)))
+// 		{
+// 			check_token = looknxt(tokenlist, pos);
+// 			check_token->type = STRING;
+// 		}
+// 		set_type(redirlist, tokenlist, pos);
+// 	}
+// 	return (0);
+// }
 
 
 // // p_printf("HEREDOC TOKEN VAL = %s\n", check_token->value);

@@ -25,113 +25,113 @@ int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
 	return (0);
 }
 
-//sets command details in the argv for execdata
-int	set_command(
-	t_exec_data *comm_list,
-	t_tokenlist *tokenlist,
-	t_pos *ind,
-	int *i)
-{
-	t_token	*check_token;
+// //sets command details in the argv for execdata
+// int	set_command(
+// 	t_exec_data *comm_list,
+// 	t_tokenlist *tokenlist,
+// 	t_pos *ind,
+// 	int *i)
+// {
+// 	t_token	*check_token;
 
-	check_token = tokenlist->tokens[ind->pos];
-	if (ind->pos == 0 && tok_is_red(check_token))
-		return (success);
-	else if (ind->pos == 0 && (looknxt(tokenlist, ind->pos)
-			&& tok_is_red(looknxt(tokenlist, ind->pos))))
-		return (success);
-	if (ind->pos > 0 && lookbehind(tokenlist, ind->pos)->type == PIPE)
-	{
-		comm_list->argv[*i] = ft_strdup(check_token->value);
-		if (!comm_list->argv[*i])
-			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-		comm_list->input_is_pipe = true;
-	}
-	else if (!tok_is_red(check_token))
-	{
-		comm_list->argv[*i] = ft_strdup(check_token->value);
-		if (!comm_list->argv[*i])
-			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	}
-	comm_list->builtin_name = set_builtins(check_token);
-	return (success);
-}
+// 	check_token = tokenlist->tokens[ind->pos];
+// 	if (ind->pos == 0 && tok_is_red(check_token))
+// 		return (success);
+// 	else if (ind->pos == 0 && (looknxt(tokenlist, ind->pos)
+// 			&& tok_is_red(looknxt(tokenlist, ind->pos))))
+// 		return (success);
+// 	if (ind->pos > 0 && lookbehind(tokenlist, ind->pos)->type == PIPE)
+// 	{
+// 		comm_list->argv[*i] = ft_strdup(check_token->value);
+// 		if (!comm_list->argv[*i])
+// 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+// 		comm_list->input_is_pipe = true;
+// 	}
+// 	else if (!tok_is_red(check_token))
+// 	{
+// 		comm_list->argv[*i] = ft_strdup(check_token->value);
+// 		if (!comm_list->argv[*i])
+// 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+// 	}
+// 	comm_list->builtin_name = set_builtins(check_token);
+// 	return (success);
+// }
 
-void	add_arg(t_exec_data *execdata, t_token *check_token, int *i)
-{
-	if (!tok_is_red(check_token))
-	{
-		execdata->argv[*i] = ft_strdup(check_token->value);
-		if (execdata->builtin_name == not_builtin)
-			execdata->builtin_name = set_builtins(check_token);
-	}
-}
+// void	add_arg(t_exec_data *execdata, t_token *check_token, int *i)
+// {
+// 	if (!tok_is_red(check_token))
+// 	{
+// 		execdata->argv[*i] = ft_strdup(check_token->value);
+// 		if (execdata->builtin_name == not_builtin)
+// 			execdata->builtin_name = set_builtins(check_token);
+// 	}
+// }
 
-// push appropriate token to argv skipping redirects, heredoc delim and pipes
-// returns: 1 if an argv entry was added, 0 if nothing was added,
-//	-1 on malloc/error
-int	add_arg_to_list(
-	t_exec_data *comm_list,
-	t_tokenlist *tokenlist,
-	t_pos *ind,
-	int *i
-)
-{
-	t_token	*check_token;
+// // push appropriate token to argv skipping redirects, heredoc delim and pipes
+// // returns: 1 if an argv entry was added, 0 if nothing was added,
+// //	-1 on malloc/error
+// int	add_arg_to_list(
+// 	t_exec_data *comm_list,
+// 	t_tokenlist *tokenlist,
+// 	t_pos *ind,
+// 	int *i
+// )
+// {
+// 	t_token	*check_token;
 
-	check_token = (t_token *)tokenlist->tokens[ind->pos];
-	if (ind->pos > 0 && tok_is_red(lookbehind(tokenlist, ind->pos)))
-		return (0);
-	if (check_token->command && !tok_is_red(check_token))
-	{
-		if (set_command(comm_list, tokenlist, ind, i) < 0)
-			return (malloc_err);
-		if (!comm_list->argv[*i])
-			return (0);
-		return (1);
-	}
-	if (tok_is_red(check_token) || check_token->type == PIPE)
-	{
-		if (check_token->type == PIPE)
-			comm_list->output_is_pipe = true;
-		else if (add_redirect(comm_list, tokenlist, ind))
-			return (-1);
-		return (0);
-	}
-	add_arg(comm_list, check_token, i);
-	return (1);
-}
+// 	check_token = (t_token *)tokenlist->tokens[ind->pos];
+// 	if (ind->pos > 0 && tok_is_red(lookbehind(tokenlist, ind->pos)))
+// 		return (0);
+// 	if (check_token->command && !tok_is_red(check_token))
+// 	{
+// 		if (set_command(comm_list, tokenlist, ind, i) < 0)
+// 			return (malloc_err);
+// 		if (!comm_list->argv[*i])
+// 			return (0);
+// 		return (1);
+// 	}
+// 	if (tok_is_red(check_token) || check_token->type == PIPE)
+// 	{
+// 		if (check_token->type == PIPE)
+// 			comm_list->output_is_pipe = true;
+// 		else if (add_redirect(comm_list, tokenlist, ind))
+// 			return (-1);
+// 		return (0);
+// 	}
+// 	add_arg(comm_list, check_token, i);
+// 	return (1);
+// }
 
-// p_printf("Token list total = %d\n Token list i = %d\n Token list pos = %d\n",
-//		total, i, pos);
-//fill the execdata with specified argv from tokenlist
-int	fill_comm_list(
-	t_exec_data *exec_data,
-	t_tokenlist *tokenlist,
-	t_pos *ind)
-{
-	size_t	total;
-	int		i;
-	int		added;
+// // p_printf("Token list total = %d\n Token list i = %d\n Token list pos = %d\n",
+// //		total, i, pos);
+// //fill the execdata with specified argv from tokenlist
+// int	fill_comm_list(
+// 	t_exec_data *exec_data,
+// 	t_tokenlist *tokenlist,
+// 	t_pos *ind)
+// {
+// 	size_t	total;
+// 	int		i;
+// 	int		added;
 
-	i = 0;
-	set_exec_def(exec_data, tokenlist, ind->pos);
-	if (ind->red < 0)
-		total = tokenlist->total;
-	else
-		total = ind->red;
-	while ((size_t)ind->pos < total)
-	{
-		added = add_arg_to_list(exec_data, tokenlist, ind, &i);
-		if (added < 0) // here
-		{
-			free_2d_arr((void *)exec_data->argv);
-			return (added);
-		}
-		if (added == 1)
-			i++;
-		ind->pos++;
-	}
-	exec_data->argv[i] = NULL;
-	return (0);
-}
+// 	i = 0;
+// 	set_exec_def(exec_data, tokenlist, ind->pos);
+// 	if (ind->red < 0)
+// 		total = tokenlist->total;
+// 	else
+// 		total = ind->red;
+// 	while ((size_t)ind->pos < total)
+// 	{
+// 		added = add_arg_to_list(exec_data, tokenlist, ind, &i);
+// 		if (added < 0) // here
+// 		{
+// 			free_2d_arr((void *)exec_data->argv);
+// 			return (added);
+// 		}
+// 		if (added == 1)
+// 			i++;
+// 		ind->pos++;
+// 	}
+// 	exec_data->argv[i] = NULL;
+// 	return (0);
+// }
