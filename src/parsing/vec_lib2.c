@@ -69,8 +69,6 @@ int	tokenlist_delete(t_tokenlist *e, size_t index)
 		}
 		e->tokens[index] = NULL;
 		e->total--;
-		if ((e->total > 0) && ((e->total) == (e->size / 4)))
-			err = tokenlist_resize(e, e->size, e->size / 2);
 	}
 	return (err);
 }
@@ -102,7 +100,7 @@ int	tokenlist_init(t_tokenlist **e, int size)
 	if (!(*e))
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	(*e)->size = size;
-	if ((*e)->size <= 0)
+	if ((*e)->size <= 0) // i dunno what this is
 	{
 		(*e)->tokens = NULL;
 		return (1);

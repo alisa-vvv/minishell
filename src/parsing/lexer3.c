@@ -103,7 +103,6 @@ int	contract_list(t_tokenlist *tokenlist,
 	t_token	*check_token;
 	int		err;
 
-	check_token = NULL;
 	err = success;
 	while ((size_t)i > 0)
 	{
