@@ -128,7 +128,7 @@ int	default_lexer(
 		return (malloc_err);
 	err = fill_tokenlist(token_list, input_line);
 	if (err == success)
-		err = check_lexer(token_list, msh_data); // currently doing this
+		err = check_lexer(token_list, msh_data);
 	tokenlist_free(token_list);
 	return (err);
 }

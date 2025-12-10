@@ -12,12 +12,12 @@
 
 #include "parser.h"
 
-bool	set_cm_heredoc(t_tokenlist *tokenlist, int i)
-{
-	if (looknxt(tokenlist, i) != NULL && looknxt(tokenlist, i)->type == HEREDOC)
-		return (false);
-	return (true);
-}
+// bool	set_cm_heredoc(t_tokenlist *tokenlist, int i)
+// {
+// 	if (looknxt(tokenlist, i) != NULL && looknxt(tokenlist, i)->type == HEREDOC)
+// 		return (false);
+// 	return (true);
+// }
 
 //(i == 0 && looknxt(tokenlist, i)->type
 void	set_pipe_cm(

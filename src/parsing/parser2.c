@@ -43,6 +43,7 @@ int	prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data)
 		ind = ft_calloc(1, sizeof(t_pos));
 		if (!ind)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+		//pass onto pass_comm_ex function
 		err = pass_comm(tlist, msh_data, ind);
 		if (err != success)
 			return (err);

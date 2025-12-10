@@ -70,6 +70,8 @@ int	set_hered_pipe(t_exec_data *execdata,
 		execdata->output_is_pipe = true;
 		return (err);
 	}
+	if (looknxt(tlist, ind->pos) &&c_token->type != HEREDOC)
+		add_redirect(execdata, tlist, ind);
 	return (err);
 }
 
@@ -94,6 +96,8 @@ int	set_heredoc_red(
 		err = set_hered_pipe(execdata, tlist, ind, c_token);
 		if (err != success)
 			return (err);
+		if (tok_is_red(c_token))
+			break; 
 		if (!tok_is_red(c_token) && c_token->type != HEREDOC_DEL)
 		{
 			execdata->argv[i] = ft_strdup(c_token->value);
@@ -122,6 +126,7 @@ int	set_heredoc(
 	err = success;
 	total = find_type(tokenlist, ind->pos, tokenlist->total - 1, PIPE);
 	if (total < 0)
+		// total = find_type(tokenlist, ind->pos, tokenlist->total -1, RED_IN);
 		total = tokenlist->total;
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
@@ -132,4 +137,3 @@ int	set_heredoc(
 	ind->pos = 0;
 	err = set_heredoc_red(execdata, tokenlist, ind, total);
 	return (err);
-}
