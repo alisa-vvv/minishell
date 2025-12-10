@@ -26,7 +26,6 @@ int	skip_blanks(char *str, int pos)
 	return (count);
 }
 
-// l_printf("trimmed str = %s$\n", str);
 // trims input to have 1 space
 char	*trim_str_space(char *str)
 {
@@ -55,4 +54,30 @@ char	*trim_str_space(char *str)
 	}
 	str[i] = '\0';
 	return (str);
+}
+
+//returns len of unquoted token
+int	move_o_unquoted(const char *str, int i)
+{
+	int	len;
+
+	len = 0;
+	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i])
+		&& !char_is_red(str[i]))
+	{
+		len++;
+		i++;
+	}
+	if (str[i] && char_is_quote(str[i]) && str[i - 1] == '=')
+	{
+		i++;
+		while (str[i] && !char_is_quote(str[i]))
+		{
+			len++;
+			i++;
+		}
+		i++;
+		len += 2;
+	}
+	return (len);
 }

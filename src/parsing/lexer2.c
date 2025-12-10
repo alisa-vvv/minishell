@@ -100,10 +100,8 @@ int	expand_param(t_tokenlist *tokenlist,
 int	check_lexer(t_tokenlist *tokenlist,
 				t_msh_data *msh_data)
 {
-	t_token	*token;
 	int		err;
 
-	token = NULL;
 	err = expand_param(tokenlist, msh_data);
 	if (err != success)
 		return (err);
@@ -116,14 +114,7 @@ int	check_lexer(t_tokenlist *tokenlist,
 	err = contract_list(tokenlist, tokenlist->total - 1);
 	if (err != success)
 		return (err);
-	if (tokenlist->total < 2)
-	{
-		err = single_token(tokenlist);
-		if (err != success)
-			return (err); 
-	}
-	else
-		err = val_redir(tokenlist, 0, token);
+	err = check_spcases(tokenlist);
 	if (err != success)
 		return (err);
 	err = prep_execdata(tokenlist, msh_data);

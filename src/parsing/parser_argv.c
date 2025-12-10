@@ -87,7 +87,7 @@ int	add_arg_to_list(
 	{
 		if (check_token->type == PIPE)
 			comm_list->output_is_pipe = true;
-		else if (add_redirect(comm_list, tokenlist, xpos->pos, xpos->red))
+		else if (add_redirect(comm_list, tokenlist, xpos))
 			return (-1);
 		return (0);
 	}
@@ -119,7 +119,7 @@ int	fill_comm_list(
 		if (added == -1)
 		{
 			free_2d_arr((void *)exec_data->argv);
-			return (write(1, MALLOC_ERR, 15));
+			return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
 		}
 		if (added == 1)
 			i++;

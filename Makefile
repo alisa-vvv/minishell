@@ -38,16 +38,17 @@ CFILES_PARSER	=	debug.c\
 					expansions_utils.c\
 					expansions.c\
 					lexer_tokens.c\
+					parser2.c\
 					lexer.c\
 					lexer3.c\
 					lexer2.c\
-					parser2.c\
 					quote_utils.c\
 					quote_handler.c\
 					redir_utils2.c\
 					redir_utils.c\
 					val_redirect.c\
 					parser_utils.c\
+					parser_utils2.c\
 					parser_argv.c\
 					parser_redirects.c\
 					parser_heredoc.c\

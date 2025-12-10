@@ -32,7 +32,7 @@ char	*prep_leftover(char *str_token, char *start, int offset)
 }
 
 // expand the var when token is in quotes
-char	*exp_str_token(char *str_token, char *start, char *value, int offset)
+char	*exp_token(char *str_token, char *start, char *value, int offset)
 {
 	char	*new_str;
 	char	*leftover;
