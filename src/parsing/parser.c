@@ -79,7 +79,7 @@ int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 	msh_data->exec_data = ft_calloc(msh_data->command_count,
 			sizeof(t_exec_data));
 	if (!msh_data->exec_data)
-		return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err = pass_list_pos(tokenlist, msh_data, ind);
 	return (err);
 }
