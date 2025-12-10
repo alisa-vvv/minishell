@@ -101,7 +101,7 @@ int	contract_list(t_tokenlist *tokenlist,
 					int i)
 {
 	t_token	*check_token;
-	int	err;
+	int		err;
 
 	check_token = NULL;
 	err = success;

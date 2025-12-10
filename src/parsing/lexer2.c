@@ -48,7 +48,7 @@ int	expand_quotes(t_tokenlist *tokenlist,
 {
 	int	count;
 	int	count_single;
-	int err;
+	int	err;
 
 	err = 0;
 	count = count_exp(tokenlist, '"');
@@ -57,7 +57,7 @@ int	expand_quotes(t_tokenlist *tokenlist,
 	{
 		err = exp_lexer(tokenlist, msh_data, SINGLE_Q, 0);
 		if (err != success)
-			return (err); 
+			return (err);
 		count_single--;
 	}
 	while (count > 0)
@@ -75,7 +75,7 @@ int	expand_param(t_tokenlist *tokenlist,
 					t_msh_data *msh_data)
 {
 	int	count;
-	int err; 
+	int	err;
 
 	count = count_exp(tokenlist, '$');
 	while (count > 0)
@@ -100,7 +100,7 @@ int	expand_param(t_tokenlist *tokenlist,
 int	check_lexer(t_tokenlist *tokenlist,
 				t_msh_data *msh_data)
 {
-	int		err;
+	int	err;
 
 	err = expand_param(tokenlist, msh_data);
 	if (err != success)

@@ -29,20 +29,20 @@ int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
 void	set_command(
 	t_exec_data *comm_list,
 	t_tokenlist *tokenlist,
-	t_pos *xpos,
+	t_pos *ind,
 	int *i)
 {
 	t_token	*check_token;
 
-	check_token = tokenlist->tokens[xpos->pos];
-	if (xpos->pos == 0 && tok_is_red(check_token))
+	check_token = tokenlist->tokens[ind->pos];
+	if (ind->pos == 0 && tok_is_red(check_token))
 		return ;
-	else if (xpos->pos == 0 && (looknxt(tokenlist, xpos->pos)
-			&& tok_is_red(looknxt(tokenlist, xpos->pos))))
+	else if (ind->pos == 0 && (looknxt(tokenlist, ind->pos)
+			&& tok_is_red(looknxt(tokenlist, ind->pos))))
 	{
 		return ;
 	}
-	if (xpos->pos > 0 && lookbehind(tokenlist, xpos->pos)->type == PIPE)
+	if (ind->pos > 0 && lookbehind(tokenlist, ind->pos)->type == PIPE)
 	{
 		comm_list->argv[*i] = ft_strdup(check_token->value);
 		comm_list->input_is_pipe = true;
@@ -68,17 +68,17 @@ void	add_arg(t_exec_data *execdata, t_token *check_token, int *i)
 int	add_arg_to_list(
 	t_exec_data *comm_list,
 	t_tokenlist *tokenlist,
-	t_pos *xpos,
+	t_pos *ind,
 	int *i)
 {
 	t_token	*check_token;
 
-	check_token = (t_token *)tokenlist->tokens[xpos->pos];
-	if (xpos->pos > 0 && tok_is_red(lookbehind(tokenlist, xpos->pos)))
+	check_token = (t_token *)tokenlist->tokens[ind->pos];
+	if (ind->pos > 0 && tok_is_red(lookbehind(tokenlist, ind->pos)))
 		return (0);
 	if (check_token->command && !tok_is_red(check_token))
 	{
-		set_command(comm_list, tokenlist, xpos, i);
+		set_command(comm_list, tokenlist, ind, i);
 		if (!comm_list->argv[*i])
 			return (0);
 		return (1);
@@ -87,7 +87,7 @@ int	add_arg_to_list(
 	{
 		if (check_token->type == PIPE)
 			comm_list->output_is_pipe = true;
-		else if (add_redirect(comm_list, tokenlist, xpos))
+		else if (add_redirect(comm_list, tokenlist, ind))
 			return (-1);
 		return (0);
 	}
@@ -101,21 +101,21 @@ int	add_arg_to_list(
 int	fill_comm_list(
 	t_exec_data *exec_data,
 	t_tokenlist *tokenlist,
-	t_pos *xpos)
+	t_pos *ind)
 {
 	size_t	total;
 	int		i;
 	int		added;
 
 	i = 0;
-	set_exec_def(exec_data, tokenlist, xpos->pos);
-	if (xpos->red < 0)
+	set_exec_def(exec_data, tokenlist, ind->pos);
+	if (ind->red < 0)
 		total = tokenlist->total;
 	else
-		total = xpos->red;
-	while ((size_t)xpos->pos < total)
+		total = ind->red;
+	while ((size_t)ind->pos < total)
 	{
-		added = add_arg_to_list(exec_data, tokenlist, xpos, &i);
+		added = add_arg_to_list(exec_data, tokenlist, ind, &i);
 		if (added == -1)
 		{
 			free_2d_arr((void *)exec_data->argv);
@@ -123,7 +123,7 @@ int	fill_comm_list(
 		}
 		if (added == 1)
 			i++;
-		xpos->pos++;
+		ind->pos++;
 	}
 	exec_data->argv[i] = NULL;
 	return (0);

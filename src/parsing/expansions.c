@@ -12,29 +12,6 @@
 
 #include "parser.h"
 
-//get the difference of the str when exp variables
-int	get_offset(t_exp_data *exp_data)
-{
-	int	offset;
-
-	offset = 0;
-	if (exp_data->env_value && exp_data->name)
-		offset = ft_strlen(exp_data->name) + 1;
-	else if (!exp_data->env_value && !exp_data->name)
-	{
-		exp_data->env_value = "";
-		offset = 1;
-	}
-	else if (!exp_data->env_value && exp_data->name)
-	{
-		exp_data->env_value = "";
-		offset = ft_strlen(exp_data->name) + 1;
-	}
-	else
-		offset = 1;
-	return (offset);
-}
-
 // p_printf("NAME = %s\n", exp_data->name);
 // expands variables to env value if found
 int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
@@ -43,7 +20,7 @@ int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 	int		offset;
 	char	*new_str;
 	t_token	*n_token;
-	int 	err;
+	int		err;
 
 	err = success;
 	n_token = NULL;
@@ -51,7 +28,7 @@ int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 	new_str = exp_token(str_token, xp_d->start_var, xp_d->env_value, offset);
 	if (*new_str == '\0')
 	{
-		ft_safe_free((unsigned char **) &new_str);
+		ft_safe_free((unsigned char **)&new_str);
 		xp_d->env_value = NULL;
 		err = tokenlist_delete(tokenlist, pos);
 	}
@@ -67,7 +44,9 @@ int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 }
 
 //(*exp_data)->start_var = ft_strchr((*exp_data)->start_var +1, '$');
-int	exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
+int	exp_further(t_tokenlist *tokenlist,
+	int pos,
+	t_exp_data **exp_data)
 {
 	t_token	*check_token;
 	int		err;
@@ -77,11 +56,11 @@ int	exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
 	if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '\''))
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else if (!(*exp_data)->env_value && ft_strncmp(check_token->value, "$",
-			2) == 0)
+				2) == 0)
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '"')
-		&& !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
-		&& ft_strncmp((*exp_data)->name, "", 1) == 0)
+				&& !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
+				&& ft_strncmp((*exp_data)->name, "", 1) == 0)
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else
 	{
@@ -95,13 +74,32 @@ int	exp_further(t_tokenlist *tokenlist, int pos, t_exp_data **exp_data)
 	return (err);
 }
 
+int	expand_check(t_tokenlist *tlist,
+	t_msh_data *msh_data,
+	t_exp_data *exp_data,
+	int pos)
+{
+	int	err;
+
+	err = success;
+	if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
+		exp_data->env_value = ft_itoa(msh_data->last_pipeline_return);
+	else if (env_var_get_value(msh_data->env, exp_data->name,
+				&exp_data->env_value) != success)
+		return (malloc_err);
+	err = exp_further(tlist, pos, &exp_data);
+	ft_safe_free((unsigned char **)&exp_data->name);
+	if (exp_data->env_value && ft_strncmp(exp_data->env_value, "", 1) != 0)
+		ft_safe_free((unsigned char **)&exp_data->env_value);
+	return (err);
+}
+
 // expand known var and otherwise delete and re-position all tokens
 int	expand_var(
 	t_tokenlist **tokenlist,
 	int pos,
 	t_msh_data *msh_data,
-	t_token *check_token
-)
+	t_token *check_token)
 {
 	t_exp_data	*exp_data;
 	int			err;
@@ -118,29 +116,20 @@ int	expand_var(
 		err = refine_name(exp_data->start_var, &exp_data->name, '$');
 		if (err != success)
 			return (err);
-		if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
-			exp_data->env_value = ft_itoa(msh_data->last_pipeline_return); 
-		else if (env_var_get_value(msh_data->env, exp_data->name, &exp_data->env_value) != success)
-			return (malloc_err);
-		err = exp_further(*tokenlist, pos, &exp_data);
-		ft_safe_free((unsigned char **)&exp_data->name);
-		if (exp_data->env_value && ft_strncmp(exp_data->env_value, "", 1) != 0)
-			ft_safe_free((unsigned char **)&exp_data->env_value);
+		err = expand_check(*tokenlist, msh_data, exp_data, pos);
 		if (err != success)
 			break ;
 	}
 	return (ft_safe_free((unsigned char **)&exp_data), err);
 }
 
-// e_printf("Token type = %s\n", enum_to_str(check_token->type));
-// check_in_quote(check_token->value, lpos_in_str(check_token->value, '$')
 // check lexer on expansion and quotes
 int	exp_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data, int type, size_t i)
 {
 	t_token	*check_token;
-	int err;
+	int		err;
 
-	err = success; 
+	err = success;
 	while (i < (size_t)tokenlist->total)
 	{
 		check_token = (t_token *)tokenlist->tokens[i];

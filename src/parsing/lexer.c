@@ -12,7 +12,6 @@
 
 #include "parser.h"
 
-
 //checks the length of unquoted str token
 int	count_unq(const char *str, int i, int count)
 {
@@ -94,7 +93,7 @@ int	fill_tokenlist(
 	return (success);
 }
 
-int check_tcount(int token_c)
+int	check_tcount(int token_c)
 {
 	if (token_c == 0)
 		return (success);
@@ -103,8 +102,6 @@ int check_tcount(int token_c)
 	return (success);
 }
 
-
-// test_tokens(token_list);
 // default option to put trimmed input in tokenlist
 int	default_lexer(
 	char *input_line,
@@ -117,7 +114,6 @@ int	default_lexer(
 
 	token_list = NULL;
 	token_c = 0;
-
 	err = success;
 	if (input_line[0] == '\0')
 		return (success);

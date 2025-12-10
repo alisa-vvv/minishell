@@ -12,7 +12,6 @@
 
 #include "parser.h"
 
-// skip whitespaces in string
 int	skip_blanks(char *str, int pos)
 {
 	int	count;

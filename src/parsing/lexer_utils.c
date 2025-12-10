@@ -67,12 +67,11 @@ int	set_len(const char *str, int i)
 	return (len);
 }
 
-
 // deletes empty tokens from the tokenlist
 int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 {
 	t_token	*check_token;
-	int err; 
+	int		err;
 
 	err = success;
 	while (i < tokenlist->total - 1)
@@ -88,7 +87,6 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 	}
 	return (err);
 }
-
 
 // index lexer by traversing
 int	index_lexer(t_tokenlist **tokenlist)

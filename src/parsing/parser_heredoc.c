@@ -46,44 +46,65 @@ void	set_heredoc_def(t_exec_data *execdata)
 	execdata->redirections->src_fd = -1;
 }
 
+int	set_hered_pipe(t_exec_data *execdata,
+					t_tokenlist *tlist,
+					t_pos *ind,
+					t_token *c_token)
+{
+	int err; 
+	
+	err = success; 
+	if (ind->pos > 0 && lookbehind(tlist, ind->pos)->type == PIPE)
+		execdata->input_is_pipe = true;
+	if (c_token->type == HEREDOC)
+	{
+		execdata->redirections->heredoc_delim = ft_strdup(looknxt(tlist,
+					ind->pos)->value);
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+		ind->pos++;
+	}
+	if ((size_t)ind->pos < tlist->total && looknxt(tlist, ind->pos)
+		&& looknxt(tlist, ind->pos)->type == PIPE)
+	{
+		execdata->output_is_pipe = true;
+		return (err);
+	}
+	return (err);
+}
+
 // if (execdata->argv)
 // 	execdata->argv[i] = NULL;
 // sets data for heredocs
-void	set_heredoc_red(
+int	set_heredoc_red(
 	t_exec_data *execdata,
 	t_tokenlist *tlist,
-	t_pos *xpos,
+	t_pos *ind,
 	int total)
 {
 	t_token	*c_token;
-	int i;
+	int		i;
+	int err;
 
-	i = 0; 
-	while (xpos->pos < total)
+	i = 0;
+	err = success;
+	while (ind->pos < total)
 	{
-		c_token = (t_token *)tlist->tokens[xpos->pos];
-		if (xpos->pos > 0 && lookbehind(tlist, xpos->pos)->type == PIPE)
-			execdata->input_is_pipe = true;
-		if (c_token->type == HEREDOC)
-		{
-			execdata->redirections->heredoc_delim = ft_strdup(looknxt(tlist, xpos->pos)->value);
-			xpos->pos++;
-		}
-		if ((size_t)xpos->pos < tlist->total && looknxt(tlist, xpos->pos)&& looknxt(tlist, xpos->pos)->type == PIPE)
-		{
-			execdata->output_is_pipe = true;
-			return ;
-		}
+		c_token = (t_token *)tlist->tokens[ind->pos];
+		err = set_hered_pipe(execdata, tlist, ind, c_token);
+		if (err != success)
+			return (err);
 		if (!tok_is_red(c_token) && c_token->type != HEREDOC_DEL)
 		{
 			execdata->argv[i] = ft_strdup(c_token->value);
+			if (!execdata->argv[i])
+				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 			if (!execdata->builtin_name)
 				execdata->builtin_name = set_builtins(c_token);
 			i++;
 		}
-		xpos->pos++;
+		ind->pos++;
 	}
-
+	return (err);
 }
 
 // p_printf("POS_RED = %d\n", pos_red);
@@ -91,11 +112,14 @@ void	set_heredoc_red(
 int	set_heredoc(
 	t_exec_data *execdata,
 	t_tokenlist *tokenlist,
-	t_pos *xpos)
+	t_pos *ind)
 {
 	t_redir_list	*redirlist;
-	int total;
-	total = find_type(tokenlist, xpos->pos, tokenlist->total-1, PIPE);
+	int				total;
+	int err;
+
+	err = success;
+	total = find_type(tokenlist, ind->pos, tokenlist->total - 1, PIPE);
 	if (total < 0)
 		total = tokenlist->total;
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
@@ -104,7 +128,7 @@ int	set_heredoc(
 	if (execdata->redirections == NULL)
 		execdata->redirections = redirlist;
 	set_heredoc_def(execdata);
-	xpos->pos = 0;
-	set_heredoc_red(execdata, tokenlist, xpos, total);
-	return (success);
+	ind->pos = 0;
+	err = set_heredoc_red(execdata, tokenlist, ind, total);
+	return (err);
 }

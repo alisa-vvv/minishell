@@ -12,7 +12,6 @@
 
 #include "parser.h"
 
-
 // count how many exec data structs need to be made
 int	count_lists(t_tokenlist *tokenlist)
 {
@@ -50,7 +49,5 @@ int	count_next_cm(t_tokenlist *tokenlist, int pos)
 			return (check_token->pos);
 		i++;
 	}
-	return (-1); // if there is no pipe found, the -1 will turn into the total of the list in another function 
+	return (-1);
 }
-
-
