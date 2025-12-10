@@ -52,34 +52,38 @@ void	set_heredoc_def(t_exec_data *execdata)
 void	set_heredoc_red(
 	t_exec_data *execdata,
 	t_tokenlist *tlist,
-	size_t pos,
-	int i)
+	t_pos *xpos,
+	int total)
 {
 	t_token	*c_token;
+	int i;
 
-	while (pos++ < tlist->total - 1)
+	i = 0; 
+	while (xpos->pos < total)
 	{
-		c_token = (t_token *)tlist->tokens[pos];
-		if (pos > 0 && lookbehind(tlist, pos)->type == PIPE)
+		c_token = (t_token *)tlist->tokens[xpos->pos];
+		if (xpos->pos > 0 && lookbehind(tlist, xpos->pos)->type == PIPE)
 			execdata->input_is_pipe = true;
-		if (c_token->type != HEREDOC && pos + 1 < tlist->total
-			&& looknxt(tlist, pos)->type == HEREDOC)
-			execdata->redirections->dest_filename = ft_strdup(c_token->value);
-		if (c_token->type == (size_t)HEREDOC_DEL)
-			execdata->redirections->heredoc_delim = ft_strdup(c_token->value);
-		if (!tok_is_red(c_token) && c_token->type != HEREDOC_DEL
-			&& looknxt(tlist, pos) && looknxt(tlist, pos)->type != HEREDOC)
+		if (c_token->type == HEREDOC)
 		{
-			execdata->argv[i] = ft_strdup(c_token->value);
-			execdata->builtin_name = set_builtins(c_token);
-			i++;
+			execdata->redirections->heredoc_delim = ft_strdup(looknxt(tlist, xpos->pos)->value);
+			xpos->pos++;
 		}
-		if (pos + 1 < tlist->total && looknxt(tlist, pos)->type == PIPE)
+		if ((size_t)xpos->pos < tlist->total && looknxt(tlist, xpos->pos)&& looknxt(tlist, xpos->pos)->type == PIPE)
 		{
 			execdata->output_is_pipe = true;
-			break ;
+			return ;
 		}
+		if (!tok_is_red(c_token) && c_token->type != HEREDOC_DEL)
+		{
+			execdata->argv[i] = ft_strdup(c_token->value);
+			if (!execdata->builtin_name)
+				execdata->builtin_name = set_builtins(c_token);
+			i++;
+		}
+		xpos->pos++;
 	}
+
 }
 
 // p_printf("POS_RED = %d\n", pos_red);
@@ -87,17 +91,20 @@ void	set_heredoc_red(
 int	set_heredoc(
 	t_exec_data *execdata,
 	t_tokenlist *tokenlist,
-	int pos,
-	int pos_red)
+	t_pos *xpos)
 {
 	t_redir_list	*redirlist;
-
+	int total;
+	total = find_type(tokenlist, xpos->pos, tokenlist->total-1, PIPE);
+	if (total < 0)
+		total = tokenlist->total;
 	redirlist = ft_calloc(1, sizeof(t_redir_list));
 	if (!redirlist)
-		return (write(1, MALLOC_ERR, 15));
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	if (execdata->redirections == NULL)
 		execdata->redirections = redirlist;
 	set_heredoc_def(execdata);
-	set_heredoc_red(execdata, tokenlist, pos, pos_red);
+	xpos->pos = 0;
+	set_heredoc_red(execdata, tokenlist, xpos, total);
 	return (0);
 }

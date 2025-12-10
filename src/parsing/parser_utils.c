@@ -40,7 +40,7 @@ t_token	*lookbehind(t_tokenlist *tokenlist, size_t index)
 
 // p_printf("total = %d\n, pos = %d\n", tokenlist->element_list.total,
 //		pos);
-// searches tokenlist for specific type token
+// searches tokenlist for specific type token, return -1 when not found 
 int	find_type(t_tokenlist *tokenlist, size_t pos, int red, t_token_type type)
 {
 	t_token	*check_token;

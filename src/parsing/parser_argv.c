@@ -87,7 +87,7 @@ int	add_arg_to_list(
 	{
 		if (check_token->type == PIPE)
 			comm_list->output_is_pipe = true;
-		else if (add_redirect(comm_list, tokenlist, xpos->pos, xpos->red))
+		else if (add_redirect(comm_list, tokenlist, xpos))
 			return (-1);
 		return (0);
 	}
