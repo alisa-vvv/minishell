@@ -151,7 +151,10 @@ t_builtin_name set_builtins(t_token *check_token);
 int			find_type(t_tokenlist *tokenlist, size_t pos, int red, t_token_type type);
 int			fill_comm_list(t_exec_data *execdata, t_tokenlist *tokenlist, t_pos *ind);
 int			make_cm_list(t_tokenlist *tokenlist, t_exec_data *comm_list, t_pos *ind);
-int			pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind);
+int			pass_comm(
+	t_tokenlist *tokenlist,
+	t_msh_data *msh_data
+);
 int			convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *epos);
 
 #endif

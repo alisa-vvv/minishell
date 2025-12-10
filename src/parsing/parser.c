@@ -66,25 +66,6 @@ int	pass_list_pos(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 }
 
 // start conversion by making lists of commands
-int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
-{
-	int	err;
-
-	err = success;
-	if (count_lists(tokenlist) == syntax_err)
-		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	msh_data->command_count = count_lists(tokenlist);
-	if (msh_data->command_count == syntax_err)
-		return (syntax_err);
-	msh_data->exec_data = ft_calloc(msh_data->command_count,
-			sizeof(t_exec_data));
-	if (!msh_data->exec_data)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	err = pass_list_pos(tokenlist, msh_data, ind);
-	return (err);
-}
-
-
 // convert the tokenlist to executable data
 int	convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 {

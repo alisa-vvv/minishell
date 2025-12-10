@@ -80,12 +80,12 @@ static int	output_redirect(
 	}
 	if (record == true)
 	{
-		undup_elem->orig_fd = dup(redirection->src_fd); 
-		undup_elem->dup_fd = redirection->src_fd;
+		undup_elem->orig_fd = dup(STDOUT_FILENO); 
+		undup_elem->dup_fd = STDOUT_FILENO;
 		undup_elem->dest_fd = redirection->dest_fd;
 		undup_elem->next = NULL;
 	}
-	test_dup2(redirection->dest_fd, redirection->src_fd);
+	test_dup2(redirection->dest_fd, STDOUT_FILENO);
 	safe_close(&redirection->dest_fd);
 	return (success);
 }

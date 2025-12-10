@@ -77,6 +77,8 @@ int	clean_lexer(t_tokenlist *tokenlist, size_t i)
 	while (i < tokenlist->total - 1)
 	{
 		check_token = tokenlist->tokens[i];
+		if (!check_token)
+			return (success);
 		if (check_token && check_token->value && *check_token->value == '\0')
 		{
 			err = tokenlist_delete(tokenlist, i);
