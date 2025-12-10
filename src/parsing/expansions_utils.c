@@ -45,7 +45,7 @@ char	*exp_token(char *str_token, char *start, char *value, int offset)
 	new_str = ft_strjoin(str_token, leftover);
 	if (!new_str || !leftover)
 	{
-		//msh_perror(NULL, MALLOC_ERR, extern_err);
+		msh_perror(NULL, MALLOC_ERR, extern_err);
 		ft_safe_free((unsigned char **)&leftover);
 		ft_safe_free((unsigned char **)&new_str);
 		ft_safe_free((unsigned char **)&temp_left);

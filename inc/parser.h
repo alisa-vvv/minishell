@@ -132,11 +132,11 @@ int			match_nonterminal(char *str_token);
 int			match_string(char *str_token);
 int			expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data, t_token *check_token);
 int			rm_quotes(t_tokenlist *tokenlist, int pos, char symbol);
-int			add_arg_to_list(t_exec_data *comm_list, t_tokenlist *tokenlist, t_pos* xpos, int *i);
-int			add_redirect(t_exec_data* execdata, t_tokenlist *tokenlist, t_pos *xpos);
-int			set_heredoc(t_exec_data* execdata, t_tokenlist *tokenlist, t_pos *xpos);
+int			add_arg_to_list(t_exec_data *comm_list, t_tokenlist *tokenlist, t_pos* ind, int *i);
+int			add_redirect(t_exec_data* execdata, t_tokenlist *tokenlist, t_pos *ind);
+int			set_heredoc(t_exec_data* execdata, t_tokenlist *tokenlist, t_pos *ind);
 void		set_pipe_cm(t_tokenlist *tokenlist, size_t i);
-void 		set_command(t_exec_data *comm_list, t_tokenlist *tokenlist, t_pos *xpos, int *i);
+void 		set_command(t_exec_data *comm_list, t_tokenlist *tokenlist, t_pos *ind, int *i);
 int			set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos);
 int			token_is_cm(t_tokenlist *tokenlist, int pos, t_token *c_token);
 int 		count_occ(const char* str, char symbol, bool inside);
@@ -148,9 +148,9 @@ char *		exp_token(char *str_token, char *start, char *value, int offset);
 int			refine_name(char *token_name, char **result, char symbol);
 t_builtin_name set_builtins(t_token *check_token);
 int			find_type(t_tokenlist *tokenlist, size_t pos, int red, t_token_type type);
-int			fill_comm_list(t_exec_data *execdata, t_tokenlist *tokenlist, t_pos *xpos);
-int			make_cm_list(t_tokenlist *tokenlist, t_exec_data *comm_list, t_pos *xpos);
-int			pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *xpos);
+int			fill_comm_list(t_exec_data *execdata, t_tokenlist *tokenlist, t_pos *ind);
+int			make_cm_list(t_tokenlist *tokenlist, t_exec_data *comm_list, t_pos *ind);
+int			pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind);
 int			convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *epos);
 
 #endif

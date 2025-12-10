@@ -34,21 +34,21 @@ int check_spcases(t_tokenlist *tokenlist)
 
 int prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data)
 {
-    t_pos *xpos;
+    t_pos *ind;
     int err;
 
     err = success;
-    xpos = NULL;
+    ind = NULL;
     if (tlist)
 	{
         set_pipe_cm(tlist, 0);
-		xpos = ft_calloc(1, sizeof(t_pos));
-		if (!xpos)
+		ind = ft_calloc(1, sizeof(t_pos));
+		if (!ind)
 			return (msh_perror(NULL, MALLOC_ERR, parse_err), malloc_err);
-        err = pass_comm(tlist, msh_data, xpos);
+        err = pass_comm(tlist, msh_data, ind);
 		if (err != success)
 			return (err);
 	}
-	free(xpos);
+	free(ind);
     return (err);
 }
