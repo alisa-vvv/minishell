@@ -38,7 +38,6 @@ t_token	*lookbehind(t_tokenlist *tokenlist, size_t index)
 	return (check_token);
 }
 
-
 // searches tokenlist for specific type token, return -1 when not found 
 int	find_type(t_tokenlist *tokenlist, size_t pos, int red, t_token_type type)
 {

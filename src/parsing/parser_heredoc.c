@@ -47,13 +47,13 @@ void	set_heredoc_def(t_exec_data *execdata)
 }
 
 int	set_hered_pipe(t_exec_data *execdata,
-					t_tokenlist *tlist,
-					t_pos *ind,
-					t_token *c_token)
+	t_tokenlist *tlist,
+	t_pos *ind,
+	t_token *c_token)
 {
-	int err; 
-	
-	err = success; 
+	int	err;
+
+	err = success;
 	if (ind->pos > 0 && lookbehind(tlist, ind->pos)->type == PIPE)
 		execdata->input_is_pipe = true;
 	if (c_token->type == HEREDOC)
@@ -84,7 +84,7 @@ int	set_heredoc_red(
 {
 	t_token	*c_token;
 	int		i;
-	int err;
+	int		err;
 
 	i = 0;
 	err = success;
@@ -117,7 +117,7 @@ int	set_heredoc(
 {
 	t_redir_list	*redirlist;
 	int				total;
-	int err;
+	int				err;
 
 	err = success;
 	total = find_type(tokenlist, ind->pos, tokenlist->total - 1, PIPE);

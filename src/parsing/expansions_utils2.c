@@ -12,7 +12,6 @@
 
 #include "parser.h"
 
-
 //get the difference of the str when exp variables
 int	get_offset(t_exp_data *exp_data)
 {

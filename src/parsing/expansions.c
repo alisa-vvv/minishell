@@ -12,7 +12,6 @@
 
 #include "parser.h"
 
-// p_printf("NAME = %s\n", exp_data->name);
 // expands variables to env value if found
 int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 		t_exp_data *xp_d)
@@ -56,11 +55,11 @@ int	exp_further(t_tokenlist *tokenlist,
 	if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '\''))
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else if (!(*exp_data)->env_value && ft_strncmp(check_token->value, "$",
-				2) == 0)
+			2) == 0)
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '"')
-				&& !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
-				&& ft_strncmp((*exp_data)->name, "", 1) == 0)
+		&& !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
+		&& ft_strncmp((*exp_data)->name, "", 1) == 0)
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else
 	{
@@ -85,7 +84,7 @@ int	expand_check(t_tokenlist *tlist,
 	if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
 		exp_data->env_value = ft_itoa(msh_data->last_pipeline_return);
 	else if (env_var_get_value(msh_data->env, exp_data->name,
-				&exp_data->env_value) != success)
+			&exp_data->env_value) != success)
 		return (malloc_err);
 	err = exp_further(tlist, pos, &exp_data);
 	ft_safe_free((unsigned char **)&exp_data->name);
