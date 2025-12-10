@@ -88,34 +88,35 @@ int	set_redirect(
 	return (0);
 }
 
-// p_printf("HEREDOC TOKEN VAL = %s\n", check_token->value);
-// add redirect to list of execdata
-int	add_redirect(t_exec_data *execdata,
-					t_tokenlist *tokenlist,
-					t_pos *xpos)
-{
-	t_token			*check_token;
-	t_redir_list	*redirlist;
-	t_redir_list	*next;
 
-	check_token = tokenlist_get(tokenlist, xpos->pos);
-	redirlist = ft_calloc(1, sizeof(t_redir_list));
-	if (!redirlist)
-		return (write(1, MALLOC_ERR, 15));
-	if (execdata->redirections == NULL)
-		execdata->redirections = redirlist;
-	else
-	{
-		next = execdata->redirections;
-		while (next->next)
-			next = next->next;
-		next->next = redirlist;
-	}
-	if (xpos->pos > 0 && lookbehind(tokenlist, xpos->pos)->type == PIPE)
-		execdata->input_is_pipe = true;
-	if (check_token->type == HEREDOC)
-		set_heredoc(execdata, tokenlist, xpos);
-	else
-		set_redirect(redirlist, tokenlist, xpos->pos);
-	return (0);
-}
+// // p_printf("HEREDOC TOKEN VAL = %s\n", check_token->value);
+// // add redirect to list of execdata
+// int	add_redirect(t_exec_data *execdata,
+// 					t_tokenlist *tokenlist,
+// 					t_pos *xpos)
+// {
+// 	t_token			*check_token;
+// 	t_redir_list	*redirlist;
+// 	t_redir_list	*next;
+
+// 	check_token = tokenlist_get(tokenlist, xpos->pos);
+// 	redirlist = ft_calloc(1, sizeof(t_redir_list));
+// 	if (!redirlist)
+// 		return (write(1, MALLOC_ERR, 15));
+// 	if (execdata->redirections == NULL)
+// 		execdata->redirections = redirlist;
+// 	else
+// 	{
+// 		next = execdata->redirections;
+// 		while (next->next)
+// 			next = next->next;
+// 		next->next = redirlist;
+// 	}
+// 	if (xpos->pos > 0 && lookbehind(tokenlist, xpos->pos)->type == PIPE)
+// 		execdata->input_is_pipe = true;
+// 	if (check_token->type == HEREDOC)
+// 		set_heredoc(execdata, tokenlist, xpos);
+// 	else
+// 		set_redirect(redirlist, tokenlist, xpos->pos);
+// 	return (0);
+// }
