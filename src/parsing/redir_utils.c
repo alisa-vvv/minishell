@@ -37,7 +37,7 @@ int	validate_redirect(
 		|| (str[i] == '<' && str[i + 1] == '>') || (str[i] == '>' && str[i
 				+ 1] == '<'))
 	{
-		return (-1); // change return value
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	}
 	return (success);
 }

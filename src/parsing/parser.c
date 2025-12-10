@@ -12,13 +12,11 @@
 
 #include "parser.h"
 
-
 // make an empty execdata
 int	make_cm_list(
 	t_tokenlist *tokenlist,
 	t_exec_data *comm_list,
-	t_pos *ind
-)
+	t_pos *ind)
 {
 	int	total;
 	int	i;
@@ -41,11 +39,11 @@ int	make_cm_list(
 	return (success);
 }
 
-int pass_list_pos(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
+int	pass_list_pos(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 {
-	int err; 
+	int	err;
 
-	err = success; 
+	err = success;
 	while ((int)ind->i < msh_data->command_count)
 	{
 		ind->red = count_next_cm(tokenlist, ind->pos);
@@ -54,8 +52,8 @@ int pass_list_pos(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 		err = convert_data(tokenlist, msh_data, ind);
 		if (err != success)
 			return (err);
-		if (ind->red > 0 && find_type(tokenlist, ind->pos,
-				find_type(tokenlist, ind->pos, ind->red, PIPE), HEREDOC) == -1)
+		if (ind->red > 0 && find_type(tokenlist, ind->pos, find_type(tokenlist,
+					ind->pos, ind->red, PIPE), HEREDOC) == -1)
 			ind->pos = ind->red;
 		else if (ind->red > 0 && find_type(tokenlist, ind->pos, ind->red,
 				PIPE) != -1)
@@ -67,16 +65,16 @@ int pass_list_pos(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 	return (err);
 }
 
-
 // start conversion by making lists of commands
 int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 {
-	int err;
+	int	err;
+
 	err = success;
 	if (count_lists(tokenlist) == -1)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	msh_data->command_count = count_lists(tokenlist);
-	if (msh_data->command_count == syntax_err) // check if we even need error check here for this
+	if (msh_data->command_count == syntax_err)
 		return (syntax_err);
 	msh_data->exec_data = ft_calloc(msh_data->command_count,
 			sizeof(t_exec_data));
@@ -86,13 +84,12 @@ int	pass_comm(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 	return (err);
 }
 
-//	p_printf("\nCONVERT DATA:\n Pos = %d\n Pos_red = %d\n", pos, pos_red);
-//	p_printf("Next position = %d\n", count_next_cm(tokenlist, pos));
+
 // convert the tokenlist to executable data
 int	convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 {
 	t_exec_data	*comm_list;
-	int err;
+	int			err;
 
 	err = success;
 	comm_list = NULL;
@@ -103,7 +100,7 @@ int	convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *ind)
 	comm_list->redirections = NULL;
 	if (find_type(tokenlist, ind->pos, ind->red, HEREDOC) != -1)
 		err = set_heredoc(comm_list, tokenlist, ind);
-	else 
+	else
 		err = fill_comm_list(comm_list, tokenlist, ind);
 	return (err);
 }

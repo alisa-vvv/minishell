@@ -70,7 +70,7 @@ int	tokenlist_delete(t_tokenlist *e, size_t index)
 		e->tokens[index] = NULL;
 		e->total--;
 		if ((e->total > 0) && ((e->total) == (e->size / 4)))
-			err = tokenlist_resize(e, e->size, e->size / 2); 
+			err = tokenlist_resize(e, e->size, e->size / 2);
 	}
 	return (err);
 }

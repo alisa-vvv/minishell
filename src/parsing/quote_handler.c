@@ -82,7 +82,7 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 {
 	t_token	*check_token;
 	t_quote	*q;
-	int err;
+	int		err;
 
 	err = success;
 	q = ft_calloc(1, sizeof(t_quote));
@@ -94,7 +94,7 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 	if (char_is_quote(symbol))
 		rm_str_quotes(check_token->value, q);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
-		err = tokenlist_delete(tokenlist, pos); 
+		err = tokenlist_delete(tokenlist, pos);
 	free(q);
 	return (err);
 }
