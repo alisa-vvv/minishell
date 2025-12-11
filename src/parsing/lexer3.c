@@ -99,27 +99,33 @@ void	contract_quotes(t_tokenlist *tokenlist,
 //contracts tokens if surrounded by token quotes
 int	contract_list(t_tokenlist *tokenlist,
 					int i)
+// this function seems to be an earlier copy of the function above.
+// it's loop doesn't do anything because the main if case never triggers.
+// the only difference is the index_lexer call at the end that should probably
+// just be moved out it and called directly from check_lexer.
 {
-	t_token	*check_token;
+	//t_token	*check_token;
 	int		err;
+	(void) i;
 
-	err = success;
-	while ((size_t)i > 0)
-	{
-		check_token = tokenlist->tokens[i];
-		if (!check_token)
-			return (1);
-		if ((check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q)
-			&& (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist,
-					i)->type == OPERATOR)) // why operator?
-		{
-			printf("THIS HAPPENED!\n");
-			err = merge_tokens(tokenlist, i - 1, i);
-			if (err != success)
-				return (err);
-		}
-		i--;
-	}
-	err = index_lexer(&tokenlist);
+	//
+	//err = success;
+	//while ((size_t)i > 0) // this loop is entirely repeated
+	//{
+	//	check_token = tokenlist->tokens[i];
+	//	if (!check_token)
+	//		return (1);
+	//	if ((check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q)
+	//		&& (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist,
+	//				i)->type == OPERATOR)) // why operator?
+	//	{
+	//		printf("THIS HAPPENED!\n");
+	//		err = merge_tokens(tokenlist, i - 1, i);
+	//		if (err != success)
+	//			return (err);
+	//	}
+	//	i--;
+	//}
+	err = index_lexer(&tokenlist); // maybe move this outside?
 	return (err);
 }
