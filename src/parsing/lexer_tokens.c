@@ -31,7 +31,9 @@ t_token	*new_token(
 		return (NULL);
 	}
 	ft_strlcpy(token->value, str, len);
+	printf("token: %s\n", token->value);
 	token->type = match_token(token->value);
+	printf("token type: %s\n", enum_to_str(token->type));
 	token->command = false;
 	token->pos = tokenlist_total(tokenlist);
 	return (token);

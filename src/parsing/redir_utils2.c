@@ -52,9 +52,6 @@ int	token_is_cm(t_tokenlist *tokenlist, int pos, t_token *c_token)
 		return (-1);
 	else if (pos == 0 && check_token->type == HEREDOC)
 		return (c_token->command = true, 1);
-	else if ((size_t)pos == (tokenlist->total - 1)
-		&& check_token->type == HEREDOC_DEL)
-		return (c_token->command = true, 1);
 	else if (!tok_is_red(check_token))
 		return (c_token->command = true, 1);
 	return (0);

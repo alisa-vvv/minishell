@@ -148,16 +148,8 @@ int set_redir_comm(
 	next_token = looknxt(tokenlist, i->tok);
 	if (!next_token)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	if (cur_token->type == HEREDOC)
-	{
-		if (next_token->type != HEREDOC_DEL)
-			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	}
-	else
-	{
-		if (!legit_token(next_token))
-			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	}
+	if (!legit_token(next_token))
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	err = add_redirection(&msh_data->exec_data[i->exe].redirections,
 								cur_token->type, next_token->value);
 	i->tok++;
@@ -199,7 +191,7 @@ int pass_comm(
 	t_token				*cur_token;
 	t_passcom_indexes	i;
 
-	//test_tokens(tokenlist);
+	test_tokens(tokenlist);
 	i.tok = 0;
 	i.argve = 0;
 	i.exe = 0;

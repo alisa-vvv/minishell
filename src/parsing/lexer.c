@@ -122,8 +122,8 @@ int	default_lexer(
 	if (err != success)
 		return (err);
 	token_c = token_count(input_line, 0, token_c);
-	if (check_tcount(token_c))
-		return (check_tcount(token_c));
+	if (check_tcount(token_c) != success)
+		return (syntax_err);
 	if (tokenlist_init(&token_list, token_c) != success)
 		return (malloc_err);
 	err = fill_tokenlist(token_list, input_line);

@@ -82,11 +82,9 @@ const char	*enum_to_str(t_token_type symbols)
         case WHITESPACE: return "Whitespace";
         case PIPE: return "PIPE";
         case HEREDOC: return "Heredoc";
-        case HEREDOC_DEL: return "Heredoc Delimeter";
         case RED_IN: return "Redirect In";
         case RED_OUT: return "Redirect Out";
         case RED_APP: return "Redirect Out Append";
-        // case QUESTION_MARK: return "Question Mark";
         case EXIT: return "EXIT";
         case CD: return "CD";
         case ECHO: return "ECHO";

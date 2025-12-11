@@ -111,7 +111,7 @@ int	contract_list(t_tokenlist *tokenlist,
 			return (1);
 		if ((check_token->type == DOUBLE_Q || check_token->type == SINGLE_Q)
 			&& (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist,
-					i)->type == OPERATOR))
+					i)->type == OPERATOR)) // why operator?
 		{
 			err = merge_tokens(tokenlist, i - 1, i);
 			if (err != success)

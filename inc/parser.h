@@ -42,7 +42,6 @@ typedef enum	e_token_type
 	PIPE,
 	RED_IN,
 	HEREDOC,
-	HEREDOC_DEL,
 	RED_OUT,
 	RED_APP,
 
