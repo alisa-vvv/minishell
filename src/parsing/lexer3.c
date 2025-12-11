@@ -30,7 +30,7 @@ int	val_inputline(char *str)
 	{
 		if (char_is_red(str[i]))
 			if (validate_redirect(str, i) != success)
-				return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+				return (syntax_err);
 		i++;
 	}
 	return (success);

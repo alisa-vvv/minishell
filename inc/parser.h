@@ -56,6 +56,14 @@ typedef enum	e_token_type
 
 } t_token_type;
 
+typedef struct	s_passcom_indexes
+{
+	size_t	tok;
+	size_t	argve;
+	size_t	exe;
+	size_t	mem;
+}	t_passcom_indexes;
+
 typedef struct s_token
 {
 	t_token_type	type;

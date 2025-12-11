@@ -86,12 +86,12 @@ int	reallocate_argv(
 	size_t exdata_i
 )
 {
-	int	i;
+	char	**new_argv;
+	int		i;
 
 	if (argv_i == argv_mem - 1)
 	{
 		argv_mem += argv_mem / 2;
-		char **new_argv;
 		new_argv = ft_calloc(argv_mem, sizeof (char *));
 		i = -1;
 		while (msh_data->exec_data[exdata_i].argv[++i])
@@ -120,137 +120,105 @@ bool legit_token(t_token *cur_token)
 
 int set_tok_built(t_msh_data *msh_data,
 	t_token *cur_token,
-	size_t exdata_i,
-	size_t argv_i)
+	const size_t exdata_i,
+	size_t *argv_i)
 {
 	int err;
 
 	err = success;
-	if (cur_token->type >= CD && cur_token->type <= UNSET)
-	{
-		if (msh_data->exec_data[exdata_i].builtin_name == not_builtin)
-			msh_data->exec_data[exdata_i].builtin_name = set_builtins(cur_token);
-		err = add_arg_to_execdata(msh_data, cur_token, exdata_i, &argv_i);
-	}
+	if (msh_data->exec_data[exdata_i].builtin_name == not_builtin)
+		msh_data->exec_data[exdata_i].builtin_name = set_builtins(cur_token);
+	err = add_arg_to_execdata(msh_data, cur_token, exdata_i, argv_i);
 	return (err);
 }
 
 
-int set_redir_comm(t_tokenlist *tokenlist,
+int set_redir_comm(
+	t_tokenlist *tokenlist,
 	t_msh_data *msh_data,
-	size_t index[4],
-	t_token_type type)
+	t_passcom_indexes *i
+)
 {
-	int err;
-	t_token *cur_token; 
-	t_token *next_token;
+	int 			err;
+	t_token 		*cur_token; 
+	t_token 		*next_token;
 
 	err = success;
-	cur_token = tokenlist_get(tokenlist, index[0]);
-	next_token = tokenlist_get(tokenlist, ++index[0]);
-	if (!next_token || next_token->type != type)
+	cur_token = tokenlist_get(tokenlist, i->tok);
+	next_token = looknxt(tokenlist, i->tok);
+	if (!next_token)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	add_redirection(&msh_data->exec_data[index[2]].redirections,
+	if (cur_token->type == HEREDOC)
+	{
+		if (next_token->type != HEREDOC_DEL)
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+	}
+	else
+	{
+		if (!legit_token(next_token))
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+	}
+	err = add_redirection(&msh_data->exec_data[i->exe].redirections,
 								cur_token->type, next_token->value);
+	i->tok++;
 	return (err);
 }
 //when encountered pipe, set data 
-int set_pipe_data(t_msh_data *msh_data,
+int set_pipe_data(
+	t_msh_data *msh_data,
 	t_tokenlist *tokenlist, 
-	size_t index[4]
-	)
+	t_passcom_indexes *i
+)
 {
 	int err;
 	t_token *next_token;
 
 	err = success;
 
-	next_token = looknxt(tokenlist, index[0]);
+	next_token = looknxt(tokenlist, i->tok);
 	if (!next_token || next_token->type == PIPE)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	msh_data->exec_data[index[2]].output_is_pipe = true;
-	index[2]++;
-	index[1] = 0;
-	index[3] = 128;
-	msh_data->exec_data[index[2]].argv = ft_calloc(index[3], sizeof (char *)); // REPEATED CODE ALRET
-	msh_data->exec_data[index[2]].input_is_pipe = true;
+	msh_data->exec_data[i->exe].output_is_pipe = true;
+	i->exe++;
+	i->argve = 0;
+	i->mem = 128;
+	msh_data->exec_data[i->exe].argv = ft_calloc(i->mem, sizeof (char *));
+	msh_data->exec_data[i->exe].input_is_pipe = true;
 	return (err);
 }
 
-// index[3] will hold the positions of token_i --> index[0], argv_i --> index[1], exdata_i --> index[2], argv-mem --> index[3]. 
-// heredocs seem to be broken -> not sure if there is a problem with the delimiter
+// struct "i" holds indexes for tokenlist, argv, and exec_data, as well as the
+// amount of memory currently used by argv.
+// tok for tokenlist, argve for argv, exe for exec_data, mem for memory.
 int pass_comm(
 	t_tokenlist *tokenlist,
 	t_msh_data *msh_data
 )
 {
+	int					err;
+	t_token				*cur_token;
+	t_passcom_indexes	i;
 
-	int		err;
-	t_token	*cur_token;
-	size_t	index[4];
-	//size_t	argv_mem;
-	index[0] = 0;
-	index[1] = 0;
-	index[2] = 0;
-	index[3] = 128;
-
-	// token_i = 0;
-	// argv_i = 0;
-	// exdata_i = 0;
+	//test_tokens(tokenlist);
+	i.tok = 0;
+	i.argve = 0;
+	i.exe = 0;
+	i.mem = 128;
 	err = success;
-
-//	argv_mem = 128;
-	msh_data->exec_data[0].argv = ft_calloc(index[3], sizeof (char *));
-	while (index[0] < tokenlist->total)
+	while (i.tok < tokenlist->total && err == success)
 	{
-		if (reallocate_argv(msh_data, index[3], index[1], index[2]) != success)
+		if (reallocate_argv(msh_data, i.mem, i.argve, i.exe) != success)
 			return (malloc_err);
-		cur_token = tokenlist_get(tokenlist, index[0]);
-		err = set_tok_built(msh_data, cur_token, index[2], index[1]);
-		if (err != success)
-			return (err);
-		if (legit_token(cur_token))
-			err = add_arg_to_execdata(msh_data, cur_token,
-										  index[2], &index[1]);
+		cur_token = tokenlist_get(tokenlist, i.tok);
+		if (cur_token->type >= CD && cur_token->type <= UNSET)
+			err = set_tok_built(msh_data, cur_token, i.exe, &i.argve);
+		else if (legit_token(cur_token))
+			err = add_arg_to_execdata(msh_data, cur_token, i.exe, &i.argve);
 		else if (tok_is_red(cur_token))
-		{
-			err = set_redir_comm(tokenlist, msh_data, index, STRING);
-			if (err != success)
-				return (err);
-			// next_token = tokenlist_get(tokenlist, ++token_i);
-			// if (!next_token || next_token->type != STRING)
-			// 	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-			// add_redirection(&msh_data->exec_data[exdata_i].redirections,
-			// 					cur_token->type, next_token->value);
-		}
-		else if (cur_token->type == HEREDOC)
-		{
-			err = set_redir_comm(tokenlist, msh_data, index, HEREDOC_DEL);
-			if (err != success)
-				return (err);
-			// next_token = tokenlist_get(tokenlist, ++token_i);
-			// if (!next_token || next_token->type != HEREDOC_DEL)
-			// 	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-			// add_redirection(&msh_data->exec_data[exdata_i].redirections,
-			// 					cur_token->type, next_token->value);
-		}
+			err = set_redir_comm(tokenlist, msh_data, &i);
 		else if (cur_token->type == PIPE)
-		{
-			err = set_pipe_data(msh_data, tokenlist, index);
-			if (err != success)
-				return (err);
-			// next_token = tokenlist_get(tokenlist, token_i + 1);
-			// if (!next_token || next_token->type == PIPE)
-			// 	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-			// msh_data->exec_data[exdata_i].output_is_pipe = true;
-			// exdata_i++;
-			// argv_i = 0;
-			// argv_mem = 128;
-			// msh_data->exec_data[exdata_i].argv = ft_calloc(argv_mem, sizeof (char *)); // REPEATED CODE ALRET
-			// msh_data->exec_data[exdata_i].input_is_pipe = true;
-		}
-		index[0]++;
+			err = set_pipe_data(msh_data, tokenlist, &i);
+		i.tok++;
 	}
 	return (err);
 }
-
