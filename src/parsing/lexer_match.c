@@ -65,5 +65,7 @@ int	match_token(char *str_token) // needs rework @alisa
 	else if (str_contains_red(str_token) || (str_token[0] == '$')
 		|| str_token[0] == '|')
 		return (match_nonterminal(str_token));
+	else if ((ft_strchr(str_token, '=') != NULL))
+		return (OPERATOR);
 	return (match_string(str_token));
 }
