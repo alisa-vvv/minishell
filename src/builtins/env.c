@@ -24,7 +24,7 @@ int	msh_env(
 	if (msh_data->env)
 	{
 		while(msh_data->env[++i])
-			printf("%s\n", msh_data->env[i]);
+			printf("n%d. %s\n", i + 1, msh_data->env[i]);
 	}
 	return (0);
 }

@@ -13,7 +13,6 @@
 #include "libft.h"
 #include "minishell.h"
 #include <stdio.h>
-#include <errno.h>
 
 void	msh_perror(
 	char *const error_prefix,

@@ -33,6 +33,7 @@ static int truncate_var(
 	return (success);
 }
 
+	#include <stdio.h>
 static int append_var(
 	t_msh_data *const msh_data,
 	int var_index,
@@ -42,6 +43,8 @@ static int append_var(
 {
 	char	*appended_var;
 
+	printf("what is var index? %d\n", var_index);
+	printf("what is env var couunt? %d\n", msh_data->env_var_count);
 	if (var_index == msh_data->env_var_count) // check logic here, something's fishy
 	{
 		*identifier = '\0';
@@ -74,7 +77,6 @@ int	msh_export(
 	arg_i = -1;
 	while (argv[++arg_i])
 	{
-		
 		identifier = env_var_find_identifier(argv[arg_i]);
 		if (!identifier)
 			continue ;
@@ -94,7 +96,7 @@ int	msh_export(
 		if (err_check != success)
 			return (err_check);
 		if (var_i == msh_data->env_var_count)
-			msh_data->env_var_count += 1;  // check update here, something's fishy
+			msh_data->env_var_count += 1;
 	}
 	return (err_check);
 }

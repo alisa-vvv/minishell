@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/21 18:05:26 by avaliull            #+#    #+#           */
-/*   Updated: 2025/11/21 19:08:16 by avaliull            ########   odam.nl   */
+/*   Updated: 2025/12/11 20:38:15 by avaliull            ########   odam.nl   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ static int	iterate_shlvl(
 {
 	int				err_check;
 	unsigned long	shlvl_int;
+	char			*new_shlvl_val;
 	int				i;
 
 	err_check = 0;
@@ -51,7 +52,10 @@ static int	iterate_shlvl(
 	if (shlvl_int >= INT_MAX)
 		shlvl_int = 0;
 	shlvl_int += 1;
-	var_value[0] = ft_itoa(shlvl_int);
+	new_shlvl_val = ft_itoa(shlvl_int);
+	if (!new_shlvl_val)
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+	var_value[0] = ft_strjoin("SHLVL=", new_shlvl_val);
 	if (!var_value[0])
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = msh_export(var_value, msh_data);

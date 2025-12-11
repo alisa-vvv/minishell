@@ -71,15 +71,13 @@ int	env_var_find_index( // change to return error if not found var?
 	int			i;
 	const int	name_len = identifier - name;
 
-	i = 0;
+	i = -1;
 
-	while (env[i])
+	while (env[++i] != NULL)
 	{
 		if (ft_strncmp(env[i], name, name_len) == 0 &&
-				env[i][name_len] == '=')
+				env[i][name_len] == '=') // fuck, this is wrong i think
 			return (i);
-		else
-				i++;
 	}
 	return (i);
 }

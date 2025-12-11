@@ -12,7 +12,6 @@
 
 #include "libft.h"
 #include "minishell.h"
-#include "executor.h"
 #include "builtins.h"
 #include "minishell_env.h"
 #include <unistd.h>
@@ -44,19 +43,19 @@ static int	set_env_vars(
 
 	variables = ft_calloc(3, sizeof (char *));
 	if (!variables)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	variables[0] = ft_strjoin("OLDPWD=", cwd);
 	variables[1] = ft_strjoin("PWD=", path);
 	if (!variables[0] || !variables[1])
 	{
 		free_variables(variables);
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err); // check return
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	}
 	err_check = msh_export(variables, msh_data);
-	if (err_check < 0)
-		return (err_check); // check return
+	if (err_check != success)
+		return (err_check);
 	free_variables(variables);
-	return (0);
+	return (success);
 }
 
 static int find_target_path(
@@ -68,7 +67,6 @@ static int find_target_path(
 {
 	char	*arg_with_slash;
 
-	path = NULL;
 	if (!arg || arg[0] == '\0')
 	{
 		if (env_var_get_value(msh_data->env, "HOME", path) != success)
@@ -79,6 +77,8 @@ static int find_target_path(
 	else
 	{
 		arg_with_slash = ft_strjoin("/", arg);
+		if (!arg_with_slash)
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 		*path = ft_strjoin(cwd, arg_with_slash);
 		free(arg_with_slash);
 		if (!*path)
@@ -92,7 +92,6 @@ static int find_target_path(
 	return (success);
 }
 
-// add case for when directory was removed
 int	msh_cd(
 	char *const arg,
 	t_msh_data *const msh_data
@@ -112,9 +111,9 @@ int	msh_cd(
 		free(cwd);
 		return (err_check);
 	}
-	err_check = chdir(path); // this SHOULD check for path length i think
+	err_check = chdir(path);
 	if (err_check != 0)
-		return (msh_perror("cd: ", NULL, extern_err), -1); // check return
+		return (msh_perror("cd: ", "", extern_err), path_err);
 	else
 		err_check = set_env_vars(msh_data, cwd, path);
 	free(msh_data->cur_dir);
