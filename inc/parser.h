@@ -159,10 +159,25 @@ t_builtin_name set_builtins(t_token *check_token);
 int			find_type(t_tokenlist *tokenlist, size_t pos, int red, t_token_type type);
 //int			fill_comm_list(t_exec_data *execdata, t_tokenlist *tokenlist, t_pos *ind);
 int			make_cm_list(t_tokenlist *tokenlist, t_exec_data *comm_list, t_pos *ind);
+
+/*	Pass comm	*/
 int			pass_comm(
 	t_tokenlist *tokenlist,
 	t_msh_data *msh_data
 );
+int	reallocate_argv(
+	t_msh_data *msh_data,
+	size_t argv_mem,
+	size_t argv_i,
+	size_t exdata_i
+);
+void	new_redir_elem(
+	t_redir_list **first,
+	t_redir_list *redir_node
+);
+bool legit_token(t_token *cur_token);
+/**/
+
 int			convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data, t_pos *epos);
 
 #endif

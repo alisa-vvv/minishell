@@ -54,6 +54,7 @@ CFILES_PARSER	=	debug.c\
 					parser_redirects.c\
 					parser_heredoc.c\
 					pass_comm1.c\
+					pass_comm2.c\
 					parser.c
 CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\

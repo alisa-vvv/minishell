@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/12/10 20:13:17 by avaliull            #+#    #+#           */
-/*   Updated: 2025/12/10 21:02:28 by avaliull            ########   odam.nl   */
+/*   Updated: 2025/12/11 19:12:39 by avaliull            ########   odam.nl   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,30 +20,16 @@ int	add_arg_to_execdata(
 	size_t *argv_i
 )
 {
+	if (*argv_i == 0 && (cur_token->type >= CD && cur_token->type <= UNSET)
+		&& msh_data->exec_data[exdata_i].builtin_name == not_builtin)
+	{
+		msh_data->exec_data[exdata_i].builtin_name = set_builtins(cur_token);
+	}
 	msh_data->exec_data[exdata_i].argv[*argv_i] = ft_strdup(cur_token->value);
 	if (!msh_data->exec_data[exdata_i].argv[*argv_i])
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	*argv_i += 1;
 	return (success);
-}
-
-void	new_redir_elem(
-	t_redir_list **first,
-	t_redir_list *redir_node
-)
-{
-	t_redir_list	*cur_node;
-
-	redir_node->next = NULL;
-	if (*first != NULL)
-	{
-		cur_node = *first;
-		while (cur_node->next != NULL)
-			cur_node = cur_node->next;
-		cur_node->next = redir_node;
-	}
-	else
-		*first = redir_node;
 }
 
 int	add_redirection(
@@ -79,60 +65,6 @@ int	add_redirection(
 	return (success);
 }
 
-int	reallocate_argv(
-	t_msh_data *msh_data,
-	size_t argv_mem,
-	size_t argv_i,
-	size_t exdata_i
-)
-{
-	char	**new_argv;
-	int		i;
-
-	if (argv_i == argv_mem - 1)
-	{
-		argv_mem += argv_mem / 2;
-		new_argv = ft_calloc(argv_mem, sizeof (char *));
-		i = -1;
-		while (msh_data->exec_data[exdata_i].argv[++i])
-		{
-			new_argv[i] = ft_strdup(msh_data->exec_data[exdata_i].argv[i]);
-			if (!new_argv[i])
-			{
-				free_2d_arr((void **) new_argv);
-				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-			}
-		}
-		free(msh_data->exec_data[exdata_i].argv);
-		msh_data->exec_data[exdata_i].argv = new_argv;
-	}
-	return (success);
-}
-
-bool legit_token(t_token *cur_token)
-{
-	if (cur_token->type == COMMAND || cur_token->type == STRING
-		|| cur_token->type == PARAMETER || cur_token->type == DOUBLE_Q
-		|| cur_token->type == SINGLE_Q )
-		return (true);
-	return (false);
-}
-
-int set_tok_built(t_msh_data *msh_data,
-	t_token *cur_token,
-	const size_t exdata_i,
-	size_t *argv_i)
-{
-	int err;
-
-	err = success;
-	if (msh_data->exec_data[exdata_i].builtin_name == not_builtin)
-		msh_data->exec_data[exdata_i].builtin_name = set_builtins(cur_token);
-	err = add_arg_to_execdata(msh_data, cur_token, exdata_i, argv_i);
-	return (err);
-}
-
-
 int set_redir_comm(
 	t_tokenlist *tokenlist,
 	t_msh_data *msh_data,
@@ -155,6 +87,7 @@ int set_redir_comm(
 	i->tok++;
 	return (err);
 }
+
 //when encountered pipe, set data 
 int set_pipe_data(
 	t_msh_data *msh_data,
@@ -191,7 +124,7 @@ int pass_comm(
 	t_token				*cur_token;
 	t_passcom_indexes	i;
 
-	test_tokens(tokenlist);
+	//test_tokens(tokenlist);
 	i.tok = 0;
 	i.argve = 0;
 	i.exe = 0;
@@ -202,9 +135,8 @@ int pass_comm(
 		if (reallocate_argv(msh_data, i.mem, i.argve, i.exe) != success)
 			return (malloc_err);
 		cur_token = tokenlist_get(tokenlist, i.tok);
-		if (cur_token->type >= CD && cur_token->type <= UNSET)
-			err = set_tok_built(msh_data, cur_token, i.exe, &i.argve);
-		else if (legit_token(cur_token))
+		if (legit_token(cur_token)
+				|| (cur_token->type >= CD && cur_token->type <= UNSET))
 			err = add_arg_to_execdata(msh_data, cur_token, i.exe, &i.argve);
 		else if (tok_is_red(cur_token))
 			err = set_redir_comm(tokenlist, msh_data, &i);
