@@ -113,6 +113,7 @@ int	contract_list(t_tokenlist *tokenlist,
 			&& (i > 0 && lookbehind(tokenlist, i) && lookbehind(tokenlist,
 					i)->type == OPERATOR)) // why operator?
 		{
+			printf("THIS HAPPENED!\n");
 			err = merge_tokens(tokenlist, i - 1, i);
 			if (err != success)
 				return (err);

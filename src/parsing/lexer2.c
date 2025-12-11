@@ -85,14 +85,6 @@ int	expand_param(t_tokenlist *tokenlist,
 			return (err);
 		count--;
 	}
-	count = count_exp(tokenlist, '='); ///??????
-	while (count > 0)
-	{
-		err = exp_lexer(tokenlist, msh_data, OPERATOR, 0);
-		if (err != success)
-			return (err);
-		count--;
-	}
 	return (success);
 }
 
