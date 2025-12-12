@@ -14,7 +14,7 @@
 #include "minishell.h"
 #include "minishell_env.h"
 
-char	*env_var_find_identifier( // also change to return error?
+char	*env_var_find_identifier(
 	char *arg
 )
 {
@@ -24,7 +24,9 @@ char	*env_var_find_identifier( // also change to return error?
 			return (arg);
 		else if (!ft_isalnum(*arg) && *arg != '_')
 		{
-			ft_putstr_fd(INVALID_IDENTIFIER, STDERR_FILENO); // should never happen???
+			msh_perror("export: ", INVALID_IDENTIFIER, msh_err);
+			ft_putstr_fd(arg, STDERR_FILENO);
+			ft_putstr_fd("\n", STDERR_FILENO);
 			return (NULL);
 		}
 		arg++;

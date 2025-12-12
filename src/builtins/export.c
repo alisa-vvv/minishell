@@ -90,6 +90,7 @@ static int env_var_realloc(
 	return (success);
 }
 
+#include <stdio.h>
 int	export_var(
 	char *const *argv,
 	t_msh_data *const msh_data,
@@ -99,6 +100,13 @@ int	export_var(
 {
 	int	err_check;
 
+	if (*identifier == argv[i->arg][0])
+	{
+		msh_perror("export: ", INVALID_IDENTIFIER, msh_err);
+		ft_putstr_fd(argv[i->arg], STDERR_FILENO);
+		ft_putstr_fd("\n", STDERR_FILENO);
+		return (builtin_err);
+	}
 	err_check = success;
 	if (*identifier == '=')
 		err_check = truncate_var(msh_data, i->var, argv[i->arg]);
