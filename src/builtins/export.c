@@ -33,7 +33,6 @@ static int truncate_var(
 	return (success);
 }
 
-	#include <stdio.h>
 static int append_var(
 	t_msh_data *const msh_data,
 	int var_index,
@@ -43,9 +42,7 @@ static int append_var(
 {
 	char	*appended_var;
 
-	printf("what is var index? %d\n", var_index);
-	printf("what is env var couunt? %d\n", msh_data->env_var_count);
-	if (var_index == msh_data->env_var_count) // check logic here, something's fishy
+	if (var_index == msh_data->env_var_count)
 	{
 		*identifier = '\0';
 		appended_var = ft_strjoin(arg, identifier + 1);
@@ -61,42 +58,85 @@ static int append_var(
 	return (success);
 }
 
+static int env_var_realloc(
+	t_msh_data *msh_data,
+	int var_i
+)
+{
+	char	**new_env;
+	int		i;
+
+	if (var_i == msh_data->env_mem - 1)
+	{
+		if (msh_data->env_mem + (msh_data->env_mem / 2) > ENV_MAX)
+			return (msh_perror("export: ", TOO_MANY_ENV_VAR, msh_err), builtin_err);
+		msh_data->env_mem += msh_data->env_mem / 2;
+		new_env = ft_calloc(msh_data->env_mem, sizeof(char *));
+		if (!new_env)
+			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+		i = -1;
+		while (msh_data->env[++i])
+		{
+			new_env[i] = ft_strdup(msh_data->env[i]);
+			if (!new_env[i])
+			{
+				free_2d_arr((void **) new_env);
+				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+			}
+		}
+		free_2d_arr((void **) msh_data->env);
+		msh_data->env = new_env;
+	}
+	return (success);
+}
+
+int	export_var(
+	char *const *argv,
+	t_msh_data *const msh_data,
+	char *identifier,
+	t_export_i *i
+)
+{
+	int	err_check;
+
+	err_check = success;
+	if (*identifier == '=')
+		err_check = truncate_var(msh_data, i->var, argv[i->arg]);
+	else if (*identifier == '+')
+		err_check = append_var(msh_data, i->var, argv[i->arg], identifier);
+	if (err_check == malloc_err)
+		return (err_check);
+	if (i->var == msh_data->env_var_count)
+		msh_data->env_var_count += 1;
+	return (err_check);
+}
+
 int	msh_export(
 	char *const *argv,
 	t_msh_data *const msh_data
 )
 {
-	int		var_i;
-	int		arg_i;
-	char	*identifier;
-	int		err_check;
+	t_export_i	i;
+	char		*identifier;
+	int			err_check;
 
-	err_check = success;
 	if (!*argv)
 		return (msh_env(msh_data));
-	arg_i = -1;
-	while (argv[++arg_i])
+	i.arg = -1;
+	while (argv[++i.arg])
 	{
-		identifier = env_var_find_identifier(argv[arg_i]);
+		identifier = env_var_find_identifier(argv[i.arg]);
 		if (!identifier)
 			continue ;
-		var_i = env_var_find_index(msh_data->env, argv[arg_i], identifier);
-		if (var_i == msh_data->env_mem - 1)
-		{
-			err_check = env_var_realloc(msh_data);
-			if (err_check == malloc_err)
-				return (err_check);
-			else if (err_check == msh_err)
-				continue ;
-		}
-		if (*identifier == '=')
-			err_check = truncate_var(msh_data, var_i, argv[arg_i]);
-		else if (*identifier == '+')
-			err_check = append_var(msh_data, var_i, argv[arg_i], identifier);
-		if (err_check != success)
+		i.var = env_var_find_index(msh_data->env, argv[i.arg], identifier);
+		err_check = env_var_realloc(msh_data, i.var);
+		if (err_check == malloc_err)
 			return (err_check);
-		if (var_i == msh_data->env_var_count)
-			msh_data->env_var_count += 1;
+		else if (err_check == builtin_err)
+			continue ;
+		err_check = export_var(argv, msh_data, identifier, &i);
+		if (err_check == malloc_err)
+			return (err_check);
 	}
 	return (err_check);
 }

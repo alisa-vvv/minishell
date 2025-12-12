@@ -33,9 +33,6 @@ int	validate_default_vars(
 /**/
 
 /*	Variable usage	*/
-int env_var_realloc(
-	t_msh_data *msh_data
-);
 bool	env_var_if_exists(
 	char **env,
 	char *name

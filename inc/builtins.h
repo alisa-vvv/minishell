@@ -15,6 +15,12 @@
 
 #include "minishell.h"
 
+typedef struct	s_export_i
+{
+	int	var;
+	int	arg;
+}	t_export_i;
+
 int	exec_builtin(
 	t_exec_data *const command,
 	t_msh_data *const msh_data
