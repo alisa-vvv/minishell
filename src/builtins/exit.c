@@ -27,7 +27,7 @@ int	msh_exit(
 	if (args[1] != NULL)
 	{
 		msh_perror("exit: ", "too many arguments", msh_err);
-		return (builtin_err); // is this an error case?
+		return (builtin_err);
 	}
 	exit_code = ft_atoi(args[0]);
 	if (exit_code == 0 && args[0][0] != '0')

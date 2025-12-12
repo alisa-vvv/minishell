@@ -24,7 +24,6 @@ int	msh_pwd(
 	if (!dir)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = success;
-	getcwd(dir, PATH_MAX);
 	if (!getcwd(dir, PATH_MAX) || dir[0] == '\0') // manage errors?
 		printf("%s\n", msh_data->cur_dir);
 	else

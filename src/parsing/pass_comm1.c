@@ -108,6 +108,8 @@ int set_pipe_data(
 	i->argve = 0;
 	i->mem = 128;
 	msh_data->exec_data[i->exe].argv = ft_calloc(i->mem, sizeof (char *));
+	if (!msh_data->exec_data[i->exe].argv)
+		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	msh_data->exec_data[i->exe].input_is_pipe = true;
 	return (err);
 }
