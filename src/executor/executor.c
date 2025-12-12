@@ -55,7 +55,7 @@ static int	run_child_process(
 		safe_close(&command_io->out_pipe[WRITE_END]);
 	}
 	if (command->redirections)
-		err_check = perform_redirections(command->redirections, NULL, false);
+		err_check = do_redirections(command->redirections, NULL, false);
 	if (err_check != success)
 		return (err_check);
 	if (command->builtin_name == not_builtin)
@@ -82,12 +82,9 @@ static int	execute_in_child(
 		err_check = run_child_process(command, command_io, msh_data);
 	}
 	else if (*pid > 0)
-	{
-		//dprintf(STDERR_FILENO,"what is *pid when command is %s: %d\n", command->argv[0], *pid);
 		cleanup_in_parent_process(command, command_io);
-	}
 	else if (*pid < 0)
-		return (msh_perror(NULL, FORK_ERR, extern_err), fork_err); // check prefix
+		return (msh_perror(NULL, FORK_ERR, extern_err), fork_err);
 	return (err_check);
 }
 
@@ -111,11 +108,11 @@ static int	execute_command(
 	{
 		undup_list = NULL;
 		undup_list_head = &undup_list;
-		err = perform_redirections(command->redirections, undup_list_head, true);
+		err = do_redirections(command->redirections, undup_list_head, true);
 	}
 	if (command->builtin_name != not_builtin && err == success)
 		err = exec_builtin(command, msh_data);
-	if (command->redirections) // not needed?
+	if (command->redirections)
 		undup_redirections(undup_list_head);
 	return (err);
 }
@@ -159,7 +156,7 @@ static int	wait_for_children(
 	return (EXIT_SUCCESS);
 }
 
-static void	executor_cleanup(
+void	executor_cleanup(
 	t_msh_data *const msh_data,
 	t_command_io *command_io,
 	int *p_ids,

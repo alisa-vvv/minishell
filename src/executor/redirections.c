@@ -90,7 +90,7 @@ static int	output_redirect(
 	return (success);
 }
 
-int	perform_redirections(
+int	do_redirections(
 	t_redir_list *redirections,
 	t_undup_list **undup_list_head,
 	bool record

@@ -67,7 +67,7 @@ int	prepare_command_io(
 void	undup_redirections(
 	t_undup_list **undup_head
 );
-int	perform_redirections(
+int	do_redirections(
 	t_redir_list *redirections,
 	t_undup_list **undup_list,
 	bool record_redirs
