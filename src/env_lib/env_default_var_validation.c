@@ -56,6 +56,7 @@ static int	iterate_shlvl(
 	if (!new_shlvl_val)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	var_value[0] = ft_strjoin("SHLVL=", new_shlvl_val);
+	ft_safe_free((unsigned char **) &new_shlvl_val);
 	if (!var_value[0])
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = msh_export(var_value, msh_data);
