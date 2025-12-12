@@ -17,7 +17,7 @@ int	count_unq(const char *str, int i, int count)
 {
 	if (!char_is_red(str[i]))
 		count++;
-	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i]))
+	while (str[i] && !ft_isspace(str[i]))
 	{
 		if (char_is_red(str[i]))
 		{
@@ -44,7 +44,7 @@ int	token_count(
 	while (str[i])
 	{
 		if ((!check_in_quote(str, i) && !ft_isspace(str[i]))
-			&& !char_is_quote(str[i]) && !char_is_red(str[i]))
+			&& !char_is_red(str[i]))
 		{
 			tokencount = count_unq(str, i, tokencount);
 			i += move_o_unquoted(str, i);

@@ -61,7 +61,7 @@ int	move_o_unquoted(const char *str, int i)
 	int	len;
 
 	len = 0;
-	while (str[i] && !char_is_quote(str[i]) && !ft_isspace(str[i])
+	while (str[i] && !ft_isspace(str[i])
 		&& !char_is_red(str[i]))
 	{
 		len++;
