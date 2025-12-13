@@ -49,7 +49,7 @@ int	add_redirection(
 		redir_node->type = append;
 	if (type == HEREDOC)
 		redir_node->type = heredoc;
-	if (next_token_val && type != HEREDOC)//  yes if we expand on empty, next token_val can be '\0' || I believe we do check if reds are not the last token 
+	if (next_token_val && type != HEREDOC)
 	{
 		redir_node->dest_filename = ft_strdup(next_token_val);
 		if (!redir_node->dest_filename)
