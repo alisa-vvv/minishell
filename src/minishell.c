@@ -79,8 +79,6 @@ static void	post_execution_cleanup(
 			clean_exit(msh_data, NULL, EXIT_SUCCESS, true);
 		else if (err_check < 0)
 			clean_exit(msh_data, NULL, EXIT_FAILURE, true);
-		else if (g_msh_signal == SIGQUIT)
-			clean_exit(msh_data, read_line, EXIT_SUCCESS, true);
 	}
 	msh_data->exec_data = NULL;
 	msh_data->command_count = 0;

@@ -46,32 +46,16 @@ static void	ignore_sigint(
 	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
 
-//static void allow_sigint_heredoc(
-//)
-//{
-//	struct sigaction	handle_sigint;
-////	struct sigaction	handle_sigquit;
-//
-//	sigemptyset(&handle_sigint.sa_mask);
-//	sigaddset(&handle_sigint.sa_mask, SIGINT);
-//	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
-//	handle_sigint.sa_handler = SIG_DFL;
-//	handle_sigint.sa_flags = 0;
-//	sigaction(SIGINT, &handle_sigint, NULL);
-//}
-
-
 
 static void	handle_sigint_heredoc(int sig
 )
 {
 	//kill(0, SIGQUIT);
-//	g_msh_signal = SIGINT;
 	if (sig == SIGQUIT)
 	{
 		rl_clear_history();
 		g_msh_signal = SIGQUIT;
-	}else 
+	}else if (sig == SIGINT)
 		ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	// rl_replace_line("", 0);
 	// rl_on_new_line();
@@ -187,6 +171,7 @@ int	create_here_doc(
 	}
 	else if (pid == 0)
 	{
+		safe_close(&here_doc[READ_END]); 
 		msh_data->is_parent = false;
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		safe_close(&here_doc[WRITE_END]);
