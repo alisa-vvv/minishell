@@ -87,6 +87,9 @@ void	handle_signals_interactive(
 void	handle_signals_non_interactive(
 	void
 );
+void	handle_signals_child_process(
+	void
+);
 /**/
 
 /*		Executor - data structures		*/

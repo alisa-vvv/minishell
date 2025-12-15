@@ -64,11 +64,16 @@ void	handle_signals_child_process(
 )
 {
 	struct sigaction	handle_sigint;
+	struct sigaction	handle_sigquit;
 
 	sigemptyset(&handle_sigint.sa_mask);
-	handle_sigint.sa_handler = SIG_IGN;
+	handle_sigint.sa_handler = SIG_DFL;
 	handle_sigint.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigint, NULL);
+	sigemptyset(&handle_sigquit.sa_mask);
+	handle_sigquit.sa_handler = SIG_DFL;
+	handle_sigquit.sa_flags = 0;
+	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
 
 //could make this sighandler to handle all signals when in child process

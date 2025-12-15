@@ -78,6 +78,7 @@ static int	execute_in_child(
 	*pid = fork();
 	if (*pid == 0)
 	{
+		handle_signals_child_process();
 		msh_data->is_parent = false;
 		err_check = run_child_process(command, command_io, msh_data);
 	}
@@ -126,29 +127,33 @@ static int	wait_for_children(
 {
 	int	last_exit;
 	int	i;
-	int	err_check;
+	int	signal;
+	//int	err_check;
 
 	i = -1;
 	while (++i < command_count)
 	{
 		if (p_ids[i] < 0)
 			continue ;
-		err_check = waitpid(p_ids[i], &p_exit_codes[i], 0);
-		if (err_check > 0)
+		waitpid(p_ids[i], &p_exit_codes[i], WUNTRACED);
+		if (WIFSIGNALED(p_exit_codes[i]) == true) // this is probably uselssee
 		{
-			if (WIFEXITED(p_exit_codes[i]) == true)
-			{
-				last_exit = WEXITSTATUS(p_exit_codes[i]);
-				if (last_exit != EXIT_SUCCESS)
-					msh_data->last_pipeline_return = last_exit;
-			}
-			else if (WIFSIGNALED(p_exit_codes[i]) == true)
-			{
-				last_exit = 128 + WTERMSIG(p_exit_codes[i]);
+			signal = WTERMSIG(p_exit_codes[i]);
+			last_exit = 128 + signal;
+			msh_data->last_pipeline_return = last_exit;
+			if (signal == SIGQUIT && WCOREDUMP(p_exit_codes[i]))
+				ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+		}
+		else if (WIFSTOPPED(p_exit_codes[i]) == true) // this is probably uselssee
+		{
+			last_exit = 128 + WSTOPSIG(p_exit_codes[i]);
+			msh_data->last_pipeline_return = last_exit;
+		}
+		else if (WIFEXITED(p_exit_codes[i]) == true)
+		{
+			last_exit = WEXITSTATUS(p_exit_codes[i]);
+			if (last_exit != EXIT_SUCCESS)
 				msh_data->last_pipeline_return = last_exit;
-				if (WCOREDUMP(p_exit_codes[i]))
-					ft_putstr_fd("Core dumped\n", STDERR_FILENO);
-			}
 		}
 	}
 	return (EXIT_SUCCESS);
