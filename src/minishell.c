@@ -15,6 +15,7 @@
 #include "minishell.h"
 #include "executor.h"
 #include "parser.h"
+#include <signal.h>
 #include <string.h>
 #include <stdio.h> /*	readline	*/
 #include <readline/readline.h> // Needed for rl_catch_signals
@@ -48,6 +49,7 @@ static int	setup_msh_data(
 
 int	TEST_len = 0;
 
+
 // NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE
 // CAUSE IT'S A TEST.
 // MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
@@ -77,6 +79,8 @@ static void	post_execution_cleanup(
 			clean_exit(msh_data, NULL, EXIT_SUCCESS, true);
 		else if (err_check < 0)
 			clean_exit(msh_data, NULL, EXIT_FAILURE, true);
+		else if (g_msh_signal == SIGQUIT)
+			clean_exit(msh_data, read_line, EXIT_SUCCESS, true);
 	}
 	msh_data->exec_data = NULL;
 	msh_data->command_count = 0;

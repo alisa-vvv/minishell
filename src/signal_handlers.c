@@ -14,18 +14,22 @@
 #include "minishell.h"
 #include <stddef.h>
 #include <signal.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
+volatile sig_atomic_t g_msh_signal = 0; 
+
+//
 void	sigint_handler_interactive(
 )
 {
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0); // Commented out - not available on all systems
 	rl_on_new_line();
-	rl_redisplay();
-	g_msh_signal = SIGINT;
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+//	g_msh_signal = SIGINT; 
 }
 
 void	sigint_handler_non_interactive(
@@ -42,11 +46,14 @@ void	handle_signals_child_process(
 	struct sigaction	handle_sigint;
 
 	sigemptyset(&handle_sigint.sa_mask);
-	handle_sigint.sa_handler = SIG_DFL;
+	//handle_sigint.sa_handler = SIG_DFL;
+	handle_sigint.sa_handler = SIG_IGN;
 	handle_sigint.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigint, NULL);
 }
 
+//could make this sighandler to handle all signals when in child process
+//-->global variable to sig what handler to use
 void	handle_signals_non_interactive(
 	void
 )
@@ -54,7 +61,8 @@ void	handle_signals_non_interactive(
 	struct sigaction	handle_sigquit;
 
 	sigemptyset(&handle_sigquit.sa_mask);
-	handle_sigquit.sa_handler = SIG_DFL;
+	//handle_sigquit.sa_handler = SIG_DFL;
+	handle_sigquit.sa_handler = SIG_IGN;
 	handle_sigquit.sa_flags = 0;
 	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
@@ -63,6 +71,7 @@ void	handle_signals_interactive(
 	void
 )
 {
+
 	struct sigaction	handle_sigint;
 	struct sigaction	handle_sigquit;
 

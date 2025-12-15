@@ -16,9 +16,15 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/ioctl.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <readline/readline.h>
+
+
+//why do we have a handler ignoring the SIGINT and SIGQUIT
+//-> can we just set the global flag to change when we get in the heredoc to have main ignore signals 
+//and have the non-interactive sighandler handle the sigs from there 
 
 static void	ignore_sigint(
 )
@@ -53,20 +59,31 @@ static void	ignore_sigint(
 //	handle_sigint.sa_flags = 0;
 //	sigaction(SIGINT, &handle_sigint, NULL);
 //}
-//
-static void	handle_sigint_heredoc(
+
+
+
+static void	handle_sigint_heredoc(int sig
 )
 {
 	//kill(0, SIGQUIT);
 //	g_msh_signal = SIGINT;
-	rl_replace_line("", 0);
-	rl_on_new_line();
-	write(STDIN_FILENO, "\n", 1);
-	rl_redisplay();
+	if (sig == SIGQUIT)
+	{
+		rl_clear_history();
+		g_msh_signal = SIGQUIT;
+	}else 
+		ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	// rl_replace_line("", 0);
+	// rl_on_new_line();
+	// write(STDIN_FILENO, "\n", 1);
+	// rl_redisplay();
 	//*rl_line_buffer = NULL;
-	//ft_putstr_fd("are we looping here?\n", STDOUT_FILENO);			
+	//ft_putstr_fd("are we looping here?\n", STDOUT_FILENO);
+		
 }
-//
+
+//why make so many handlers for the different signals?
+//can we have handle_signals_non_interactive() and ""interactive() not handle all sigs?
 //
 // make this more general
 static void handle_signals_heredoc(
@@ -84,8 +101,9 @@ static void handle_signals_heredoc(
 	sigemptyset(&handle_sigquit.sa_mask);
 	sigaddset(&handle_sigquit.sa_mask, SIGINT);
 	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
-	handle_sigquit.sa_handler = SIG_IGN;
+	handle_sigquit.sa_handler = handle_sigint_heredoc;
 	handle_sigquit.sa_flags = 0;
+	//handle_sigquit.sa_handler = handle_sigint_heredoc;
 	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
 
@@ -105,10 +123,10 @@ int	heredoc_readline_loop(
 		input_str = readline("heredoc> ");
 		if (!input_str)
 		{
-			ft_putstr_fd("PLACEHOLDER: ctrl-D'd the heredoc\n", STDERR_FILENO); // make bash like i guess
+			ft_putstr_fd("msh: warning ctrl-D'd the heredoc\n", STDERR_FILENO); // make bash like i guess
 			break ;
 		}
-		if (ft_strncmp(input_str, heredoc_delim, delim_len) == 0)
+		if (ft_strncmp(input_str, heredoc_delim, delim_len) == 0) //&& input_str[delim_len] == '\0')
 			break ;
 		ft_putstr_fd(input_str, here_doc[WRITE_END]);
 		ft_putchar_fd('\n', here_doc[WRITE_END]);
@@ -116,6 +134,7 @@ int	heredoc_readline_loop(
 	}
 	if (input_str)
 		free(input_str);
+	rl_clear_history();
 	return (success);
 }
 
@@ -160,7 +179,13 @@ int	create_here_doc(
 	if (err_check < 0)
 		return (msh_perror(NULL, PIPE_ERR, extern_err), malloc_err);
 	pid = fork();
-	if (pid == 0)
+	if (pid < 0)
+	{
+		safe_close(&here_doc[READ_END]);
+		safe_close(&here_doc[WRITE_END]);
+		return(msh_perror(NULL, FORK_ERR, extern_err), fork_err);
+	}
+	else if (pid == 0)
 	{
 		msh_data->is_parent = false;
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
@@ -175,6 +200,9 @@ int	create_here_doc(
 		handle_signals_non_interactive();
 	}
 	if (err_check != 0)
+	{
+		safe_close(&here_doc[READ_END]);
 		return (msh_perror(NULL, PIPE_ERR, extern_err), err_check);
+	}
 	return (here_doc[READ_END]);
 }

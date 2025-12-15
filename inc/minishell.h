@@ -18,6 +18,7 @@
 /*	signals		*/
 /* for true/false macro (and bool if we need it) */
 # include <stdbool.h>
+# include <signal.h>
 
 /*		Standard/Default values		*/
 # define STD_PATH "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -77,8 +78,8 @@ typedef enum	e_msh_errno // can define specific values later
 // doesn't need to be -2
 
 /*		Signal handling		*/
-
-static int	g_msh_signal;
+//made it into sig_atomic (just more in line with standard protocol I'd say)
+extern volatile sig_atomic_t	g_msh_signal;
 
 void	handle_signals_interactive(
 	void

@@ -12,6 +12,61 @@
 
 #include "parser.h"
 
+
+// count how many exec data structs need to be made
+int	count_lists(t_tokenlist *tokenlist)
+{
+	size_t	i;
+	size_t	count;
+	t_token	*check_token;
+
+	i = 0;
+	count = 1;
+	while (i < tokenlist->total)
+	{
+		check_token = (t_token *)tokenlist->tokens[i];
+		if (check_token->type == PIPE)
+			count++;
+		if (i == tokenlist->total - 1 && check_token->type == PIPE)
+			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+		i++;
+	}
+	return (count);
+}
+
+// count until the next pos that is a command
+int	count_next_cm(t_tokenlist *tokenlist, int pos)
+{
+	size_t	i;
+	t_token	*check_token;
+
+	i = pos + 1;
+	while (i < tokenlist->total)
+	{
+		check_token = (t_token *)tokenlist->tokens[i];
+		if (check_token->type == PIPE && looknxt(tokenlist, pos))
+			return (check_token->pos + 1);
+		if (check_token->command)
+			return (check_token->pos);
+		i++;
+	}
+	return (-1);
+}
+
+
+// sets default values for execdata
+int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
+{
+	t_token	*check_token;
+
+	check_token = tokenlist_get(tokenlist, pos);
+	execdata->builtin_name = set_builtins(check_token);
+	execdata->input_is_pipe = false;
+	execdata->output_is_pipe = false;
+	execdata->redirections = NULL;
+	return (0);
+}
+
 // make an empty execdata
 int	make_cm_list(
 	t_tokenlist *tokenlist,
