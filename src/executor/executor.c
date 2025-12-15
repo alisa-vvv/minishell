@@ -134,9 +134,8 @@ static int	wait_for_children(
 		if (p_ids[i] < 0)
 			continue ;
 		err_check = waitpid(p_ids[i], &p_exit_codes[i], 0);
-		if (err_check > 0) // check if there's some exit signals or codes we need to handle here
+		if (err_check > 0)
 		{
-			//https://tldp.org/LDP/abs/html/exitcodes.html - good source for exit codes testing
 			if (WIFEXITED(p_exit_codes[i]) == true)
 			{
 				last_exit = WEXITSTATUS(p_exit_codes[i]);
@@ -146,12 +145,11 @@ static int	wait_for_children(
 			else if (WIFSIGNALED(p_exit_codes[i]) == true)
 			{
 				last_exit = 128 + WTERMSIG(p_exit_codes[i]);
+				msh_data->last_pipeline_return = last_exit;
 				if (WCOREDUMP(p_exit_codes[i]))
 					ft_putstr_fd("Core dumped\n", STDERR_FILENO);
 			}
 		}
-		else
-			perror("waitpid -1"); // check necessity
 	}
 	return (EXIT_SUCCESS);
 }
@@ -269,6 +267,7 @@ int	executor(
 	t_command_io	*command_io;
 	int				err;
 
+	handle_signals_non_interactive();
 	err = success;
 	p_id_arr = malloc(sizeof(int) * command_count);
 	ft_memset(p_id_arr, -1, command_count);

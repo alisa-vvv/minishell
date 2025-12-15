@@ -59,7 +59,6 @@ int	TEST_run_executor(
 	t_msh_data *const msh_data
 )
 {
-	handle_signals_non_interactive();
 	msh_data->exec_data = test_get_dummy_exec_data(msh_data);
 	return (executor(msh_data, TEST_len));
 }
@@ -84,6 +83,7 @@ static void	post_execution_cleanup(
 	msh_data->command_count = 0;
 }
 
+volatile sig_atomic_t g_msh_signal = 0; 
 int	main(int argc, char **argv, char *envp[])
 {
 	char		*read_line;
