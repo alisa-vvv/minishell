@@ -94,10 +94,10 @@ int	main(int argc, char **argv, char *envp[])
 
 	(void) argc;
 	(void) argv;
-	read_line = NULL;
 	rl_catch_signals = false;
-	setup_msh_data(&msh_data, envp);
-	while (true)
+	if (setup_msh_data(&msh_data, envp) != success)
+		clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
+	while (msh_data.do_exit == false)
 	{
 		handle_signals_interactive();
 		read_line = readline("msh$ ");
@@ -114,8 +114,6 @@ int	main(int argc, char **argv, char *envp[])
 				err_check = executor(&msh_data, msh_data.command_count);
 		}
 		post_execution_cleanup(&msh_data, read_line, err_check);
-		if (msh_data.do_exit == true)
-			break ;
 	}
 	clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
 }

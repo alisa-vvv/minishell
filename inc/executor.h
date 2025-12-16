@@ -74,6 +74,20 @@ int	do_redirections(
 );
 /**/
 
+/*		Pipeline execution	*/
+int	build_pipeline(
+	t_msh_data *const msh_data,
+	t_command_io *command_io,
+	int *elem_count
+);
+int	execute_commands(
+	t_msh_data *const msh_data,
+	t_exec_data *command,
+	t_command_io *command_io,
+	int *p_id_arr
+);
+/**/
+
 /*		Undups		*/
 int	record_undup(
 	t_undup_list **undup_list_head,
@@ -97,6 +111,12 @@ int	try_execve(
 /*		Utils		*/
 void	safe_close(
 	int *fd
+);
+int	wait_for_children(
+	const int command_count,
+	t_msh_data *const msh_data,
+	const int *const p_ids,
+	int *const p_exit_codes
 );
 /**/
 
