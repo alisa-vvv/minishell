@@ -78,7 +78,7 @@ static const char *const	*split_path_var(
 		msh_perror(NULL, MALLOC_ERR, extern_err);
 		return (NULL);
 	}
-	(free(path->env_value), free(path));
+	(free(path->env_value), free(path->name), free(path));
 	return ((const char *const *) path_arr);
 }
 

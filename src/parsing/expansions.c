@@ -61,7 +61,7 @@ int	exp_further(t_tokenlist *tokenlist,
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '"')
 		&& !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
-		&& !(*exp_data)->existing)
+		&& ft_strncmp((*exp_data)->name, "", 1))
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else
 	{
@@ -90,7 +90,7 @@ int	expand_check(t_tokenlist *tlist,
 	else if (env_var_get_value(msh_data->env, &exp_data))
 			return (malloc_err);
 	err = exp_further(tlist, pos, &exp_data);
-	if (exp_data->existing)
+	if (exp_data->existing && ft_strncmp(exp_data->env_value, "", 1) != 0)
 		ft_safe_free((unsigned char **)&exp_data->env_value);
 	ft_safe_free((unsigned char **)&exp_data->name);
 	return (err);
