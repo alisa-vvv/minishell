@@ -15,12 +15,12 @@
 NAME	=	minishell
 
 CFILES	=	minishell.c\
-			signal_handlers.c\
 			errors.c\
 			cleanup.c\
 			$(CFILES_ENVLIB)\
 			$(CFILES_VECLIB)\
 			$(CFILES_PARSER)\
+			$(CFILES_SIGNALS)\
 			$(CFILES_EXECUTOR)\
 			$(CFILES_BUILTINS)\
 			test_funcs.c
@@ -54,8 +54,11 @@ CFILES_PARSER	=	debug.c\
 					pass_comm1.c\
 					pass_comm2.c\
 					parser.c
+CFILES_SIGNALS	=	signal_calls.c\
+					signal_handlers.c
 CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\
+					executor_pipeline.c\
 					redirections.c\
 					undups.c\
 					here-doc.c\
@@ -79,7 +82,7 @@ BUILDDIR = build/
 SRCDIR = src/
 LIBDIR = lib/
 INCDIR = inc/
-SRCDIRS = $(addprefix $(SRCDIR), parsing executor builtins env_lib) \
+SRCDIRS = $(addprefix $(SRCDIR), parsing executor builtins env_lib signals) \
 		  $(SRCDIR)
 $(SRCDIR):
 	mkdir -p $@
