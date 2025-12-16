@@ -153,10 +153,10 @@ run:
 #
 leak:
 	$(MAKE) -s debug
-	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
+	valgrind --suppressions=ignore_readline.supp --track-fds=yes --track-origins=yes \
 	--leak-check=full --show-leak-kinds=all ./$(NAME) $(INPUT)
 val:
-	valgrind --suppressions=minishell.supp --track-fds=yes --track-origins=yes \
+	valgrind --suppressions=ignore_readline.supp --track-fds=yes --track-origins=yes \
 	--leak-check=full --show-leak-kinds=all ./$(NAME) $(INPUT)
 
 .PHONY:	clangd all clean fclean re libs_clean test run leak debug gdb

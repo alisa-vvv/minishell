@@ -129,8 +129,7 @@ static int find_target_path(
 			free(arg_with_slash);
 		}
 		else 
-			home->env_value = arg;
-	//	home->env_value = ft_strjoin(cwd, arg_with_slash);
+			home->env_value = ft_strdup(arg);
 		if (!home->env_value)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	}
