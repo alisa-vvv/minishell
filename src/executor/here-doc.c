@@ -13,7 +13,6 @@
 #include "libft.h"
 #include "minishell.h"
 #include "executor.h"
-#include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -25,26 +24,6 @@
 //-> can we just set the global flag to change when we get in the heredoc to
 //have main ignore signals 
 //and have the non-interactive sighandler handle the sigs from there 
-static void	ignore_sigint(
-)
-{
-	struct sigaction	handle_sigint;
-	struct sigaction	handle_sigquit;
-
-	sigemptyset(&handle_sigint.sa_mask);
-	sigaddset(&handle_sigint.sa_mask, SIGINT);
-	sigaddset(&handle_sigint.sa_mask, SIGQUIT);
-	handle_sigint.sa_handler = SIG_IGN;
-	handle_sigint.sa_flags = 0;
-	sigaction(SIGINT, &handle_sigint, NULL);
-	sigemptyset(&handle_sigquit.sa_mask);
-	sigaddset(&handle_sigquit.sa_mask, SIGINT);
-	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
-	handle_sigquit.sa_handler = SIG_IGN;
-	handle_sigquit.sa_flags = 0;
-	sigaction(SIGQUIT, &handle_sigquit, NULL);
-}
-
 static int	heredoc_readline_loop(
 	const char *const heredoc_delim,
 	int here_doc[2]
@@ -75,7 +54,7 @@ static int	heredoc_readline_loop(
 	return (success);
 }
 
-int	handle_heredoc_child(
+static int	handle_heredoc_child(
 	t_msh_data *const msh_data,
 	const char *heredoc_delim,
 	int here_doc[2],
@@ -102,7 +81,7 @@ int	handle_heredoc_child(
 	else if (pid > 0)
 	{
 		safe_close(&here_doc[WRITE_END]);
-		ignore_sigint();
+		ignore_signals();
 		wait (NULL);
 		handle_signals_non_interactive();
 	}

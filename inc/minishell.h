@@ -91,6 +91,9 @@ void	handle_signals_non_interactive(
 void	handle_signals_child_process(
 	void
 );
+void	ignore_signals(
+	void
+);
 /**/
 
 /*		Executor - data structures		*/

@@ -20,7 +20,7 @@
 
 //volatile sig_atomic_t g_msh_signal = 0; 
 
-static void	sigint_handler_interactive(
+void	sigint_handler_interactive(
 )
 {
 	write(STDOUT_FILENO, "\n", 1);
@@ -93,6 +93,25 @@ void	handle_signals_non_interactive(
 	handle_sigint.sa_handler = sigint_handler_non_interactive;
 	handle_sigint.sa_flags = 0;
 	sigaction(SIGINT, &handle_sigint, NULL);
+}
+
+void	ignore_signals(
+	void
+)
+{
+	struct sigaction	handle_sigint;
+	struct sigaction	handle_sigquit;
+
+	sigemptyset(&handle_sigint.sa_mask);
+	sigaddset(&handle_sigint.sa_mask, SIGINT);
+	handle_sigint.sa_handler = SIG_IGN;
+	handle_sigint.sa_flags = 0;
+	sigaction(SIGINT, &handle_sigint, NULL);
+	sigemptyset(&handle_sigquit.sa_mask);
+	sigaddset(&handle_sigquit.sa_mask, SIGQUIT);
+	handle_sigquit.sa_handler = SIG_IGN;
+	handle_sigquit.sa_flags = 0;
+	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
 
 void	handle_signals_interactive(
