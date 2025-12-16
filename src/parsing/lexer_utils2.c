@@ -55,6 +55,7 @@ char	*trim_str_space(char *str)
 	return (str);
 }
 
+// && str[i - 1] == '='
 //returns len of unquoted token
 int	move_o_unquoted(const char *str, int i)
 {
@@ -67,7 +68,7 @@ int	move_o_unquoted(const char *str, int i)
 		len++;
 		i++;
 	}
-	if (str[i] && char_is_quote(str[i]) && str[i - 1] == '=')
+	if (str[i] && char_is_quote(str[i]))
 	{
 		i++;
 		while (str[i] && !char_is_quote(str[i]))
