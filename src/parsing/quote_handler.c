@@ -15,6 +15,8 @@
 //removes 1 pos by shifting string
 char	*move_str(char *str, int i)
 {
+	if (!str)
+		return (str);
 	while (str[i])
 	{
 		str[i] = str[i + 1];
