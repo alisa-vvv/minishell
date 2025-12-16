@@ -10,6 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-void	sigint_handler_interactive(void);
-void	sigquit_handler_non_interactive(void);
-void	sigint_handler_non_interactive(void);
+void	sigint_handler_interactive(int sig);
+void	sigquit_handler_non_interactive(int sig);
+void	sigint_handler_non_interactive(int sig);

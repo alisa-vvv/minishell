@@ -15,8 +15,10 @@
 #include "minishell.h"
 
 void	sigint_handler_interactive(
+	int sig
 )
 {
+	(void) sig;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -24,8 +26,10 @@ void	sigint_handler_interactive(
 }
 
 void	sigquit_handler_non_interactive(
+	int sig
 )
 {
+	(void) sig;
 	if (g_msh_signal != SIGQUIT)
 	{
 		g_msh_signal = SIGQUIT;
@@ -39,8 +43,10 @@ void	sigquit_handler_non_interactive(
 }
 
 void	sigint_handler_non_interactive(
+	int sig
 )
 {
+	(void) sig;
 	if (g_msh_signal != SIGINT)
 	{
 		g_msh_signal = SIGINT;

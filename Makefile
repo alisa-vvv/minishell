@@ -54,7 +54,8 @@ CFILES_PARSER	=	debug.c\
 					pass_comm1.c\
 					pass_comm2.c\
 					parser.c
-CFILES_SIGNALS	=	signal_calls.c
+CFILES_SIGNALS	=	signal_calls.c\
+					signal_handlers.c
 CFILES_EXECUTOR	=	executor.c\
 					command_io_setup.c\
 					executor_pipeline.c\
