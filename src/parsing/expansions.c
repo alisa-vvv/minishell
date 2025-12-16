@@ -28,6 +28,7 @@ int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 	if (*new_str == '\0' && !xp_d->existing)
 	{
 		ft_safe_free((unsigned char **)&new_str);
+		//ft_safe_free((unsigned char **)&xp_d->env_value);
 		xp_d->env_value = NULL;
 		err = tokenlist_delete(tokenlist, pos);
 	}
@@ -86,14 +87,14 @@ int	expand_check(t_tokenlist *tlist,
 
 	err = success;
 	if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
+	{
 		exp_data->env_value = ft_itoa(msh_data->last_pipeline_return);
+		exp_data->existing = 1;
+	}
 	else if (env_var_get_value(msh_data->env, exp_data->name, &exp_data->env_value, &exp_data->existing))
 		return (malloc_err);
-	printf("what is the string BEFORE: (%s)\n", exp_data->env_value);
 	err = exp_further(tlist, pos, &exp_data);
-	printf("EXIST = %d\n", exp_data->existing);
-	printf("what is the string AFTER: (%s)\n", exp_data->env_value);
-	if (exp_data->existing && exp_data->env_value != (void *)'\0')
+	if ((exp_data->existing && exp_data->env_value != (void *)'\0'))
 		ft_safe_free((unsigned char **)&exp_data->env_value);
 	ft_safe_free((unsigned char **)&exp_data->name);
 	return (err);

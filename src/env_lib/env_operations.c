@@ -93,6 +93,7 @@ int	env_var_get_value(
 	name_len = ft_strlen(name);
 	value = NULL;
 	i = 0;
+	*existing = 0; 
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], name, name_len) == 0 &&

@@ -1,0 +1,191 @@
+==134089== Memcheck, a memory error detector
+==134089== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==134089== Using Valgrind-3.18.1-42b08ed5bd-20211015 and LibVEX; rerun with -h for copyright info
+==134089== Command: .//minishell
+==134089== Parent PID: 133862
+==134089== 
+--134089-- 
+--134089-- Valgrind options:
+--134089--    --leak-check=full
+--134089--    --show-leak-kinds=all
+--134089--    --track-origins=yes
+--134089--    --verbose
+--134089--    --log-file=tmp_valgrind-out.txt
+--134089-- Contents of /proc/version:
+--134089--   Linux version 5.15.0-163-generic (buildd@lcy02-amd64-091) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #173-Ubuntu SMP Tue Oct 14 17:51:00 UTC 2025
+--134089-- 
+--134089-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--134089-- Page sizes: currently 4096, max supported 4096
+--134089-- Valgrind library directory: /usr/libexec/valgrind
+--134089-- Reading syms from /home/adecheri/Documents/minishell/minishell_git/minishell/minishell
+--134089-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--134089--   Considering /usr/lib/debug/.build-id/ac/af96d7b1a6bad57b559d646233d5dc1a23257c.debug ..
+--134089--   .. build-id is valid
+--134089-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--134089--    object doesn't have a symbol table
+--134089--    object doesn't have a dynamic symbol table
+--134089-- Scheduler: using generic scheduler lock implementation.
+--134089-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==134089== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-134089-by-adecheri-on-???
+==134089== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-134089-by-adecheri-on-???
+==134089== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-134089-by-adecheri-on-???
+==134089== 
+==134089== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==134089== don't want to do, unless you know exactly what you're doing,
+==134089== or are doing some strange experiment):
+==134089==   /usr/bin/vgdb --pid=134089 ...command...
+==134089== 
+==134089== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==134089==   /path/to/gdb .//minishell
+==134089== and then give GDB the following command
+==134089==   target remote | /usr/bin/vgdb --pid=134089
+==134089== --pid is optional if only one valgrind process is running
+==134089== 
+--134089-- REDIR: 0x402aa40 (ld-linux-x86-64.so.2:strlen) redirected to 0x580bcec2 (???)
+--134089-- REDIR: 0x402a810 (ld-linux-x86-64.so.2:index) redirected to 0x580bcedc (???)
+--134089-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+--134089--    object doesn't have a symbol table
+--134089-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+--134089--    object doesn't have a symbol table
+==134089== WARNING: new redirection conflicts with existing -- ignoring it
+--134089--     old: 0x0402aa40 (strlen              ) R-> (0000.0) 0x580bcec2 ???
+--134089--     new: 0x0402aa40 (strlen              ) R-> (2007.0) 0x0484ee30 strlen
+--134089-- REDIR: 0x4027220 (ld-linux-x86-64.so.2:strcmp) redirected to 0x484fcd0 (strcmp)
+--134089-- REDIR: 0x402afa0 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4853840 (mempcpy)
+--134089-- Reading syms from /usr/lib/x86_64-linux-gnu/libreadline.so.8.1
+--134089--    object doesn't have a symbol table
+--134089-- Reading syms from /usr/lib/x86_64-linux-gnu/libm.so.6
+--134089--   Considering /usr/lib/debug/.build-id/b2/b4cd0f73a7c7a6da5ba4126bceb33ce68853d5.debug ..
+--134089--   .. build-id is valid
+--134089-- Reading syms from /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+--134089--    object doesn't have a symbol table
+--134089-- Reading syms from /usr/lib/x86_64-linux-gnu/libc.so.6
+--134089--   Considering /usr/lib/debug/.build-id/4f/7b0c955c3d81d7cac1501a2498b69d1d82bfe7.debug ..
+--134089--   .. build-id is valid
+==134089== WARNING: new redirection conflicts with existing -- ignoring it
+--134089--     old: 0x04a77c60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--134089--     new: 0x04a77c60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==134089== WARNING: new redirection conflicts with existing -- ignoring it
+--134089--     old: 0x04a77c60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--134089--     new: 0x04a77c60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+==134089== WARNING: new redirection conflicts with existing -- ignoring it
+--134089--     old: 0x04a77c60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--134089--     new: 0x04a77c60 (memalign            ) R-> (1017.0) 0x0484e050 aligned_alloc
+==134089== WARNING: new redirection conflicts with existing -- ignoring it
+--134089--     old: 0x04a77c60 (memalign            ) R-> (1011.0) 0x0484e080 memalign
+--134089--     new: 0x04a77c60 (memalign            ) R-> (1017.0) 0x0484e020 aligned_alloc
+--134089-- Reading syms from /usr/lib/x86_64-linux-gnu/libtinfo.so.6.3
+--134089--    object doesn't have a symbol table
+--134089-- REDIR: 0x4a7a720 (libc.so.6:strnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a9e0 (libc.so.6:strpbrk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a2e0 (libc.so.6:strcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a98cd0 (libc.so.6:wcsnlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7b6d0 (libc.so.6:memset) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a97540 (libc.so.6:wcslen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7bc10 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a97370 (libc.so.6:wcschr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a260 (libc.so.6:index) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a960 (libc.so.6:rindex) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7b5a0 (libc.so.6:memmove) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+==134089== Preferring higher priority redirection:
+--134089--     old: 0x04b72840 (__memcpy_avx_unalign) R-> (2018.0) 0x04850f90 __memcpy_avx_unaligned_erms
+--134089--     new: 0x04b72840 (__memcpy_avx_unalign) R-> (2018.1) 0x04852880 memmove
+--134089-- REDIR: 0x4a973f0 (libc.so.6:wcscmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7b9e0 (libc.so.6:stpncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a979b0 (libc.so.6:wmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a830 (libc.so.6:strncmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7ba70 (libc.so.6:strcasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a420 (libc.so.6:strcspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a97470 (libc.so.6:wcscpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a1d0 (libc.so.6:strcat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7bb60 (libc.so.6:strncasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7b480 (libc.so.6:bcmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a83570 (libc.so.6:memrchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7d010 (libc.so.6:strchrnul) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a390 (libc.so.6:strcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7bb10 (libc.so.6:strcasecmp_l) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a6a0 (libc.so.6:strlen) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a8d0 (libc.so.6:strncpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7b950 (libc.so.6:stpcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7b3f0 (libc.so.6:memchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7ab00 (libc.so.6:strspn) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7b7d0 (libc.so.6:mempcpy) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7bac0 (libc.so.6:strncasecmp) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7cf80 (libc.so.6:rawmemchr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7a7a0 (libc.so.6:strncat) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4b062f0 (libc.so.6:__memcpy_chk) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a7b310 (libc.so.6:strstr) redirected to 0x483f220 (_vgnU_ifunc_wrapper)
+--134089-- REDIR: 0x4a770a0 (libc.so.6:malloc) redirected to 0x4848820 (malloc)
+--134089-- REDIR: 0x4b6f860 (libc.so.6:__strlen_avx2) redirected to 0x484ed10 (strlen)
+--134089-- REDIR: 0x4b71a20 (libc.so.6:__stpcpy_avx2) redirected to 0x4852130 (stpcpy)
+--134089-- REDIR: 0x4b72800 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4853440 (mempcpy)
+--134089-- REDIR: 0x4a773e0 (libc.so.6:free) redirected to 0x484b210 (free)
+--134089-- REDIR: 0x4b6f480 (libc.so.6:__strchrnul_avx2) redirected to 0x4853330 (strchrnul)
+--134089-- REDIR: 0x4b72840 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4852880 (memmove)
+--134089-- REDIR: 0x4b6f690 (libc.so.6:__strrchr_avx2) redirected to 0x484e810 (rindex)
+==134089== 
+==134089== Process terminating with default action of signal 1 (SIGHUP)
+==134089==    at 0x4AEC9BD: ioctl (ioctl.c:35)
+==134089==    by 0x48AA8D1: _rl_get_screen_size (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.1)
+==134089==    by 0x489DAB8: ??? (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.1)
+==134089==    by 0x489DE0D: rl_expand_prompt (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.1)
+==134089==    by 0x488D1BF: rl_set_prompt (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.1)
+==134089==    by 0x4898CCF: readline (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.1)
+==134089==    by 0x425C90: main (minishell.c:103)
+==134089== 
+==134089== HEAP SUMMARY:
+==134089==     in use at exit: 8,638 bytes in 92 blocks
+==134089==   total heap usage: 101 allocs, 9 frees, 8,891 bytes allocated
+==134089== 
+==134089== Searching for pointers to 92 not-freed blocks
+==134089== Checked 9,315,640 bytes
+==134089== 
+==134089== 6 bytes in 1 blocks are still reachable in loss record 1 of 5
+==134089==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==134089==    by 0x48B0BAC: xmalloc (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.1)
+==134089==    by 0x488D1E3: rl_set_prompt (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.1)
+==134089==    by 0x4898CCF: readline (in /usr/lib/x86_64-linux-gnu/libreadline.so.8.1)
+==134089==    by 0x425C90: main (minishell.c:103)
+==134089== 
+==134089== 8 bytes in 1 blocks are still reachable in loss record 2 of 5
+==134089==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==134089==    by 0x45303C: ft_strdup (in /home/adecheri/Documents/minishell/minishell_git/minishell/minishell)
+==134089==    by 0x44DEA7: truncate_var (export.c:30)
+==134089==    by 0x44D76E: export_var (export.c:112)
+==134089==    by 0x44ED1F: msh_export (export.c:145)
+==134089==    by 0x42A324: iterate_shlvl (env_default_var_validation.c:62)
+==134089==    by 0x429D7E: update_shlvl (env_default_var_validation.c:96)
+==134089==    by 0x429805: validate_default_vars (env_default_var_validation.c:145)
+==134089==    by 0x428974: clone_env (env_creation.c:100)
+==134089==    by 0x426275: setup_msh_data (minishell.c:40)
+==134089==    by 0x425C7C: main (minishell.c:99)
+==134089== 
+==134089== 1,024 bytes in 1 blocks are still reachable in loss record 3 of 5
+==134089==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==134089==    by 0x452ADA: ft_calloc (in /home/adecheri/Documents/minishell/minishell_git/minishell/minishell)
+==134089==    by 0x428627: clone_env (env_creation.c:88)
+==134089==    by 0x426275: setup_msh_data (minishell.c:40)
+==134089==    by 0x425C7C: main (minishell.c:99)
+==134089== 
+==134089== 3,503 bytes in 88 blocks are still reachable in loss record 4 of 5
+==134089==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==134089==    by 0x45303C: ft_strdup (in /home/adecheri/Documents/minishell/minishell_git/minishell/minishell)
+==134089==    by 0x4293E4: clone_loop (env_creation.c:67)
+==134089==    by 0x42894E: clone_env (env_creation.c:95)
+==134089==    by 0x426275: setup_msh_data (minishell.c:40)
+==134089==    by 0x425C7C: main (minishell.c:99)
+==134089== 
+==134089== 4,097 bytes in 1 blocks are still reachable in loss record 5 of 5
+==134089==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==134089==    by 0x452ADA: ft_calloc (in /home/adecheri/Documents/minishell/minishell_git/minishell/minishell)
+==134089==    by 0x42629C: setup_msh_data (minishell.c:43)
+==134089==    by 0x425C7C: main (minishell.c:99)
+==134089== 
+==134089== LEAK SUMMARY:
+==134089==    definitely lost: 0 bytes in 0 blocks
+==134089==    indirectly lost: 0 bytes in 0 blocks
+==134089==      possibly lost: 0 bytes in 0 blocks
+==134089==    still reachable: 8,638 bytes in 92 blocks
+==134089==         suppressed: 0 bytes in 0 blocks
+==134089== 
+==134089== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
