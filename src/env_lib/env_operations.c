@@ -83,7 +83,8 @@ bool	env_var_if_exists(
 // int	env_var_get_value(
 // 	char **env,
 // 	char *name,
-// 	char **buf_ptr
+// 	char **buf_ptr,
+// 	int *existing
 // )
 // {
 // 	char	*value;

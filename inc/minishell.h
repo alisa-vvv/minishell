@@ -60,7 +60,8 @@ typedef enum	e_msh_errno // can define specific values later
 	child_heredoc = -14,
 	child_success = -15,
 	no_command = -16,
-	syntax_err = -17
+	syntax_err = -17,
+	do_exit = -100,
 }	t_msh_errno;
 
 # define LIBFUNC_ERR 0
@@ -166,7 +167,7 @@ typedef struct s_exp_data
 	char	*env_value;
 	char 	*start_var;
 	int 	start_pos;
-	int		existing; 
+	int		existing;
 }	t_exp_data;
 
 // This struct contains data that maybe accessed and modified by both parsing
@@ -184,6 +185,8 @@ typedef struct	msh_data
 	int			command_count;
 	int			last_pipeline_return;
 	char		*cur_dir;
+	bool		do_exit;
+	int			exit_code;
 }	t_msh_data;
 
 void	free_and_close_exec_data(

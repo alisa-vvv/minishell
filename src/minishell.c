@@ -35,6 +35,8 @@ static int	setup_msh_data(
 	msh_data->last_pipeline_return = 0;
 	msh_data->exec_data = NULL;
 	msh_data->command_count = 0;
+	msh_data->do_exit = false;
+	msh_data->exit_code = 0;
 	err_check = clone_env(msh_data, envp);
 	if (err_check != success)
 		return (err_check);
@@ -112,6 +114,8 @@ int	main(int argc, char **argv, char *envp[])
 				err_check = executor(&msh_data, msh_data.command_count);
 		}
 		post_execution_cleanup(&msh_data, read_line, err_check);
+		if (msh_data.do_exit == true)
+			break ;
 	}
 	clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
 }

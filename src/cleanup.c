@@ -25,7 +25,9 @@ void	clean_exit(
 
 	if (msh_data)
 	{
-		if (exit_code == 0)
+		if (msh_data->exit_code != 0)
+			exit_code = msh_data->exit_code;
+		else if (exit_code == 0)
 			exit_code = msh_data->last_pipeline_return;
 		if (msh_data->cur_dir)
 			free(msh_data->cur_dir);

@@ -99,9 +99,9 @@ static int find_target_path(
 	char **path
 )
 {
-	char	*arg_with_slash;
+	char		*arg_with_slash;
+	t_exp_data	*home;
 
-	t_exp_data *home;
 	arg_with_slash = NULL;
 	home = ft_calloc(1, sizeof(t_exp_data));
 	if (!home)
@@ -110,7 +110,6 @@ static int find_target_path(
 	if (!home->name)
 		return (free(home), msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	home->env_value = *path;
-	
 	if (!arg || arg[0] == '\0')
 	{
 		if (env_var_get_value(msh_data->env, &home) != success)
