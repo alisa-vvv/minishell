@@ -79,7 +79,6 @@ bool	env_var_if_exists(
 }
 
 // this function takes the adress of a pointer to NULL. it will allocate and
-// write to it. --> we need a way to differentiate between finding a name_var with an empty value and non-existing name
 int	env_var_get_value(
 	char **env,
 	char *name,

@@ -18,12 +18,14 @@ char	*exp_token(char *str_token, char *start, char *value, int offset)
 	char	*new_str;
 	char	*leftover;
 	char	*temp_left;
-
+	
 	temp_left = prep_leftover(str_token, start, offset);
 	if (!temp_left)
 		return (NULL);
 	leftover = ft_strjoin(value, temp_left);
+	printf("LEFTOVER = (%s)\n", leftover);
 	new_str = ft_strjoin(str_token, leftover);
+	printf("NEW STR = (%s)\n", new_str);
 	if (!new_str || !leftover)
 	{
 		msh_perror(NULL, MALLOC_ERR, extern_err);
