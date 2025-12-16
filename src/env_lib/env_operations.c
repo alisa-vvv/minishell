@@ -80,60 +80,26 @@ bool	env_var_if_exists(
 
 // this function takes the adress of a pointer to NULL. it will allocate and
 // write to it. --> we need a way to differentiate between finding a name_var with an empty value and non-existing name
-// int	env_var_get_value(
-// 	char **env,
-// 	char *name,
-// 	char **buf_ptr,
-// 	int *existing
-// )
-// {
-// 	char	*value;
-// 	int		name_len;
-// 	int		i;
-// 	int 	flag;
-
-// 	name_len = ft_strlen(name);
-// 	value = NULL;
-// 	i = 0;
-// 	flag = 1;
-// 	while (env[i])
-// 	{
-// 		if (ft_strncmp(env[i], name, name_len) == 0 &&
-// 				env[i][name_len] == '=')
-// 		{
-// 			flag = 0;
-// 			value = ft_strdup(&env[i][name_len + 1]);
-// 			if (!value)
-// 				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-// 			break ;
-// 		}
-// 		else
-// 			i++;
-// 	}
-// 	if (flag)
-// 		return (parse_err);
-// 	*buf_ptr = value;
-// 	return (success);
-// }
-
 int	env_var_get_value(
 	char **env,
-	t_exp_data **exp_data
-	)
+	char *name,
+	char **buf_ptr,
+	int *existing
+)
 {
 	char	*value;
 	int		name_len;
 	int		i;
 
-	name_len = ft_strlen((*exp_data)->name);
+	name_len = ft_strlen(name);
 	value = NULL;
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], (*exp_data)->name, name_len) == 0 &&
+		if (ft_strncmp(env[i], name, name_len) == 0 &&
 				env[i][name_len] == '=')
 		{
-			(*exp_data)->existing = 1;
+			*existing = 1;
 			value = ft_strdup(&env[i][name_len + 1]);
 			if (!value)
 				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
@@ -142,6 +108,6 @@ int	env_var_get_value(
 		else
 			i++;
 	}
-	(*exp_data)->env_value = value;
+	*buf_ptr = value;
 	return (success);
 }

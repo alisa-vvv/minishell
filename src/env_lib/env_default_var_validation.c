@@ -64,63 +64,28 @@ static int	iterate_shlvl(
 	return (err_check);
 }
 
-// static int	update_shlvl(
-// 	t_msh_data *const msh_data,
-// 	char **var_value
-// )
-// {
-// 	int		err_check;
-// 	char	*shlvl_value;
-// 	int		i;
-// 	bool	broken_shlvl;
-
-// 	err_check = success;
-// 	shlvl_value = NULL;
-// 	err_check = env_var_get_value(msh_data->env, "SHLVL", &shlvl_value);
-// 	if (err_check != success)
-// 		return (err_check);
-// 	i = -1;
-// 	broken_shlvl = false;
-// 	while (shlvl_value[++i])
-// 	{
-// 		if (!ft_isdigit(shlvl_value[i]) || i > 10)
-// 		{
-// 			err_check = export_default_var(msh_data, var_value, "SHLVL=1");
-// 			broken_shlvl = true;
-// 	  		break ;
-// 		}
-// 	}
-// 	if (broken_shlvl == false)
-// 		iterate_shlvl(msh_data, var_value, shlvl_value);
-// 	ft_safe_free((unsigned char **) &shlvl_value);
-// 	return (err_check);
-// }
-
 static int	update_shlvl(
 	t_msh_data *const msh_data,
 	char **var_value
 )
 {
 	int		err_check;
-	t_exp_data *shlvl;
+	char	*shlvl_value;
 	int		i;
 	bool	broken_shlvl;
+	int		existing; 
 
 	err_check = success;
-	shlvl = ft_calloc(1, sizeof(t_exp_data));
-	if (!shlvl)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	shlvl->name = ft_strdup("SHLVL");
-		if (!shlvl->name)
-			return (free(shlvl), msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	err_check = env_var_get_value(msh_data->env, &shlvl);
+	shlvl_value = NULL;
+	existing = 0;
+	err_check = env_var_get_value(msh_data->env, "SHLVL", &shlvl_value, &existing);
 	if (err_check != success)
 		return (err_check);
 	i = -1;
 	broken_shlvl = false;
-	while (shlvl->env_value[++i])
+	while (shlvl_value[++i])
 	{
-		if (!ft_isdigit(shlvl->env_value[i]) || i > 10)
+		if (!ft_isdigit(shlvl_value[i]) || i > 10)
 		{
 			err_check = export_default_var(msh_data, var_value, "SHLVL=1");
 			broken_shlvl = true;
@@ -128,14 +93,10 @@ static int	update_shlvl(
 		}
 	}
 	if (broken_shlvl == false)
-		iterate_shlvl(msh_data, var_value, shlvl->env_value);
-	(free(shlvl->name), ft_safe_free((unsigned char **) &shlvl->env_value), free(shlvl));
+		iterate_shlvl(msh_data, var_value, shlvl_value);
+	ft_safe_free((unsigned char **) &shlvl_value);
 	return (err_check);
 }
-
-
-
-
 
 static int	export_cwd(
 	t_msh_data *const msh_data,

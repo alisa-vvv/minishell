@@ -58,40 +58,6 @@ static int	set_env_vars(
 	return (success);
 }
 
-// static int find_target_path(
-// 	char *const arg,
-// 	t_msh_data *const msh_data,
-// 	char *const cwd,
-// 	char **path
-// )
-// {
-// 	char	*arg_with_slash;
-
-// 	if (!arg || arg[0] == '\0')
-// 	{
-// 		if (env_var_get_value(msh_data->env, "HOME", path) != success)
-// 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-// 		if (!*path)
-// 			return (msh_perror("cd: ", "HOME not set", exec_err), builtin_err);
-// 	}
-// 	else
-// 	{
-// 		arg_with_slash = ft_strjoin("/", arg);
-// 		if (!arg_with_slash)
-// 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-// 		*path = ft_strjoin(cwd, arg_with_slash);
-// 		free(arg_with_slash);
-// 		if (!*path)
-// 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-// 	}
-// 	if (access(*path, F_OK))
-// 	{
-// 		free(*path);
-// 		return (msh_perror(NULL, "cd", extern_err), builtin_err);
-// 	}
-// 	return (success);
-// }
-
 static int find_target_path(
 	char *const arg,
 	t_msh_data *const msh_data,
@@ -99,23 +65,16 @@ static int find_target_path(
 	char **path
 )
 {
-	char		*arg_with_slash;
-	t_exp_data	*home;
+	char	*arg_with_slash;
+	int 	existing;
 
-	arg_with_slash = NULL;
-	home = ft_calloc(1, sizeof(t_exp_data));
-	if (!home)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	home->name = ft_strdup("HOME");
-	if (!home->name)
-		return (free(home), msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	home->env_value = *path;
+	existing = 0;
 	if (!arg || arg[0] == '\0')
 	{
-		if (env_var_get_value(msh_data->env, &home) != success)
+		if (env_var_get_value(msh_data->env, "HOME", path, &existing) != success)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-		if (!home->env_value)
-			return (free(home), msh_perror("cd: ", "HOME not set", exec_err), builtin_err);
+		if (!*path)
+			return (msh_perror("cd: ", "HOME not set", exec_err), builtin_err);
 	}
 	else
 	{
@@ -124,24 +83,20 @@ static int find_target_path(
 			arg_with_slash = ft_strjoin("/", arg);
 			if (!arg_with_slash)
 				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-			home->env_value = ft_strjoin(cwd, arg_with_slash);
+			*path = ft_strjoin(cwd, arg_with_slash);
 			free(arg_with_slash);
 		}
 		else 
-			home->env_value = ft_strdup(arg);
-		if (!home->env_value)
+			*path = ft_strdup(arg);
+		if (!*path)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	}
-	*path = ft_strdup(home->env_value);
-	if (!*path)
-		return (free(home), msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	printf("HOME PATH = %s\n", home->env_value);
 	if (access(*path, F_OK))
 	{
-		(free(*path), free(home->env_value), free(home->name), free(home));
+		free(*path);
 		return (msh_perror(NULL, "cd", extern_err), builtin_err);
 	}
-	return (free(home->name), free(home->env_value), free(home), success);
+	return (success);
 }
 
 
@@ -164,6 +119,7 @@ int	msh_cd(
 		free(cwd);
 		return (err_check);
 	}
+	printf("PATH = %s\n", path);
 	err_check = chdir(path);
 	if (err_check != 0)
 		return (msh_perror("cd: ", "", extern_err), path_err);

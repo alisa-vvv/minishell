@@ -46,15 +46,11 @@ int	env_var_find_index(
 char	*env_var_find_identifier(
 	char *arg
 );
-// int	env_var_get_value(
-// 	char **env,
-// 	char *name,
-// 	char **buf_ptr
-// );
-
 int	env_var_get_value(
 	char **env,
-	t_exp_data **exp_data
+	char *name,
+	char **buf_ptr,
+	int *existing
 );
 
 /**/

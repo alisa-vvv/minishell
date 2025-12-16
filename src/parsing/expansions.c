@@ -87,9 +87,10 @@ int	expand_check(t_tokenlist *tlist,
 	err = success;
 	if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
 		exp_data->env_value = ft_itoa(msh_data->last_pipeline_return);
-	else if (env_var_get_value(msh_data->env, &exp_data))
+	else if (env_var_get_value(msh_data->env, exp_data->name, &exp_data->env_value, &exp_data->existing))
 			return (malloc_err);
 	err = exp_further(tlist, pos, &exp_data);
+	printf("EXIST = %d\n", exp_data->existing);
 	if (exp_data->existing && ft_strncmp(exp_data->env_value, "", 1) != 0)
 		ft_safe_free((unsigned char **)&exp_data->env_value);
 	ft_safe_free((unsigned char **)&exp_data->name);

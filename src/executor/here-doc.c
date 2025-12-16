@@ -22,10 +22,6 @@
 #include <readline/readline.h>
 
 
-//why do we have a handler ignoring the SIGINT and SIGQUIT
-//-> can we just set the global flag to change when we get in the heredoc to have main ignore signals 
-//and have the non-interactive sighandler handle the sigs from there 
-
 static void	ignore_sigint(
 )
 {
@@ -61,10 +57,8 @@ static void	handler_heredoc(int sig
 	}
 }
 
-//why make so many handlers for the different signals?
-//can we have handle_signals_non_interactive() and ""interactive() not handle all sigs?
-//
-// make this more general
+
+// handles signal heredoc 
 static void handle_signals_heredoc(
 )
 {
@@ -115,7 +109,7 @@ int	heredoc_readline_loop(
 	return (success);
 }
 
-static int heredoc_wait_for_child( // this is probably completely not needed and we can just wait(NULL)
+static int heredoc_wait_for_child( 
 	int pid
 )
 {
