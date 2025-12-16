@@ -159,6 +159,16 @@ typedef struct	s_exec_data
 	t_redir_list	*redirections;
 }	t_exec_data;
 
+//struct to expand on variables 
+typedef struct s_exp_data
+{
+	char 	*name;
+	char	*env_value;
+	char 	*start_var;
+	int 	start_pos;
+	int		existing; 
+}	t_exp_data;
+
 // This struct contains data that maybe accessed and modified by both parsing
 // and execution modules at any point, and does not get deleted/freed after
 // each execution cycle.

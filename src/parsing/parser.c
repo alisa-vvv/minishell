@@ -12,6 +12,18 @@
 
 #include "parser.h"
 
+// sets default values for execdata
+int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
+{
+	t_token	*check_token;
+
+	check_token = tokenlist_get(tokenlist, pos);
+	execdata->builtin_name = set_builtins(check_token);
+	execdata->input_is_pipe = false;
+	execdata->output_is_pipe = false;
+	execdata->redirections = NULL;
+	return (0);
+}
 
 // count how many exec data structs need to be made
 int	count_lists(t_tokenlist *tokenlist)
@@ -51,20 +63,6 @@ int	count_next_cm(t_tokenlist *tokenlist, int pos)
 		i++;
 	}
 	return (-1);
-}
-
-
-// sets default values for execdata
-int	set_exec_def(t_exec_data *execdata, t_tokenlist *tokenlist, size_t pos)
-{
-	t_token	*check_token;
-
-	check_token = tokenlist_get(tokenlist, pos);
-	execdata->builtin_name = set_builtins(check_token);
-	execdata->input_is_pipe = false;
-	execdata->output_is_pipe = false;
-	execdata->redirections = NULL;
-	return (0);
 }
 
 // make an empty execdata

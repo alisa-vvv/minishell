@@ -40,3 +40,4 @@ various kinds of nonsense, memory errors gallore
 ^ check if the exit codes are different when it's a file/directory
 }
 
+- somehow the syntax error on "<>" has fds that are open but never closed? 8 open?   

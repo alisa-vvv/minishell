@@ -42,7 +42,9 @@ int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 	return (err);
 }
 
-//(*exp_data)->start_var = ft_strchr((*exp_data)->start_var +1, '$');
+//	else if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '"')
+		// && !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
+		// && ft_strncmp((*exp_data)->name, "", 1) == 0)
 int	exp_further(t_tokenlist *tokenlist,
 	int pos,
 	t_exp_data **exp_data)
@@ -59,7 +61,7 @@ int	exp_further(t_tokenlist *tokenlist,
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '"')
 		&& !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
-		&& ft_strncmp((*exp_data)->name, "", 1) == 0)
+		&& (*exp_data)->existing)
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else
 	{
@@ -73,6 +75,8 @@ int	exp_further(t_tokenlist *tokenlist,
 	return (err);
 }
 
+//(exp_data->env_value && ft_strncmp(exp_data->env_value, "", 1) != 0)
+//gets env value and name to check before expanding further
 int	expand_check(t_tokenlist *tlist,
 	t_msh_data *msh_data,
 	t_exp_data *exp_data,
@@ -83,13 +87,17 @@ int	expand_check(t_tokenlist *tlist,
 	err = success;
 	if (exp_data->name && (ft_strncmp(exp_data->name, "?", 2) == 0))
 		exp_data->env_value = ft_itoa(msh_data->last_pipeline_return);
-	else if (env_var_get_value(msh_data->env, exp_data->name,
-			&exp_data->env_value) != success)
-		return (malloc_err);
+	else 
+	{
+		exp_data->existing = env_var_get_value(msh_data->env, &exp_data);
+		printf("EXISTING = %d\n", exp_data->existing);
+		if (exp_data->existing == malloc_err)
+			return (malloc_err);
+	}
 	err = exp_further(tlist, pos, &exp_data);
-	ft_safe_free((unsigned char **)&exp_data->name);
-	if (exp_data->env_value && ft_strncmp(exp_data->env_value, "", 1) != 0)
+	if (exp_data->existing != parse_err)
 		ft_safe_free((unsigned char **)&exp_data->env_value);
+	ft_safe_free((unsigned char **)&exp_data->name);
 	return (err);
 }
 

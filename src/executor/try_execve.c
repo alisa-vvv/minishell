@@ -17,32 +17,72 @@
 #include <stdio.h>
 #include <errno.h>
 
+// static const char *const	*split_path_var(
+// 	char **env
+// )
+// {
+// 	char	*path_value;
+// 	char	**path_arr;
+// 	int		err_check;
+
+// 	path_arr = NULL;
+// 	path_value = NULL;
+// 	err_check = env_var_get_value(env, "PATH", &path_value); // explicitly manage situations where path has no value?
+// 	if (err_check != success)
+// 	{
+// 		msh_perror(NULL, MALLOC_ERR, extern_err);
+// 		return (NULL);
+// 	}
+// 	path_arr = ft_split(path_value, ':');
+// 	if (!path_arr)
+// 	{
+// 		free(path_value);
+// 		msh_perror(NULL, MALLOC_ERR, extern_err);
+// 		return (NULL);
+// 	}
+// 	free(path_value);
+// 	return ((const char *const *) path_arr);
+// }
+
 static const char *const	*split_path_var(
 	char **env
 )
 {
-	char	*path_value;
+	t_exp_data *path;
 	char	**path_arr;
 	int		err_check;
 
+	path = ft_calloc(1, sizeof(t_exp_data));
+	if (!path)
+	{
+		msh_perror(NULL, MALLOC_ERR, extern_err);
+		return (NULL);
+	}
+	path->name = ft_strdup("PATH");
+	if (!path->name)
+	{
+		msh_perror(NULL, MALLOC_ERR, extern_err);
+		return (free(path), NULL);
+	}
 	path_arr = NULL;
-	path_value = NULL;
-	err_check = env_var_get_value(env, "PATH", &path_value); // explicitly manage situations where path has no value?
+	err_check = env_var_get_value(env, &path); // explicitly manage situations where path has no value?
 	if (err_check != success)
 	{
 		msh_perror(NULL, MALLOC_ERR, extern_err);
 		return (NULL);
 	}
-	path_arr = ft_split(path_value, ':');
+	path_arr = ft_split(path->env_value, ':');
 	if (!path_arr)
 	{
-		free(path_value);
+		free(path->env_value);
 		msh_perror(NULL, MALLOC_ERR, extern_err);
 		return (NULL);
 	}
-	free(path_value);
+	(free(path->env_value), free(path));
 	return ((const char *const *) path_arr);
 }
+
+
 
 static int	error_loop(
 	char *slash_arg,

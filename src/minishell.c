@@ -13,8 +13,8 @@
 #include "minishell_testfuncs.h"
 #include <stdlib.h>
 #include "minishell.h"
-#include "executor.h"
 #include "parser.h"
+#include "executor.h"
 #include <signal.h>
 #include <string.h>
 #include <stdio.h> /*	readline	*/
