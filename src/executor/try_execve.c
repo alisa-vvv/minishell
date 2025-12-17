@@ -120,7 +120,7 @@ int	try_execve(
 	if (errno != ENOENT)
 	{
 		free_2d_arr((void **) path);
-		return (msh_perror(NULL, EXECVE_ERR, extern_err), execve_err); //check return
+		return (msh_perror(NULL, EXECVE_ERR, extern_err), execve_err);
 	}
 	err_check = look_for_command(env, argv, path);
 	free_2d_arr((void **) path);
