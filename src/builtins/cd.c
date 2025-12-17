@@ -15,7 +15,6 @@
 #include "builtins.h"
 #include "minishell_env.h"
 #include <unistd.h>
-
 #include <stdio.h>
 
 static void	free_variables(
@@ -119,7 +118,6 @@ int	msh_cd(
 		free(cwd);
 		return (err_check);
 	}
-	printf("PATH = %s\n", path);
 	err_check = chdir(path);
 	if (err_check != 0)
 		return (msh_perror("cd: ", "", extern_err), path_err);
