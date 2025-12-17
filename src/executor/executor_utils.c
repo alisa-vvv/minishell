@@ -47,8 +47,7 @@ int	wait_for_children(
 		if (WIFEXITED(p_exit_codes[i]) == true)
 		{
 			last_exit = WEXITSTATUS(p_exit_codes[i]);
-			if (last_exit != EXIT_SUCCESS)
-				msh_data->last_pipeline_return = last_exit;
+			msh_data->last_pipeline_return = last_exit;
 		}
 	}
 	return (EXIT_SUCCESS);
