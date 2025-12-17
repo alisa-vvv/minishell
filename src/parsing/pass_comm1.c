@@ -101,7 +101,7 @@ int set_pipe_data(
 	err = success;
 
 	next_token = looknxt(tokenlist, i->tok);
-	if (!next_token || next_token->type == PIPE)
+	if (!next_token || next_token->type == PIPE || i->tok == 0)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	msh_data->exec_data[i->exe].output_is_pipe = true;
 	i->exe++;

@@ -25,6 +25,8 @@ void	clean_exit(
 
 	if (msh_data)
 	{
+		if (msh_data->is_parent == false)
+			silent_exit = true;
 		if (msh_data->exit_code != 0)
 			exit_code = msh_data->exit_code;
 		else if (exit_code == 0)

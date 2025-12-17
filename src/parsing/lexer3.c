@@ -20,12 +20,6 @@ int	val_inputline(char *str)
 	i = 0;
 	if (check_in_quote(str, ft_strlen(str) - 1))
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	//if (check_pipe_redirect(str, '|'))
-	//	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	//if (check_pipe_redirect(str, '>'))
-	//	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	//if (check_pipe_redirect(str, '<'))
-	//	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	while (str[i])
 	{
 		if (char_is_red(str[i]))

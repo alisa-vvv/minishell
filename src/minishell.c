@@ -71,18 +71,26 @@ static void	post_execution_cleanup(
 	int err_check
 )
 {
+	int	i;
 	if (read_line)
 		free(read_line);
-	if (msh_data->is_parent == false)
+	i = -1;
+	if (msh_data->exec_data)
 	{
-		if (err_check == child_heredoc || err_check == child_success
-			|| err_check == success)
-			clean_exit(msh_data, NULL, EXIT_SUCCESS, true);
-		else if (err_check < 0)
-			clean_exit(msh_data, NULL, EXIT_FAILURE, true);
+		while (++i < msh_data->command_count && &msh_data->exec_data[i])
+			free_and_close_exec_data(&msh_data->exec_data[i]);
+		free(msh_data->exec_data);
+		if (msh_data->is_parent == false)
+		{
+			if (err_check == child_heredoc || err_check == child_success
+				|| err_check == success)
+				clean_exit(msh_data, NULL, EXIT_SUCCESS, true);
+			else if (err_check < 0)
+				clean_exit(msh_data, NULL, EXIT_FAILURE, true);
+		}
+		msh_data->exec_data = NULL;
+		msh_data->command_count = 0;
 	}
-	msh_data->exec_data = NULL;
-	msh_data->command_count = 0;
 }
 
 volatile sig_atomic_t g_msh_signal = 0; 
@@ -97,7 +105,7 @@ int	main(int argc, char **argv, char *envp[])
 	rl_catch_signals = false;
 	if (setup_msh_data(&msh_data, envp) != success)
 		clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
-	while (msh_data.do_exit == false)
+	while (msh_data.do_exit == false && msh_data.is_parent == true)
 	{
 		handle_signals_interactive();
 		read_line = readline("msh$ ");
@@ -109,11 +117,11 @@ int	main(int argc, char **argv, char *envp[])
 		else
 		{
 			err_check = default_lexer(read_line, &msh_data);
-	//		TEST_MINISHELLDATA(msh_data); // debug only!
+			TEST_MINISHELLDATA(msh_data); // debug only!
 			if (err_check == success)
 				err_check = executor(&msh_data, msh_data.command_count);
 		}
 		post_execution_cleanup(&msh_data, read_line, err_check);
 	}
-	clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
+	clean_exit(&msh_data, NULL, err_check, false);
 }

@@ -37,7 +37,9 @@ static int	execute_pipeline(
 		return (err);
 	err = execute_commands(msh_data, exec_data, command_io, p_id_arr);
 	if (err != success || msh_data->is_parent == false)
+	{
 		return (err);
+	}
 	if (command_count > 1 ||
 		(command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(elem_count, msh_data, p_id_arr, p_exit_codes);

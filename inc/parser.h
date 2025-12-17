@@ -118,7 +118,6 @@ int			val_inputline(char *str);
 int			val_redir(t_tokenlist *tokenlist, size_t i, t_token *ctok);
 int			check_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data);
 int			match_token(char *str_token);
-int			check_pipe_redirect(char *str, char symbol);
 int			check_in_quote(const char *str, int pos);
 int			single_token(t_tokenlist *tokenlist);
 int 		check_spcases(t_tokenlist *tokenlist);

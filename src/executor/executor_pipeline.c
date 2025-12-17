@@ -15,6 +15,7 @@
 #include "builtins.h"
 #include <unistd.h>
 
+#include <stdio.h>
 static int	run_child_process(
 	t_exec_data *const command,
 	t_command_io *const command_io,
@@ -39,12 +40,15 @@ static int	run_child_process(
 	if (err_check != success)
 		return (err_check);
 	if (command->builtin_name == not_builtin)
+	{
 		err_check = try_execve(msh_data->env, command->argv);
+	}
 	else
 		err_check = exec_builtin(command, msh_data);
 	return (err_check);
 }
 
+#include <stdio.h>
 static int	execute_in_child(
 	t_exec_data *command,
 	t_command_io *const command_io,
@@ -88,7 +92,9 @@ static int	execute_command(
 	*pid = 0;
 	if (command->input_is_pipe == true || command->output_is_pipe == true
 		|| command->builtin_name == not_builtin)
+	{
 		return (execute_in_child(command, command_io, msh_data, pid));
+	}
 	if (command->redirections)
 	{
 		undup_list = NULL;

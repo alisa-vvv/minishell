@@ -48,6 +48,6 @@ int	prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data)
 		if (!msh_data->exec_data[0].argv)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 		err = pass_comm(tlist, msh_data);
-	}
+}
 	return (err);
 }
