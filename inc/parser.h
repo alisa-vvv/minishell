@@ -125,16 +125,18 @@ int 		check_spcases(t_tokenlist *tokenlist);
 
 /*	Expansions func	*/
 int			get_offset(t_exp_data *exp_data);
-int 		prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data);
-int			index_lexer(t_tokenlist **tokenlist);
-t_token		*looknxt(t_tokenlist *tokenlist, size_t index);
-t_token		*lookbehind(t_tokenlist *tokenlist, size_t index);
+bool 		skip_exp(t_token *check_token, t_exp_data *exp_data);
 int			exp_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data,
 				int type, size_t i);
 int			expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data, t_token *check_token);
 char *		prep_leftover(char *str_token, char *start,  int offset);
 char *		exp_token(char *str_token, char *start, char *value, int offset);
 int			refine_name(char *token_name, char **result, char symbol);
+
+int 		prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data);
+int			index_lexer(t_tokenlist **tokenlist);
+t_token		*looknxt(t_tokenlist *tokenlist, size_t index);
+t_token		*lookbehind(t_tokenlist *tokenlist, size_t index);
 int			rm_quotes(t_tokenlist *tokenlist, int pos, char symbol);
 int 		count_occ(const char* str, char symbol, bool inside);
 

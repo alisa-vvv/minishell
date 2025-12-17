@@ -96,7 +96,7 @@ int	fill_tokenlist(
 int	check_tcount(int token_c)
 {
 	if (token_c == 0)
-		return (success);
+		return (msh_perror(NULL, "", parse_err), syntax_err);
 	if (token_c < 0)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	return (success);

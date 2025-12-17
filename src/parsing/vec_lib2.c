@@ -96,7 +96,7 @@ int	tokenlist_init(t_tokenlist **e, int size)
 {
 	*e = ft_calloc(1, sizeof(t_tokenlist));
 	if (!(*e))
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
+	return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	(*e)->size = size;
 	if ((*e)->size <= 0) 
 	{

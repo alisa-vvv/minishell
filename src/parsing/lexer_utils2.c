@@ -40,8 +40,10 @@ char	*trim_str_space(char *str)
 		str[j] = '\0';
 		j--;
 	}
-	j = 0;
-	while (str[j])
+	j = -1;
+	if (!str || ft_strncmp(str, " ", 2))
+		return (str);
+	while (str[++j])
 	{
 		if ((i == 0 && skip_blanks(str, j) >= 1))
 			j += skip_blanks(str, j);
@@ -49,13 +51,12 @@ char	*trim_str_space(char *str)
 			j += skip_blanks(str, j + 1);
 		str[i] = str[j];
 		i++;
-		j++;
 	}
 	str[i] = '\0';
 	return (str);
 }
 
-// && str[i - 1] == '='
+
 //returns len of unquoted token
 int	move_o_unquoted(const char *str, int i)
 {

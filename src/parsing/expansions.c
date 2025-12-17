@@ -55,14 +55,7 @@ int	exp_further(t_tokenlist *tokenlist,
 
 	err = success;
 	check_token = tokenlist->tokens[pos];
-	if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '\''))
-		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
-	else if (!(*exp_data)->env_value && ft_strncmp(check_token->value, "$",
-			2) == 0)
-		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
-	else if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '"')
-		&& !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
-		&& ft_strncmp((*exp_data)->name, "", 1))
+	if (skip_exp(check_token, *exp_data))
 		(*exp_data)->start_var = ft_strchr((*exp_data)->start_var + 1, '$');
 	else
 	{
