@@ -121,26 +121,30 @@ int	check_lexer(t_tokenlist *tokenlist,
 // check if left and right are args for pipe
 int	check_pipe_redirect(char *str, char symbol)
 {
-	int	command;
-	int	i;
+	(void) str;
+	(void) symbol;
+	return (0);
+	//int	command;
+	//int	i;
 
-	i = 0;
-	command = 0;
-	if (ft_strchr(str, symbol) != (void *)0)
-	{
-		while (&str[i] <= ft_strchr(str, symbol))
-
-
-		{
-			if (ft_isalpha(str[i]))
-				command++;
-			i++;
-		}
-		if (!command && symbol == '|')
-			return (1);
-		if (str[i] == symbol && (str + i + 1 == (void *)0 || *str + i
-				+ 1 == '"'))
-			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
-	}
-	return (success);
+	//i = 0;
+	////command = 0;
+	//if (ft_strchr(str, symbol) != (void *)0)
+	//{
+	//	//while (&str[i] <= ft_strchr(str, symbol))
+	//	//{
+	//	//	if (ft_isalpha(str[i]))
+	//	//		command++;
+	//	//	i++;
+	//	//}
+	//	//if (!command && symbol == '|')
+	//	//{
+	//	//	printf("wrap2\n");
+	//	//	return (1);
+	//	//}
+	//	//if (str[i] == symbol && (str + i + 1 == (void *)0))// || *str + i
+	//	//		//+ 1 == '"'))
+	//	//	return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+	//}
+	//return (success);
 }
