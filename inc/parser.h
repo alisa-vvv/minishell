@@ -95,7 +95,7 @@ int			default_lexer(char *input_line, t_msh_data *msh_data);
 bool 		char_is_quote(char c);
 bool 		str_is_quote(const char *str, char symbol);
 int			token_count(const char *str, int i, int tokencount);
-t_token *	new_token(t_tokenlist *tokenlist, char *str, int len);
+t_token *	new_token(t_tokenlist *tokenlist, char *str, int len, bool expand);
 int			prep_token(t_tokenlist *tokenlist, char *str, int i, int len);
 int			set_len(const char *str, int i);
 bool		char_is_red(char c);

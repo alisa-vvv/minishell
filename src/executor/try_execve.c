@@ -96,8 +96,6 @@ static int	look_for_command(
 		}
 		execve(command_path, argv, env);
 		free(command_path);
-		if (errno != ENOENT)
-			return (error_loop(slash_arg, EXECVE_ERR, malloc_err));
 	}
 	free(slash_arg);
 	return (no_command);
@@ -117,11 +115,6 @@ int	try_execve(
 	if (!path)
 		return (malloc_err);
 	execve(argv[0], argv, env);
-	if (errno != ENOENT)
-	{
-		free_2d_arr((void **) path);
-		return (msh_perror(NULL, EXECVE_ERR, extern_err), execve_err);
-	}
 	err_check = look_for_command(env, argv, path);
 	free_2d_arr((void **) path);
 	if (err_check == no_command)

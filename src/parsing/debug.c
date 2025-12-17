@@ -167,7 +167,7 @@ void	TEST_MINISHELLDATA(t_msh_data msh_data)
 	{
 		while (i < (size_t)msh_data.command_count)
 		{
-			test_execdata(*(msh_data.exec_data + i), i);
+			test_execdata(msh_data.exec_data[i], i);
 			i++;
 		}
 		p_printf("\n");

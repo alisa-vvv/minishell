@@ -16,7 +16,8 @@
 t_token	*new_token(
 	t_tokenlist *tokenlist,
 	char *str,
-	int len)
+	int len,
+	bool expand)
 {
 	t_token	*token;
 
@@ -31,7 +32,10 @@ t_token	*new_token(
 		return (NULL);
 	}
 	ft_strlcpy(token->value, str, len);
-	token->type = match_token(token->value);
+	if (!expand)
+		token->type = match_token(token->value);
+	else 
+		token->type = STRING; 
 	token->command = false;
 	token->pos = tokenlist_total(tokenlist);
 	return (token);
@@ -58,7 +62,7 @@ int	add_token(
 	t_token	*token;
 
 	token = NULL;
-	token = new_token(tokenlist, str, len);
+	token = new_token(tokenlist, str, len, false);
 	if (!token)
 		return (msh_perror(NULL, MALLOC_ERR, malloc_err), malloc_err);
 	return (tokenlist_add(tokenlist, token));

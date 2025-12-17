@@ -108,6 +108,7 @@ int	check_lexer(t_tokenlist *tokenlist,
 	err = contract_list(tokenlist, tokenlist->total - 1);
 	if (err != success)
 		return (err);
+	test_tokens(tokenlist);
 	err = check_spcases(tokenlist);
 	if (err != success)
 		return (err);
