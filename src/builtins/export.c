@@ -127,6 +127,7 @@ int	msh_export(
 	t_export_i	i;
 	char		*identifier;
 	int			err_check;
+	int			was_err;
 
 	if (!*argv)
 		return (msh_env(msh_data));
@@ -135,16 +136,25 @@ int	msh_export(
 	{
 		identifier = env_var_find_identifier(argv[i.arg]);
 		if (!identifier)
+		{
+			was_err = builtin_err;
 			continue ;
+		}
 		i.var = env_var_find_index(msh_data->env, argv[i.arg], identifier);
 		err_check = env_var_realloc(msh_data, i.var);
 		if (err_check == malloc_err)
 			return (err_check);
 		else if (err_check == builtin_err)
+		{
+			was_err = builtin_err;
 			continue ;
+		}
 		err_check = export_var(argv, msh_data, identifier, &i);
 		if (err_check == malloc_err)
 			return (err_check);
 	}
-	return (err_check);
+	if (err_check == 0 && was_err != success)
+		return (was_err);
+	else
+		return (err_check);
 }

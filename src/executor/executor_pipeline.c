@@ -153,6 +153,8 @@ int	execute_commands(
 		err = execute_command(&command[i], &command_io[i], msh_data, &p_id_arr[i]);
 		if (msh_data->is_parent == false)
 			return (err);
+		else
+			msh_data->last_pipeline_return = 2;
 	}
 	return (success);
 }
