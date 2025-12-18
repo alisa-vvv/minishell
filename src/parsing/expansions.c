@@ -92,47 +92,7 @@ int	expand_check(t_tokenlist *tlist,
 	return (err);
 }
 
-
-void eval_exp(t_tokenlist *tlist, 
-	t_msh_data *msh_data,
-	t_quote quoted)
-{
-
-	if (quoted.str[quoted.start] == '\'')
-		return; 
-	while (quoted.start < quoted.end)
-	{
-		if (quoted.str[quoted.start] == '$')
-			exp_further(tlist, )
-		quoted.start++;
-	}	
-}
-
-void expand_quoted(t_tokenlist *tlist,
-	t_msh_data *msh_data,
-	t_token *check_token)
-{
-	t_quote quoted;
-	int i;
-
-	i = 0;
-	
-	quoted.str = check_token->value;
-	while (quoted.str[i])
-	{
-		if (char_is_quote(quoted.str[i]))
-		{
-			quoted.start = i;
-			while (quoted.str[i] && quoted.str[i] != quoted.str[quoted.start])
-				i++;
-			if (quoted.str[i] && quoted.str[i] == quoted.str[quoted.start])
-				quoted.end = i;
-			eval_exp(tlist, msh_data, quoted);
-		}
-		i++;
-	}
-}
-
+//
 int	expand_var(
 	t_tokenlist **tokenlist,
 	int pos,
@@ -146,9 +106,6 @@ int	expand_var(
 	exp_data = ft_calloc(1, sizeof(t_exp_data));
 	if (!exp_data)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-
-	if (check_token->type == QUOTES)
-
 	exp_data->start_var = ft_strchr(check_token->value, '$');
 	while (exp_data->start_var)
 	{
