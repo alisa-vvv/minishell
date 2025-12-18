@@ -61,28 +61,31 @@ int	check_in_quote(const char *str, int pos)
 	return (count_d || count_s);
 }
 
-// // check if a certain pos is inside quotes
-// int	check_in_quote_s(const char *str, int pos, char quote)
-// {
-// 	int	count;
-// 	int	in_quote;
-// 	int	i;
+//checks if string start is in single quotes 
+int	check_in_quote_s(const char *str, int pos, char symbol)
+{
+	int	count_s;
+	int	in_quote;
+	int	i;
 
-// 	count = 0;
-// 	in_quote = -1;
-// 	i = -1;
-// 	while (str[++i] && i <= pos)
-// 	{
-// 		if (str[i] == quote && (in_quote == 1 || in_quote == -1))
-// 			count++;
-// 		if (count > 0 && count % 2 != 0)
-// 			in_quote = 1;
-// 		else
-// 			in_quote = -1;
-// 	}
-// 	count %= 2;
-// 	return (count);
-// }
+	count_s = 0;
+	in_quote = -1;
+	i = -1;
+	symbol = 0;
+	while (str[++i] && i <= pos)
+	{
+		if (str[i] == '"' && in_quote == -1)
+			in_quote = 2;
+		else if (str[i] == '"' && in_quote == 2)
+			in_quote = -1;
+		if (str[i] == '\'' && (in_quote == -1 || in_quote == 1))
+			count_s++;
+		if (count_s > 0 && count_s % 2 != 0)
+			in_quote = 1;
+	}
+	return (count_s %= 2);
+}
+
 
 //returns the kind of quote that is within quotes for var
 char	symbol_in_quote(char *str, char symbol)
