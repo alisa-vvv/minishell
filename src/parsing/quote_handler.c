@@ -57,14 +57,22 @@ void	rm_str_quotes(char *str, t_quote *q)
 
 	i = 0;
 	start_q = 0; 
+	(void) q;
 	while (str[i])
 	{
-		if (check_quote_rm(str, i, q->quote))
+		if (str[i] == '\'' || str[i] == '"')
 		{
+			printf("found quote: %c at pos: %d\n", str[i], i);
+			start_q = i;
+			i++;
 			while (str[i] && str[i] != str[start_q])
 				i++;
+			printf("found quote ending: %c at pos: %d\n", str[i], i);
+			str = move_str(str, start_q);
+			i--;
+			printf("str after first move: %s\n", str);
 			str = move_str(str, i);
-			str = move_str(str, start_q -1);
+			printf("str after second move: %s\n", str);
 			//move_str(ft_strrchr(str, q->quote), 0);
 			printf("STRING2= (%s)\n", str);
 		}
