@@ -39,7 +39,7 @@ char	*exp_token(char *str_token, char *start, char *value, int offset)
 
 // e_printf("\nRESULT = %s$\n", result);
 // get name of env var from token_name
-int	refine_name(char *token_name, char **result)
+int	refine_name(char *token_name, char **result, char symbol)
 {
 	int	i;
 
@@ -54,10 +54,13 @@ int	refine_name(char *token_name, char **result)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	while ((*result)[i])
 	{
-		if (char_is_quote((*result)[i]) || (*result)[i] == '$'
-			|| ft_isspace((*result)[i]) || char_is_red((*result)[i])
-			|| !(ft_isprint((*result)[i]) || (*result)[i] == '_'))
-			break ;
+		if (symbol == '$')
+		{
+			if (char_is_quote((*result)[i]) || (*result)[i] == '$'
+				|| ft_isspace((*result)[i]) || char_is_red((*result)[i])
+				|| !(ft_isprint((*result)[i]) || (*result)[i] == '_'))
+				break ;
+		}
 		i++;
 	}
 	(*result)[i] = '\0';

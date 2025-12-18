@@ -45,17 +45,13 @@ int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 //	else if (check_in_quote_s(check_token->value, (*exp_data)->start_pos, '"')
 		// && !(*exp_data)->env_value && (*exp_data)->start_var[0] == '$'
 		// && ft_strncmp((*exp_data)->name, "", 1) == 0)
-int	exp_further(
-	t_tokenlist *tokenlist,
+int	exp_further(t_tokenlist *tokenlist,
 	int pos,
-	t_exp_data **exp_data,
-	t_quote *quoted
-)
+	t_exp_data **exp_data)
 {
 	t_token	*check_token;
 	int		err;
 
-	(void) quoted;
 	err = success;
 	check_token = tokenlist->tokens[pos];
 	if (skip_exp(check_token, *exp_data))
@@ -74,12 +70,10 @@ int	exp_further(
 
 //(exp_data->env_value && ft_strncmp(exp_data->env_value, "", 1) != 0)
 //gets env value and name to check before expanding further
-int	expand_check(
-	t_tokenlist *tlist,
+int	expand_check(t_tokenlist *tlist,
 	t_msh_data *msh_data,
 	t_exp_data *exp_data,
-	int pos
-)
+	int pos)
 {
 	int	err;
 
@@ -91,48 +85,32 @@ int	expand_check(
 	}
 	else if (env_var_get_value(msh_data->env, exp_data->name, &exp_data->env_value, &exp_data->existing))
 		return (malloc_err);
-	err = exp_further(tlist, pos, &exp_data, NULL);
+	err = exp_further(tlist, pos, &exp_data);
 	if ((exp_data->existing && exp_data->env_value != (void *)'\0'))
 		ft_safe_free((unsigned char **)&exp_data->env_value);
 	ft_safe_free((unsigned char **)&exp_data->name);
 	return (err);
 }
 
-int	eval_exp(
-	t_tokenlist *tlist,
-	t_token *token,
-	t_msh_data *msh_data,
-	t_quote *quoted
-)
-{
-	t_exp_data exp_data;
-	int			err;
 
-	err = success;
-	if (quoted->str[quoted->start] == '\'')
-		return (success); 
-	while (quoted->start < quoted->end)
+void eval_exp(t_tokenlist *tlist, 
+	t_msh_data *msh_data,
+	t_quote quoted)
+{
+
+	if (quoted.str[quoted.start] == '\'')
+		return; 
+	while (quoted.start < quoted.end)
 	{
-		if (quoted->str[quoted->start] == '$')
-		{
-			err = refine_name(token->value, &exp_data.name);
-			if (err != success)
-				return (err);
-			err = expand_check(tlist, msh_data, &exp_data, token->pos);
-			if (err != success)
-				return (err);
-			exp_further(tlist, token->pos, NULL, quoted);
-		}
-		quoted->start++;
+		if (quoted.str[quoted.start] == '$')
+			exp_further(tlist, )
+		quoted.start++;
 	}	
-	return (err);
 }
 
-int	expand_quoted(
-	t_tokenlist *tlist,
+void expand_quoted(t_tokenlist *tlist,
 	t_msh_data *msh_data,
-	t_token *check_token
-)
+	t_token *check_token)
 {
 	t_quote quoted;
 	int i;
@@ -149,7 +127,7 @@ int	expand_quoted(
 				i++;
 			if (quoted.str[i] && quoted.str[i] == quoted.str[quoted.start])
 				quoted.end = i;
-			eval_exp(tlist, check_token, msh_data, &quoted);
+			eval_exp(tlist, msh_data, quoted);
 		}
 		i++;
 	}
@@ -201,8 +179,6 @@ int	exp_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data, int type, size_t i)
 		if (type == PARAMETER && (check_token->type == PARAMETER
 				|| check_token->type == QUOTES))
 			err = expand_var(&tokenlist, i, msh_data, check_token);
-		else if (type == PARAMETER && check_token->type == QUOTES)
-			err = expand_quoted(tokenlist, msh_data, check_token);
 		else if (type == QUOTES && (int)check_token->type == QUOTES)
 			err = rm_quotes(tokenlist, i);
 		if (err != success)
