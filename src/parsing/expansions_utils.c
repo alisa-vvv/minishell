@@ -67,30 +67,30 @@ int	refine_name(char *token_name, char **result, char symbol)
 	return (success);
 }
 
-// counts how many occurrences of a symbol are in one str
-int	count_occ(const char *str, char symbol, bool inside)
-{
-	int	count;
-	int	i;
+// // counts how many occurrences of a symbol are in one str
+// int	count_occ(const char *str, char symbol, bool inside)
+// {
+// 	int	count;
+// 	int	i;
 
-	i = 0;
-	count = 0;
-	while (str[i])
-	{
-		if (inside)
-		{
-			if (!check_in_quote_s(str, i, '\'')  )
-				count++;
-		}
-		else if (inside == false)
-		{
-			if (str[i] == symbol)
-				count++;
-		}
-		i++;
-	}
-	return (count);
-}
+// 	i = 0;
+// 	count = 0;
+// 	while (str[i])
+// 	{
+// 		if (inside)
+// 		{
+// 			if (!check_in_quote_s(str, i, '\'')  )
+// 				count++;
+// 		}
+// 		else if (inside == false)
+// 		{
+// 			if (str[i] == symbol)
+// 				count++;
+// 		}
+// 		i++;
+// 	}
+// 	return (count);
+// }
 
 //&& !check_in_quote_s(str, pos, '\'')
 bool	check_quote_e(char *str, int pos)

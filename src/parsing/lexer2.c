@@ -35,7 +35,7 @@ int	count_exp(t_tokenlist *tokenlist, char symbol)
 		}
 		else if (symbol == '"' && ft_strchr(check_token->value, '"'))
 			count++;
-		else if (symbol == '\'' && check_token->type == SINGLE_Q)
+		else if (symbol == '\'' && check_token->type == QUOTES)
 			count++;
 		i++;
 	}
@@ -47,22 +47,13 @@ int	expand_quotes(t_tokenlist *tokenlist,
 					t_msh_data *msh_data)
 {
 	int	count;
-	int	count_single;
 	int	err;
 
 	err = 0;
 	count = count_exp(tokenlist, '"');
-	count_single = count_exp(tokenlist, '\'');
-	while (count_single > 0)
-	{
-		err = exp_lexer(tokenlist, msh_data, SINGLE_Q, 0);
-		if (err != success)
-			return (err);
-		count_single--;
-	}
 	while (count > 0)
 	{
-		err = exp_lexer(tokenlist, msh_data, DOUBLE_Q, 0);
+		err = exp_lexer(tokenlist, msh_data, QUOTES, 0);
 		if (err != success)
 			return (err);
 		count--;

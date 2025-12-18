@@ -65,8 +65,7 @@ void	new_redir_elem(
 bool legit_token(t_token *cur_token)
 {
 	if (cur_token->type == COMMAND || cur_token->type == STRING
-		|| cur_token->type == PARAMETER || cur_token->type == DOUBLE_Q
-		|| cur_token->type == SINGLE_Q )
+		|| cur_token->type == PARAMETER || cur_token->type == QUOTES)
 		return (true);
 	return (false);
 }

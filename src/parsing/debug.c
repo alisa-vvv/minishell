@@ -77,8 +77,7 @@ const char	*enum_to_str(t_token_type symbols)
         case OPERATOR: return "Operator";
         case PARAMETER: return "Parameter";
         case NON_TERMINAL: return "Non-terminal";
-        case SINGLE_Q: return "Single Quotations";
-        case DOUBLE_Q: return "Double Quotations";
+        case QUOTES: return "Quotations";
         case WHITESPACE: return "Whitespace";
         case PIPE: return "PIPE";
         case HEREDOC: return "Heredoc";

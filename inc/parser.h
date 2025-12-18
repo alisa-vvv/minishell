@@ -35,8 +35,7 @@ typedef enum	e_token_type
 	WHITESPACE,
 	NON_TERMINAL,
 
-	SINGLE_Q,
-	DOUBLE_Q,
+	QUOTES,
 
 	PIPE,
 	RED_IN,
@@ -81,10 +80,9 @@ typedef struct s_pos
 
 typedef struct s_quote
 {
-	char quote;
-	char o_quote;
-	int count; 
-	int o_count; 
+	char *str;
+	int start;
+	int end; 
 }	t_quote;
 
 
@@ -137,7 +135,7 @@ int 		prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data);
 int			index_lexer(t_tokenlist **tokenlist);
 t_token		*looknxt(t_tokenlist *tokenlist, size_t index);
 t_token		*lookbehind(t_tokenlist *tokenlist, size_t index);
-int			rm_quotes(t_tokenlist *tokenlist, int pos, char symbol);
+int			rm_quotes(t_tokenlist *tokenlist, int pos);
 int 		count_occ(const char* str, char symbol, bool inside);
 
 int			find_symbol(t_tokenlist *tokenlist, int pos, char symbol);
