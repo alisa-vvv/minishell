@@ -126,7 +126,6 @@ int pass_comm(
 	t_token				*cur_token;
 	t_passcom_indexes	i;
 
-	//test_tokens(tokenlist);
 	i.tok = 0;
 	i.argve = 0;
 	i.exe = 0;

@@ -88,7 +88,7 @@ int	check_lexer(t_tokenlist *tokenlist,
 		return (err);
 	if (tokenlist->total == 0)
 		return (success);
-	err = contract_list(tokenlist, tokenlist->total - 1);
+	err = index_lexer(&tokenlist);
 	if (err != success)
 		return (err);
 	test_tokens(tokenlist);

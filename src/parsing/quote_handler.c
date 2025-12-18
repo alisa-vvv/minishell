@@ -41,12 +41,9 @@ bool	check_quote_rm(const char *str, int i, char symbol)
 		else if (!check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i,
 				'"'))
 			return (true);
-		
 	}
 	return (false);
 }
-
-
 
 //have to make a quote removal for empty quotes before this func
 //removes quotes in a string from outside in 

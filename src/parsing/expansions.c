@@ -12,7 +12,7 @@
 
 #include "parser.h"
 
-// expands variables to env value if found
+// expands variables to env value if found, otherwise deletes 
 int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 		t_exp_data *xp_d)
 {
@@ -68,7 +68,7 @@ int	exp_further(t_tokenlist *tokenlist,
 	return (err);
 }
 
-//(exp_data->env_value && ft_strncmp(exp_data->env_value, "", 1) != 0)
+
 //gets env value and name to check before expanding further
 int	expand_check(t_tokenlist *tlist,
 	t_msh_data *msh_data,
@@ -92,7 +92,7 @@ int	expand_check(t_tokenlist *tlist,
 	return (err);
 }
 
-//
+//expand variable by getting the name, start of var and expanding
 int	expand_var(
 	t_tokenlist **tokenlist,
 	int pos,
@@ -121,7 +121,7 @@ int	expand_var(
 	return (ft_safe_free((unsigned char **)&exp_data), err);
 }
 
-// check lexer on expansion and quotes
+// check lexer on expansion and quotes gets called in different states 
 int	exp_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data, int type, size_t i)
 {
 	t_token	*check_token;

@@ -86,22 +86,3 @@ int	check_in_quote_s(const char *str, int pos, char symbol)
 	return (count_s %= 2);
 }
 
-
-//returns the kind of quote that is within quotes for var
-char	symbol_in_quote(char *str, char symbol)
-{
-	int		i;
-	char	l_symbol;
-
-	i = 0;
-	l_symbol = '0';
-	while (str[i])
-	{
-		if (char_is_quote(str[i]))
-			l_symbol = str[i];
-		if (str[i] == symbol)
-			break ;
-		i++;
-	}
-	return (l_symbol);
-}
