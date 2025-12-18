@@ -93,9 +93,7 @@ int	expand_check(t_tokenlist *tlist,
 }
 
 
-
-
-
+//
 int	expand_var(
 	t_tokenlist **tokenlist,
 	int pos,
@@ -109,9 +107,6 @@ int	expand_var(
 	exp_data = ft_calloc(1, sizeof(t_exp_data));
 	if (!exp_data)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-
-	if (check_token->type == QUOTES)
-
 	exp_data->start_var = ft_strchr(check_token->value, '$');
 	while (exp_data->start_var)
 	{
