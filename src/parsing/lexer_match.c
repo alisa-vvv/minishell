@@ -12,7 +12,6 @@
 
 #include "parser.h"
 
-// add parsign error cases maybe?
 //check what kind of non-terminal for further action
 int	match_nonterminal(char *str_token)
 {
@@ -66,9 +65,8 @@ bool tok_is_quote(char *str)
 	return (false);
 }
 
-
 // set a va	lue to the token so we can expand on those later
-int	match_token(char *str_token) // needs rework @alisa
+int	match_token(char *str_token)
 {
 	if (tok_is_quote(str_token))
 		return(QUOTES);
@@ -77,3 +75,5 @@ int	match_token(char *str_token) // needs rework @alisa
 		return (match_nonterminal(str_token));
 	return (match_string(str_token));
 }
+
+
