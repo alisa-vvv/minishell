@@ -154,7 +154,10 @@ int	execute_commands(
 		if (msh_data->is_parent == false)
 			return (err);
 		else
-			msh_data->last_pipeline_return = 2;
+		{
+			if (err != success)
+				msh_data->last_pipeline_return = 2;
+		}
 	}
 	return (success);
 }
