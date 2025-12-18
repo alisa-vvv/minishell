@@ -55,14 +55,46 @@ int	match_string(char *str_token)
 		return (STRING);
 }
 
+// char *rm_empty_q(char *str)
+// {
+// 	int i;
+
+// 	i = 0; 
+// 	while (str[i])
+// 	{
+// 		if (!check_in_quote_s(str, i, '\'') && (char_is_quote(str[i]) && str[i] == str[i+1]))
+// 		{
+// 			str = move_str(str, i);
+// 			str = move_str(str, i);
+// 			printf("STRING= (%s)\n", str);
+// 		}
+// 		else 
+// 			i++;
+// 	}
+// 	return (str);
+// }
+
+char tok_is_quote(char *str)
+{
+	//str = rm_empty_q(str); 
+	while (*str)
+	{
+		if (char_is_quote(*str))
+			return(*str);
+		str++;
+	}
+	return ('0');
+}
+
+
 // set a va	lue to the token so we can expand on those later
 int	match_token(char *str_token) // needs rework @alisa
 {
-	if (ft_strchr(str_token, '\''))
+	if (tok_is_quote(str_token) == '\'' )
 		return (SINGLE_Q);
-	else if (ft_strchr(str_token, '"'))
+	else if (tok_is_quote(str_token) == '"')
 		return (DOUBLE_Q);
-	else if (str_contains_red(str_token) || (str_token[0] == '$')
+	else if (str_contains_red(str_token) || (ft_strchr(str_token, '$'))
 		|| str_token[0] == '|')
 		return (match_nonterminal(str_token));
 	return (match_string(str_token));

@@ -29,56 +29,51 @@ char	*move_str(char *str, int i)
 //checks if quote needs to be removed or if within another quote
 bool	check_quote_rm(const char *str, int i, char symbol)
 {
+
 	if (str[i] && str[i] == symbol)
 	{
 		if (check_in_quote_s(str, i, '\''))
 			return (false);
+		else if (!check_in_quote(str, i))
+			return (true);
+		else if (check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i, '"') && symbol == '"')
+			return (false);
 		else if (!check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i,
 				'"'))
 			return (true);
-		else if (!check_in_quote(str, i))
-			return (true);
+		
 	}
 	return (false);
 }
 
-//loops around the str removing quotes when encountered
-void	reform_str(char *str, t_quote *q)
+
+
+//have to make a quote removal for empty quotes before this func
+//removes quotes in a string from outside in 
+void	rm_str_quotes(char *str, t_quote *q)
 {
 	int	i;
+	int start_q;
 
 	i = 0;
-	while (str[i] && (q->count || q->o_count))
+	start_q = 0; 
+	while (str[i])
 	{
 		if (check_quote_rm(str, i, q->quote))
 		{
-			q->count--;
+			while (str[i] && str[i] != str[start_q])
+				i++;
 			str = move_str(str, i);
-			move_str(ft_strrchr(str, q->quote), 0);
-		}
-		else if (check_quote_rm(str, i, q->o_quote))
-		{
-			q->o_count--;
-			str = move_str(str, i);
-			move_str(ft_strrchr(str, q->o_quote), 0);
+			str = move_str(str, start_q -1);
+			//move_str(ft_strrchr(str, q->quote), 0);
+			printf("STRING2= (%s)\n", str);
 		}
 		else
 			i++;
 	}
 }
 
-//loops checks what kind or quotes need to be removed and sends to reform str
-void	rm_str_quotes(char *str, t_quote *q)
-{
-	if (q->quote == '"')
-		q->o_quote = '\'';
-	else
-		q->o_quote = '"';
-	q->o_count = count_occ(str, q->o_quote, true);
-	reform_str(str, q);
-}
 
-// if (str_is_quote(check_token->value, symbol))
 // rm quotes for certain pos in tokenlist
 int	rm_quotes(t_tokenlist *tokenlist, int pos, char symbol)
 {

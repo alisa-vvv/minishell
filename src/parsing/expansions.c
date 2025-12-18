@@ -33,7 +33,7 @@ int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
 	}
 	else
 	{
-		n_token = new_token(tokenlist, new_str, ft_strlen(new_str) + 1, true);
+		n_token = new_token(tokenlist, new_str, ft_strlen(new_str) + 1, false);
 		if (!n_token)
 			return (malloc_err);
 		tokenlist_set(tokenlist, pos, n_token);

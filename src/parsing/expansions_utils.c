@@ -79,7 +79,7 @@ int	count_occ(const char *str, char symbol, bool inside)
 	{
 		if (inside)
 		{
-			if (!check_in_quote_s(str, i, '\''))
+			if (!check_in_quote_s(str, i, '\'')  )
 				count++;
 		}
 		else if (inside == false)

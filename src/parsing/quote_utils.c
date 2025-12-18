@@ -91,6 +91,7 @@ char	symbol_in_quote(char *str, char symbol)
 	char	l_symbol;
 
 	i = 0;
+	l_symbol = '0';
 	while (str[i])
 	{
 		if (char_is_quote(str[i]))

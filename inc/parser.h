@@ -99,6 +99,7 @@ t_token *	new_token(t_tokenlist *tokenlist, char *str, int len, bool expand);
 int			prep_token(t_tokenlist *tokenlist, char *str, int i, int len);
 int			set_len(const char *str, int i);
 bool		char_is_red(char c);
+char		*move_str(char *str, int i);
 bool 		str_contains_red(char *str);
 bool		tok_is_red(t_token *check_token);
 char 		symbol_in_quote(char *str, char symbol);

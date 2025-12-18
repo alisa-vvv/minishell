@@ -33,7 +33,7 @@ int	count_exp(t_tokenlist *tokenlist, char symbol)
 					&& lookbehind(tokenlist, i)->type != HEREDOC))
 				count++;
 		}
-		else if (symbol == '"' && check_token->type == DOUBLE_Q)
+		else if (symbol == '"' && ft_strchr(check_token->value, '"'))
 			count++;
 		else if (symbol == '\'' && check_token->type == SINGLE_Q)
 			count++;
