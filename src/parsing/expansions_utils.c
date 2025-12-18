@@ -18,7 +18,7 @@ char	*exp_token(char *str_token, char *start, char *value, int offset)
 	char	*new_str;
 	char	*leftover;
 	char	*temp_left;
-	
+
 	temp_left = prep_leftover(str_token, start, offset);
 	if (!temp_left)
 		return (NULL);
@@ -66,5 +66,3 @@ int	refine_name(char *token_name, char **result, char symbol)
 	(*result)[i] = '\0';
 	return (success);
 }
-
-

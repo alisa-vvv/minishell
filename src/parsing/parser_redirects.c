@@ -57,8 +57,7 @@ int	set_type(t_redir_list *redirlist,
 		prev_token = lookbehind(tokenlist, pos);
 	if (check_token->type == RED_IN)
 		redirlist->src_fd = STDIN_FILENO;
-	else if (check_token->type == RED_OUT
-		|| check_token->type == RED_APP)
+	else if (check_token->type == RED_OUT || check_token->type == RED_APP)
 		redirlist->src_fd = STDOUT_FILENO;
 	return (0);
 }

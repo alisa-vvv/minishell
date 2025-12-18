@@ -56,14 +56,14 @@ char	*trim_str_space(char *str)
 	return (str);
 }
 
-//&& str[i] != '$'
 //returns len of unquoted token
 int	move_o_unquoted(const char *str, int i)
 {
 	int	len;
 
 	len = 0;
-	while (str[i] && !ft_isspace(str[i]) && !char_is_quote(str[i]) && !char_is_red(str[i]))
+	while (str[i] && !ft_isspace(str[i]) && !char_is_quote(str[i])
+		&& !char_is_red(str[i]))
 	{
 		len++;
 		i++;

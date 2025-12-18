@@ -17,8 +17,7 @@ int	add_arg_to_execdata(
 	t_msh_data *msh_data,
 	t_token *cur_token,
 	const size_t exdata_i,
-	size_t *argv_i
-)
+	size_t *argv_i)
 {
 	if (*argv_i == 0 && (cur_token->type >= CD && cur_token->type <= UNSET)
 		&& msh_data->exec_data[exdata_i].builtin_name == not_builtin)
@@ -35,11 +34,10 @@ int	add_arg_to_execdata(
 int	add_redirection(
 	t_redir_list **first,
 	t_token_type type,
-	char *next_token_val
-)
+	char *next_token_val)
 {
 	t_redir_list	*redir_node;
-	
+
 	redir_node = ft_calloc(1, sizeof(t_redir_list));
 	if (!redir_node)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
@@ -65,15 +63,14 @@ int	add_redirection(
 	return (success);
 }
 
-int set_redir_comm(
+int	set_redir_comm(
 	t_tokenlist *tokenlist,
 	t_msh_data *msh_data,
-	t_passcom_indexes *i
-)
+	t_passcom_indexes *i)
 {
-	int 			err;
-	t_token 		*cur_token; 
-	t_token 		*next_token;
+	int		err;
+	t_token	*cur_token;
+	t_token	*next_token;
 
 	err = success;
 	cur_token = tokenlist_get(tokenlist, i->tok);
@@ -83,23 +80,22 @@ int set_redir_comm(
 	if (!legit_token(next_token))
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	err = add_redirection(&msh_data->exec_data[i->exe].redirections,
-								cur_token->type, next_token->value);
+							cur_token->type,
+							next_token->value);
 	i->tok++;
 	return (err);
 }
 
-//when encountered pipe, set data 
-int set_pipe_data(
+//when encountered pipe, set data
+int	set_pipe_data(
 	t_msh_data *msh_data,
-	t_tokenlist *tokenlist, 
-	t_passcom_indexes *i
-)
+	t_tokenlist *tokenlist,
+	t_passcom_indexes *i)
 {
-	int err;
-	t_token *next_token;
+	int		err;
+	t_token	*next_token;
 
 	err = success;
-
 	next_token = looknxt(tokenlist, i->tok);
 	if (!next_token || next_token->type == PIPE || i->tok == 0)
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
@@ -107,7 +103,7 @@ int set_pipe_data(
 	i->exe++;
 	i->argve = 0;
 	i->mem = 128;
-	msh_data->exec_data[i->exe].argv = ft_calloc(i->mem, sizeof (char *));
+	msh_data->exec_data[i->exe].argv = ft_calloc(i->mem, sizeof(char *));
 	if (!msh_data->exec_data[i->exe].argv)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	msh_data->exec_data[i->exe].input_is_pipe = true;
@@ -117,10 +113,9 @@ int set_pipe_data(
 // struct "i" holds indexes for tokenlist, argv, and exec_data, as well as the
 // amount of memory currently used by argv.
 // tok for tokenlist, argve for argv, exe for exec_data, mem for memory.
-int pass_comm(
+int	pass_comm(
 	t_tokenlist *tokenlist,
-	t_msh_data *msh_data
-)
+	t_msh_data *msh_data)
 {
 	int					err;
 	t_token				*cur_token;
@@ -136,8 +131,8 @@ int pass_comm(
 		if (reallocate_argv(msh_data, i.mem, i.argve, i.exe) != success)
 			return (malloc_err);
 		cur_token = tokenlist_get(tokenlist, i.tok);
-		if (legit_token(cur_token)
-				|| (cur_token->type >= CD && cur_token->type <= UNSET))
+		if (legit_token(cur_token) || (cur_token->type >= CD
+				&& cur_token->type <= UNSET))
 			err = add_arg_to_execdata(msh_data, cur_token, i.exe, &i.argve);
 		else if (tok_is_red(cur_token))
 			err = set_redir_comm(tokenlist, msh_data, &i);

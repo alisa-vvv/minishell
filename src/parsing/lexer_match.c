@@ -54,12 +54,12 @@ int	match_string(char *str_token)
 		return (STRING);
 }
 
-bool tok_is_quote(char *str)
+bool	tok_is_quote(char *str)
 {
 	while (*str)
 	{
 		if (char_is_quote(*str))
-			return(true);
+			return (true);
 		str++;
 	}
 	return (false);
@@ -69,11 +69,9 @@ bool tok_is_quote(char *str)
 int	match_token(char *str_token)
 {
 	if (tok_is_quote(str_token))
-		return(QUOTES);
+		return (QUOTES);
 	else if (str_contains_red(str_token) || (ft_strchr(str_token, '$'))
-		|| str_token[0] == '|')
+			|| str_token[0] == '|')
 		return (match_nonterminal(str_token));
 	return (match_string(str_token));
 }
-
-

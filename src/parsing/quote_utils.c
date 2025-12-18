@@ -57,11 +57,11 @@ int	check_in_quote(const char *str, int pos)
 			in_quote = -1;
 	}
 	count_d %= 2;
-	count_s %= 2; 
+	count_s %= 2;
 	return (count_d || count_s);
 }
 
-//checks if string start is in single quotes 
+//checks if string start is in single quotes
 int	check_in_quote_s(const char *str, int pos, char symbol)
 {
 	int	count_s;
@@ -85,4 +85,3 @@ int	check_in_quote_s(const char *str, int pos, char symbol)
 	}
 	return (count_s %= 2);
 }
-

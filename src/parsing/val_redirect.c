@@ -13,7 +13,7 @@
 #include "parser.h"
 
 //check if last token isn't redirect?
-bool	val_redir_out(
+bool		val_redir_out(
 	t_tokenlist *tokenlist,
 	size_t pos)
 {
@@ -25,8 +25,7 @@ bool	val_redir_out(
 //check if statement contains a heredoc
 static int	check_heredoc(
 	t_tokenlist *tokenlist,
-	size_t pos
-)
+	size_t pos)
 {
 	if (pos - 1 < tokenlist->total - 1)
 		return (success);
@@ -34,7 +33,7 @@ static int	check_heredoc(
 }
 
 //validate if redir are well placed
-int	val_redir(
+int			val_redir(
 	t_tokenlist *tlist,
 	size_t i,
 	t_token *ctok)

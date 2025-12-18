@@ -13,12 +13,11 @@
 #include "minishell.h"
 #include "parser.h"
 
-int	reallocate_argv(
+int		reallocate_argv(
 	t_msh_data *msh_data,
 	size_t argv_mem,
 	size_t argv_i,
-	size_t exdata_i
-)
+	size_t exdata_i)
 {
 	char	**new_argv;
 	int		i;
@@ -26,14 +25,14 @@ int	reallocate_argv(
 	if (argv_i == argv_mem - 1)
 	{
 		argv_mem += argv_mem / 2;
-		new_argv = ft_calloc(argv_mem, sizeof (char *));
+		new_argv = ft_calloc(argv_mem, sizeof(char *));
 		i = -1;
 		while (msh_data->exec_data[exdata_i].argv[++i])
 		{
 			new_argv[i] = ft_strdup(msh_data->exec_data[exdata_i].argv[i]);
 			if (!new_argv[i])
 			{
-				free_2d_arr((void **) new_argv);
+				free_2d_arr((void **)new_argv);
 				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 			}
 		}
@@ -45,8 +44,7 @@ int	reallocate_argv(
 
 void	new_redir_elem(
 	t_redir_list **first,
-	t_redir_list *redir_node
-)
+	t_redir_list *redir_node)
 {
 	t_redir_list	*cur_node;
 
@@ -62,7 +60,7 @@ void	new_redir_elem(
 		*first = redir_node;
 }
 
-bool legit_token(t_token *cur_token)
+bool	legit_token(t_token *cur_token)
 {
 	if (cur_token->type == COMMAND || cur_token->type == STRING
 		|| cur_token->type == PARAMETER || cur_token->type == QUOTES)

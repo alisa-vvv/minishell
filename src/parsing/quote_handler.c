@@ -29,31 +29,31 @@ char	*move_str(char *str, int i)
 //checks if quote needs to be removed or if within another quote
 bool	check_quote_rm(const char *str, int i, char symbol)
 {
-
 	if (str[i] && str[i] == symbol)
 	{
 		if (check_in_quote_s(str, i, '\''))
 			return (false);
 		else if (!check_in_quote(str, i))
 			return (true);
-		else if (check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i, '"') && symbol == '"')
+		else if (check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i, '"')
+					&& symbol == '"')
 			return (false);
 		else if (!check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i,
-				'"'))
+					'"'))
 			return (true);
 	}
 	return (false);
 }
 
 //have to make a quote removal for empty quotes before this func
-//removes quotes in a string from outside in 
+//removes quotes in a string from outside in
 void	rm_str_quotes(char *str)
 {
 	int	i;
-	int start_q;
+	int	start_q;
 
 	i = 0;
-	start_q = 0; 
+	start_q = 0;
 	while (str[i])
 	{
 		if (str[i] == '\'' || str[i] == '"')
@@ -72,7 +72,6 @@ void	rm_str_quotes(char *str)
 	}
 }
 
-
 // rm quotes for certain pos in tokenlist
 int	rm_quotes(t_tokenlist *tokenlist, int pos)
 {
@@ -81,7 +80,6 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos)
 
 	err = success;
 	check_token = (t_token *)tokenlist->tokens[pos];
-
 	rm_str_quotes(check_token->value);
 	if (!check_token->value || ft_strncmp(check_token->value, "", 1) == 0)
 		err = tokenlist_delete(tokenlist, pos);

@@ -34,8 +34,8 @@ t_token	*new_token(
 	ft_strlcpy(token->value, str, len);
 	if (!expand)
 		token->type = match_token(token->value);
-	else 
-		token->type = STRING; 
+	else
+		token->type = STRING;
 	token->command = false;
 	token->pos = tokenlist_total(tokenlist);
 	return (token);
@@ -54,7 +54,7 @@ int	l_red(char *str)
 
 // l_printf("len = %zu ", len);
 //add new token to the list and updates total
-int	add_token(
+int		add_token(
 	t_tokenlist *tokenlist,
 	char *str,
 	size_t len)
@@ -69,12 +69,11 @@ int	add_token(
 }
 
 //preps str for redirect splitting and adding tokens
-int	prep_token(
+int		prep_token(
 	t_tokenlist *tokenlist,
 	char *str,
 	int i,
-	int len
-)
+	int len)
 {
 	char	*str_b_token;
 	int		status;

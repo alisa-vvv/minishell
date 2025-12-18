@@ -23,7 +23,7 @@ int	count_unq(const char *str, int i, int count)
 		{
 			count++;
 			if ((char_is_red(str[i]) && i == 0) || (i > 0 && ft_isspace(str[i
-							- 1]) && char_is_red(str[i])))
+						- 1]) && char_is_red(str[i])))
 				count++;
 			while (str[i] && char_is_red(str[i]))
 				i++;
@@ -105,8 +105,7 @@ int	check_tcount(int token_c)
 // default option to put trimmed input in tokenlist
 int	default_lexer(
 	char *input_line,
-	t_msh_data *msh_data
-)
+	t_msh_data *msh_data)
 {
 	int			token_c;
 	t_tokenlist	*token_list;
@@ -126,7 +125,6 @@ int	default_lexer(
 		return (syntax_err);
 	if (tokenlist_init(&token_list, token_c) != success)
 		return (malloc_err);
-	
 	err = fill_tokenlist(token_list, input_line);
 	if (err == success)
 		err = check_lexer(token_list, msh_data);

@@ -46,7 +46,7 @@ int	count_exp(t_tokenlist *tokenlist, char symbol)
 int	expand_quotes(t_tokenlist *tokenlist,
 					t_msh_data *msh_data)
 {
-	int err;
+	int	err;
 
 	err = success;
 	err = exp_lexer(tokenlist, msh_data, QUOTES, 0);

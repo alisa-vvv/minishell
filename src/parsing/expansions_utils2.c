@@ -54,14 +54,13 @@ char	*prep_leftover(char *str_token, char *start, int offset)
 	return (temp_left);
 }
 
-
-bool skip_exp(t_token *check_token, 
-	t_exp_data *exp_data)
+bool	skip_exp(t_token *check_token,
+				t_exp_data *exp_data)
 {
 	if (check_in_quote_s(check_token->value, exp_data->start_pos, '\''))
 		return (true);
 	else if (!exp_data->env_value && ft_strncmp(check_token->value, "$",
-			2) == 0)
+				2) == 0)
 		return (true);
 	return (false);
 }
