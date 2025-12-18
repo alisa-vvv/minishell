@@ -129,7 +129,7 @@ int			exp_lexer(t_tokenlist *tokenlist, t_msh_data *msh_data,
 int			expand_var(t_tokenlist **tokenlist, int pos, t_msh_data *msh_data, t_token *check_token);
 char *		prep_leftover(char *str_token, char *start,  int offset);
 char *		exp_token(char *str_token, char *start, char *value, int offset);
-int			refine_name(char *token_name, char **result, char symbol);
+int			refine_name(char *token_name, char **result);
 
 int 		prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data);
 int			index_lexer(t_tokenlist **tokenlist);
