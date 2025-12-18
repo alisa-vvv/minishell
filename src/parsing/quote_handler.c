@@ -57,6 +57,7 @@ void	rm_str_quotes(char *str)
 
 	i = 0;
 	start_q = 0; 
+	printf("how many times?\n");
 	while (str[i])
 	{
 		if (str[i] == '\'' || str[i] == '"')
@@ -68,7 +69,9 @@ void	rm_str_quotes(char *str)
 			str = move_str(str, start_q);
 			i--;
 			str = move_str(str, i);
-			// printf("STRING2= (%s)\n", str);
+			printf("STRING2= (%s)\n", str);
+			printf("what is i: %d\n", i);
+			printf("string from i: %s\n", &str[i]);
 		}
 		else
 			i++;
@@ -90,3 +93,28 @@ int	rm_quotes(t_tokenlist *tokenlist, int pos)
 		err = tokenlist_delete(tokenlist, pos);
 	return (err);
 }
+
+int	check_in_quote_s(const char *str, int pos, char symbol)
+{
+	int	count_s;
+	int	in_quote;
+	int	i;
+
+	count_s = 0;
+	in_quote = -1;
+	i = -1;
+	symbol = 0;
+	while (str[++i] && i <= pos)
+	{
+		if (str[i] == '"' && in_quote == -1)
+			in_quote = 2;
+		else if (str[i] == '"' && in_quote == 2)
+			in_quote = -1;
+		if (str[i] == '\'' && (in_quote == -1 || in_quote == 1))
+			count_s++;
+		if (count_s > 0 && count_s % 2 != 0)
+			in_quote = 1;
+	}
+	return (count_s %= 2);
+}
+
