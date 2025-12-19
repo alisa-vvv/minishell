@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "executor.h"
-#include <stdio.h>
+#include "minishell.h"
 #include <errno.h>
+#include <stdio.h>
 #include <unistd.h>
 
 void	test_close(int fd)

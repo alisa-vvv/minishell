@@ -41,10 +41,8 @@ t_token	*new_token(
 	return (token);
 }
 
-
-
 //add new token to the list and updates total
-int		add_token(
+int	add_token(
 	t_tokenlist *tokenlist,
 	char *str,
 	size_t len)
@@ -59,7 +57,7 @@ int		add_token(
 }
 
 //preps str for redirect splitting and adding tokens
-int		prep_token(
+int	prep_token(
 	t_tokenlist *tokenlist,
 	char *str,
 	int i,

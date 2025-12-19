@@ -50,7 +50,6 @@ char	*trim_str_space(char *str)
 	return (str);
 }
 
-
 //checks valid syntax for order of pipes /redirects
 int	check_pipes(t_tokenlist *tlist)
 {
