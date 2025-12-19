@@ -28,7 +28,7 @@ bool	str_contains_red(char *str)
 }
 
 //function to check validity of redirects syntax
-int	validate_redirect( // you were here
+int	validate_redirect(
 	const char *str,
 	int i)
 {
@@ -38,7 +38,7 @@ int	validate_redirect( // you were here
 			return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	}
 	if ((str[i] == '<' && str[i + 1] == '>') || (str[i] == '>' && str[i
-			+ 1] == '<'))
+				+ 1] == '<'))
 	{
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	}

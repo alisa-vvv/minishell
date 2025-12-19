@@ -13,8 +13,8 @@
 #include "parser.h"
 
 // expands variables to env value if found, otherwise deletes
-int	expand_new(t_tokenlist *tokenlist, 
-	size_t pos, 
+int	expand_new(t_tokenlist *tokenlist,
+	size_t pos,
 	char *str_token,
 	t_exp_data *xp_d)
 {
@@ -35,7 +35,7 @@ int	expand_new(t_tokenlist *tokenlist,
 	}
 	else
 	{
-		n_token = new_token(tokenlist, new_str, ft_strlen(new_str) + 1, false);
+		n_token = new_token(tokenlist, new_str, ft_strlen(new_str) + 1, true);
 		if (!n_token)
 			return (malloc_err);
 		tokenlist_set(tokenlist, pos, n_token);
