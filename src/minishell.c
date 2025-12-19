@@ -77,7 +77,6 @@ static void	post_execution_cleanup(
 	i = -1;
 	if (msh_data->exec_data)
 	{
-		printf("cry\n");
 		while (++i < msh_data->command_count && &msh_data->exec_data[i])
 			free_and_close_exec_data(&msh_data->exec_data[i]);
 		free(msh_data->exec_data);
