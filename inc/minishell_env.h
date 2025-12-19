@@ -24,22 +24,18 @@
 /**/
 
 /*	Initialization	*/
-int	clone_env(
-	t_msh_data *const msh_data,
-	char *envp[]
-);
-int	validate_default_vars(
-	t_msh_data *const msh_data
-);
-int	export_default_var(
-	t_msh_data *const msh_data,
-	char **var_value,
-	char *var_string
-);
-int	update_shlvl(
-	t_msh_data *const msh_data,
-	char **var_value
-);
+int		clone_env(
+			t_msh_data *const msh_data,
+			char *envp[]);
+int		validate_default_vars(
+			t_msh_data *const msh_data);
+int		export_default_var(
+			t_msh_data *const msh_data,
+			char **var_value,
+			char *var_string);
+int		update_shlvl(
+			t_msh_data *const msh_data,
+			char **var_value);
 /**/
 
 /*	Variable usage	*/

@@ -25,36 +25,28 @@ int		exec_builtin(
 			t_exec_data *const command,
 			t_msh_data *const msh_data);
 
-int	msh_echo(
-	char **arguments
-);
-int	msh_cd(
-	char *const arg,
-	t_msh_data *const msh_data
-);
-int	msh_pwd(
-	t_msh_data *const msh_data
-);
-int	msh_env(
-	t_msh_data *const msh_data
-);
-int	msh_export(
-	char *const *argv,
-	t_msh_data *const msh_data
-);
-int	export_var(
-	char *const *argv,
-	t_msh_data *const msh_data,
-	char *identifier,
-	t_export_i *i
-);
-int	msh_unset(
-	char **argv,
-	t_msh_data *msh_data
-);
-int	msh_exit(
-	t_exec_data *command,
-	t_msh_data *const msh_data
-);
+int		msh_echo(
+			char **arguments);
+int		msh_cd(
+			char *const arg,
+			t_msh_data *const msh_data);
+int		msh_pwd(
+			t_msh_data *const msh_data);
+int		msh_env(
+			t_msh_data *const msh_data);
+int		msh_export(
+			char *const *argv,
+			t_msh_data *const msh_data);
+int		export_var(
+			char *const *argv,
+			t_msh_data *const msh_data,
+			char *identifier,
+			t_export_i *i);
+int		msh_unset(
+			char **argv,
+			t_msh_data *msh_data);
+int		msh_exit(
+			t_exec_data *command,
+			t_msh_data *const msh_data);
 
 #endif

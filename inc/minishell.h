@@ -21,7 +21,8 @@
 # include <stdbool.h>
 
 /*		Standard/Default values		*/
-# define STD_PATH "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+# define STD_PATH "PATH=/usr/local/sbin:/usr/\
+	local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 // max value for environment variables
 # define PATH_MAX 4096 // change name?
 # define ENV_MAX 4096
@@ -174,14 +175,14 @@ typedef struct msh_data
 	bool						is_parent;
 	t_exec_data					*exec_data;
 	int							command_count;
-	int 						last_pipeline_return ;
+	int							last_pipeline_return ;
 	char						*cur_dir;
 	bool						do_exit;
 	int							exit_code;
 }								t_msh_data;
 
-void	free_and_close_exec_data(
-			t_exec_data *exec_data);
+void							free_and_close_exec_data(
+									t_exec_data *exec_data);
 
 /**/
 
@@ -189,7 +190,8 @@ void	free_and_close_exec_data(
 // error_prefix is for stuff to print before error message,
 //	like error during a builtin
 // relation will specify behavior for different errors.
-// function errors (extern_err) will use native perror() to print their messages.
+// function errors (extern_err) will use native perror()
+// to print their messages.
 // all other errors will put a "msh: " prefix automatic.
 // generic_err is for an error that doesn't need specific prefix
 // other two values are for parse_err and exec_err
@@ -205,17 +207,16 @@ typedef enum e_error_relation
 /**/
 
 /*		Error Mananagement Functions	*/
-void	msh_perror(
-			char *const error_prefix,
-			char *const error_msg,
-			t_error_relation relation);
-void	clean_exit(
-			t_msh_data *msh_data,
-			char *read_line,
-			int exit_code,
-			bool silent_exit);
+void							msh_perror(
+									char *const error_prefix,
+									char *const error_msg,
+									t_error_relation relation);
+void							clean_exit(
+									t_msh_data *msh_data,
+									char *read_line,
+									int exit_code,
+									bool silent_exit);
 /**/
-
 /*	TEST macros	*/
 # define RED "\033[31"
 # define GREEN "\033[32"
