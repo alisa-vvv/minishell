@@ -18,7 +18,7 @@
 static int	find_and_create_heredocs(
 	t_msh_data *const msh_data,
 	t_redir_list *redirection
-)	
+)
 {
 	int	fd_or_exit_code;
 
@@ -28,7 +28,7 @@ static int	find_and_create_heredocs(
 		if (redirection->type == heredoc)
 		{
 			fd_or_exit_code = create_here_doc(msh_data,
-									 redirection->heredoc_delim);
+					redirection->heredoc_delim);
 			if (fd_or_exit_code > 0)
 				redirection->dest_fd = fd_or_exit_code;
 			else
@@ -39,32 +39,28 @@ static int	find_and_create_heredocs(
 	return (success);
 }
 
-int g_TEST_IO;
 int	prepare_command_io(
 	t_msh_data *const msh_data,
 	const t_exec_data *command,
-	t_command_io *const command_io,
+	t_command_io *const comm_io,
 	int i
 )
 {
-	int	err_check; // probably also change name
+	int	err_check;
 
-	//g_TEST_IO++;
 	err_check = 0;
 	if (command->input_is_pipe == true)
 	{
-		command_io[i].in_pipe[READ_END] = command_io[i - 1].out_pipe[READ_END];
-		command_io[i].in_pipe[WRITE_END] = command_io[i - 1].out_pipe[WRITE_END];
+		comm_io[i].in_pipe[READ_END] = comm_io[i - 1].out_pipe[READ_END];
+		comm_io[i].in_pipe[WRITE_END] = comm_io[i - 1].out_pipe[WRITE_END];
 	}
 	if (command->output_is_pipe == true)
 	{
-		err_check = pipe(command_io[i].out_pipe);
+		err_check = pipe(comm_io[i].out_pipe);
 		if (err_check != success)
-			return (msh_perror(NULL, PIPE_ERR, extern_err), pipe_err); // do we need to reutrn here???
+			return (msh_perror(NULL, PIPE_ERR, extern_err), pipe_err);
 	}
 	if (command->redirections)
 		err_check = find_and_create_heredocs(msh_data, command->redirections);
-	//if (g_TEST_IO == 1)
-	//	return (-1);
 	return (err_check);
 }

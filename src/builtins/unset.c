@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "minishell.h"
 #include "minishell_env.h"
+#include <stdlib.h>
 
-// is this even needed?
-static int	check_name_len_and_validity(char *name) // find out which chars are not valid
+static int	check_name_len_and_validity(char *name)
 {
 	int	len;
 
@@ -55,5 +54,5 @@ int	msh_unset(
 		msh_data->env_var_count -= 1;
 		msh_data->env[msh_data->env_var_count] = NULL;
 	}
-	return (0);
+	return (success);
 }

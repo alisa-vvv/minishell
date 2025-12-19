@@ -69,6 +69,7 @@ CFILES_BUILTINS	=	exec_builtin.c\
 					echo.c\
 					env.c\
 					export.c\
+					export2.c\
 					unset.c\
 					exit.c
 

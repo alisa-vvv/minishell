@@ -20,11 +20,11 @@ int	msh_pwd(
 {
 	char *const	dir = ft_calloc(PATH_MAX, sizeof(char));
 	int			err_check;
-	
+
 	if (!dir)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = success;
-	if (!getcwd(dir, PATH_MAX) || dir[0] == '\0') // manage errors?
+	if (!getcwd(dir, PATH_MAX) || dir[0] == '\0')
 		printf("%s\n", msh_data->cur_dir);
 	else
 	{

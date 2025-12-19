@@ -23,8 +23,8 @@ int	msh_env(
 	i = -1;
 	if (msh_data->env)
 	{
-		while(msh_data->env[++i])
+		while (msh_data->env[++i])
 			printf("%s\n", msh_data->env[i]);
 	}
-	return (0);
+	return (success);
 }

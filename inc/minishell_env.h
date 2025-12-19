@@ -14,13 +14,12 @@
 # define MINISHELL_ENV_H
 
 #include "minishell.h"
-#include "parser.h"
 
 /*		Environment errors		*/
 # define INVALID_IDENTIFIER "not a valid identifier: "
 # define TOO_MANY_SH_ERR "Maximum number of sessions reached!"
 # define NO_VAR -1
-# define TOO_MANY_ENV_VAR "could not export, environment variable limit reached"
+# define ENV_VAR_MAX "could not export, environment variable limit reached"
 /**/
 
 /*	Initialization	*/

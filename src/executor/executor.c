@@ -25,10 +25,10 @@ static int	execute_pipeline(
 	t_command_io *command_io
 )
 {
-	int			elem_count;
-	t_exec_data	*const exec_data = msh_data->exec_data;
-	const int	command_count = msh_data->command_count;
-	int			err;
+	int					elem_count;
+	t_exec_data *const	exec_data = msh_data->exec_data;
+	const int			command_count = msh_data->command_count;
+	int					err;
 
 	err = success;
 	elem_count = 0;
@@ -40,8 +40,8 @@ static int	execute_pipeline(
 	{
 		return (err);
 	}
-	if (command_count > 1 ||
-		(command_count == 1 && exec_data->builtin_name == not_builtin))
+	if (command_count > 1
+		|| (command_count == 1 && exec_data->builtin_name == not_builtin))
 		wait_for_children(elem_count, msh_data, p_id_arr, p_exit_codes);
 	return (err);
 }

@@ -15,7 +15,6 @@
 #include "builtins.h"
 #include <unistd.h>
 
-#include <stdio.h>
 static int	run_child_process(
 	t_exec_data *const command,
 	t_command_io *const command_io,
@@ -48,7 +47,6 @@ static int	run_child_process(
 	return (err_check);
 }
 
-#include <stdio.h>
 static int	execute_in_child(
 	t_exec_data *command,
 	t_command_io *const command_io,
@@ -121,15 +119,15 @@ int	build_pipeline(
 {
 	t_exec_data *const	exec_data = msh_data->exec_data;
 	const int			command_count = msh_data->command_count;
-	int	status_check;
-	int	i;
+	int					status_check;
+	int					i;
 
 	i = -1;
 	status_check = success;
 	while (++i < command_count)
 	{
 		status_check = prepare_command_io(msh_data,
-									&exec_data[i], command_io, i);
+				&exec_data[i], command_io, i);
 		if (status_check != success)
 			break ;
 	}
@@ -141,7 +139,7 @@ int	execute_commands(
 	t_msh_data *const msh_data,
 	t_exec_data *command,
 	t_command_io *command_io,
-	int *p_id_arr // replace with pid_t
+	int *p_id_arr
 )
 {
 	int			i;
@@ -150,7 +148,8 @@ int	execute_commands(
 	i = -1;
 	while (++i < msh_data->command_count)
 	{
-		err = execute_command(&command[i], &command_io[i], msh_data, &p_id_arr[i]);
+		err = execute_command(&command[i], &command_io[i],
+				msh_data, &p_id_arr[i]);
 		if (msh_data->is_parent == false)
 			return (err);
 		else

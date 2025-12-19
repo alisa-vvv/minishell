@@ -43,6 +43,12 @@ int	msh_export(
 	char *const *argv,
 	t_msh_data *const msh_data
 );
+int	export_var(
+	char *const *argv,
+	t_msh_data *const msh_data,
+	char *identifier,
+	t_export_i *i
+);
 int	msh_unset(
 	char **argv,
 	t_msh_data *msh_data

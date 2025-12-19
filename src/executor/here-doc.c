@@ -62,8 +62,8 @@ static int	handle_heredoc_child(
 )
 {
 	int	err_check;
-	err_check = success;
 
+	err_check = success;
 	if (pid < 0)
 	{
 		safe_close(&here_doc[READ_END]);
@@ -72,7 +72,7 @@ static int	handle_heredoc_child(
 	}
 	else if (pid == 0)
 	{
-		safe_close(&here_doc[READ_END]); 
+		safe_close(&here_doc[READ_END]);
 		msh_data->is_parent = false;
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		safe_close(&here_doc[WRITE_END]);

@@ -54,7 +54,7 @@ int	msh_echo(
 		ft_putstr_fd(arguments[i], STDOUT_FILENO);
 		if (arguments[i + 1])
 			ft_putchar_fd(' ', STDOUT_FILENO);
-		i++;	
+		i++;
 	}
 	if (put_nl == true)
 		ft_putchar_fd('\n', STDOUT_FILENO);

@@ -10,15 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
 #include "minishell.h"
 #include "executor.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <fcntl.h>
 
-static void	 safe_open(
+static void	safe_open(
 	char *filename,
 	int *fd,
 	int flags
@@ -29,7 +28,6 @@ static void	 safe_open(
 
 	if (filename == NULL)
 		return ;
-	// add access check here?
 	if (flags == trunc_f || flags == app_f)
 		*fd = open(filename, flags, 0664);
 	else
@@ -76,11 +74,11 @@ static int	output_redirect(
 	if (redirection->dest_fd < 0)
 	{
 		msh_perror(NULL, redirection->dest_filename, extern_err);
-		return (fd_err); // check return
+		return (fd_err);
 	}
 	if (record == true)
 	{
-		undup_elem->orig_fd = dup(STDOUT_FILENO); 
+		undup_elem->orig_fd = dup(STDOUT_FILENO);
 		undup_elem->dup_fd = STDOUT_FILENO;
 		undup_elem->dest_fd = redirection->dest_fd;
 		undup_elem->next = NULL;
