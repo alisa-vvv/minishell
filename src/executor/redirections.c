@@ -10,23 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-#include "minishell.h"
 #include "executor.h"
+#include "libft.h"
+#include "minishell.h"
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
 
-static void	 safe_open(
+static void	safe_open(
 	char *filename,
 	int *fd,
-	int flags
-)
+	int flags)
 {
-	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
-	const int	app_f = O_WRONLY | O_CREAT | O_APPEND;
+	const int	trunc_f;
+	const int	app_f;
 
+	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
+	app_f = O_WRONLY | O_CREAT | O_APPEND;
 	if (filename == NULL)
 		return ;
 	// add access check here?
@@ -39,8 +39,7 @@ static void	 safe_open(
 static int	input_redirect(
 	t_redir_list *redirection,
 	t_undup_list *undup_elem,
-	bool record
-)
+	bool record)
 {
 	if (record == true)
 	{
@@ -63,12 +62,13 @@ static int	input_redirect(
 static int	output_redirect(
 	t_redir_list *redirection,
 	t_undup_list *undup_elem,
-	bool record
-)
+	bool record)
 {
-	const int	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
-	const int	app_f = O_WRONLY | O_CREAT | O_APPEND;
+	const int	trunc_f;
+	const int	app_f;
 
+	trunc_f = O_WRONLY | O_CREAT | O_TRUNC;
+	app_f = O_WRONLY | O_CREAT | O_APPEND;
 	if (redirection->type == trunc)
 		safe_open(redirection->dest_filename, &redirection->dest_fd, trunc_f);
 	else if (redirection->type == append)
@@ -80,7 +80,7 @@ static int	output_redirect(
 	}
 	if (record == true)
 	{
-		undup_elem->orig_fd = dup(STDOUT_FILENO); 
+		undup_elem->orig_fd = dup(STDOUT_FILENO);
 		undup_elem->dup_fd = STDOUT_FILENO;
 		undup_elem->dest_fd = redirection->dest_fd;
 		undup_elem->next = NULL;
@@ -90,11 +90,10 @@ static int	output_redirect(
 	return (success);
 }
 
-int	do_redirections(
+int			do_redirections(
 	t_redir_list *redirections,
 	t_undup_list **undup_list_head,
-	bool record
-)
+	bool record)
 {
 	int				err_check;
 	t_undup_list	*cur_undup;

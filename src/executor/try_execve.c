@@ -10,29 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "executor.h"
 #include "libft.h"
 #include "minishell.h"
 #include "minishell_env.h"
-#include "executor.h"
-#include <stdio.h>
 #include <errno.h>
+#include <stdio.h>
 
-
-static const char *const	*handle_no_path(
-	void
-)
+static const char *const *handle_no_path(
+	void)
 {
-	char **path_arr;
+	char	**path_arr;
 
 	path_arr = ft_calloc(2, sizeof(char *));
 	path_arr[0] = ft_calloc(1, sizeof(char));
 	path_arr[1] = NULL;
-	return ((const char *const *) path_arr);
+	return ((const char *const *)path_arr);
 }
 
-static const char *const	*split_path_var(
-	char **env
-)
+static const char *const *split_path_var(
+	char **env)
 {
 	char	*path_value;
 	char	**path_arr;
@@ -58,13 +55,13 @@ static const char *const	*split_path_var(
 		return (NULL);
 	}
 	free(path_value);
-	return ((const char *const *) path_arr);
+	return ((const char *const *)path_arr);
 }
 
 static int	error_loop(
 	char *slash_arg,
 	char *error_msg,
-	int	error_code
+	int error_code
 
 )
 {
@@ -76,8 +73,7 @@ static int	error_loop(
 static int	look_for_command(
 	char **env,
 	char *const argv[],
-	const char *const *path
-)
+	const char *const *path)
 {
 	int		i;
 	char	*command_path;
@@ -101,14 +97,13 @@ static int	look_for_command(
 	return (no_command);
 }
 
-int	try_execve(
+int			try_execve(
 	char **env,
-	char *const argv[]
-)
+	char *const argv[])
 {
-	int					err_check;
-	const char *const 	*path;
+	int	err_check;
 
+	const char *const *path;
 	if (argv == NULL || argv[0] == NULL)
 		return (child_success);
 	path = split_path_var(env);
@@ -116,7 +111,7 @@ int	try_execve(
 		return (malloc_err);
 	execve(argv[0], argv, env);
 	err_check = look_for_command(env, argv, path);
-	free_2d_arr((void **) path);
+	free_2d_arr((void **)path);
 	if (err_check == no_command)
 	{
 		ft_putstr_fd(argv[0], STDERR_FILENO);

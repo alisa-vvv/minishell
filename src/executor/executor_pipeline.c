@@ -10,19 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "executor.h"
 #include "builtins.h"
-#include <unistd.h>
-
+#include "executor.h"
+#include "minishell.h"
 #include <stdio.h>
+#include <unistd.h>
 static int	run_child_process(
 	t_exec_data *const command,
 	t_command_io *const command_io,
-	t_msh_data *const msh_data
-)
+	t_msh_data *const msh_data)
 {
-	int				err_check;
+	int	err_check;
 
 	err_check = success;
 	if (command->input_is_pipe == true)
@@ -49,12 +47,12 @@ static int	run_child_process(
 }
 
 #include <stdio.h>
+
 static int	execute_in_child(
 	t_exec_data *command,
 	t_command_io *const command_io,
 	t_msh_data *const msh_data,
-	pid_t *pid
-)
+	pid_t *pid)
 {
 	int	err_check;
 
@@ -81,8 +79,7 @@ static int	execute_command(
 	t_exec_data *command,
 	t_command_io *const command_io,
 	t_msh_data *const msh_data,
-	pid_t *pid
-)
+	pid_t *pid)
 {
 	int				err;
 	t_undup_list	**undup_list_head;
@@ -113,23 +110,25 @@ static int	execute_command(
 // if a pipe creation fails, it will return the number of pipes built.
 // this will tell the caller function that not all pipes were created.
 // currently, what happens on fail is unclear
-int	build_pipeline(
+int			build_pipeline(
 	t_msh_data *const msh_data,
 	t_command_io *command_io,
-	int *elem_count
-)
+	int *elem_count)
 {
-	t_exec_data *const	exec_data = msh_data->exec_data;
-	const int			command_count = msh_data->command_count;
-	int	status_check;
-	int	i;
+	const int	command_count;
+	int			status_check;
+	int			i;
 
+	t_exec_data *const exec_data = msh_data->exec_data;
+	command_count = msh_data->command_count;
 	i = -1;
 	status_check = success;
 	while (++i < command_count)
 	{
 		status_check = prepare_command_io(msh_data,
-									&exec_data[i], command_io, i);
+											&exec_data[i],
+											command_io,
+											i);
 		if (status_check != success)
 			break ;
 	}
@@ -137,7 +136,7 @@ int	build_pipeline(
 	return (status_check);
 }
 
-int	execute_commands(
+int			execute_commands(
 	t_msh_data *const msh_data,
 	t_exec_data *command,
 	t_command_io *command_io,
@@ -150,13 +149,14 @@ int	execute_commands(
 	i = -1;
 	while (++i < msh_data->command_count)
 	{
-		err = execute_command(&command[i], &command_io[i], msh_data, &p_id_arr[i]);
+		err = execute_command(&command[i], &command_io[i], msh_data,
+				&p_id_arr[i]);
 		if (msh_data->is_parent == false)
 			return (err);
 		else
 		{
 			if (err != success)
-				msh_data->last_pipeline_return = 2;
+				msh_data->last_pipeline_return (= 2);
 		}
 	}
 	return (success);

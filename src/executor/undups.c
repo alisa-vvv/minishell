@@ -10,15 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "executor.h"
 #include "libft.h"
-#include <unistd.h>
+#include "minishell.h"
 #include <stdlib.h>
+#include <unistd.h>
 
 void	undup_redirections(
-	t_undup_list **undup_head
-)
+	t_undup_list **undup_head)
 {
 	t_undup_list	*cur_undup;
 
@@ -27,7 +26,8 @@ void	undup_redirections(
 	cur_undup = *undup_head;
 	while (cur_undup != NULL)
 	{
-		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd); // add error handling ?
+		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd);
+			// add error handling ?
 		safe_close(&cur_undup->orig_fd);
 		cur_undup = cur_undup->prev;
 		free(*undup_head);
@@ -35,10 +35,9 @@ void	undup_redirections(
 	}
 }
 
-int	record_undup(
+int		record_undup(
 	t_undup_list **undup_list_head,
-	t_undup_list **cur_undup
-)
+	t_undup_list **cur_undup)
 {
 	*cur_undup = ft_calloc(1, sizeof(t_undup_list));
 	if (*cur_undup == NULL)

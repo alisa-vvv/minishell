@@ -10,16 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "builtins.h"
 #include "libft.h"
 #include "minishell.h"
-#include "builtins.h"
 #include "minishell_env.h"
-#include <unistd.h>
 #include <stdio.h>
+#include <unistd.h>
 
 static void	free_variables(
-	char **variables
-)
+	char **variables)
 {
 	if (variables)
 	{
@@ -34,13 +33,12 @@ static void	free_variables(
 static int	set_env_vars(
 	t_msh_data *const msh_data,
 	char *cwd,
-	char *path
-)
+	char *path)
 {
 	int		err_check;
 	char	**variables;
 
-	variables = ft_calloc(3, sizeof (char *));
+	variables = ft_calloc(3, sizeof(char *));
 	if (!variables)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	variables[0] = ft_strjoin("OLDPWD=", cwd);
@@ -57,20 +55,20 @@ static int	set_env_vars(
 	return (success);
 }
 
-static int find_target_path(
+static int	find_target_path(
 	char *const arg,
 	t_msh_data *const msh_data,
 	char *const cwd,
-	char **path
-)
+	char **path)
 {
 	char	*arg_with_slash;
-	int 	existing;
+	int		existing;
 
 	existing = 0;
 	if (!arg || arg[0] == '\0')
 	{
-		if (env_var_get_value(msh_data->env, "HOME", path, &existing) != success)
+		if (env_var_get_value(msh_data->env, "HOME", path,
+				&existing) != success)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 		if (!*path)
 			return (msh_perror("cd: ", "HOME not set", exec_err), builtin_err);
@@ -85,7 +83,7 @@ static int find_target_path(
 			*path = ft_strjoin(cwd, arg_with_slash);
 			free(arg_with_slash);
 		}
-		else 
+		else
 			*path = ft_strdup(arg);
 		if (!*path)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
@@ -98,16 +96,14 @@ static int find_target_path(
 	return (success);
 }
 
-
-int	msh_cd(
+int			msh_cd(
 	char *const arg,
-	t_msh_data *const msh_data
-)
+	t_msh_data *const msh_data)
 {
-	int			err_check;
-	char		*path;
-	char *const	cwd = ft_calloc(PATH_MAX, sizeof(char));
+	int		err_check;
+	char	*path;
 
+	char *const cwd = ft_calloc(PATH_MAX, sizeof(char));
 	if (cwd == NULL)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	path = NULL;

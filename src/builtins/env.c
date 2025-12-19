@@ -11,19 +11,18 @@
 /* ************************************************************************** */
 
 #include <minishell.h>
-#include <unistd.h>
 #include <stdio.h>
+#include <unistd.h>
 
 int	msh_env(
-	t_msh_data *const msh_data
-)
+	t_msh_data *const msh_data)
 {
 	int	i;
 
 	i = -1;
 	if (msh_data->env)
 	{
-		while(msh_data->env[++i])
+		while (msh_data->env[++i])
 			printf("%s\n", msh_data->env[i]);
 	}
 	return (0);

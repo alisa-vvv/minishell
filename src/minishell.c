@@ -119,7 +119,7 @@ int	main(int argc, char **argv, char *envp[])
 			err_check = default_lexer(read_line, &msh_data);
 			if (err_check == success)
 			{
-				//TEST_MINISHELLDATA(msh_data); // debug only!
+				TEST_MINISHELLDATA(msh_data); // debug only!
 				err_check = executor(&msh_data, msh_data.command_count);
 			}
 			else

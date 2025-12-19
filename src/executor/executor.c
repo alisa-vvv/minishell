@@ -10,26 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "executor.h"
 #include "libft.h"
 #include "minishell.h"
-#include "executor.h"
-#include <unistd.h>
-#include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
 
 static int	execute_pipeline(
 	t_msh_data *const msh_data,
 	int *p_id_arr,
 	int *p_exit_codes,
-	t_command_io *command_io
-)
+	t_command_io *command_io)
 {
 	int			elem_count;
-	t_exec_data	*const exec_data = msh_data->exec_data;
-	const int	command_count = msh_data->command_count;
+	const int	command_count;
 	int			err;
 
+	t_exec_data *const exec_data = msh_data->exec_data;
+	command_count = msh_data->command_count;
 	err = success;
 	elem_count = 0;
 	err = build_pipeline(msh_data, command_io, &elem_count);
@@ -50,8 +50,7 @@ static void	executor_cleanup(
 	t_msh_data *const msh_data,
 	t_command_io *command_io,
 	int *p_ids,
-	int *p_exit_codes
-)
+	int *p_exit_codes)
 {
 	int	i;
 
@@ -59,11 +58,11 @@ static void	executor_cleanup(
 	while (++i < msh_data->command_count)
 	{
 		free_and_close_exec_data(&msh_data->exec_data[i]);
-		if (i == msh_data->command_count - 1
-			|| command_io[i + 1].in_pipe[READ_END] != CLOSED_FD)
+		if (i == msh_data->command_count - 1 || command_io[i
+			+ 1].in_pipe[READ_END] != CLOSED_FD)
 			safe_close(&command_io[i].out_pipe[READ_END]);
-		if (i == msh_data->command_count - 1
-			|| command_io[i + 1].in_pipe[WRITE_END] != CLOSED_FD)
+		if (i == msh_data->command_count - 1 || command_io[i
+			+ 1].in_pipe[WRITE_END] != CLOSED_FD)
 			safe_close(&command_io[i].out_pipe[WRITE_END]);
 	}
 	free(command_io);
@@ -73,10 +72,9 @@ static void	executor_cleanup(
 	msh_data->exec_data = NULL;
 }
 
-int	executor(
+int			executor(
 	t_msh_data *const msh_data,
-	int command_count
-)
+	int command_count)
 {
 	int				*p_id_arr;
 	int				*p_exit_codes;
@@ -93,11 +91,11 @@ int	executor(
 	command_io = ft_calloc(sizeof(t_command_io), command_count);
 	if (!p_id_arr || !p_exit_codes || !command_io)
 	{
-		msh_data->last_pipeline_return = errno;
+		msh_data->last_pipeline_return (= errno);
 		executor_cleanup(msh_data, command_io, p_id_arr, p_exit_codes);
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	}
-	msh_data->last_pipeline_return = 0;
+	msh_data->last_pipeline_return (= 0);
 	err = execute_pipeline(msh_data, p_id_arr, p_exit_codes, command_io);
 	executor_cleanup(msh_data, command_io, p_id_arr, p_exit_codes);
 	return (err);

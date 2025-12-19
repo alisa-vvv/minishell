@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include "minishell.h"
+#include <unistd.h>
 
 int	env_util_get_cwd(
-	char *cwd
-)
+	char *cwd)
 {
 	if (getcwd(cwd, PATH_MAX) == NULL)
 	{
@@ -24,4 +23,3 @@ int	env_util_get_cwd(
 	}
 	return (success);
 }
-

@@ -14,11 +14,10 @@
 
 int	exec_builtin(
 	t_exec_data *const command,
-	t_msh_data *const msh_data
-)
+	t_msh_data *const msh_data)
 {
-	int			err_check;
-	char		**builtin_args;
+	int		err_check;
+	char	**builtin_args;
 
 	builtin_args = &command->argv[1]; // weird, check this for being normal
 	err_check = 0;

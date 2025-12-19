@@ -10,17 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#include "executor.h"
 #include <stdlib.h>
 #include <sys/wait.h>
-#include "executor.h"
+#include <unistd.h>
 
 void	safe_close(
-	int *fd
-)
+	int *fd)
 {
-	if (*fd == CLOSED_FD
-		|| *fd == STDOUT_FILENO || *fd == STDIN_FILENO || *fd == STDERR_FILENO)
+	if (*fd == CLOSED_FD || *fd == STDOUT_FILENO || *fd == STDIN_FILENO
+		|| *fd == STDERR_FILENO)
 	{
 		return ;
 	}
@@ -28,12 +27,11 @@ void	safe_close(
 	*fd = CLOSED_FD;
 }
 
-int	wait_for_children(
+int		wait_for_children(
 	const int command_count,
 	t_msh_data *const msh_data,
 	const int *const p_ids,
-	int *const p_exit_codes
-)
+	int *const p_exit_codes)
 {
 	int	last_exit;
 	int	i;
@@ -47,7 +45,7 @@ int	wait_for_children(
 		if (WIFEXITED(p_exit_codes[i]) == true)
 		{
 			last_exit = WEXITSTATUS(p_exit_codes[i]);
-			msh_data->last_pipeline_return = last_exit;
+			msh_data->last_pipeline_return (= last_exit);
 		}
 	}
 	return (EXIT_SUCCESS);

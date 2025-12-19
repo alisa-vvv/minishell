@@ -12,13 +12,11 @@
 
 #include "libft.h"
 #include "minishell.h"
-#include "parser.h"
 #include "minishell_env.h"
-
+#include "parser.h"
 
 char	*env_var_find_identifier(
-	char *arg
-)
+	char *arg)
 {
 	while (*arg)
 	{
@@ -41,18 +39,17 @@ char	*env_var_find_identifier(
 int	env_var_find_index( // change to return error if not found var?
 	char **env,
 	char *name,
-	char *identifier
-)
+	char *identifier)
 {
 	int			i;
-	const int	name_len = identifier - name;
+	const int	name_len;
 
+	name_len = identifier - name;
 	i = -1;
-
 	while (env[++i] != NULL)
 	{
 		if (ft_strncmp(env[i], name, name_len) == 0 &&
-				env[i][name_len] == '=') // fuck, this is wrong i think
+			env[i][name_len] == '=') // fuck, this is wrong i think
 			return (i);
 	}
 	return (i);
@@ -60,8 +57,7 @@ int	env_var_find_index( // change to return error if not found var?
 
 bool	env_var_if_exists(
 	char **env,
-	char *name
-)
+	char *name)
 {
 	int	name_len;
 	int	i;
@@ -71,7 +67,7 @@ bool	env_var_if_exists(
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], name, name_len) == 0 &&
-				env[i][name_len] == '=')
+			env[i][name_len] == '=')
 			return (true);
 		i++;
 	}
@@ -79,12 +75,11 @@ bool	env_var_if_exists(
 }
 
 // this function takes the adress of a pointer to NULL. it will allocate and
-int	env_var_get_value(
+int		env_var_get_value(
 	char **env,
 	char *name,
 	char **buf_ptr,
-	int *existing
-)
+	int *existing)
 {
 	char	*value;
 	int		name_len;
@@ -93,11 +88,11 @@ int	env_var_get_value(
 	name_len = ft_strlen(name);
 	value = NULL;
 	i = 0;
-	*existing = 0; 
+	*existing = 0;
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], name, name_len) == 0 &&
-				env[i][name_len] == '=')
+			env[i][name_len] == '=')
 		{
 			*existing = 1;
 			value = ft_strdup(&env[i][name_len + 1]);
