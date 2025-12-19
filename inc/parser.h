@@ -75,7 +75,6 @@ typedef struct s_quote
 }					t_quote;
 
 /*	Lexer func	*/
-int					all_num_alph(const char *str);
 char				*trim_str_space(char *input_line);
 int					default_lexer(char *input_line, t_msh_data *msh_data);
 bool				char_is_quote(char c);
@@ -150,7 +149,5 @@ void				new_redir_elem(
 						t_redir_list *redir_node);
 bool				legit_token(t_token *cur_token);
 /**/
-int					convert_data(t_tokenlist *tokenlist, t_msh_data *msh_data,
-						t_pos *epos);
 
 #endif
