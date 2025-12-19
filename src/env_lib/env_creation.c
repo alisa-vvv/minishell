@@ -10,26 +10,27 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
 #include "libft.h"
 #include "minishell.h"
+#include "builtins.h"
 #include "minishell_env.h"
 #include <errno.h>
 
 static int	set_default_env(
 	char **msh_env,
-	int *env_var_count)
+	int *env_var_count
+)
 {
 	char	*cwd;
 
-	cwd = ft_calloc(PATH_MAX, sizeof(char));
+	cwd = ft_calloc(PATH_MAX, sizeof(char)); 
 	msh_env[0] = ft_strdup(STD_PATH);
 	msh_env[1] = ft_strdup("SHLVL=1");
 	if (!cwd || !msh_env[0] || !msh_env[1])
 	{
-		ft_safe_free((unsigned char **)&cwd);
-		ft_safe_free((unsigned char **)&msh_env[0]);
-		ft_safe_free((unsigned char **)&msh_env[1]);
+		ft_safe_free((unsigned char **) &cwd);
+		ft_safe_free((unsigned char **) &msh_env[0]);
+		ft_safe_free((unsigned char **) &msh_env[1]);
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), extern_err);
 	}
 	*env_var_count = 2;
@@ -46,18 +47,18 @@ static int	clone_loop(
 	char *envp[],
 	int *alloc_size,
 	char **msh_env,
-	int *env_var_count)
+	int *env_var_count
+)
 {
 	int	i;
 
 	i = -1;
-	while (envp[++i]) // replace wit msh_export?
+	while(envp[++i]) // replace wit msh_export?
 	{
-		if (i == *alloc_size)
-		// separate into its own function since it's a common operation?
+		if (i == *alloc_size) // separate into its own function since it's a common operation?
 		{
 			*alloc_size += *alloc_size / 2;
-			free_2d_arr((void **)msh_env);
+			free_2d_arr((void **) msh_env);
 			msh_env = ft_calloc(*alloc_size, sizeof(char *));
 			if (!msh_env)
 				return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
@@ -66,7 +67,7 @@ static int	clone_loop(
 		msh_env[i] = ft_strdup(envp[i]);
 		if (!msh_env[i])
 		{
-			free_2d_arr((void **)msh_env);
+			free_2d_arr((void **) msh_env);
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), errno);
 		}
 	}
@@ -74,14 +75,15 @@ static int	clone_loop(
 	return (success);
 }
 
-int			clone_env(
+int	clone_env(
 	t_msh_data *const msh_data,
-	char *envp[])
+	char *envp[]
+)
 {
-	int	alloc_size;
-	int	err;
-
 	// SET A MAX VALUE FOR ALLOC SIZE // ? huh ?
+	int		alloc_size;
+	int		err;
+
 	alloc_size = 128;
 	msh_data->env = ft_calloc(alloc_size, sizeof(char *));
 	if (!msh_data->env)
@@ -90,8 +92,8 @@ int			clone_env(
 		set_default_env(msh_data->env, &msh_data->env_var_count);
 	else
 	{
-		err = clone_loop(envp, &alloc_size, msh_data->env,
-				&msh_data->env_var_count);
+		err = clone_loop(envp, &alloc_size,
+			msh_data->env, &msh_data->env_var_count);
 		if (err != success)
 			return (err);
 	}

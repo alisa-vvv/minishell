@@ -15,11 +15,12 @@
 #include <stdio.h>
 
 int	msh_pwd(
-	t_msh_data *const msh_data)
+	t_msh_data *const msh_data
+)
 {
-	int	err_check;
-
-	char *const dir = ft_calloc(PATH_MAX, sizeof(char));
+	char *const	dir = ft_calloc(PATH_MAX, sizeof(char));
+	int			err_check;
+	
 	if (!dir)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = success;

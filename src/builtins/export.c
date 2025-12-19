@@ -11,20 +11,21 @@
 /* ************************************************************************** */
 
 //REMOVE
-#include "builtins.h"
+#include <assert.h>
+
 #include "libft.h"
 #include "minishell.h"
+#include "builtins.h"
 #include "minishell_env.h"
-#include <assert.h>
-#include <stdio.h>
 
-static int	truncate_var(
+static int truncate_var(
 	t_msh_data *const msh_data,
 	int var_index,
-	char *arg)
+	char *arg
+)
 {
 	if (var_index < msh_data->env_var_count &&
-		msh_data->env[var_index])
+			msh_data->env[var_index])
 		free(msh_data->env[var_index]);
 	msh_data->env[var_index] = ft_strdup(arg);
 	if (!msh_data->env[var_index])
@@ -32,11 +33,12 @@ static int	truncate_var(
 	return (success);
 }
 
-static int	append_var(
+static int append_var(
 	t_msh_data *const msh_data,
 	int var_index,
 	char *arg,
-	char *identifier)
+	char *identifier
+)
 {
 	char	*appended_var;
 
@@ -56,9 +58,10 @@ static int	append_var(
 	return (success);
 }
 
-static int	env_var_realloc(
+static int env_var_realloc(
 	t_msh_data *msh_data,
-	int var_i)
+	int var_i
+)
 {
 	char	**new_env;
 	int		i;
@@ -66,8 +69,7 @@ static int	env_var_realloc(
 	if (var_i == msh_data->env_mem - 1)
 	{
 		if (msh_data->env_mem + (msh_data->env_mem / 2) > ENV_MAX)
-			return (msh_perror("export: ", TOO_MANY_ENV_VAR, msh_err),
-				builtin_err);
+			return (msh_perror("export: ", TOO_MANY_ENV_VAR, msh_err), builtin_err);
 		msh_data->env_mem += msh_data->env_mem / 2;
 		new_env = ft_calloc(msh_data->env_mem, sizeof(char *));
 		if (!new_env)
@@ -78,21 +80,23 @@ static int	env_var_realloc(
 			new_env[i] = ft_strdup(msh_data->env[i]);
 			if (!new_env[i])
 			{
-				free_2d_arr((void **)new_env);
+				free_2d_arr((void **) new_env);
 				return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 			}
 		}
-		free_2d_arr((void **)msh_data->env);
+		free_2d_arr((void **) msh_data->env);
 		msh_data->env = new_env;
 	}
 	return (success);
 }
 
-int			export_var(
+#include <stdio.h>
+int	export_var(
 	char *const *argv,
 	t_msh_data *const msh_data,
 	char *identifier,
-	t_export_i *i)
+	t_export_i *i
+)
 {
 	int	err_check;
 
@@ -115,9 +119,10 @@ int			export_var(
 	return (err_check);
 }
 
-int			msh_export(
+int	msh_export(
 	char *const *argv,
-	t_msh_data *const msh_data)
+	t_msh_data *const msh_data
+)
 {
 	t_export_i	i;
 	char		*identifier;
@@ -125,7 +130,7 @@ int			msh_export(
 	int			was_err;
 
 	was_err = success;
-	err_check = success;
+	err_check  = success; 
 	if (!*argv)
 		return (msh_env(msh_data));
 	i.arg = -1;
