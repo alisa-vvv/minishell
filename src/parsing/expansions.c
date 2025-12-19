@@ -88,7 +88,7 @@ int	expand_check(t_tokenlist *tlist,
 			&exp_data->env_value, &exp_data->existing))
 		return (malloc_err);
 	err = exp_further(tlist, pos, &exp_data);
-	if (exp_data->existing && exp_data->env_value != (void *)'\0')
+	if (exp_data->existing && exp_data->env_value != (void *) '\0')
 		ft_safe_free ((unsigned char **)&exp_data->env_value);
 	ft_safe_free ((unsigned char **)&exp_data->name);
 	return (err);

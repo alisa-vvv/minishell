@@ -33,7 +33,7 @@ static int	check_heredoc(
 }
 
 //validate if redir are well placed
-int		val_redir(
+int	val_redir(
 	t_tokenlist *tlist,
 	size_t i,
 	t_token *ctok)

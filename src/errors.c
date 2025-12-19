@@ -17,8 +17,7 @@
 void	msh_perror(
 	char *const error_prefix,
 	char *const error_msg,
-	t_error_relation relation
-)
+	t_error_relation relation)
 {
 	ft_putstr_fd("msh: ", STDERR_FILENO);
 	if (error_prefix)
