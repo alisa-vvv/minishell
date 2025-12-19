@@ -1,10 +1,11 @@
-Rough (and probably very innacurate) outline of the project structure:
-![Parsing Structure](https://accu.org/journals/overload/26/145/balaam_2510/1.png) \
-1. Lexer -> Parser -> executable structure -> executor
-2. separate module for builtins
-3. environment variables
+MINISHELL.
+This is a "small" shell with minimal functionality, partially replicating some features from bash.
 
-##Needs
+It can run look for and launch executables, has a few builtins, a command line history, can set up pipelines, and redirect input and output.
+
+The shell only runs on Linux systems.
+
+##Project requirements:
 
 - prompt awaiting new command
 - working history
@@ -52,16 +53,3 @@ https://www.gnu.org/software/termutils/manual/termcap-1.3/html_mono/termcap.html
 https://aticleworld.com/implement-vector-in-c/  \
 https://github.com/codam-coding-college/spark-sessions/blob/main/spark-sessions/minishell/SparkSession%20-%20minishell.md  \
 https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=http://www.gnu.org/software///bash/manual/bash.html&ved=2ahUKEwiFucj8nNWNAxW23QIHHVxADhwQFnoECA0QAQ&usg=AOvVaw0-4n6yy4k-SEOV6LdfBf2H 
-
-More TBD
-
-
-Edge cases
-
-- 'export empty= ""' -> 'echo hi > $EMPTY'
-- '<<<eof' -> cntrl+D -> 'echo $?'
-- '>ls' -> 'ls' -> './les'
-- '>haha | ls'
-- 'export empty=" "' -> 'echo hi > $EMPTY' -> '$EMPTY echo hi'
-- echo baaa | echo siii (is not working properly)
-
