@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "minishell_env.h"
 
 // expands variables to env value if found, otherwise deletes
 int	expand_new(t_tokenlist *tokenlist,

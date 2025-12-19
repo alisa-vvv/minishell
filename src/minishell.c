@@ -12,6 +12,7 @@
 
 #include <stdlib.h>
 #include "minishell.h"
+#include "minishell_env.h"
 #include "parser.h"
 #include "executor.h"
 #include <signal.h>

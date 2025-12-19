@@ -22,8 +22,7 @@ CFILES	=	minishell.c\
 			$(CFILES_PARSER)\
 			$(CFILES_SIGNALS)\
 			$(CFILES_EXECUTOR)\
-			$(CFILES_BUILTINS)\
-			test_funcs.c
+			$(CFILES_BUILTINS)
 CFILES_ENVLIB	=	env_creation.c\
 					env_default_var_validation.c\
 					env_default_var_validation_shlvl.c\

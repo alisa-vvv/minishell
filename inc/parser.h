@@ -13,10 +13,8 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "debug.h"
 # include "libft.h"
 # include "minishell.h"
-# include "minishell_env.h"
 # include "vec_lib.h"
 # include <readline/history.h>
 # include <readline/readline.h>
