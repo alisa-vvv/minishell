@@ -13,8 +13,10 @@
 #include "parser.h"
 
 // expands variables to env value if found, otherwise deletes
-int	expand_new(t_tokenlist *tokenlist, size_t pos, char *str_token,
-		t_exp_data *xp_d)
+int	expand_new(t_tokenlist *tokenlist, 
+	size_t pos, 
+	char *str_token,
+	t_exp_data *xp_d)
 {
 	int		offset;
 	char	*new_str;
@@ -70,9 +72,9 @@ int	exp_further(t_tokenlist *tokenlist,
 
 //gets env value and name to check before expanding further
 int	expand_check(t_tokenlist *tlist,
-					t_msh_data *msh_data,
-					t_exp_data *exp_data,
-					int pos)
+			t_msh_data *msh_data,
+			t_exp_data *exp_data,
+			int pos)
 {
 	int	err;
 

@@ -12,54 +12,23 @@
 
 #include "parser.h"
 
-//counts how many expansions need to be done
-int	count_exp(t_tokenlist *tokenlist, char symbol)
+// validate input on quotes, pipes
+int	val_inputline(char *str)
 {
-	int		count;
-	size_t	i;
-	t_token	*check_token;
+	int	i;
 
 	i = 0;
-	count = 0;
-	check_token = NULL;
-	while (i < tokenlist->total)
+	if (check_in_quote(str, ft_strlen(str) - 1))
+		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
+	while (str[i])
 	{
-		check_token = tokenlist->tokens[i];
-		if (!check_token)
-			return (count);
-		if (symbol == '$' && ft_strchr(check_token->value, '$'))
-		{
-			if (i == 0 || (i > 0 && lookbehind(tokenlist, i)
-					&& lookbehind(tokenlist, i)->type != HEREDOC))
-				count++;
-		}
-		else if (symbol == '"' && ft_strchr(check_token->value, '"'))
-			count++;
-		else if (symbol == '\'' && check_token->type == QUOTES)
-			count++;
+		if (char_is_red(str[i]))
+			if (validate_redirect(str, i) != success)
+				return (syntax_err);
 		i++;
 	}
-	return (count);
+	return (success);
 }
-
-
-// //expand vars and merge operators for export
-// int	expand_param(t_tokenlist *tokenlist,
-// 					t_msh_data *msh_data)
-// {
-// 	int	count;
-// 	int	err;
-
-// 	count = count_exp(tokenlist, '$');
-// 	while (count > 0)
-// 	{
-// 		err = exp_lexer(tokenlist, msh_data, PARAMETER, 0);
-// 		if (err != success)
-// 			return (err);
-// 		count--;
-// 	}
-// 	return (success);
-// }
 
 // go through lexer and clean up data
 int	check_lexer(t_tokenlist *tokenlist,

@@ -41,16 +41,6 @@ t_token	*new_token(
 	return (token);
 }
 
-//last position
-int	l_red(char *str)
-{
-	if (str[0] == str[1] && str[2] != str[1] && char_is_red(str[0]))
-		return (2);
-	else if (char_is_red(str[0]) && str[0] != str[1])
-		return (1);
-	else
-		return (-1);
-}
 
 
 //add new token to the list and updates total

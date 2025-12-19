@@ -26,25 +26,6 @@ char	*move_str(char *str, int i)
 	return (str);
 }
 
-//checks if quote needs to be removed or if within another quote
-bool	check_quote_rm(const char *str, int i, char symbol)
-{
-	if (str[i] && str[i] == symbol)
-	{
-		if (check_in_quote_s(str, i, '\''))
-			return (false);
-		else if (!check_in_quote(str, i))
-			return (true);
-		else if (check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i, '"')
-			&& symbol == '"')
-			return (false);
-		else if (!check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i,
-				'"'))
-			return (true);
-	}
-	return (false);
-}
-
 //have to make a quote removal for empty quotes before this func
 //removes quotes in a string from outside in
 void	rm_str_quotes(char *str)

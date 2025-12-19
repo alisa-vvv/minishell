@@ -42,6 +42,7 @@ int	reallocate_argv(
 	return (success);
 }
 
+//appends a new node for the redirlist
 void	new_redir_elem(
 	t_redir_list **first,
 	t_redir_list *redir_node)
@@ -60,6 +61,7 @@ void	new_redir_elem(
 		*first = redir_node;
 }
 
+//checks if token needs to be added to commandlist
 bool	legit_token(t_token *cur_token)
 {
 	if (cur_token->type == COMMAND || cur_token->type == STRING
