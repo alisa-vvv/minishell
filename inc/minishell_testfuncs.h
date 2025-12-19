@@ -13,7 +13,7 @@
 #ifndef MINISHELL_TEST_FUNCS_H
 # define MINISHELL_TEST_FUNCS_H
 
-#include "minishell.h"
+# include "minishell.h"
 
 static int	TEST_counter_01;
 
@@ -22,11 +22,9 @@ t_redir_list	*test_add_redirection(
 	t_redirect_type type,
 	int src,
 	char *dest,
-	char *heredoc_delim
-);
+	char *heredoc_delim);
 
-t_exec_data	*test_get_dummy_exec_data(
-	t_msh_data	*msh_data
-);
+t_exec_data		*test_get_dummy_exec_data(
+	t_msh_data *msh_data);
 
 #endif

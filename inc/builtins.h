@@ -13,18 +13,17 @@
 #ifndef BUILTINS_H
 # define BUILTINS_H
 
-#include "minishell.h"
+# include "minishell.h"
 
-typedef struct	s_export_i
+typedef struct s_export_i
 {
 	int	var;
 	int	arg;
-}	t_export_i;
+}		t_export_i;
 
-int	exec_builtin(
-	t_exec_data *const command,
-	t_msh_data *const msh_data
-);
+int		exec_builtin(
+			t_exec_data *const command,
+			t_msh_data *const msh_data);
 
 int	msh_echo(
 	char **arguments
@@ -59,4 +58,3 @@ int	msh_exit(
 );
 
 #endif
-

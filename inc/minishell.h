@@ -13,12 +13,12 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-/*	readline	*/ 
+/*	readline	*/
 /* for waits	*/
 /*	signals		*/
 /* for true/false macro (and bool if we need it) */
-# include <stdbool.h>
 # include <signal.h>
+# include <stdbool.h>
 
 /*		Standard/Default values		*/
 # define STD_PATH "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -41,7 +41,7 @@
 # define SYNTAX_ERR "syntax error"
 /**/
 
-typedef enum	e_msh_errno // can define specific values later
+typedef enum e_msh_errno // can define specific values later
 {
 	success = 0,
 	malloc_err = -1,
@@ -62,11 +62,10 @@ typedef enum	e_msh_errno // can define specific values later
 	no_command = -16,
 	syntax_err = -17,
 	do_exit = -100,
-}	t_msh_errno;
+}								t_msh_errno;
 
 # define LIBFUNC_ERR 0
 # define MINISHELL_ERR 1
-
 # define EXIT_MSH -3
 # define RETURN_CONTROL -2
 # define CONTINUE_EXEC -1
@@ -74,37 +73,28 @@ typedef enum	e_msh_errno // can define specific values later
 
 /**/
 
-
-// this value is returned in a child process that only exists to create heredoc
-// doesn't need to be -2
-
 /*		Signal handling		*/
 //made it into sig_atomic (just more in line with standard protocol I'd say)
 extern volatile sig_atomic_t	g_msh_signal;
 
-void	handle_signals_interactive(
-	void
-);
-void	handle_signals_non_interactive(
-	void
-);
-void	handle_signals_child_process(
-	void
-);
-void	ignore_signals(
-	void
-);
+void							handle_signals_interactive(
+									);
+void							handle_signals_non_interactive(
+									);
+void							handle_signals_child_process(
+									);
+void							ignore_signals(
+									);
 /**/
-
 /*		Executor - data structures		*/
 
-typedef enum	e_redirect_type
+typedef enum e_redirect_type
 {
 	input,
 	heredoc,
 	append,
 	trunc,
-}	t_redirect_type;
+}								t_redirect_type;
 
 // this list assumes that the source of a redirection is either unspecified,
 // specified as an integer, or opened from an env/direct path during parsing
@@ -115,25 +105,23 @@ typedef enum	e_redirect_type
 // > [dest] - source unspecified, so defaults to source = stdout
 // < [src] - dest unspecified, so defaults to dest = stdin
 // << [heredoc as source] - dest unspecified, so defaults to dest = stdin
-typedef struct	s_redir_list
+typedef struct s_redir_list
 {
-	t_redirect_type		type;
-	int					src_fd; // equal to -1 if fd not provided/not default
-	int					dest_fd; // equal to -1 if fd not provided/not default
-	char				*dest_filename; // equal to NULL if filename wasn't provided
-//	char				*src_filename; // equal to NULL if filename wasn't provided
-	char				*heredoc_delim; // null or delim, will be used to check if input is heredoc
-	struct s_redir_list	*next;
-}	t_redir_list;
+	t_redirect_type				type;
+	int							src_fd;	
+	int							dest_fd;
+	char						*dest_filename;	
+	char						*heredoc_delim;	
+	struct s_redir_list			*next;
+}								t_redir_list;
 
-void	clean_redir_list(
-	t_redir_list **head,
-	t_redir_list *cur_node
-);
+void							clean_redir_list(
+									t_redir_list **head,
+									t_redir_list *cur_node);
 
 // Since parser will read the builtin name, makes sense to save name in enum
 // to avoid redundant parsing of the name
-typedef enum	e_builtin_name
+typedef enum e_builtin_name
 {
 	not_builtin,
 	builtin_echo,
@@ -143,7 +131,7 @@ typedef enum	e_builtin_name
 	builtin_unset,
 	builtin_env,
 	builtin_exit,
-}	t_builtin_name;
+}								t_builtin_name;
 
 // This struct contains all information executor needs to execute a pipeline
 // It's contents are filled during parsing, and NULLed/freed at the end of
@@ -154,83 +142,81 @@ typedef enum	e_builtin_name
 // smart choice, not technically necessary
 // is_builtin bool not technically necessary but seems more readable to me then
 // checking builtin_name to see if it is one
-typedef struct	s_exec_data
+typedef struct s_exec_data
 {
-	char			**argv;
-	t_builtin_name	builtin_name;
-	bool			input_is_pipe;
-	bool			output_is_pipe;
-	t_redir_list	*redirections;
-}	t_exec_data;
+	char						**argv;
+	t_builtin_name				builtin_name;
+	bool						input_is_pipe;
+	bool						output_is_pipe;
+	t_redir_list				*redirections;
+}								t_exec_data;
 
-//struct to expand on variables 
+//struct to expand on variables
 typedef struct s_exp_data
 {
-	char 	*name;
-	char	*env_value;
-	char 	*start_var;
-	int 	start_pos;
-	int		existing;
-}	t_exp_data;
+	char						*name;
+	char						*env_value;
+	char						*start_var;
+	int							start_pos;
+	int							existing;
+}								t_exp_data;
 
 // This struct contains data that maybe accessed and modified by both parsing
 // and execution modules at any point, and does not get deleted/freed after
 // each execution cycle.
 // env is cloned at start and contains environment.
 // last_pipleline_return starts at 0 and stores return value of last pipeline.
-typedef struct	msh_data
+typedef struct msh_data
 {
-	char		**env;
-	int			env_var_count;
-	int			env_mem;
-	bool		is_parent;
-	t_exec_data	*exec_data;
-	int			command_count;
-	int			last_pipeline_return;
-	char		*cur_dir;
-	bool		do_exit;
-	int			exit_code;
-}	t_msh_data;
+	char						**env;
+	int							env_var_count;
+	int							env_mem;
+	bool						is_parent;
+	t_exec_data					*exec_data;
+	int							command_count;
+	int 						last_pipeline_return ;
+	char						*cur_dir;
+	bool						do_exit;
+	int							exit_code;
+}								t_msh_data;
 
 void	free_and_close_exec_data(
-	t_exec_data	*exec_data
-);
+			t_exec_data *exec_data);
 
 /**/
 
 // Error management logic
-// error_prefix is for stuff to print before error message, like error during a builtin
+// error_prefix is for stuff to print before error message,
+//	like error during a builtin
 // relation will specify behavior for different errors.
 // function errors (extern_err) will use native perror() to print their messages.
 // all other errors will put a "msh: " prefix automatic.
 // generic_err is for an error that doesn't need specific prefix
 // other two values are for parse_err and exec_err
 /*		Error Mananagement Structures	*/
-typedef enum	e_error_relation
+typedef enum e_error_relation
 {
 	extern_err,
 	msh_err,
 	parse_err,
 	exec_err,
-}	t_error_relation;
+}								t_error_relation;
 
 /**/
 
 /*		Error Mananagement Functions	*/
 void	msh_perror(
-	char *const error_prefix,
-	char *const error_msg,
-	t_error_relation relation
-);
+			char *const error_prefix,
+			char *const error_msg,
+			t_error_relation relation);
 void	clean_exit(
-	t_msh_data *msh_data,
-	char *read_line,
-	int exit_code,
-	bool silent_exit
-);
+			t_msh_data *msh_data,
+			char *read_line,
+			int exit_code,
+			bool silent_exit);
 /**/
 
-/*	TEST macros	*/	
+/*	TEST macros	*/
 # define RED "\033[31"
 # define GREEN "\033[32"
 # define BLUE "\033[34"

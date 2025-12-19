@@ -13,7 +13,8 @@
 #ifndef MINISHELL_ENV_H
 # define MINISHELL_ENV_H
 
-#include "minishell.h"
+# include "minishell.h"
+# include "parser.h"
 
 /*		Environment errors		*/
 # define INVALID_IDENTIFIER "not a valid identifier: "
@@ -43,30 +44,24 @@ int	update_shlvl(
 
 /*	Variable usage	*/
 bool	env_var_if_exists(
-	char **env,
-	char *name
-);
-int	env_var_find_index(
-	char **env,
-	char *name,
-	char *identifier
-);
+			char **env,
+			char *name);
+int		env_var_find_index(
+			char **env,
+			char *name,
+			char *identifier);
 char	*env_var_find_identifier(
-	char *arg
-);
-int	env_var_get_value(
-	char **env,
-	char *name,
-	char **buf_ptr,
-	int *existing
-);
-
+			char *arg);
+int		env_var_get_value(
+			char **env,
+			char *name,
+			char **buf_ptr,
+			int *existing);
 /**/
 
 /*	Utils	*/
-int	env_util_get_cwd(
-	char *cwd
-);
+int		env_util_get_cwd(
+			char *cwd);
 /**/
 
-#endif 
+#endif
