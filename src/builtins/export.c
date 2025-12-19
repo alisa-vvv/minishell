@@ -129,6 +129,8 @@ int	msh_export(
 	int			err_check;
 	int			was_err;
 
+	was_err = success;
+	err_check  = success; 
 	if (!*argv)
 		return (msh_env(msh_data));
 	i.arg = -1;

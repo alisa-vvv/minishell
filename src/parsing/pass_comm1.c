@@ -80,8 +80,7 @@ int	set_redir_comm(
 	if (!legit_token(next_token))
 		return (msh_perror(NULL, SYNTAX_ERR, parse_err), syntax_err);
 	err = add_redirection(&msh_data->exec_data[i->exe].redirections,
-							cur_token->type,
-							next_token->value);
+			cur_token->type, next_token->value);
 	i->tok++;
 	return (err);
 }

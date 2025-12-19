@@ -35,7 +35,6 @@ CFILES_PARSER	=	debug.c\
 					lexer_match.c\
 					lexer_utils2.c\
 					lexer_utils.c\
-					expansions_utils2.c\
 					expansions_utils.c\
 					expansions.c\
 					lexer_tokens.c\

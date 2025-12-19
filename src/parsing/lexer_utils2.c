@@ -34,12 +34,6 @@ char	*trim_str_space(char *str)
 	if (!str)
 		return (NULL);
 	i = 0;
-	j = ft_strlen(str) - 1;
-	while (ft_isspace(str[j] && char_is_quote(str[j])))
-	{
-		str[j] = '\0';
-		j--;
-	}
 	j = -1;
 	if (!str || ft_strncmp(str, " ", 2))
 		return (str);
@@ -56,33 +50,6 @@ char	*trim_str_space(char *str)
 	return (str);
 }
 
-//returns len of unquoted token
-int	move_o_unquoted(const char *str, int i)
-{
-	int	len;
-
-	len = 0;
-	while (str[i] && !ft_isspace(str[i]) && !char_is_quote(str[i])
-		&& !char_is_red(str[i]))
-	{
-		len++;
-		i++;
-	}
-	if (str[i] && char_is_quote(str[i]))
-	{
-		i++;
-		while (str[i] && !char_is_quote(str[i]))
-		{
-			len++;
-			i++;
-		}
-		i++;
-		len += 2;
-	}
-	if (str[i] && !ft_isspace(str[i]) && !char_is_red(str[i]))
-		len += move_o_unquoted(str, i);
-	return (len);
-}
 
 //checks valid syntax for order of pipes /redirects
 int	check_pipes(t_tokenlist *tlist)

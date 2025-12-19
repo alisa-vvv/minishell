@@ -36,10 +36,10 @@ bool	check_quote_rm(const char *str, int i, char symbol)
 		else if (!check_in_quote(str, i))
 			return (true);
 		else if (check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i, '"')
-					&& symbol == '"')
+			&& symbol == '"')
 			return (false);
 		else if (!check_in_quote_s(str, i, '\'') && check_in_quote_s(str, i,
-					'"'))
+				'"'))
 			return (true);
 	}
 	return (false);
@@ -65,7 +65,6 @@ void	rm_str_quotes(char *str)
 			str = move_str(str, start_q);
 			i--;
 			str = move_str(str, i);
-			//printf("STRING2= (%s)\n", str);
 		}
 		else
 			i++;

@@ -42,34 +42,24 @@ int	count_exp(t_tokenlist *tokenlist, char symbol)
 	return (count);
 }
 
-//expands single and double quotes
-int	expand_quotes(t_tokenlist *tokenlist,
-					t_msh_data *msh_data)
-{
-	int	err;
 
-	err = success;
-	err = exp_lexer(tokenlist, msh_data, QUOTES, 0);
-	return (err);
-}
+// //expand vars and merge operators for export
+// int	expand_param(t_tokenlist *tokenlist,
+// 					t_msh_data *msh_data)
+// {
+// 	int	count;
+// 	int	err;
 
-//expand vars and merge operators for export
-int	expand_param(t_tokenlist *tokenlist,
-					t_msh_data *msh_data)
-{
-	int	count;
-	int	err;
-
-	count = count_exp(tokenlist, '$');
-	while (count > 0)
-	{
-		err = exp_lexer(tokenlist, msh_data, PARAMETER, 0);
-		if (err != success)
-			return (err);
-		count--;
-	}
-	return (success);
-}
+// 	count = count_exp(tokenlist, '$');
+// 	while (count > 0)
+// 	{
+// 		err = exp_lexer(tokenlist, msh_data, PARAMETER, 0);
+// 		if (err != success)
+// 			return (err);
+// 		count--;
+// 	}
+// 	return (success);
+// }
 
 // go through lexer and clean up data
 int	check_lexer(t_tokenlist *tokenlist,
@@ -77,10 +67,10 @@ int	check_lexer(t_tokenlist *tokenlist,
 {
 	int	err;
 
-	err = expand_param(tokenlist, msh_data);
+	err = exp_lexer(tokenlist, msh_data, PARAMETER, 0);
 	if (err != success)
 		return (err);
-	err = expand_quotes(tokenlist, msh_data);
+	err = exp_lexer(tokenlist, msh_data, QUOTES, 0);
 	if (err != success)
 		return (err);
 	err = clean_lexer(tokenlist, 0);

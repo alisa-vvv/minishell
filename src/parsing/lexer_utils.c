@@ -12,6 +12,34 @@
 
 #include "parser.h"
 
+//returns len of unquoted token
+int	move_o_unquoted(const char *str, int i)
+{
+	int	len;
+
+	len = 0;
+	while (str[i] && !ft_isspace(str[i]) && !char_is_quote(str[i])
+		&& !char_is_red(str[i]))
+	{
+		len++;
+		i++;
+	}
+	if (str[i] && char_is_quote(str[i]))
+	{
+		i++;
+		while (str[i] && !char_is_quote(str[i]))
+		{
+			len++;
+			i++;
+		}
+		i++;
+		len += 2;
+	}
+	if (str[i] && !ft_isspace(str[i]) && !char_is_red(str[i]))
+		len += move_o_unquoted(str, i);
+	return (len);
+}
+
 //move over quoted str and return the length of quoted text incl quotes
 int	move_over_quote(const char *str, int pos)
 {

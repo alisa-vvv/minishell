@@ -23,7 +23,7 @@ int	count_unq(const char *str, int i, int count)
 		{
 			count++;
 			if ((char_is_red(str[i]) && i == 0) || (i > 0 && ft_isspace(str[i
-						- 1]) && char_is_red(str[i])))
+							- 1]) && char_is_red(str[i])))
 				count++;
 			while (str[i] && char_is_red(str[i]))
 				i++;

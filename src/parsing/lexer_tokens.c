@@ -52,7 +52,7 @@ int	l_red(char *str)
 		return (-1);
 }
 
-// l_printf("len = %zu ", len);
+
 //add new token to the list and updates total
 int		add_token(
 	t_tokenlist *tokenlist,

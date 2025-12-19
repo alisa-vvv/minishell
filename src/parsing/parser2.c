@@ -41,7 +41,7 @@ int	prep_execdata(t_tokenlist *tlist, t_msh_data *msh_data)
 		if (msh_data->command_count == syntax_err)
 			return (syntax_err);
 		msh_data->exec_data = ft_calloc(msh_data->command_count,
-										sizeof(t_exec_data));
+				sizeof(t_exec_data));
 		if (!msh_data->exec_data)
 			return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 		msh_data->exec_data[0].argv = ft_calloc(128, sizeof(char *));
