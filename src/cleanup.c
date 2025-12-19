@@ -14,6 +14,38 @@
 #include "stdlib.h"
 #include "executor.h"
 
+static void	clean_msh_data(
+	t_msh_data *msh_data,
+	int *exit_code,
+	bool *silent_exit
+)
+{
+	int	i;
+
+	if (msh_data->is_parent == false)
+		*silent_exit = true;
+	if (msh_data->exit_code != 0)
+		*exit_code = msh_data->exit_code;
+	else if (*exit_code == 0)
+		*exit_code = msh_data->last_pipeline_return;
+	if (msh_data->cur_dir)
+		free(msh_data->cur_dir);
+	if (msh_data->exec_data)
+	{
+		i = -1;
+		while (++i < msh_data->command_count)
+			free_and_close_exec_data(&msh_data->exec_data[i]);
+		free(msh_data->exec_data);
+	}
+	if (msh_data->env)
+	{
+		i = -1;
+		while (msh_data->env[++i])
+			free(msh_data->env[i]);
+		free(msh_data->env);
+	}
+}
+
 void	clean_exit(
 	t_msh_data *msh_data,
 	char *read_line,
@@ -21,37 +53,12 @@ void	clean_exit(
 	bool silent_exit
 )
 {
-	int	i;
-
 	if (msh_data)
-	{
-		if (msh_data->is_parent == false)
-			silent_exit = true;
-		if (msh_data->exit_code != 0)
-			exit_code = msh_data->exit_code;
-		else if (exit_code == 0)
-			exit_code = msh_data->last_pipeline_return;
-		if (msh_data->cur_dir)
-			free(msh_data->cur_dir);
-		if (msh_data->exec_data)
-		{
-			i = -1;
-			while (++i < msh_data->command_count)
-				free_and_close_exec_data(&msh_data->exec_data[i]);
-			free(msh_data->exec_data);
-		}
-		if (msh_data->env)
-		{
-			i = -1;
-			while (msh_data->env[++i])
-				free(msh_data->env[i]);
-			free(msh_data->env);
-		}
-	}
+		clean_msh_data(msh_data, &exit_code, &silent_exit);
 	if (read_line)
 		free(read_line);
 	if (silent_exit == false)
-		write(STDOUT_FILENO, "exit\n", 5); // this should msybe have a check if we are in  child process
+		write(STDOUT_FILENO, "exit\n", 5);
 	exit (exit_code);
 }
 

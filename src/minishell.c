@@ -10,15 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell_testfuncs.h"
 #include <stdlib.h>
 #include "minishell.h"
 #include "parser.h"
 #include "executor.h"
 #include <signal.h>
 #include <string.h>
-#include <stdio.h> /*	readline	*/
-#include <readline/readline.h> // Needed for rl_catch_signals
+#include <stdio.h>
+#include <readline/readline.h>
 #include <readline/history.h>
 
 static int	setup_msh_data(
@@ -49,22 +48,6 @@ static int	setup_msh_data(
 	return (success);
 }
 
-int	TEST_len = 0;
-
-
-// NOTE: THE TEST_len VALUE BEING WRONG CAN CAUSE LEAKS. THIS IS NOT AN ISSUE
-// CAUSE IT'S A TEST.
-// MAKE SURE THAT IT'S EQUAL TO THE AMOUNT OF COMMANDS ACTUALLY BEING TESTED.
-// OTHERWISE OUT OF BOUNDS ERRORS HAPPEN.
-//
-int	TEST_run_executor(
-	t_msh_data *const msh_data
-)
-{
-	msh_data->exec_data = test_get_dummy_exec_data(msh_data);
-	return (executor(msh_data, TEST_len));
-}
-
 static void	post_execution_cleanup(
 	t_msh_data *const msh_data,
 	char *read_line,
@@ -72,6 +55,7 @@ static void	post_execution_cleanup(
 )
 {
 	int	i;
+
 	if (read_line)
 		free(read_line);
 	i = -1;
@@ -93,7 +77,8 @@ static void	post_execution_cleanup(
 	msh_data->command_count = 0;
 }
 
-volatile sig_atomic_t g_msh_signal = 0; 
+volatile sig_atomic_t	g_msh_signal = 0;
+
 int	main(int argc, char **argv, char *envp[])
 {
 	char		*read_line;
@@ -112,19 +97,11 @@ int	main(int argc, char **argv, char *envp[])
 		if (!read_line)
 			clean_exit(&msh_data, NULL, EXIT_SUCCESS, false);
 		add_history(read_line);
-		if (strcmp(read_line, "executor") == 0) // for debug only! change maybe!
-			err_check = TEST_run_executor(&msh_data);
+		err_check = default_lexer(read_line, &msh_data);
+		if (err_check == success)
+			err_check = executor(&msh_data, msh_data.command_count);
 		else
-		{
-			err_check = default_lexer(read_line, &msh_data);
-			if (err_check == success)
-			{
-				//TEST_MINISHELLDATA(msh_data); // debug only!
-				err_check = executor(&msh_data, msh_data.command_count);
-			}
-			else
-				msh_data.last_pipeline_return = 2;
-		}
+			msh_data.last_pipeline_return = 2;
 		post_execution_cleanup(&msh_data, read_line, err_check);
 	}
 	clean_exit(&msh_data, NULL, err_check, false);

@@ -25,7 +25,7 @@ void	msh_perror(
 	if (!error_msg)
 		return ;
 	if (relation == extern_err)
-		perror(error_msg); // figure this out
+		perror(error_msg);
 	else
 	{
 		ft_putstr_fd(error_msg, STDERR_FILENO);
