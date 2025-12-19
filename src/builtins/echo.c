@@ -11,12 +11,14 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdbool.h>
 #include <stddef.h>
+#include <stdbool.h>
+
 #include <stdio.h>
 
 static bool	check_for_minus_n(
-	const char *const first_argument)
+	const char *const first_argument
+)
 {
 	int	i;
 
@@ -33,8 +35,9 @@ static bool	check_for_minus_n(
 	return (true);
 }
 
-int			msh_echo(
-	char *const *const arguments)
+int	msh_echo(
+	char *const *const arguments
+)
 {
 	int		i;
 	bool	put_nl;
@@ -51,7 +54,7 @@ int			msh_echo(
 		ft_putstr_fd(arguments[i], STDOUT_FILENO);
 		if (arguments[i + 1])
 			ft_putchar_fd(' ', STDOUT_FILENO);
-		i++;
+		i++;	
 	}
 	if (put_nl == true)
 		ft_putchar_fd('\n', STDOUT_FILENO);

@@ -10,16 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include <limits.h>
 #include "libft.h"
 #include "minishell.h"
 #include "minishell_env.h"
-#include <limits.h>
+#include "builtins.h"
 
 static int	export_default_var(
 	t_msh_data *const msh_data,
 	char **var_value,
-	char *var_string)
+	char *var_string
+)
 {
 	int	err_check;
 
@@ -28,14 +29,15 @@ static int	export_default_var(
 	if (!var_value[0])
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = msh_export(var_value, msh_data);
-	ft_safe_free((unsigned char **)&var_value[0]);
+	ft_safe_free((unsigned char **) &var_value[0]);
 	return (err_check);
 }
 
 static int	iterate_shlvl(
 	t_msh_data *const msh_data,
 	char **var_value,
-	char *shlvl_string)
+	char *shlvl_string
+)
 {
 	int				err_check;
 	unsigned long	shlvl_int;
@@ -54,29 +56,29 @@ static int	iterate_shlvl(
 	if (!new_shlvl_val)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	var_value[0] = ft_strjoin("SHLVL=", new_shlvl_val);
-	ft_safe_free((unsigned char **)&new_shlvl_val);
+	ft_safe_free((unsigned char **) &new_shlvl_val);
 	if (!var_value[0])
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = msh_export(var_value, msh_data);
-	ft_safe_free((unsigned char **)&var_value[0]);
+	ft_safe_free((unsigned char **) &var_value[0]);
 	return (err_check);
 }
 
 static int	update_shlvl(
 	t_msh_data *const msh_data,
-	char **var_value)
+	char **var_value
+)
 {
 	int		err_check;
 	char	*shlvl_value;
 	int		i;
 	bool	broken_shlvl;
-	int		existing;
+	int		existing; 
 
 	err_check = success;
 	shlvl_value = NULL;
 	existing = 0;
-	err_check = env_var_get_value(msh_data->env, "SHLVL", &shlvl_value,
-			&existing);
+	err_check = env_var_get_value(msh_data->env, "SHLVL", &shlvl_value, &existing);
 	if (err_check != success)
 		return (err_check);
 	i = -1;
@@ -87,23 +89,24 @@ static int	update_shlvl(
 		{
 			err_check = export_default_var(msh_data, var_value, "SHLVL=1");
 			broken_shlvl = true;
-			break ;
+	  		break ;
 		}
 	}
 	if (broken_shlvl == false)
 		iterate_shlvl(msh_data, var_value, shlvl_value);
-	ft_safe_free((unsigned char **)&shlvl_value);
+	ft_safe_free((unsigned char **) &shlvl_value);
 	return (err_check);
 }
 
 static int	export_cwd(
 	t_msh_data *const msh_data,
-	char **var_value)
+	char **var_value
+)
 {
 	char	*cwd;
 	int		err_check;
 
-	cwd = ft_calloc(PATH_MAX, sizeof(char));
+	cwd = ft_calloc(PATH_MAX, sizeof(char)); 
 	if (!cwd)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = env_util_get_cwd(cwd);
@@ -120,8 +123,9 @@ static int	export_cwd(
 	return (err_check);
 }
 
-int			validate_default_vars(
-	t_msh_data *const msh_data)
+int	validate_default_vars(
+	t_msh_data *const msh_data
+)
 {
 	char	**var_value;
 	int		err_check;
@@ -132,7 +136,7 @@ int			validate_default_vars(
 		err_check = export_default_var(msh_data, var_value, STD_PATH);
 	if (err_check != success)
 	{
-		free_2d_arr((void **)var_value);
+		free_2d_arr((void **) var_value);
 		return (err_check);
 	}
 	if (env_var_if_exists(msh_data->env, "SHLVL") == false)
@@ -141,11 +145,11 @@ int			validate_default_vars(
 		err_check = update_shlvl(msh_data, var_value);
 	if (err_check != success)
 	{
-		free_2d_arr((void **)var_value);
+		free_2d_arr((void **) var_value);
 		return (err_check);
 	}
 	if (env_var_if_exists(msh_data->env, "PWD") == false)
 		err_check = export_cwd(msh_data, var_value);
-	free_2d_arr((void **)var_value);
+	free_2d_arr((void **) var_value);
 	return (err_check);
 }

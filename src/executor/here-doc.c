@@ -10,30 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
 #include "libft.h"
 #include "minishell.h"
+#include "executor.h"
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <stdio.h>
 #include <fcntl.h>
 #include <readline/readline.h>
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
 //why do we have a handler ignoring the SIGINT and SIGQUIT
 //-> can we just set the global flag to change when we get in the heredoc to
-//have main ignore signals
-//and have the non-interactive sighandler handle the sigs from there
+//have main ignore signals 
+//and have the non-interactive sighandler handle the sigs from there 
 static int	heredoc_readline_loop(
 	const char *const heredoc_delim,
 	int here_doc[2]
 
 )
 {
-	const size_t	delim_len;
+	const size_t	delim_len = ft_strlen(heredoc_delim);
 	char			*input_str;
 
-	delim_len = ft_strlen(heredoc_delim);
 	handle_signals_interactive();
 	while (1)
 	{
@@ -59,11 +58,12 @@ static int	handle_heredoc_child(
 	t_msh_data *const msh_data,
 	const char *heredoc_delim,
 	int here_doc[2],
-	int pid)
+	int pid
+)
 {
 	int	err_check;
-
 	err_check = success;
+
 	if (pid < 0)
 	{
 		safe_close(&here_doc[READ_END]);
@@ -72,7 +72,7 @@ static int	handle_heredoc_child(
 	}
 	else if (pid == 0)
 	{
-		safe_close(&here_doc[READ_END]);
+		safe_close(&here_doc[READ_END]); 
 		msh_data->is_parent = false;
 		err_check = heredoc_readline_loop(heredoc_delim, here_doc);
 		safe_close(&here_doc[WRITE_END]);
@@ -82,19 +82,20 @@ static int	handle_heredoc_child(
 	{
 		safe_close(&here_doc[WRITE_END]);
 		ignore_signals();
-		wait(NULL);
+		wait (NULL);
 		handle_signals_non_interactive();
 	}
 	return (err_check);
 }
 
-int			create_here_doc(
+int	create_here_doc(
 	t_msh_data *const msh_data,
-	const char *heredoc_delim)
+	const char *heredoc_delim
+)
 {
-	int	err_check;
-	int	here_doc[2];
-	int	pid;
+	int				err_check;
+	int				here_doc[2];
+	int				pid;
 
 	err_check = 0;
 	err_check = pipe(here_doc);

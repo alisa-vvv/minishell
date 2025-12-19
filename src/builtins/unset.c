@@ -15,10 +15,9 @@
 #include "minishell_env.h"
 
 // is this even needed?
-static int	check_name_len_and_validity(char *name)
-	// find out which chars are not valid
+static int	check_name_len_and_validity(char *name) // find out which chars are not valid
 {
-	int len;
+	int	len;
 
 	len = -1;
 	while (name[++len])
@@ -29,9 +28,10 @@ static int	check_name_len_and_validity(char *name)
 	return (len);
 }
 
-int			msh_unset(
+int	msh_unset(
 	char **argv,
-	t_msh_data *msh_data)
+	t_msh_data *msh_data
+)
 {
 	int	i;
 	int	len;
