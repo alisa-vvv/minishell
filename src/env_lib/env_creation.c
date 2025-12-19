@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/14 19:30:33 by avaliull            #+#    #+#           */
-/*   Updated: 2025/12/11 20:11:29 by avaliull            ########   odam.nl   */
+/*   Updated: 2025/12/19 17:07:00 by avaliull            ########   odam.nl   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	set_default_env(
 {
 	char	*cwd;
 
-	cwd = ft_calloc(PATH_MAX, sizeof(char)); 
+	cwd = ft_calloc(PATH_MAX, sizeof(char));
 	msh_env[0] = ft_strdup(STD_PATH);
 	msh_env[1] = ft_strdup("SHLVL=1");
 	if (!cwd || !msh_env[0] || !msh_env[1])
@@ -53,9 +53,9 @@ static int	clone_loop(
 	int	i;
 
 	i = -1;
-	while(envp[++i]) // replace wit msh_export?
+	while (envp[++i])
 	{
-		if (i == *alloc_size) // separate into its own function since it's a common operation?
+		if (i == *alloc_size)
 		{
 			*alloc_size += *alloc_size / 2;
 			free_2d_arr((void **) msh_env);
@@ -80,9 +80,8 @@ int	clone_env(
 	char *envp[]
 )
 {
-	// SET A MAX VALUE FOR ALLOC SIZE // ? huh ?
-	int		alloc_size;
-	int		err;
+	int	alloc_size;
+	int	err;
 
 	alloc_size = 128;
 	msh_data->env = ft_calloc(alloc_size, sizeof(char *));
@@ -93,7 +92,7 @@ int	clone_env(
 	else
 	{
 		err = clone_loop(envp, &alloc_size,
-			msh_data->env, &msh_data->env_var_count);
+				msh_data->env, &msh_data->env_var_count);
 		if (err != success)
 			return (err);
 	}

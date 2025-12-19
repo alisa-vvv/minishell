@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/21 18:02:58 by avaliull            #+#    #+#           */
-/*   Updated: 2025/11/21 18:04:05 by avaliull            ########   odam.nl   */
+/*   Updated: 2025/12/19 17:05:56 by avaliull            ########   odam.nl   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,3 @@ int	env_util_get_cwd(
 	}
 	return (success);
 }
-

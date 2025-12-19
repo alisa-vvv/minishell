@@ -6,7 +6,7 @@
 /*   By: avaliull <avaliull@student.codam.nl>              +#+                */
 /*                                                        +#+                 */
 /*   Created: 2025/11/21 18:05:26 by avaliull            #+#    #+#           */
-/*   Updated: 2025/12/11 20:38:15 by avaliull            ########   odam.nl   */
+/*   Updated: 2025/12/19 17:07:22 by avaliull            ########   odam.nl   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "minishell_env.h"
 #include "builtins.h"
 
-static int	export_default_var(
+int	export_default_var(
 	t_msh_data *const msh_data,
 	char **var_value,
 	char *var_string
@@ -33,71 +33,6 @@ static int	export_default_var(
 	return (err_check);
 }
 
-static int	iterate_shlvl(
-	t_msh_data *const msh_data,
-	char **var_value,
-	char *shlvl_string
-)
-{
-	int				err_check;
-	unsigned long	shlvl_int;
-	char			*new_shlvl_val;
-	int				i;
-
-	err_check = 0;
-	shlvl_int = 0;
-	i = -1;
-	while (shlvl_string[++i])
-		shlvl_int = shlvl_int * 10 + shlvl_string[i] - '0';
-	if (shlvl_int >= INT_MAX)
-		shlvl_int = 0;
-	shlvl_int += 1;
-	new_shlvl_val = ft_itoa(shlvl_int);
-	if (!new_shlvl_val)
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	var_value[0] = ft_strjoin("SHLVL=", new_shlvl_val);
-	ft_safe_free((unsigned char **) &new_shlvl_val);
-	if (!var_value[0])
-		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
-	err_check = msh_export(var_value, msh_data);
-	ft_safe_free((unsigned char **) &var_value[0]);
-	return (err_check);
-}
-
-static int	update_shlvl(
-	t_msh_data *const msh_data,
-	char **var_value
-)
-{
-	int		err_check;
-	char	*shlvl_value;
-	int		i;
-	bool	broken_shlvl;
-	int		existing; 
-
-	err_check = success;
-	shlvl_value = NULL;
-	existing = 0;
-	err_check = env_var_get_value(msh_data->env, "SHLVL", &shlvl_value, &existing);
-	if (err_check != success)
-		return (err_check);
-	i = -1;
-	broken_shlvl = false;
-	while (shlvl_value[++i])
-	{
-		if (!ft_isdigit(shlvl_value[i]) || i > 10)
-		{
-			err_check = export_default_var(msh_data, var_value, "SHLVL=1");
-			broken_shlvl = true;
-	  		break ;
-		}
-	}
-	if (broken_shlvl == false)
-		iterate_shlvl(msh_data, var_value, shlvl_value);
-	ft_safe_free((unsigned char **) &shlvl_value);
-	return (err_check);
-}
-
 static int	export_cwd(
 	t_msh_data *const msh_data,
 	char **var_value
@@ -106,7 +41,7 @@ static int	export_cwd(
 	char	*cwd;
 	int		err_check;
 
-	cwd = ft_calloc(PATH_MAX, sizeof(char)); 
+	cwd = ft_calloc(PATH_MAX, sizeof(char));
 	if (!cwd)
 		return (msh_perror(NULL, MALLOC_ERR, extern_err), malloc_err);
 	err_check = env_util_get_cwd(cwd);

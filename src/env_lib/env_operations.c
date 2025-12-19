@@ -12,9 +12,7 @@
 
 #include "libft.h"
 #include "minishell.h"
-#include "parser.h"
 #include "minishell_env.h"
-
 
 char	*env_var_find_identifier(
 	char *arg
@@ -38,7 +36,7 @@ char	*env_var_find_identifier(
 
 // compares the string name vs the variable in env.
 // if finds match, checks if next symbol in env is '='
-int	env_var_find_index( // change to return error if not found var?
+int	env_var_find_index(
 	char **env,
 	char *name,
 	char *identifier
@@ -48,11 +46,10 @@ int	env_var_find_index( // change to return error if not found var?
 	const int	name_len = identifier - name;
 
 	i = -1;
-
 	while (env[++i] != NULL)
 	{
-		if (ft_strncmp(env[i], name, name_len) == 0 &&
-				env[i][name_len] == '=') // fuck, this is wrong i think
+		if (ft_strncmp(env[i], name, name_len) == 0
+			&& env[i][name_len] == '=')
 			return (i);
 	}
 	return (i);
@@ -70,8 +67,8 @@ bool	env_var_if_exists(
 	i = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], name, name_len) == 0 &&
-				env[i][name_len] == '=')
+		if (ft_strncmp(env[i], name, name_len) == 0
+			&& env[i][name_len] == '=')
 			return (true);
 		i++;
 	}
@@ -93,11 +90,11 @@ int	env_var_get_value(
 	name_len = ft_strlen(name);
 	value = NULL;
 	i = 0;
-	*existing = 0; 
+	*existing = 0;
 	while (env[i])
 	{
-		if (ft_strncmp(env[i], name, name_len) == 0 &&
-				env[i][name_len] == '=')
+		if (ft_strncmp(env[i], name, name_len) == 0
+			&& env[i][name_len] == '=')
 		{
 			*existing = 1;
 			value = ft_strdup(&env[i][name_len + 1]);

@@ -26,6 +26,7 @@ CFILES	=	minishell.c\
 			test_funcs.c
 CFILES_ENVLIB	=	env_creation.c\
 					env_default_var_validation.c\
+					env_default_var_validation_shlvl.c\
 					env_operations.c\
 					env_utils.c
 CFILES_VECLIB	=	vec_lib.c\
