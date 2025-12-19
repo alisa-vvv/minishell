@@ -77,6 +77,7 @@ static void	post_execution_cleanup(
 	i = -1;
 	if (msh_data->exec_data)
 	{
+		printf("cry\n");
 		while (++i < msh_data->command_count && &msh_data->exec_data[i])
 			free_and_close_exec_data(&msh_data->exec_data[i]);
 		free(msh_data->exec_data);
@@ -89,8 +90,8 @@ static void	post_execution_cleanup(
 				clean_exit(msh_data, NULL, EXIT_FAILURE, true);
 		}
 		msh_data->exec_data = NULL;
-		msh_data->command_count = 0;
 	}
+	msh_data->command_count = 0;
 }
 
 volatile sig_atomic_t g_msh_signal = 0; 

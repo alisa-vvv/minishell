@@ -35,6 +35,6 @@ int	exec_builtin(
 	else if (command->builtin_name == builtin_unset)
 		err_check = msh_unset(builtin_args, msh_data);
 	else if (command->builtin_name == builtin_exit)
-		msh_exit(command, msh_data);
+		err_check = msh_exit(command, msh_data);
 	return (err_check);
 }

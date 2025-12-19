@@ -83,6 +83,8 @@ int	executor(
 	t_command_io	*command_io;
 	int				err;
 
+	if (msh_data->command_count == 0)
+		return (success);
 	handle_signals_non_interactive();
 	err = success;
 	p_id_arr = malloc(sizeof(int) * command_count);
