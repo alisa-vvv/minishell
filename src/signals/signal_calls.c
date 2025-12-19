@@ -19,11 +19,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-//volatile sig_atomic_t g_msh_signal = 0; 
-
-void	handle_signals_child_process(
-	void
-)
+void	handle_signals_child_process(void)
 {
 	struct sigaction	handle_sigint;
 	struct sigaction	handle_sigquit;
@@ -38,11 +34,7 @@ void	handle_signals_child_process(
 	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
 
-//could make this sighandler to handle all signals when in child process
-//-->global variable to sig what handler to use
-void	handle_signals_non_interactive(
-	void
-)
+void	handle_signals_non_interactive(void)
 {
 	struct sigaction	handle_sigquit;
 	struct sigaction	handle_sigint;
@@ -57,9 +49,7 @@ void	handle_signals_non_interactive(
 	sigaction(SIGINT, &handle_sigint, NULL);
 }
 
-void	ignore_signals(
-	void
-)
+void	ignore_signals(void)
 {
 	struct sigaction	handle_sigint;
 	struct sigaction	handle_sigquit;
@@ -76,9 +66,7 @@ void	ignore_signals(
 	sigaction(SIGQUIT, &handle_sigquit, NULL);
 }
 
-void	handle_signals_interactive(
-	void
-)
+void	handle_signals_interactive(void)
 {
 	struct sigaction	handle_sigint;
 	struct sigaction	handle_sigquit;

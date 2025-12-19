@@ -50,7 +50,6 @@ int	check_lexer(t_tokenlist *tokenlist,
 	err = index_lexer(&tokenlist);
 	if (err != success)
 		return (err);
-	test_tokens(tokenlist);
 	err = check_spcases(tokenlist);
 	if (err != success)
 		return (err);

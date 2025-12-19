@@ -20,7 +20,6 @@ void	test_close(int fd)
 {
 	int	err_check;
 
-	//dprintf(STDERR_FILENO, "closing fd: %d in pid: %d\n", fd, getpid());
 	err_check = close(fd);
 	if (err_check != 0)
 	{

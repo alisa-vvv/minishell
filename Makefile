@@ -26,13 +26,13 @@ CFILES	=	minishell.c\
 			test_funcs.c
 CFILES_ENVLIB	=	env_creation.c\
 					env_default_var_validation.c\
+					env_default_var_validation_shlvl.c\
 					env_operations.c\
 					env_utils.c
 CFILES_VECLIB	=	vec_lib.c\
 					vec_lib2.c\
 					vec_lib3.c
-CFILES_PARSER	=	debug.c\
-					lexer_match.c\
+CFILES_PARSER	=	lexer_match.c\
 					lexer_utils2.c\
 					lexer_utils.c\
 					expansions_utils.c\
@@ -69,6 +69,7 @@ CFILES_BUILTINS	=	exec_builtin.c\
 					echo.c\
 					env.c\
 					export.c\
+					export2.c\
 					unset.c\
 					exit.c
 

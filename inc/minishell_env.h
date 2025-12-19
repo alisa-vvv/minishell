@@ -14,13 +14,12 @@
 # define MINISHELL_ENV_H
 
 #include "minishell.h"
-#include "parser.h"
 
 /*		Environment errors		*/
 # define INVALID_IDENTIFIER "not a valid identifier: "
 # define TOO_MANY_SH_ERR "Maximum number of sessions reached!"
 # define NO_VAR -1
-# define TOO_MANY_ENV_VAR "could not export, environment variable limit reached"
+# define ENV_VAR_MAX "could not export, environment variable limit reached"
 /**/
 
 /*	Initialization	*/
@@ -30,6 +29,15 @@ int	clone_env(
 );
 int	validate_default_vars(
 	t_msh_data *const msh_data
+);
+int	export_default_var(
+	t_msh_data *const msh_data,
+	char **var_value,
+	char *var_string
+);
+int	update_shlvl(
+	t_msh_data *const msh_data,
+	char **var_value
 );
 /**/
 

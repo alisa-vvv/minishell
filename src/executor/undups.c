@@ -27,7 +27,7 @@ void	undup_redirections(
 	cur_undup = *undup_head;
 	while (cur_undup != NULL)
 	{
-		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd); // add error handling ?
+		test_dup2(cur_undup->orig_fd, cur_undup->dup_fd);
 		safe_close(&cur_undup->orig_fd);
 		cur_undup = cur_undup->prev;
 		free(*undup_head);

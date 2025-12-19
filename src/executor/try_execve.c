@@ -15,14 +15,10 @@
 #include "minishell_env.h"
 #include "executor.h"
 #include <stdio.h>
-#include <errno.h>
 
-
-static const char *const	*handle_no_path(
-	void
-)
+static const char *const	*handle_no_path(void)
 {
-	char **path_arr;
+	char	**path_arr;
 
 	path_arr = ft_calloc(2, sizeof(char *));
 	path_arr[0] = ft_calloc(1, sizeof(char));
@@ -64,7 +60,7 @@ static const char *const	*split_path_var(
 static int	error_loop(
 	char *slash_arg,
 	char *error_msg,
-	int	error_code
+	int error_code
 
 )
 {
@@ -107,7 +103,7 @@ int	try_execve(
 )
 {
 	int					err_check;
-	const char *const 	*path;
+	const char *const	*path;
 
 	if (argv == NULL || argv[0] == NULL)
 		return (child_success);
