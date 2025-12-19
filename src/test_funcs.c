@@ -14,6 +14,7 @@
 #include "minishell.h"
 #include <stdio.h>
 
+int	TEST_len = 0;
 void	test_add_redirection(
 	t_redir_list **first,
 	t_redirect_type type,
